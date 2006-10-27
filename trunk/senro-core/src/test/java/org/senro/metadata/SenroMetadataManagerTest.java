@@ -2,8 +2,8 @@ package org.senro.metadata;
 
 import junit.framework.TestCase;
 import org.senro.metadata.impl.MetadataClass;
-import org.senro.metadata.impl.senroMetadataFactory;
-import org.senro.metadata.impl.senroMetadataManager;
+import org.senro.metadata.impl.SenroMetadataFactory;
+import org.senro.metadata.impl.SenroMetadataManager;
 import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
 import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 import org.senro.metadata.provider.reflection.impl.ReflectionMetadataClassImpl;
@@ -24,18 +24,18 @@ import java.util.HashSet;
  * @date Sep 19, 2006 1:22:02 AM
  */
 public class SenroMetadataManagerTest extends TestCase {
-    private senroMetadataManager metadataManager;
+    private SenroMetadataManager metadataManager;
 
 
     protected void setUp() throws Exception {
-        senroMetadataFactory factory = new senroMetadataFactory();
+        SenroMetadataFactory factory = new SenroMetadataFactory();
 
         ArrayList<MetadataProvider> list = new ArrayList<MetadataProvider>();
         list.add(new ReflectionMetadataProvider());
         factory.setMetadataProviders(list);
         factory.afterPropertiesSet();
 
-        metadataManager = new senroMetadataManager();
+        metadataManager = new SenroMetadataManager();
         HashSet<Class> types = new HashSet<Class>();
         types.add(A.class);
         types.add(B.class);
