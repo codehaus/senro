@@ -26,7 +26,7 @@ import java.util.Set;
  * @author Brian Topping
  * @date Sep 19, 2006 1:08:01 AM
  */
-public class senroMetadataManager implements MetadataManager, InitializingBean {
+public class SenroMetadataManager implements MetadataManager, InitializingBean {
     private Map<AnnotatedElement, Metadata> cache = new HashMap<AnnotatedElement, Metadata>();
     private Set<Class> types;
     private MetadataFactory metadataFactory;
