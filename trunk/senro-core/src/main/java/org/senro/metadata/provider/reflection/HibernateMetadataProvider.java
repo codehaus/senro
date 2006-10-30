@@ -1,6 +1,7 @@
 package org.senro.metadata.provider.reflection;
 
 import org.senro.metadata.MetadataProvider;
+import org.senro.metadata.impl.MetadataProperty;
 import org.senro.metadata.provider.reflection.impl.HibernateMetadataClassImpl;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 import org.senro.utils.ClassUtils;
@@ -37,7 +38,7 @@ public class HibernateMetadataProvider implements MetadataProvider {
     }
 
     public Object getPropertyMetadata(Field element) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new MetadataProperty();
     }
 
     public Object getMethodMetadata(Method element) {
@@ -69,6 +70,6 @@ public class HibernateMetadataProvider implements MetadataProvider {
     }
 
     public boolean supports(Class clazz) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return true;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
