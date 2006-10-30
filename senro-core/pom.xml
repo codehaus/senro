@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>senro-parent</artifactId>
         <groupId>org.senro</groupId>
@@ -68,6 +69,11 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate</artifactId>
+            <version>3.2.0.ga</version>
+        </dependency>
     </dependencies>
     <reporting>
         <plugins>
@@ -76,8 +82,11 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <doclet>ydoc.doclets.YStandard</doclet>
-                    <docletPath>${ydoc.home}/lib/ydoc.jar:${ydoc.home}/lib/class2svg.jar:${ydoc.home}/resources</docletPath>
-                    <additionalparam>-license ${ydoc.license} -filter ydoc.filters.ExcludeFilter -filterpath ${ydoc.home}/lib/ydoc.jar -umlautogen</additionalparam>
+                    <docletPath>${ydoc.home}/lib/ydoc.jar:${ydoc.home}/lib/class2svg.jar:${ydoc.home}/resources
+                    </docletPath>
+                    <additionalparam>-license ${ydoc.license} -filter ydoc.filters.ExcludeFilter -filterpath
+                        ${ydoc.home}/lib/ydoc.jar -umlautogen
+                    </additionalparam>
                     <author>true</author>
                     <bottom>true</bottom>
                     <minmemory>128m</minmemory>
