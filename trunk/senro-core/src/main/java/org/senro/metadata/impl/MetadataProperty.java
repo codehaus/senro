@@ -5,6 +5,7 @@ import org.senro.metadata.MetadataProvider;
 
 import java.util.List;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -25,11 +26,5 @@ public class MetadataProperty implements Property {
         return null;//To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Iterable<? extends Method> getMethods() {
-        return null;//To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    public Iterable<? extends Method> getProperties() {
-        return null;//To change body of implemented methods use File | Settings | File Templates.
-    }
+  
 }

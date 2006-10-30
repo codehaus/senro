@@ -1,5 +1,7 @@
 package org.senro.metadata.provider.reflection;
 
+import java.lang.reflect.Field;
+
 /*
 *  Copyright 2004-2006 Brian Topping
 *
@@ -10,6 +12,7 @@ package org.senro.metadata.provider.reflection;
  * @date Sep 20, 2006 11:59:27 PM
  */
 public interface ReflectionMetadataClass {
+
     boolean isChild();
 
     void setChild(boolean child);

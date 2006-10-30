@@ -4,6 +4,8 @@ import org.senro.metadata.exception.NoMetadataFoundException;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.Collection;
+import java.util.Set;
+import java.util.List;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -23,6 +25,12 @@ public interface MetadataManager {
      * @return Metadata created
      * @throws NoMetadataFoundException if <code>element</code> is not known
      */
-    Metadata getMetadata(Class element) throws NoMetadataFoundException;
+    Metadata getMetadata(String element) throws NoMetadataFoundException;
 
+
+    /**
+     * Get all metadata from the domain
+     * @return A set filled with classes metadata
+     */
+    List<Metadata> getAllMetadata();
 }

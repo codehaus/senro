@@ -1,13 +1,13 @@
 package org.senro.metadata.impl;
 
-import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.Metadata;
+import org.senro.metadata.MetadataProvider;
 
-import java.util.Collection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
  */
 public class MetadataClass implements Metadata {
     private List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
+    private List<Field> fields;
+
 
     /**
      * Get a list of providers that contributed this metadata
@@ -30,11 +32,20 @@ public class MetadataClass implements Metadata {
         return providers;
     }
 
+    /**
+     * Gets all methods
+     *
+     * @return
+     */
     public Iterable<? extends Method> getMethods() {
         return Collections.emptyList();
     }
 
-    public Iterable<? extends Method> getProperties() {
-        return Collections.emptyList();
+    public List<Field> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<Field> fields) {
+        this.fields = fields;
     }
 }

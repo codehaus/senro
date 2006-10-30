@@ -4,6 +4,7 @@ import org.senro.metadata.MetadataProvider;
 
 import java.util.List;
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -28,7 +29,7 @@ public class MetadataPackage implements org.senro.metadata.model.Package {
         return null;//To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Iterable<? extends Method> getProperties() {
+    public Iterable<? extends Field> getProperties() {
         return null;//To change body of implemented methods use File | Settings | File Templates.
     }
 }
