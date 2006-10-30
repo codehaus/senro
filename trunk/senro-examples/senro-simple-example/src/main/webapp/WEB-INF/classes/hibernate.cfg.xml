@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <mapping class="org.senro.demo.VersionedThing"/>
+        <mapping class="org.senro.demo.Item2"/>
+        <mapping class="org.senro.demo.Car"/>
+        <mapping class="org.senro.demo.Item"/>
+        <mapping class="org.senro.demo.Model"/>
+        <mapping class="org.senro.demo.Make"/>
+        <mapping class="org.senro.demo.Stuff"/>
+        <mapping class="org.senro.demo.Thing"/>
+        <mapping class="org.senro.demo.Apple"/>
+        <mapping class="org.senro.demo.Product"/>
+        <mapping class="org.senro.demo.Thing2"/>
+        <mapping class="org.senro.demo.TreeNode"/>
+        <mapping class="org.senro.demo.Catalog"/>
+        <mapping class="org.senro.demo.Person"/>
+        <mapping class="org.senro.demo.Category"/>
+        <mapping class="org.senro.demo.Fruit"/>
+    </session-factory>
+</hibernate-configuration>
