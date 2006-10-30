@@ -1,6 +1,6 @@
 package org.senro.component;
 
-import ro.siveco.commons.ClassUtils;
+import org.senro.utils.ClassUtils;
 import wicket.markup.html.basic.Label;
 import wicket.markup.html.form.Form;
 import wicket.model.CompoundPropertyModel;
