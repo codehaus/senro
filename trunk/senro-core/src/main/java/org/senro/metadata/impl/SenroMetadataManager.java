@@ -8,7 +8,7 @@ import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.util.MetadataManagerUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
-import ro.siveco.commons.ClassUtils;
+import org.senro.utils.ClassUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
