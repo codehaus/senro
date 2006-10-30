@@ -1,15 +1,14 @@
 package org.senro.metadata.impl;
 
-import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.ClassUtils;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataFactory;
 import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.ClassUtils;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /*
@@ -54,7 +53,7 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
         for (MetadataProvider provider : metadataProviders) {
             Class clazz = provider.getPropertyClass();
             propertyFactory.addAspect(clazz);
-             for (Class aClass : ClassUtils.getAllInterfaces(clazz.newInstance())) {
+            for (Class aClass : ClassUtils.getAllInterfaces(clazz.newInstance())) {
                 propertyFactory.addInterface(aClass);
             }
         }
@@ -100,6 +99,23 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
     }
 
     public Metadata createProperty(Field element) {
+        propertyFactory = new AspectJProxyFactory(new MetadataProperty());
+        propertyFactory.setProxyTargetClass(true);
+        for (MetadataProvider provider : metadataProviders) {
+            Class clazz = provider.getPropertyClass();
+            if (clazz != null) {
+                propertyFactory.addAspect(clazz);
+                try {
+                    for (Class aClass : ClassUtils.getAllInterfaces(clazz.newInstance())) {
+                        propertyFactory.addInterface(aClass);
+                    }
+                } catch (InstantiationException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+        }
         return propertyFactory.getProxy();
     }
 
