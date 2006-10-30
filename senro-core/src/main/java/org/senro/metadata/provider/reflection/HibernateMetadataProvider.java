@@ -3,7 +3,7 @@ package org.senro.metadata.provider.reflection;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.provider.reflection.impl.HibernateMetadataClassImpl;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
-import ro.siveco.commons.ClassUtils;
+import org.senro.utils.ClassUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
