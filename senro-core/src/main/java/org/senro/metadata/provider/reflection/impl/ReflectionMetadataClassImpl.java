@@ -4,6 +4,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.DeclareParents;
 import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+
 /*
 *  Copyright 2004-2006 Brian Topping
 *
@@ -25,7 +28,6 @@ public class ReflectionMetadataClassImpl implements ReflectionMetadataClass {
     private String shortDescription;
     private Class type;
     private boolean hidden;
-
 
     public boolean isChild() {
         return child;

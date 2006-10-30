@@ -9,6 +9,7 @@ import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.List;
 
 /*
@@ -51,7 +52,11 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
         propertyFactory = new AspectJProxyFactory(new MetadataProperty());
         propertyFactory.setProxyTargetClass(true);
         for (MetadataProvider provider : metadataProviders) {
-            propertyFactory.addAspect(provider.getPropertyClass().newInstance());
+            Class clazz = provider.getPropertyClass();
+            propertyFactory.addAspect(clazz);
+             for (Class aClass : ClassUtils.getAllInterfaces(clazz.newInstance())) {
+                propertyFactory.addInterface(aClass);
+            }
         }
 
         methodFactory = new AspectJProxyFactory(new MetadataMethod());
@@ -73,9 +78,9 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
         }
     }
 
-    public Metadata createClass(Class element) {
+    public MetadataClass createClass(Class element) {
         classFactory = new AspectJProxyFactory(new MetadataClass());
-//        classFactory.setProxyTargetClass(true);
+        classFactory.setProxyTargetClass(true);
         for (MetadataProvider provider : metadataProviders) {
             Class clazz = provider.getClassClass();
             classFactory.addAspect(clazz);
@@ -94,7 +99,7 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
         return classFactory.getProxy();
     }
 
-    public Metadata createProperty(Method element) {
+    public Metadata createProperty(Field element) {
         return propertyFactory.getProxy();
     }
 
