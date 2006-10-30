@@ -7,19 +7,16 @@ import org.junit.Test;
 import org.senro.demo.Apple;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.exception.NoMetadataFoundException;
-import org.senro.metadata.util.MetadataManagerUtils;
 import org.senro.metadata.impl.MetadataClass;
 import org.senro.metadata.impl.SenroMetadataFactory;
 import org.senro.metadata.impl.SenroMetadataManager;
 import org.senro.metadata.provider.reflection.HibernateMetadataProvider;
 import org.senro.metadata.provider.reflection.impl.HibernateMetadataClassImpl;
+import org.senro.metadata.util.MetadataManagerUtils;
+import org.senro.utils.ClassUtils;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
-import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.EntityMode;
-import org.hibernate.mapping.RootClass;
-import org.senro.utils.ClassUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -35,22 +32,21 @@ public class HibernateMetadataProviderTests {
 
 
     private LocalSessionFactoryBean buildLocalSessionFactoryBean() throws Exception {
-         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-         sessionFactoryBean.setConfigLocation(new DefaultResourceLoader().getResource("classpath:hibernate.cfg.xml"));
-         sessionFactoryBean.setConfigurationClass(org.hibernate.cfg.AnnotationConfiguration.class);
-         PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
-         propertiesFactoryBean.setLocation(new DefaultResourceLoader().getResource("classpath:hibernate.properties"));
-         sessionFactoryBean.setHibernateProperties((Properties) propertiesFactoryBean.getObject());
-         sessionFactoryBean.afterPropertiesSet();
-         return sessionFactoryBean;
-     }
+        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+        sessionFactoryBean.setConfigLocation(new DefaultResourceLoader().getResource("classpath:hibernate.cfg.xml"));
+        sessionFactoryBean.setConfigurationClass(org.hibernate.cfg.AnnotationConfiguration.class);
+        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+        propertiesFactoryBean.setLocation(new DefaultResourceLoader().getResource("classpath:hibernate.properties"));
+        sessionFactoryBean.setHibernateProperties((Properties) propertiesFactoryBean.getObject());
+        sessionFactoryBean.afterPropertiesSet();
+        return sessionFactoryBean;
+    }
 
     public Set getAllTypes(LocalSessionFactoryBean sessionFactoryBean) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Set allTypes = new HashSet();
-        for( Iterator iter = sessionFactoryBean.getConfiguration().getClassMappings(); iter.hasNext(); )
-        {
+        for (Iterator iter = sessionFactoryBean.getConfiguration().getClassMappings(); iter.hasNext();) {
             Object entry = iter.next();
-            allTypes.add( Class.forName((String) PropertyUtils.getProperty(entry,"className")) );
+            allTypes.add(Class.forName((String) PropertyUtils.getProperty(entry, "className")));
         }
         return allTypes;
     }
