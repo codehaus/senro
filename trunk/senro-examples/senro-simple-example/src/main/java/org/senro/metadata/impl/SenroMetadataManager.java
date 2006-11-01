@@ -45,7 +45,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
         for (Class clazz : types) {
             MetadataClass metadata = (MetadataClass) cache.get(clazz);
             if (metadata == null) {
-                metadata = metadataFactory.createClass(clazz);
+                metadata = metadataFactory.createClass();
                 for (MetadataProvider provider : metadataFactory.getProviders()) {
                     if (provider.supports(clazz)) {
                         Object metadata1 = provider.getClassMetadata(clazz);

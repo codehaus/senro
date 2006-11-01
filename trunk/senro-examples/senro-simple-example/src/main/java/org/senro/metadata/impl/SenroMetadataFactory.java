@@ -81,7 +81,7 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
 //        }
     }
 
-    public MetadataClass createClass(Class element) {
+    public MetadataClass createClass() {
         classFactory = new AspectJProxyFactory(new MetadataClass());
         classFactory.setProxyTargetClass(true);
         for (MetadataProvider provider : metadataProviders) {
