@@ -15,7 +15,7 @@ public class HomePage extends BasePage {
 
     public HomePage() {
         super();
-        List metadataList = ((SenroApplication) getApplication()).getMetadataManager().getAllMetadata();
+        List metadataList = ((SenroApplication) getApplication()).getMetadataManager().getAllMetadata(MetadataClass.class);
         ListView listView = new ListView("entities", metadataList) {
             protected void populateItem(final ListItem item) {
                 MetadataClass classMetadata = (MetadataClass) item.getModelObject();
