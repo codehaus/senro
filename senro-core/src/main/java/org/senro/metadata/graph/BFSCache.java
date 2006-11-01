@@ -80,7 +80,7 @@ public class BFSCache<Vertex extends BFSCache.Graphable<Vertex>> implements Clon
     /**
      * Get a list of the verticies between the vertex this cache was generated from and the vertex that was passed in
      *
-     * @param v start node
+     * @param vertex start node
      * @return ordreed list of entries for vertexPath navigation
      */
     public List<Adjacency<Vertex>> vertexPath(Vertex vertex) {
