@@ -2,9 +2,6 @@ package org.senro.metadata;
 
 import org.senro.metadata.exception.NoMetadataFoundException;
 
-import java.lang.reflect.AnnotatedElement;
-import java.util.Collection;
-import java.util.Set;
 import java.util.List;
 
 /*
@@ -22,6 +19,7 @@ import java.util.List;
 public interface MetadataManager {
     /**
      * Get a bag of Metadata objects for a given reflective element
+     *
      * @return Metadata created
      * @throws NoMetadataFoundException if <code>element</code> is not known
      */
@@ -30,7 +28,16 @@ public interface MetadataManager {
 
     /**
      * Get all metadata from the domain
-     * @return A set filled with classes metadata
+     *
+     * @return A set filled with metadata
      */
     List<Metadata> getAllMetadata();
+
+    /**
+     * Gets al metadata of certain type from the domain
+     *
+     * @param metadataClazz Metadata class to filter on
+     * @return A list filled with metadata
+     */
+    List<Metadata> getAllMetadata(Class metadataClazz);
 }

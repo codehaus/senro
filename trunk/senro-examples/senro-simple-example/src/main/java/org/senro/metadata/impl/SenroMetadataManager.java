@@ -6,9 +6,9 @@ import org.senro.metadata.MetadataManager;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.util.MetadataManagerUtils;
+import org.senro.utils.ClassUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.senro.utils.ClassUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -93,7 +93,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
         }
     }
 
-    public Metadata getMetadata(String  element) throws NoMetadataFoundException {
+    public Metadata getMetadata(String element) throws NoMetadataFoundException {
         return cache.get(element);
     }
 
@@ -115,6 +115,24 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
 
 
     public List<Metadata> getAllMetadata() {
-        return (List<Metadata>) cache.values();
+        Iterator<Metadata> iterator = cache.values().iterator();
+        List<Metadata> metadataList = new ArrayList<Metadata>();
+        while (iterator.hasNext()) {
+            Metadata metadata = iterator.next();
+            metadataList.add(metadata);
+        }
+        return metadataList;
+    }
+
+    public List<Metadata> getAllMetadata(Class metadataClazz) {
+        Iterator<Metadata> iterator = cache.values().iterator();
+        List<Metadata> metadataList = new ArrayList<Metadata>();
+        while (iterator.hasNext()) {
+            Metadata metadata = iterator.next();
+            if (metadataClazz.isAssignableFrom(metadata.getClass())) {
+                metadataList.add(metadata);
+            }
+        }
+        return metadataList;
     }
 }

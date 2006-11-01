@@ -2,7 +2,6 @@ package org.senro.page;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.senro.component.*;
-import org.senro.metadata.Metadata;
 import org.senro.metadata.impl.MetadataClass;
 import org.senro.metadata.impl.MetadataProperty;
 import org.senro.metadata.util.MetadataManagerUtils;
@@ -22,7 +21,6 @@ import wicket.model.IModel;
 import wicket.model.Model;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +99,8 @@ public class ListPage extends BasePage {
 
 
     public static PageLinkPanel link(final MetadataClass metadata) throws Exception {
-        return new PageLinkPanel((String) PropertyUtils.getProperty(metadata, "name"), new IPageLink() {
+
+        return new PageLinkPanel((String) PropertyUtils.getProperty(metadata, "displayName"), new IPageLink() {
             public Page getPage() {
                 return new ListPage(metadata);
             }

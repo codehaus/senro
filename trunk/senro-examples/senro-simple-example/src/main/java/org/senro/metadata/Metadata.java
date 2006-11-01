@@ -1,6 +1,7 @@
 package org.senro.metadata;
 
 import java.util.List;
+import java.io.Serializable;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -11,7 +12,7 @@ import java.util.List;
  * @author Brian Topping
  * @date Sep 19, 2006 12:44:24 AM
  */
-public interface Metadata {
+public interface Metadata extends Serializable {
 
     /**
      * Get a list of providers that contributed this metadata
