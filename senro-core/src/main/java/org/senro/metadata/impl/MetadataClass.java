@@ -19,7 +19,7 @@ import java.util.List;
  * @date Sep 19, 2006 4:48:12 PM
  */
 public class MetadataClass implements Metadata {
-    private List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
+     private List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
     private List<Field> fields;
 
 
