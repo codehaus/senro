@@ -7,6 +7,7 @@ import org.senro.metadata.impl.SenroMetadataManager;
 import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
 import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 import org.senro.metadata.provider.reflection.impl.ReflectionMetadataClassImpl;
+import org.senro.metadata.util.MetadataManagerUtils;
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
 
 import java.beans.BeanInfo;
@@ -48,7 +49,7 @@ public class SenroMetadataManagerTest extends TestCase {
     }
 
     public void testSomething() throws Exception {
-        Metadata result = metadataManager.getMetadata(A.class);
+        Metadata result = metadataManager.getMetadata(MetadataManagerUtils.getUniqueIdentifier(A.class));
         BeanInfo beanInfo = Introspector.getBeanInfo(A.class);
         assertEquals("correct metadata retrieval", A.class, ((ReflectionMetadataClass) result).getType());
         assertEquals("properties copy for reflective", beanInfo.getBeanDescriptor().getDisplayName(), ((ReflectionMetadataClass) result).getDisplayName());
