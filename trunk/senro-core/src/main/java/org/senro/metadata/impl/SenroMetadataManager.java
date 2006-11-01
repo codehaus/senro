@@ -45,7 +45,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
         for (Class clazz : types) {
             MetadataClass metadata = (MetadataClass) cache.get(clazz);
             if (metadata == null) {
-                metadata = metadataFactory.createClass(clazz);
+                metadata = metadataFactory.createClass();
                 for (MetadataProvider provider : metadataFactory.getProviders()) {
                     if (provider.supports(clazz)) {
                         Object metadata1 = provider.getClassMetadata(clazz);
@@ -93,7 +93,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
         }
     }
 
-    public Metadata getMetadata(String  element) throws NoMetadataFoundException {
+    public Metadata getMetadata(String element) throws NoMetadataFoundException {
         return cache.get(element);
     }
 
@@ -115,6 +115,24 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
 
 
     public List<Metadata> getAllMetadata() {
-        return (List<Metadata>) cache.values();
+        Iterator<Metadata> iterator = cache.values().iterator();
+        List<Metadata> metadataList = new ArrayList<Metadata>();
+        while (iterator.hasNext()) {
+            Metadata metadata = iterator.next();
+            metadataList.add(metadata);
+        }
+        return metadataList;
+    }
+
+    public List<Metadata> getAllMetadata(Class metadataClazz) {
+        Iterator<Metadata> iterator = cache.values().iterator();
+        List<Metadata> metadataList = new ArrayList<Metadata>();
+        while (iterator.hasNext()) {
+            Metadata metadata = iterator.next();
+            if (metadataClazz.isAssignableFrom(metadata.getClass())) {
+                metadataList.add(metadata);
+            }
+        }
+        return metadataList;
     }
 }
