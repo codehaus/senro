@@ -14,6 +14,6 @@ import wicket.markup.html.basic.Label;
  */
 public class Home extends WebPage {
     public Home() {
-        new Label(this, "message", "Hello World!");        
+        new Label("message", "Hello World!");
     }
 }

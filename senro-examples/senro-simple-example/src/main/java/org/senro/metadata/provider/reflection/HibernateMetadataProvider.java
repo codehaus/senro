@@ -5,6 +5,7 @@ import org.senro.metadata.impl.MetadataProperty;
 import org.senro.metadata.provider.reflection.impl.HibernateMetadataClassImpl;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 import org.senro.utils.ClassUtils;
+import org.hibernate.SessionFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -15,13 +16,13 @@ import java.lang.reflect.Method;
  */
 public class HibernateMetadataProvider implements MetadataProvider {
 
-    private LocalSessionFactoryBean sessionFactory;
+    private SessionFactory sessionFactory;
 
-    public LocalSessionFactoryBean getSessionFactory() {
+    public SessionFactory getSessionFactory() {
         return sessionFactory;
     }
 
-    public void setSessionFactory(LocalSessionFactoryBean sessionFactory) {
+    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -32,7 +33,7 @@ public class HibernateMetadataProvider implements MetadataProvider {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        String identifierName = sessionFactory.getConfiguration().getClassMapping(clazz.getName()).getIdentifierProperty().getName();
+        String identifierName = sessionFactory.getClassMetadata(clazz.getName()).getIdentifierPropertyName();
         metadataClass.setIdentifierField(ClassUtils.getField(clazz, identifierName));
         return metadataClass;
     }
