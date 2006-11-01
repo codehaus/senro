@@ -18,7 +18,7 @@ import java.util.Collection;
  */
 public interface MetadataFactory {
 
-    MetadataClass createClass(Class element);
+    MetadataClass createClass();
 
     Metadata createProperty(Field element);
 
