@@ -42,9 +42,11 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
 //        classFactory.setProxyTargetClass(true);
         for (MetadataProvider provider : metadataProviders) {
             Class clazz = provider.getClassClass();
-            classFactory.addAspect(clazz);
-            for (Class aClass : ClassUtils.getAllInterfaces(clazz.newInstance())) {
-                classFactory.addInterface(aClass);
+            if (clazz != null) {
+                classFactory.addAspect(clazz);
+                for (Class aClass : ClassUtils.getAllInterfaces(clazz.newInstance())) {
+                    classFactory.addInterface(aClass);
+                }
             }
         }
 
@@ -52,29 +54,31 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
         propertyFactory.setProxyTargetClass(true);
         for (MetadataProvider provider : metadataProviders) {
             Class clazz = provider.getPropertyClass();
-            propertyFactory.addAspect(clazz);
-            for (Class aClass : ClassUtils.getAllInterfaces(clazz.newInstance())) {
-                propertyFactory.addInterface(aClass);
+            if (clazz != null) {
+                propertyFactory.addAspect(clazz);
+                for (Class aClass : ClassUtils.getAllInterfaces(clazz.newInstance())) {
+                    propertyFactory.addInterface(aClass);
+                }
             }
         }
 
-        methodFactory = new AspectJProxyFactory(new MetadataMethod());
-        methodFactory.setProxyTargetClass(true);
-        for (MetadataProvider provider : metadataProviders) {
-            methodFactory.addAspect(provider.getMethodClass().newInstance());
-        }
-
-        packageFactory = new AspectJProxyFactory(new MetadataPackage());
-        packageFactory.setProxyTargetClass(true);
-        for (MetadataProvider provider : metadataProviders) {
-            packageFactory.addAspect(provider.getPackageClass().newInstance());
-        }
-
-        referenceFactory = new AspectJProxyFactory(new MetadataReference());
-        referenceFactory.setProxyTargetClass(true);
-        for (MetadataProvider provider : metadataProviders) {
-            referenceFactory.addAspect(provider.getReferenceClass().newInstance());
-        }
+//        methodFactory = new AspectJProxyFactory(new MetadataMethod());
+//        methodFactory.setProxyTargetClass(true);
+//        for (MetadataProvider provider : metadataProviders) {
+//            methodFactory.addAspect(provider.getMethodClass().newInstance());
+//        }
+//
+//        packageFactory = new AspectJProxyFactory(new MetadataPackage());
+//        packageFactory.setProxyTargetClass(true);
+//        for (MetadataProvider provider : metadataProviders) {
+//            packageFactory.addAspect(provider.getPackageClass().newInstance());
+//        }
+//
+//        referenceFactory = new AspectJProxyFactory(new MetadataReference());
+//        referenceFactory.setProxyTargetClass(true);
+//        for (MetadataProvider provider : metadataProviders) {
+//            referenceFactory.addAspect(provider.getReferenceClass().newInstance());
+//        }
     }
 
     public MetadataClass createClass(Class element) {

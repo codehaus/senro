@@ -1,6 +1,9 @@
 package org.senro.metadata.provider;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hibernate.HibernateException;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,29 +34,30 @@ public class HibernateMetadataProviderTests {
     private HibernateMetadataProvider hibernateProvider;
 
 
-    private LocalSessionFactoryBean buildLocalSessionFactoryBean() throws Exception {
-        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
+    private SessionFactory buildLocalSessionFactoryBean() throws Exception {
+        TestSessionFactoryImpl sessionFactoryBean = new TestSessionFactoryImpl();
         sessionFactoryBean.setConfigLocation(new DefaultResourceLoader().getResource("classpath:hibernate.cfg.xml"));
         sessionFactoryBean.setConfigurationClass(org.hibernate.cfg.AnnotationConfiguration.class);
         PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
         propertiesFactoryBean.setLocation(new DefaultResourceLoader().getResource("classpath:hibernate.properties"));
         sessionFactoryBean.setHibernateProperties((Properties) propertiesFactoryBean.getObject());
         sessionFactoryBean.afterPropertiesSet();
-        return sessionFactoryBean;
+        return sessionFactoryBean.buildSessionFactory();
     }
 
-    public Set getAllTypes(LocalSessionFactoryBean sessionFactoryBean) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public Set getAllTypes(SessionFactory sessionFactoryBean) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Set allTypes = new HashSet();
-        for (Iterator iter = sessionFactoryBean.getConfiguration().getClassMappings(); iter.hasNext();) {
-            Object entry = iter.next();
-            allTypes.add(Class.forName((String) PropertyUtils.getProperty(entry, "className")));
+        Map allMetadataMap = sessionFactoryBean.getAllClassMetadata();
+        for (Iterator iter = allMetadataMap.keySet().iterator(); iter.hasNext();) {
+            String  className = (String) iter.next();
+            allTypes.add(Class.forName(className));
         }
         return allTypes;
     }
 
     @Before
     public void init() throws Exception {
-        LocalSessionFactoryBean sessionFactoryBean = buildLocalSessionFactoryBean();
+        SessionFactory sessionFactoryBean = buildLocalSessionFactoryBean();
         hibernateProvider = new HibernateMetadataProvider();
         hibernateProvider.setSessionFactory(sessionFactoryBean);
         SenroMetadataFactory metadataFactory = new SenroMetadataFactory();
@@ -75,6 +79,17 @@ public class HibernateMetadataProviderTests {
         Field identifierField = ClassUtils.getField(Apple.class, "id");
         assertEquals(identifierField, PropertyUtils.getProperty(metadataClass, "identifierField"));
     }
+
+
+    private class TestSessionFactoryImpl extends LocalSessionFactoryBean {
+
+
+        public SessionFactory buildSessionFactory() throws Exception {
+            return super.buildSessionFactory();    //To change body of overridden methods use File | Settings | File Templates.
+        }
+
+    }
+
 }
 
 
