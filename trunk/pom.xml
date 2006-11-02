@@ -61,10 +61,15 @@
 
 
     <repositories>
-        <repository>
+    		<repository>
             <id>senro.codehaus.org</id>
             <name>Senro Repository</name>
             <url>http://senro.codehaus.org/repository/</url>
+        </repository>
+        <repository>
+            <id>iblio.org</id>
+            <name>Iblio Repository</name>
+            <url>http://www.ibiblio.org/maven2/</url>
         </repository>
     </repositories>
     <ciManagement>
@@ -100,9 +105,30 @@
 
     <dependencies>
         <dependency>
+            <groupId>drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <version>3.0.4</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>drools</groupId>
+            <artifactId>drools-core</artifactId>
+            <version>3.0.4</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>wicket</groupId>
             <artifactId>wicket</artifactId>
             <version>1.2.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.7.0</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
