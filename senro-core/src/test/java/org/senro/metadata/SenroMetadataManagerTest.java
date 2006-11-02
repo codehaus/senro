@@ -2,6 +2,7 @@ package org.senro.metadata;
 
 import junit.framework.TestCase;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -69,9 +70,13 @@ public class SenroMetadataManagerTest {
     @Test
     public void testSomethingElse() throws Exception {
         AspectJProxyFactory classFactory = new AspectJProxyFactory(new MetadataClass());
-        classFactory.addAspect(ReflectionMetadataClassImpl.class.newInstance());
-        MetadataClass broken = classFactory.getProxy();
-
+        try {
+            classFactory.addAspect(ReflectionMetadataClassImpl.class.newInstance());
+            MetadataClass broken = classFactory.getProxy();
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertNotNull(e);
+        }
     }
 
     @Test
