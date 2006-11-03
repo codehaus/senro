@@ -1,9 +1,8 @@
-package org.senro.metadata.provider.reflection;
+package org.senro.metadata.provider.annotation;
 
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.impl.MetadataProperty;
-import org.senro.metadata.provider.reflection.impl.HibernateMetadataClassImpl;
-import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
+import org.senro.metadata.provider.annotation.impl.*;
 import org.senro.utils.ClassUtils;
 import org.hibernate.SessionFactory;
 
@@ -37,9 +36,8 @@ public class HibernateMetadataProvider implements MetadataProvider {
         metadataClass.setIdentifierField(ClassUtils.getField(clazz, identifierName));
         return metadataClass;
     }
-
-    public Object getPropertyMetadata(Field element) {
-        return new MetadataProperty();
+    public Object getPropertyMetadata(Method element) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Object getMethodMetadata(Method element) {
@@ -51,23 +49,23 @@ public class HibernateMetadataProvider implements MetadataProvider {
     }
 
     public Class getClassClass() {
-        return HibernateMetadataClassImpl.class;  //To change body of implemented methods use File | Settings | File Templates.
+        return HibernateMetadataClassImpl.class;
     }
 
     public Class getPropertyClass() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return HibernateMetadataPropertyImpl.class;
     }
 
     public Class getMethodClass() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return HibernateMetadataMethodImpl.class;
     }
 
     public Class getPackageClass() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return HibernateMetadataPackageImpl.class;
     }
 
     public Class getReferenceClass() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return HibernateMetadataReferenceImpl.class;  
     }
 
     public boolean supports(Class clazz) {

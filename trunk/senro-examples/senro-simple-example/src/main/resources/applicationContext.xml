@@ -30,7 +30,7 @@
     </bean>
 
     <bean id="reflectionProvider" class="org.senro.metadata.provider.reflection.ReflectionMetadataProvider"/>
-    <bean id="hibernateProvider" class="org.senro.metadata.provider.reflection.HibernateMetadataProvider">
+    <bean id="hibernateProvider" class="org.senro.metadata.provider.annotation.HibernateMetadataProvider">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 

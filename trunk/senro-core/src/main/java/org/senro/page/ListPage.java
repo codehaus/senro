@@ -21,6 +21,7 @@ import wicket.model.IModel;
 import wicket.model.Model;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,10 +56,11 @@ public class ListPage extends BasePage {
                 });
             }
         });
-        List<Field> fieldsList = metadataClass.getFields();
-        for (Field aField : fieldsList) {
+
+        // this is probably broken?
+        for (Method aField : metadataClass.getProperties()) {
             try {
-                MetadataProperty metadataProperty = (MetadataProperty) getMetadata(MetadataManagerUtils.getUniqueIdentifier(aField));
+                MetadataProperty metadataProperty = (MetadataProperty) getMetadata(aField);
                 String name = (String) PropertyUtils.getProperty(metadataProperty, "name");
                 columns.add(new PropertyColumn(new Model(name), name, name));
             } catch (Exception e) {

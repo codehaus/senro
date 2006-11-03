@@ -10,6 +10,8 @@ import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.util.MetadataManagerUtils;
 import org.senro.servlet.SenroApplication;
 
+import java.lang.reflect.AnnotatedElement;
+
 /**
  * Author: Claudiu Dumitrescu
  */
@@ -21,7 +23,7 @@ public abstract class BasePage extends WebPage {
 
     }
 
-    protected Metadata getMetadata(String metadataUniqueIdentifier) throws NoMetadataFoundException {
+    protected Metadata getMetadata(AnnotatedElement metadataUniqueIdentifier) throws NoMetadataFoundException {
         MetadataManager metadataManager = ((SenroApplication) getApplication()).getMetadataManager();
         return  metadataManager.getMetadata(metadataUniqueIdentifier);
     }

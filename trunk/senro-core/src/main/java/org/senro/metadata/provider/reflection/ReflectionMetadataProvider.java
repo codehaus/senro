@@ -1,14 +1,17 @@
 package org.senro.metadata.provider.reflection;
 
 import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.provider.reflection.impl.*;
+import org.senro.metadata.provider.reflection.impl.ReflectionMetadataClassImpl;
+import org.senro.metadata.provider.reflection.impl.ReflectionMetadataMethod;
+import org.senro.metadata.provider.reflection.impl.ReflectionMetadataPackage;
+import org.senro.metadata.provider.reflection.impl.ReflectionMetadataPropertyImpl;
+import org.senro.metadata.provider.reflection.impl.ReflectionMetadataReference;
 import org.springframework.beans.BeanUtils;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.IntrospectionException;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -20,7 +23,6 @@ import java.lang.reflect.Method;
  * @date Sep 19, 2006 1:24:01 AM
  */
 public class ReflectionMetadataProvider implements MetadataProvider {
-
     public Object getClassMetadata(Class clazz) {
         ReflectionMetadataClassImpl result;
         try {
@@ -38,15 +40,8 @@ public class ReflectionMetadataProvider implements MetadataProvider {
         return result;
     }
 
-    public Object getPropertyMetadata(Field element) {
-        ReflectionMetadataPropertyImpl result = null;
-        try {
-            result = ReflectionMetadataPropertyImpl.class.newInstance();
-            BeanUtils.copyProperties(element, result);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;//To change body of implemented methods use File | Settings | File Templates.
+    public Object getPropertyMetadata(Method element) {
+        return null;//To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Object getMethodMetadata(Method element) {

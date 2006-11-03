@@ -1,21 +1,19 @@
 package org.senro.metadata.impl;
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.BeanUtils;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataFactory;
 import org.senro.metadata.MetadataManager;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.exception.NoMetadataFoundException;
-import org.senro.metadata.util.MetadataManagerUtils;
-import org.senro.utils.ClassUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.InitializingBean;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -29,7 +27,7 @@ import java.util.*;
  * @date Sep 19, 2006 1:08:01 AM
  */
 public class SenroMetadataManager implements MetadataManager, InitializingBean {
-    private Map<String, Metadata> cache = new HashMap<String, Metadata>();
+    private Map<AnnotatedElement, Metadata> cache = new HashMap<AnnotatedElement, Metadata>();
     private Set<Class> types;
     private MetadataFactory metadataFactory;
 
@@ -43,7 +41,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
      */
     public void afterPropertiesSet() throws Exception {
         for (Class clazz : types) {
-            MetadataClass metadata = (MetadataClass) cache.get(clazz);
+            Metadata metadata = cache.get(clazz);
             if (metadata == null) {
                 metadata = metadataFactory.createClass(clazz);
                 for (MetadataProvider provider : metadataFactory.getProviders()) {
@@ -56,18 +54,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
                         }
                     }
                 }
-                BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
-                List<Field> clazzFields = new ArrayList<Field>();
-                for (int i = 0; i < beanInfo.getPropertyDescriptors().length; i++) {
-                    PropertyDescriptor propertyDescriptor = beanInfo.getPropertyDescriptors()[i];
-                    try {
-                        clazzFields.add(ClassUtils.getField(clazz, propertyDescriptor.getName()));
-                    } catch (RuntimeException e) {
-                        //do nothing when field does not exist
-                    }
-                }
-                metadata.setFields(clazzFields);
-                cache.put(MetadataManagerUtils.getUniqueIdentifier(clazz), metadata);
+                cache.put(clazz, metadata);
             }
             for (Method method : metadata.getMethods()) {
                 MetadataMethod metadataMethod = (MetadataMethod) cache.get(method);
@@ -76,24 +63,24 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
                     for (MetadataProvider provider : metadata.getProviders()) {
                         BeanUtils.copyProperties(provider.getMethodMetadata(method), metadataMethod);
                     }
-                    cache.put(MetadataManagerUtils.getUniqueIdentifier(method), metadataMethod);
+                    cache.put(method, metadataMethod);
                 }
             }
-            for (Field field : metadata.getFields()) {
-                MetadataProperty metadataProperty = (MetadataProperty) cache.get(field);
+            for (Method method : metadata.getProperties()) {
+                MetadataProperty metadataProperty = (MetadataProperty) cache.get(method);
                 if (metadataProperty == null) {
-                    metadataProperty = (MetadataProperty) metadataFactory.createProperty(field);
+                    metadataProperty = (MetadataProperty) metadataFactory.createProperty(method);
                     for (MetadataProvider provider : metadataFactory.getProviders()) {
-                        BeanUtils.copyProperties(provider.getPropertyMetadata(field), metadataProperty);
+                        BeanUtils.copyProperties(provider.getPropertyMetadata(method), metadataProperty);
                     }
-                    cache.put(MetadataManagerUtils.getUniqueIdentifier(field), metadataProperty);
+                    cache.put(method, metadataProperty);
                 }
 
             }
         }
     }
 
-    public Metadata getMetadata(String element) throws NoMetadataFoundException {
+    public Metadata getMetadata(AnnotatedElement element) throws NoMetadataFoundException {
         return cache.get(element);
     }
 
@@ -111,28 +98,5 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
 
     public void setMetadataFactory(MetadataFactory metadataFactory) {
         this.metadataFactory = metadataFactory;
-    }
-
-
-    public List<Metadata> getAllMetadata() {
-        Iterator<Metadata> iterator = cache.values().iterator();
-        List<Metadata> metadataList = new ArrayList<Metadata>();
-        while (iterator.hasNext()) {
-            Metadata metadata = iterator.next();
-            metadataList.add(metadata);
-        }
-        return metadataList;
-    }
-
-    public List<Metadata> getAllMetadata(Class metadataClazz) {
-        Iterator<Metadata> iterator = cache.values().iterator();
-        List<Metadata> metadataList = new ArrayList<Metadata>();
-        while (iterator.hasNext()) {
-            Metadata metadata = iterator.next();
-            if (metadataClazz.isAssignableFrom(metadata.getClass())) {
-                metadataList.add(metadata);
-            }
-        }
-        return metadataList;
     }
 }

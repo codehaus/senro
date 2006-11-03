@@ -1,4 +1,4 @@
-package org.senro.metadata.provider.reflection;
+package org.senro.metadata.provider.annotation;
 
 import java.lang.reflect.Field;
 

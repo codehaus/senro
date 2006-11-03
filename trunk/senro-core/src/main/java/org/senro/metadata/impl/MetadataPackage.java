@@ -29,7 +29,7 @@ public class MetadataPackage implements org.senro.metadata.model.Package {
         return null;//To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Iterable<? extends Field> getProperties() {
+    public Iterable<? extends Method> getProperties() {
         return null;//To change body of implemented methods use File | Settings | File Templates.
     }
 }

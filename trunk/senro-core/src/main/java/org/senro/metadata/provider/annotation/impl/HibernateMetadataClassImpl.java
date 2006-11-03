@@ -1,8 +1,8 @@
-package org.senro.metadata.provider.reflection.impl;
+package org.senro.metadata.provider.annotation.impl;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.DeclareParents;
-import org.senro.metadata.provider.reflection.HibernateMetadataClass;
+import org.senro.metadata.provider.annotation.HibernateMetadataClass;
 
 import java.lang.reflect.Field;
 
