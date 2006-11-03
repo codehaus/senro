@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -30,6 +31,10 @@ public class MetadataClass implements Metadata {
      */
     public List<MetadataProvider> getProviders() {
         return providers;
+    }
+
+    public void addMetadataMap(Map metadataMap) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
