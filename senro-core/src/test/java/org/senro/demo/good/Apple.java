@@ -1,4 +1,4 @@
-package org.senro.demo;
+package org.senro.demo.good;
 
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;

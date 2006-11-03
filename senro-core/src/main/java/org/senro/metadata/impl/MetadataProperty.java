@@ -26,5 +26,11 @@ public class MetadataProperty implements Property {
         return null;//To change body of implemented methods use File | Settings | File Templates.
     }
 
-  
+    public Iterable<? extends Method> getMethods() {
+        return null;//To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Iterable<? extends Method> getProperties() {
+        return null;//To change body of implemented methods use File | Settings | File Templates.
+    }
 }

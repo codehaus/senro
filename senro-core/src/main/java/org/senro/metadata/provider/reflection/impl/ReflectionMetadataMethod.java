@@ -1,6 +1,7 @@
 package org.senro.metadata.provider.reflection.impl;
 
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.DeclareParents;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -11,8 +12,11 @@ import org.aspectj.lang.annotation.Aspect;
  * @author Brian Topping
  * @date Sep 19, 2006 9:37:37 PM
  */
-@Aspect
+@Aspect("pertarget(org.senro.metadata.impl.MetadataMethod)")
 public class ReflectionMetadataMethod {
+    @DeclareParents(value = "org.senro.metadata.impl.MetadataMethod", defaultImpl = ReflectionMetadataPropertyImpl.class)
+    public static org.senro.metadata.provider.reflection.ReflectionMetadataProperty mixin;
+
     private String name;
     private Class[] argumentTypes;
     private String displayName;

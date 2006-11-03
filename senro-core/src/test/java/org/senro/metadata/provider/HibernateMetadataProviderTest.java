@@ -1,25 +1,20 @@
 package org.senro.metadata.provider;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
-import org.senro.demo.Apple;
+import org.senro.demo.good.Apple;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.impl.MetadataClass;
 import org.senro.metadata.impl.SenroMetadataFactory;
 import org.senro.metadata.impl.SenroMetadataManager;
-import org.senro.metadata.provider.reflection.HibernateMetadataProvider;
-import org.senro.metadata.provider.reflection.impl.HibernateMetadataClassImpl;
-import org.senro.metadata.util.MetadataManagerUtils;
+import org.senro.metadata.provider.annotation.HibernateMetadataProvider;
+import org.senro.metadata.provider.annotation.impl.HibernateMetadataClassImpl;
 import org.senro.utils.ClassUtils;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
+import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +23,7 @@ import java.util.*;
 /**
  * Author: Claudiu Dumitrescu
  */
-public class HibernateMetadataProviderTest {
+public class HibernateMetadataProviderTest extends AbstractDependencyInjectionSpringContextTests {
 
     private SenroMetadataManager metadataManager = new SenroMetadataManager();
     private HibernateMetadataProvider hibernateProvider;
@@ -55,8 +50,7 @@ public class HibernateMetadataProviderTest {
         return allTypes;
     }
 
-    @Before
-    public void init() throws Exception {
+    protected void onSetUp() throws Exception {
         SessionFactory sessionFactoryBean = buildLocalSessionFactoryBean();
         hibernateProvider = new HibernateMetadataProvider();
         hibernateProvider.setSessionFactory(sessionFactoryBean);
@@ -68,14 +62,12 @@ public class HibernateMetadataProviderTest {
     }
 
 
-    @Test
     public void getClassClass() {
         assertEquals(HibernateMetadataClassImpl.class, hibernateProvider.getClassClass());
     }
 
-    @Test
     public void getClassMetadata() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, NoMetadataFoundException {
-        MetadataClass metadataClass = (MetadataClass) metadataManager.getMetadata(MetadataManagerUtils.getUniqueIdentifier(Apple.class));
+        MetadataClass metadataClass = (MetadataClass) metadataManager.getMetadata(Apple.class);
         Field identifierField = ClassUtils.getField(Apple.class, "id");
         assertEquals(identifierField, PropertyUtils.getProperty(metadataClass, "identifierField"));
     }
@@ -89,7 +81,10 @@ public class HibernateMetadataProviderTest {
         }
 
     }
-
+    
+    protected String[] getConfigLocations() {
+        return new String[]{"classpath:testContext-hibernate.xml"};
+    }
 }
 
 

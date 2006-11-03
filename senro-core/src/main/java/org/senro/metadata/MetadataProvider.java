@@ -21,7 +21,7 @@ public interface MetadataProvider {
 
     Object getClassMetadata(Class clazz);
 
-    Object getPropertyMetadata(Field element);
+    Object getPropertyMetadata(Method element);
 
     Object getMethodMetadata(Method element);
 
