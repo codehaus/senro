@@ -1,7 +1,8 @@
 package org.senro.metadata;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -20,4 +21,13 @@ public interface Metadata extends Serializable {
      * @return
      */
     List<MetadataProvider> getProviders();
+
+    /**
+     * Add to current metadata a map with new informations.
+     * </p>
+     * The map is structured with map key
+     *
+     * @param metadataMap
+     */
+    void addMetadataMap(Map metadataMap);
 }
