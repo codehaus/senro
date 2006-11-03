@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- ========================= Metadata ========================= -->
+
+    <bean id="metadataFactory" class="org.senro.metadata.impl.SenroMetadataFactory">
+        <property name="metadataProviders">
+            <list>
+                <ref bean="reflectionProvider"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="metadataManager" class="org.senro.metadata.impl.SenroMetadataManager">
+        <property name="metadataFactory" ref="metadataFactory"/>
+        <property name="types">
+            <bean id="persistenceService.allTypes"
+                  class="org.springframework.beans.factory.config.PropertyPathFactoryBean"/>
+        </property>
+    </bean>
+
+
+    <!-- <bean id="productService" class="org.blah.service.ProductService" /> -->
+    <!-- Message source for this context, loaded from localized "messages_xx" files -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename">
+            <value>messages</value>
+        </property>
+    </bean>
+
+
+    <!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+
+    <bean id="autoproxy" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          autowire="autodetect"/>
+
+
+</beans>
