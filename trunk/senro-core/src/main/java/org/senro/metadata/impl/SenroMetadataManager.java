@@ -6,9 +6,9 @@ import org.senro.metadata.MetadataManager;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.util.MetadataManagerUtils;
+import org.senro.utils.ClassUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.senro.utils.ClassUtils;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -45,7 +45,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
         for (Class clazz : types) {
             MetadataClass metadata = (MetadataClass) cache.get(clazz);
             if (metadata == null) {
-                metadata = metadataFactory.createClass();
+                metadata = metadataFactory.createClass(clazz);
                 for (MetadataProvider provider : metadataFactory.getProviders()) {
                     if (provider.supports(clazz)) {
                         Object metadata1 = provider.getClassMetadata(clazz);

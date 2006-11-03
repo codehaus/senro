@@ -21,7 +21,7 @@ import java.util.List;
  * @date Sep 19, 2006 8:43:29 PM
  */
 public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
-  private AspectJProxyFactory classFactory;
+    private AspectJProxyFactory classFactory;
     private AspectJProxyFactory propertyFactory;
     private AspectJProxyFactory methodFactory;
     private AspectJProxyFactory packageFactory;
@@ -81,7 +81,7 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
 //        }
     }
 
-    public MetadataClass createClass() {
+    public MetadataClass createClass(Class observedClass) {
         classFactory = new AspectJProxyFactory(new MetadataClass());
         classFactory.setProxyTargetClass(true);
         for (MetadataProvider provider : metadataProviders) {
