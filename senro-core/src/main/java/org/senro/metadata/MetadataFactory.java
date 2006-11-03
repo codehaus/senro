@@ -2,7 +2,6 @@ package org.senro.metadata;
 
 import org.senro.metadata.impl.MetadataClass;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -18,7 +17,7 @@ import java.util.Collection;
  */
 public interface MetadataFactory {
 
-    MetadataClass createClass();
+    MetadataClass createClass(Class clazz);
 
     Metadata createProperty(Field element);
 

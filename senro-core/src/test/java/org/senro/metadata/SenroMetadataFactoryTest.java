@@ -3,15 +3,14 @@ package org.senro.metadata;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.senro.demo.Apple;
 import org.senro.metadata.impl.MetadataClass;
 import org.senro.metadata.impl.SenroMetadataFactory;
 import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
-import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
-import java.util.ArrayList;
-import java.io.ObjectOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 /**
  * Created by <a href="mailto:claudiu.dumitrescu@gmail.com">Claudiu Dumitrescu</a>
@@ -36,13 +35,13 @@ public class SenroMetadataFactoryTest extends AbstractDependencyInjectionSpringC
 
     @Test
     public void createClass() {
-        MetadataClass metadataClass = metadataFactory.createClass();
+        MetadataClass metadataClass = metadataFactory.createClass(Apple.class);
         Assert.assertTrue(metadataClass instanceof ReflectionMetadataClass);
     }
 
     @Test
     public void serializeMetadata() throws IOException {
-        MetadataClass metadataClass = metadataFactory.createClass();
+        MetadataClass metadataClass = metadataFactory.createClass(Apple.class);
         new ObjectOutputStream(System.out).writeObject(metadataClass);
     }
 }
