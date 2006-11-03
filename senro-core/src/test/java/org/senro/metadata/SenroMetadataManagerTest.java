@@ -33,12 +33,12 @@ import java.util.List;
  * @author topping
  * @date Sep 19, 2006 1:22:02 AM
  */
-public class SenroMetadataManagerTest {
+public class SenroMetadataManagerTest extends TestCase{
     private SenroMetadataManager metadataManager;
 
 
-    @Before
-    public void init() throws Exception {
+
+    public void setUp() throws Exception {
         SenroMetadataFactory factory = new SenroMetadataFactory();
 
         ArrayList<MetadataProvider> list = new ArrayList<MetadataProvider>();
@@ -58,7 +58,6 @@ public class SenroMetadataManagerTest {
         metadataManager.afterPropertiesSet();
     }
 
-    @Test
     public void testSomething() throws Exception {
         Metadata result = metadataManager.getMetadata(MetadataManagerUtils.getUniqueIdentifier(A.class));
         BeanInfo beanInfo = Introspector.getBeanInfo(A.class);
@@ -67,7 +66,6 @@ public class SenroMetadataManagerTest {
         assertEquals("properties copy for reflective", beanInfo.getBeanDescriptor().getDisplayName(), ((ReflectionMetadataClass) result).getDisplayName());
     }
 
-    @Test
     public void testSomethingElse() throws Exception {
         AspectJProxyFactory classFactory = new AspectJProxyFactory(new MetadataClass());
         try {
@@ -79,7 +77,6 @@ public class SenroMetadataManagerTest {
         }
     }
 
-    @Test
     public void testPropertyMetadata() throws Exception {
         MetadataClass result = (MetadataClass) metadataManager.getMetadata(MetadataManagerUtils.getUniqueIdentifier(A.class));
         List<Field> fields = result.getFields();
@@ -91,13 +88,11 @@ public class SenroMetadataManagerTest {
     }
 
 
-    @Test
-    public void getAllMetadata() {
+    public void testGetAllMetadata() {
         assertNotNull(metadataManager.getAllMetadata());
     }
 
-    @Test
-    public void getAllMetadataWithCertainType() {
+    public void testGetAllMetadataWithCertainType() {
         assertNotNull(metadataManager.getAllMetadata(MetadataClass.class));
     }
 
