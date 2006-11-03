@@ -27,7 +27,7 @@ public class SimpleMetadataFactory implements MetadataFactory {
             Object metadata = metadataProvider.getClassMetadata(observedClass);
             Map properties = null;
             try {
-                properties = BeanUtils.describe(metadata);
+                metadataClass.addMetadataMap(BeanUtils.describe(metadata));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {

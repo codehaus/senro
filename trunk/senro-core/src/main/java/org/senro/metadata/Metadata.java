@@ -25,9 +25,9 @@ public interface Metadata extends Serializable {
     /**
      * Add to current metadata a map with new informations.
      * </p>
-     * The map is structured with map key
+     * The map has as key the property name (or his read method name) and as value the property value
      *
-     * @param metadataMap
+     * @param metadataMap  Map filled with metadata informations
      */
     void addMetadataMap(Map metadataMap);
 }

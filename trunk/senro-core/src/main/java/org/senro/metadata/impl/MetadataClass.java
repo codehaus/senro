@@ -5,10 +5,7 @@ import org.senro.metadata.MetadataProvider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -23,6 +20,7 @@ public class MetadataClass implements Metadata {
     private List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
     private List<Field> fields;
 
+    private Map metadataInformations = new HashMap();
 
     /**
      * Get a list of providers that contributed this metadata
@@ -34,7 +32,12 @@ public class MetadataClass implements Metadata {
     }
 
     public void addMetadataMap(Map metadataMap) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        this.metadataInformations.putAll(metadataMap);
+    }
+
+    public String getMetadataInformation(String metadataProperty) {
+        String metadataInformation = (String) metadataInformations.get(metadataProperty);
+        return metadataInformation;
     }
 
     /**
