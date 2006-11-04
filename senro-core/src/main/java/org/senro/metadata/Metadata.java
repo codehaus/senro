@@ -22,7 +22,9 @@ public interface Metadata {
      */
     List<MetadataProvider> getProviders();
 
+    //todo Brian: please explain why is this method in interface? I mean if the implementation is the MetadataProperty, what this method will do>
     Iterable<? extends Method> getMethods();
 
+    //todo Brian: same as above (thought: we should use confluence for this)
     Iterable<? extends Method> getProperties();
 }
