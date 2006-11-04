@@ -11,5 +11,6 @@ import org.senro.metadata.Metadata;
  * @author Brian Topping
  * @date Sep 19, 2006 1:25:03 PM
  */
+//todo Brian: please explain what are the interfaces from this package for?
 public interface Class extends Metadata {
 }
