@@ -15,8 +15,12 @@ public class SenroMetadataFactoryTest extends AbstractDependencyInjectionSpringC
 
     protected SenroMetadataFactory metadataFactory;
 
+    public void setMetadataFactory(SenroMetadataFactory metadataFactory) {
+        this.metadataFactory = metadataFactory;
+    }
+
     protected String[] getConfigLocations() {
-        return new String[]{"classpath:applicationContext-test.xml"};
+        return new String[]{"classpath:testContext-hibernate.xml"};
     }
 
     public void init() throws Exception {
@@ -28,13 +32,13 @@ public class SenroMetadataFactoryTest extends AbstractDependencyInjectionSpringC
         System.out.println("made it");
     }
 
-    public void createClass() {
+    public void testCreateClass() {
         Metadata metadataClass = metadataFactory.createClass(Apple.class);
         assertTrue(metadataClass instanceof ReflectionMetadataClass);
     }
 
-    public void serializeMetadata() throws IOException {
+    public void testSerializeMetadata() throws IOException {
         Metadata metadataClass = metadataFactory.createClass(Apple.class);
-        new ObjectOutputStream(System.out).writeObject(metadataClass);
+//        new ObjectOutputStream(System.out).writeObject(metadataClass);
     }
 }
