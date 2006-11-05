@@ -40,7 +40,7 @@ public class HibernateMetadataProviderTest extends AbstractDependencyInjectionSp
         return sessionFactoryBean.buildSessionFactory();
     }
 
-    public Set getAllTypes(SessionFactory sessionFactoryBean) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    private Set getAllTypes(SessionFactory sessionFactoryBean) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Set allTypes = new HashSet();
         Map allMetadataMap = sessionFactoryBean.getAllClassMetadata();
         for (Iterator iter = allMetadataMap.keySet().iterator(); iter.hasNext();) {
@@ -62,24 +62,23 @@ public class HibernateMetadataProviderTest extends AbstractDependencyInjectionSp
     }
 
 
-    public void getClassClass() {
+    public void testGetClassClass() {
         assertEquals(HibernateMetadataClassImpl.class, hibernateProvider.getClassClass());
     }
 
-    public void getClassMetadata() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, NoMetadataFoundException {
+    public void testGetClassMetadata() throws Exception {
         MetadataClass metadataClass = (MetadataClass) metadataManager.getMetadata(Apple.class);
-        Field identifierField = ClassUtils.getField(Apple.class, "id");
-        assertEquals(identifierField, PropertyUtils.getProperty(metadataClass, "identifierField"));
+
+        // todo Claudiu this is wrong because we use JavaBean properties, not Fields
+//        Field identifierField = ClassUtils.getField(Apple.class, "id");
+//        assertEquals(identifierField, PropertyUtils.getProperty(metadataClass, "identifierField"));
     }
 
 
     private class TestSessionFactoryImpl extends LocalSessionFactoryBean {
-
-
         public SessionFactory buildSessionFactory() throws Exception {
             return super.buildSessionFactory();    //To change body of overridden methods use File | Settings | File Templates.
         }
-
     }
     
     protected String[] getConfigLocations() {
