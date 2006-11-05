@@ -14,6 +14,7 @@ public class MetadataAccessor {
      *
      * @param propertyName Property name as it is in metadata holder (eg. isChild, displayName)
      * @param metadata     Metadata holder
+     * @return A metadata info.
      */
     public static String readMetadataInfo(Metadata metadata, String propertyName) {
         String information = null;
