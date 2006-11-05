@@ -5,6 +5,7 @@ import org.senro.component.*;
 import org.senro.metadata.impl.MetadataClass;
 import org.senro.metadata.impl.MetadataProperty;
 import org.senro.metadata.util.MetadataManagerUtils;
+import org.senro.metadata.util.MetadataAccessor;
 import org.senro.servlet.SenroApplication;
 import wicket.AttributeModifier;
 import wicket.Component;
@@ -102,7 +103,7 @@ public class ListPage extends BasePage {
 
     public static PageLinkPanel link(final MetadataClass metadata) throws Exception {
 
-        return new PageLinkPanel((String) PropertyUtils.getProperty(metadata, "displayName"), new IPageLink() {
+        return new PageLinkPanel(MetadataAccessor.readMetadataInfo(metadata, "displayName"), new IPageLink() {
             public Page getPage() {
                 return new ListPage(metadata);
             }
