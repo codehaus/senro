@@ -55,7 +55,7 @@
         </mailingList>
     </mailingLists>
     <scm>
-        <connection>scm:svn:http://svn.codehaus.org/senro/trunk/senro</connection>
+        <connection>scm:svn:http://svn.codehaus.org/senro/trunk/</connection>
         <url>http://svn.senro.codehaus.org/</url>
     </scm>
 
