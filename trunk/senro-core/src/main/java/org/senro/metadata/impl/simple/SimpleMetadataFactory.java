@@ -7,7 +7,6 @@ import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.impl.MetadataClass;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
@@ -21,24 +20,18 @@ public class SimpleMetadataFactory implements MetadataFactory {
     private List<MetadataProvider> metadataProviders;
 
 
-    public MetadataClass createClass(Class observedClass) {
-        MetadataClass metadataClass = new MetadataClass();
+    public MappedMetadata createClass(Class observedClass) {
+        MappedMetadata metadataClass = new MappedMetadata();
         for (MetadataProvider metadataProvider : metadataProviders) {
-//            Class clazz = metadataProvider.getClassClass();
-            Object metadata = metadataProvider.getClassMetadata(observedClass);
-            Map properties = null;
-            try {
-                metadataClass.addMetadataMap(BeanUtils.describe(metadata));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
+            Object metadataInformations = metadataProvider.getClassMetadata(observedClass);
+            metadataClass.addMetadata(metadataInformations);
         }
 
         return metadataClass;
+    }
+
+    public Metadata createProperty(Method element) {
+        return null;
     }
 
     public Metadata createProperty(Field element) {
