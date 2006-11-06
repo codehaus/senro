@@ -12,6 +12,7 @@
 package org.senro.demo;
 
 import java.util.Date;
+import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,8 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 @Entity
-public class Product
-{
+public class Product implements Serializable {
     private String name;
     private String description;
     private Date bornOnDate;

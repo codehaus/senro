@@ -5,11 +5,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import java.io.Serializable;
 
 
 @Entity
-public class VersionedThing
-{
+public class VersionedThing implements Serializable {
     private Integer id;
     
     public VersionedThing()

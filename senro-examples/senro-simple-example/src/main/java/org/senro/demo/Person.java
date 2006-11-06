@@ -8,9 +8,10 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
+import java.io.Serializable;
+
 @Entity
-public class Person
-{
+public class Person implements Serializable {
 
     private Integer id;
     

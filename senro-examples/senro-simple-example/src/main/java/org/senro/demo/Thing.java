@@ -14,11 +14,11 @@ package org.senro.demo;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 
 @Entity
-public class Thing
-{
+public class Thing implements Serializable {
     private Integer id;
 
     private String name;
