@@ -34,7 +34,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <bean id="metadataFactory" class="org.senro.metadata.impl.SenroMetadataFactory">
+    <bean id="metadataFactory" class="org.senro.sandbox.simple.SimpleMetadataFactory">
         <property name="metadataProviders">
             <list>
                 <ref bean="reflectionProvider"/>
