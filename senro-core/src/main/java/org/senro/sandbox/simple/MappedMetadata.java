@@ -6,15 +6,17 @@ import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataProvider;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.beans.Introspector;
+import java.beans.BeanInfo;
 
 /**
  * Created by <a href="mailto:claudiu.dumitrescu@gmail.com">Claudiu Dumitrescu</a>
  */
 public class MappedMetadata implements Metadata {
+    private List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
 
-    Map metadataMap = new HashedMap();
+    private Map<String, String > metadataMap = new HashedMap();
 
     /**
      * Add informations from supplied object to informations map hold by this metadata holder.
@@ -23,7 +25,17 @@ public class MappedMetadata implements Metadata {
      */
     public void addMetadata(Object metadataInformations) {
         try {
-            metadataMap.putAll(BeanUtils.describe(metadataInformations));
+            Map<String, String> info = BeanUtils.describe(metadataInformations);
+            Iterator iterator = info.keySet().iterator();
+            while (iterator.hasNext()){
+                String key = (String) iterator.next();
+                String value = info.get(key);
+                if (value.startsWith("class ")){
+                    metadataMap.put(key, value.substring(6));
+                }else{
+                    metadataMap.put(key, value);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,18 +43,18 @@ public class MappedMetadata implements Metadata {
     }
 
     public String  readInformation(String propertyName) {
-        return (String) metadataMap.get(propertyName);
+        return metadataMap.get(propertyName);
     }
 
     public List<MetadataProvider> getProviders() {
-        return null;
+        return providers;
     }
 
     public Iterable<? extends Method> getMethods() {
-        return null;
+        return Collections.EMPTY_LIST;
     }
 
     public Iterable<? extends Method> getProperties() {
-        return null;
+        return Collections.EMPTY_LIST;
     }
 }
