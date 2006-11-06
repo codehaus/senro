@@ -2,6 +2,7 @@ package org.senro.demo;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Make
-{
+public class Make implements Serializable {
 
     public Make()
     {

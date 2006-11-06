@@ -13,6 +13,7 @@ package org.senro.demo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,8 +35,7 @@ import org.hibernate.validator.Pattern;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 @Entity
-public class Catalog
-{
+public class Catalog implements Serializable {
     private Integer id;
     private String name;
     private List<Category> categories = new ArrayList<Category>();

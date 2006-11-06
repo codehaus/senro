@@ -16,6 +16,8 @@ import javax.persistence.Id;
 
 import org.hibernate.validator.Pattern;
 
+import java.io.Serializable;
+
 
 /**
  * @author fus8882
@@ -25,8 +27,7 @@ import org.hibernate.validator.Pattern;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 @Entity
-public class Thing2
-{
+public class Thing2 implements Serializable {
     String identifier;
     String name;
     

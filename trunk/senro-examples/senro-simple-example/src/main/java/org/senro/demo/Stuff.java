@@ -2,6 +2,7 @@ package org.senro.demo;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.io.Serializable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,8 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Stuff
-{
+public class Stuff implements Serializable {
 
     public Stuff()
     {
