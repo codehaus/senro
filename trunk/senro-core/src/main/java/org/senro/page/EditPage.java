@@ -5,14 +5,12 @@ import org.senro.component.ButtonPanel;
 import org.senro.component.ButtonsListView;
 import org.senro.component.EditForm;
 import org.senro.component.PageLinkPanel;
-import org.senro.metadata.impl.MetadataClass;
-import org.senro.metadata.util.MetadataManagerUtils;
+import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.Metadata;
 import org.senro.servlet.SenroApplication;
 import wicket.Page;
 import wicket.RequestCycle;
-import wicket.markup.html.WebPage;
 import wicket.markup.html.form.Form;
 import wicket.markup.html.link.IPageLink;
 

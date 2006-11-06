@@ -1,7 +1,7 @@
 package org.senro.component;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.senro.metadata.impl.MetadataClass;
+import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.persistence.PersistenceService;
 import wicket.Component;
 import wicket.model.AbstractReadOnlyDetachableModel;

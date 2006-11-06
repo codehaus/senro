@@ -1,22 +1,18 @@
 package org.senro.metadata.provider;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.SessionFactory;
 import org.senro.demo.good.Apple;
 import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.exception.NoMetadataFoundException;
-import org.senro.metadata.impl.MetadataClass;
+import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.metadata.impl.SenroMetadataFactory;
 import org.senro.metadata.impl.SenroMetadataManager;
 import org.senro.metadata.provider.annotation.HibernateMetadataProvider;
 import org.senro.metadata.provider.annotation.impl.HibernateMetadataClassImpl;
-import org.senro.utils.ClassUtils;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 

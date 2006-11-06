@@ -27,4 +27,8 @@ public class A {
     public void setC(C c) {
         this.c = c;
     }
+
+    public void doSomethingMethod() {
+        // I lied, it does nothing :)
+    }
 }

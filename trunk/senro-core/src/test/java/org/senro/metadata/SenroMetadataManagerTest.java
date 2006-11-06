@@ -1,19 +1,17 @@
 package org.senro.metadata;
 
-import org.senro.metadata.impl.MetadataClass;
 import org.senro.metadata.impl.SenroMetadataManager;
-import org.senro.metadata.impl.SenroMetadataFactory;
 import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
-import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
-import org.senro.metadata.provider.reflection.impl.ReflectionMetadataClassImpl;
+import org.senro.metadata.provider.reflection.ReflectionMetadataProperty;
+import org.senro.metadata.model.impl.MetadataClass;
+import org.senro.metadata.model.impl.MetadataProperty;
 import org.senro.demo.bad.A;
-import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+import org.senro.demo.bad.B;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.lang.reflect.Method;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -35,11 +33,51 @@ public class SenroMetadataManagerTest extends AbstractDependencyInjectionSpringC
     protected void onSetUp() throws Exception {
     }
 
-    public void testSomething() throws Exception {
+    /**
+     * Test that the metadata recovery for the Class is correct
+     * @throws Exception
+     */
+    public void testMetadataClass() throws Exception {
         Metadata result = metadataManager.getMetadata(A.class);
         BeanInfo beanInfo = Introspector.getBeanInfo(A.class);
         assertEquals("correct metadata retrieval", A.class, ((ReflectionMetadataClass) result).getType());
         assertEquals("properties copy for reflective", beanInfo.getBeanDescriptor().getDisplayName(), ((ReflectionMetadataClass) result).getDisplayName());
+    }
+
+    /**
+     * Test that the metadata recovery for a JavaBean property (Field accessor) is correct
+     * @throws Exception
+     */
+    public void testMetadataProperty() throws Exception {
+//        Metadata result = metadataManager.getMetadata(A.class);
+//        assertTrue("getMetadata result type", result instanceof MetadataClass);
+//
+//        Method m = A.class.getMethod("getB");
+//        Metadata propertyMetadata = metadataManager.getMetadata(m);
+//        assertTrue("property metadata result is MetadataProperty", propertyMetadata instanceof MetadataProperty);
+//        assertTrue("property metadata result is ReflectionMetadataProperty", propertyMetadata instanceof ReflectionMetadataProperty);
+//        assertEquals("accessor name correct", ((ReflectionMetadataProperty)propertyMetadata).getName(), "B");
+//
+//        m = A.class.getMethod("setB", B.class);
+//        propertyMetadata = metadataManager.getMetadata(m);
+//        assertTrue("property metadata result is ReflectionMetadataProperty", propertyMetadata instanceof MetadataProperty);
+
+    }
+
+    /**
+     * Test that the metadata recovery for a Method is correct
+     * @throws Exception
+     */
+    public void testMetadataMethod() throws Exception {
+
+    }
+
+    /**
+     * Test that the metadata recovery for a Package is correct
+     * @throws Exception
+     */
+    public void testMetadataPackage() throws Exception {
+
     }
 
     protected String[] getConfigLocations() {

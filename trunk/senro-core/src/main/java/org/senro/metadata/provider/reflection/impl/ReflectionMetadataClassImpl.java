@@ -4,9 +4,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.DeclareParents;
 import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
 /*
 *  Copyright 2004-2006 Brian Topping
 *
@@ -16,9 +13,9 @@ import java.util.Arrays;
  * @author Brian Topping
  * @date Sep 19, 2006 9:37:37 PM
  */
-@Aspect("pertarget(org.senro.metadata.impl.MetadataClass)")
+@Aspect("pertarget(org.senro.metadata.model.impl.MetadataClass)")
 public class ReflectionMetadataClassImpl implements ReflectionMetadataClass {
-    @DeclareParents(value="org.senro.metadata.impl.MetadataClass",defaultImpl=ReflectionMetadataClassImpl.class)
+    @DeclareParents(value="org.senro.metadata.model.impl.MetadataClass",defaultImpl=ReflectionMetadataClassImpl.class)
     public static ReflectionMetadataClass mixin;
 
     private boolean child;

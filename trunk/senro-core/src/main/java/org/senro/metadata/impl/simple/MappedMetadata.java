@@ -1,4 +1,4 @@
-package org.senro.metadata.impl.simple;
+package org.senro.sandbox.simple;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.HashedMap;

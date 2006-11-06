@@ -1,7 +1,6 @@
 package org.senro.metadata.provider.annotation.impl;
 
 import org.senro.metadata.provider.annotation.HibernateMetadataReference;
-import org.senro.metadata.provider.annotation.HibernateMetadataClass;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.DeclareParents;
 
@@ -12,9 +11,9 @@ import org.aspectj.lang.annotation.DeclareParents;
  * Time: 1:56:22 PM
  * To change this template use File | Settings | File Templates.
  */
-@Aspect("pertarget(org.senro.metadata.impl.MetadataReference)")
+@Aspect("pertarget(org.senro.metadata.model.impl.MetadataReference)")
 public class HibernateMetadataReferenceImpl extends HibernateMetadataReference {
-    @DeclareParents(value = "org.senro.metadata.impl.MetadataReference", defaultImpl = HibernateMetadataReferenceImpl.class)
+    @DeclareParents(value = "org.senro.metadata.model.impl.MetadataReference", defaultImpl = HibernateMetadataReferenceImpl.class)
     public static HibernateMetadataReference mixin;
 
 }

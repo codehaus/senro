@@ -1,8 +1,6 @@
 package org.senro.page;
 
-import org.senro.servlet.SenroApplication;
-import org.senro.metadata.Metadata;
-import org.senro.metadata.impl.MetadataClass;
+import org.senro.metadata.model.impl.MetadataClass;
 import wicket.markup.html.list.ListItem;
 import wicket.markup.html.list.ListView;
 

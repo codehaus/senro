@@ -1,16 +1,13 @@
-package org.senro.metadata.impl.simple;
+package org.senro.sandbox.simple;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataFactory;
 import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.impl.MetadataClass;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @authorClaudiu Dumitrescu
