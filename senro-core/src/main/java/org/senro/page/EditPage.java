@@ -85,12 +85,12 @@ public class EditPage extends BasePage {
     }
 
     /**
-     * Deffault 'Save' button
+     * Default 'Save' button
      *
      * @param form
      */
     public void doSave(Form form) throws NoMetadataFoundException {
-        ((SenroApplication) getApplication()).getPersistenceService().save(form.getModelObject());
+        getPersistenceService().save(form.getModelObject());
         RequestCycle requestCycle = getRequestCycle();
         Metadata metadata = getMetadata(form.getModelObject().getClass());
         Page page = new ListPage((MetadataClass) metadata);
