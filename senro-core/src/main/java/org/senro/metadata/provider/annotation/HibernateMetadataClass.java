@@ -7,8 +7,8 @@ import java.lang.reflect.Field;
  */
 public interface HibernateMetadataClass {
     
-    public void setIdentifierField(Field field);
+    public void setIdentifierField(String field);
 
-    public Field getIdentifierField();
+    public String getIdentifierField();
 
 }

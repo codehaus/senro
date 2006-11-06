@@ -31,7 +31,7 @@ public class HibernateMetadataProvider implements MetadataProvider {
             throw new RuntimeException(e);
         }
         String identifierName = sessionFactory.getClassMetadata(clazz.getName()).getIdentifierPropertyName();
-        metadataClass.setIdentifierField(ClassUtils.getField(clazz, identifierName));
+        metadataClass.setIdentifierField(identifierName);
         return metadataClass;
     }
     public Object getPropertyMetadata(Method element) {
