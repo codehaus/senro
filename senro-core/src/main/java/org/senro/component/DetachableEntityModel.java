@@ -1,8 +1,11 @@
 package org.senro.component;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.senro.metadata.Metadata;
+import org.senro.metadata.util.MetadataAccessor;
 import org.senro.persistence.PersistenceService;
+import org.senro.utils.ClassUtils;
 import wicket.Component;
 import wicket.model.AbstractReadOnlyDetachableModel;
 import wicket.model.IModel;
@@ -21,8 +24,8 @@ public class DetachableEntityModel extends AbstractReadOnlyDetachableModel {
 
     public DetachableEntityModel(Object object, Metadata metadata, PersistenceService persistenceService) {
         try {
-            Field identifierField = (Field) PropertyUtils.getProperty(object, "identifierField");
-            id = identifierField.get(object);
+
+            id = BeanUtils.getProperty(object, MetadataAccessor.readMetadataInfo(metadata, "identifierField"));
             entity = object;
             this.metadata = metadata;
         } catch (Exception e) {
