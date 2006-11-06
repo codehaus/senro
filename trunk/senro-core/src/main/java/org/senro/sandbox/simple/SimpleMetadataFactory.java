@@ -44,7 +44,7 @@ public class SimpleMetadataFactory implements MetadataFactory {
     }
 
     public Collection<MetadataProvider> getProviders() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return metadataProviders;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void setMetadataProviders(List<MetadataProvider> metadataProviders) {
