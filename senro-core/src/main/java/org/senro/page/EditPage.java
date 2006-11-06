@@ -93,7 +93,7 @@ public class EditPage extends BasePage {
         getPersistenceService().save(form.getModelObject());
         RequestCycle requestCycle = getRequestCycle();
         Metadata metadata = getMetadata(form.getModelObject().getClass());
-        Page page = new ListPage((MetadataClass) metadata);
+        Page page = new ListPage(metadata);
         requestCycle.setResponsePage(page);
         requestCycle.setRedirect(true);
     }
