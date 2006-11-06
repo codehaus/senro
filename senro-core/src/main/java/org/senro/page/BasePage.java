@@ -4,6 +4,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataManager;
 import org.senro.metadata.exception.NoMetadataFoundException;
+import org.senro.persistence.PersistenceService;
 import org.senro.servlet.SenroApplication;
 import wicket.markup.html.WebPage;
 import wicket.markup.html.link.BookmarkablePageLink;
@@ -22,14 +23,28 @@ public abstract class BasePage extends WebPage {
 
     public BasePage() {
         add(new BookmarkablePageLink("home-link", HomePage.class));
-
     }
 
-    protected Metadata getMetadata(AnnotatedElement metadataUniqueIdentifier) throws NoMetadataFoundException {
+    /**
+     * Get a metadata from metadata management system.
+     *
+     * @param element Element to search by (e.g class name, a specific method or field).
+     * @return A metadata.
+     * @throws NoMetadataFoundException
+     */
+    protected Metadata getMetadata(AnnotatedElement element) throws NoMetadataFoundException {
         MetadataManager metadataManager = ((SenroApplication) getApplication()).getMetadataManager();
-        return metadataManager.getMetadata(metadataUniqueIdentifier);
+        return metadataManager.getMetadata(element);
     }
 
+    /**
+     * Get a metadata list containing only class metadata.
+     * <p/>
+     * ATTENTION: dont't count on this method as it might be removed!
+     *
+     * @return A metadata list.
+     * @throws Exception
+     */
     protected List<Metadata> getAllMetadataClass() throws Exception {
         MetadataManager metadataManager = ((SenroApplication) getApplication()).getMetadataManager();
         List<Metadata> metadataList = new ArrayList<Metadata>();
@@ -39,8 +54,15 @@ public abstract class BasePage extends WebPage {
             metadataList.add(metadataManager.getMetadata(aClass));
         }
         return metadataList;
-
     }
 
+    /**
+     * Return a default persistence service implementing CRUD operations.
+     * @return Default persistence service.
+     */
+    protected PersistenceService getPersistenceService() {
+        return ((SenroApplication) getApplication()).getPersistenceService();
+
+    }
 
 }
