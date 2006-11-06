@@ -6,14 +6,30 @@ import org.springframework.util.ClassUtils;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataFactory;
 import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
+import org.senro.metadata.model.impl.MetadataPackage;
+import org.senro.metadata.model.impl.MetadataProperty;
+import org.senro.metadata.model.impl.MetadataMethod;
+import org.senro.metadata.model.impl.MetadataClass;
+import org.senro.metadata.model.impl.MetadataReference;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Collection;
 
 /*
-*  Copyright 2004-2006 Brian Topping
-*
+   Copyright 2006, Senro Project Developers
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 */
 
 /**
@@ -21,12 +37,25 @@ import java.util.List;
  * @date Sep 19, 2006 8:43:29 PM
  */
 public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
+// ------------------------------ FIELDS ------------------------------
+
     private AspectJProxyFactory classFactory;
     private AspectJProxyFactory propertyFactory;
     private AspectJProxyFactory methodFactory;
     private AspectJProxyFactory packageFactory;
     private AspectJProxyFactory referenceFactory;
     private List<MetadataProvider> metadataProviders;
+
+// --------------------- GETTER / SETTER METHODS ---------------------
+
+    public void setMetadataProviders(List<MetadataProvider> metadataProviders) {
+        this.metadataProviders = metadataProviders;
+    }
+
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface InitializingBean ---------------------
 
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied (and satisfied BeanFactoryAware and
@@ -68,6 +97,16 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
         }
     }
 
+// --------------------- Interface MetadataFactory ---------------------
+
+
+    /**
+     * Compose an implementation of Metadata for the Class object provided to this method.  The Metadata object that is
+     * returned is a proper composition of all the MetadataProviders that were registered in the startup configuration.
+     *
+     * @param element A Class object that we would like to recover Metadata for
+     * @return A Metadata object
+     */
     public Metadata createClass(Class element) {
         classFactory = new AspectJProxyFactory(new MetadataClass());
 
@@ -89,28 +128,52 @@ public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
         return classFactory.getProxy();
     }
 
+    /**
+     * Like createClass(), but do so for a Property of the class we are building metadata for.
+     *
+     * @todo create implementation!
+     * @param element A JavaBean semantic [getX() setX()] accessor method for a field
+     * @return A Metadata object
+     */
     public Metadata createProperty(Method element) {
-        return propertyFactory.getProxy();
+//        return propertyFactory.getProxy();
+        throw new UnsupportedOperationException();
     }
 
+    /**
+     * Like createClass(), but do so for a Method of the class we are building metadata for.  This is distinct from
+     * createProperty() as it is for a functional method of a bean, not a JavaBean accessor.
+     *
+     * @param element A functional (not accessor) method of a bean
+     * @return A Metadata object
+     */
     public Metadata createMethod(Method element) {
-        Class propertyType = element.getReturnType();
-        if (propertyType.isEnum() || propertyType.isPrimitive() || propertyType.isArray() || propertyType.getPackage().getName().startsWith("java")) {
-            return methodFactory.getProxy();
-        } else {
-            return referenceFactory.getProxy();
-        }
+//        Class propertyType = element.getReturnType();
+//        if (propertyType.isEnum() || propertyType.isPrimitive() || propertyType.isArray() || propertyType.getPackage().getName().startsWith("java")) {
+//            return methodFactory.getProxy();
+//        } else {
+//            return referenceFactory.getProxy();
+//        }
+        throw new UnsupportedOperationException();
     }
 
+    /**
+     * Like createClass(), but for a Java Package.
+     *
+     * @param element Package object that we want to create Metadata for
+     * @return
+     */
     public Metadata createPackage(Package element) {
-        return packageFactory.getProxy();
+//        return packageFactory.getProxy();
+        throw new UnsupportedOperationException();
     }
 
-    public List<MetadataProvider> getProviders() {
+    /**
+     * Get the list of MetadataProviders that would contribute to a Metadata object that is composed.
+     *
+     * @return Collection of MetadataProviders
+     */
+    public Collection<MetadataProvider> getProviders() {
         return metadataProviders;
-    }
-
-    public void setMetadataProviders(List<MetadataProvider> metadataProviders) {
-        this.metadataProviders = metadataProviders;
     }
 }

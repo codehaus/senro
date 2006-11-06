@@ -1,13 +1,12 @@
 package org.senro.component;
 
 import org.senro.persistence.PersistenceService;
-import org.senro.metadata.impl.MetadataClass;
+import org.senro.metadata.model.impl.MetadataClass;
 import org.apache.commons.beanutils.PropertyUtils;
 import wicket.extensions.markup.html.repeater.util.SortParam;
 import wicket.model.IModel;
 
 import java.util.Iterator;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @authorClaudiu Dumitrescu

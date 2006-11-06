@@ -11,8 +11,8 @@ import org.senro.metadata.provider.annotation.HibernateMetadataMethod;
  * Time: 1:53:44 PM
  * To change this template use File | Settings | File Templates.
  */
-@Aspect("pertarget(org.senro.metadata.impl.MetadataMethod)")
+@Aspect("pertarget(org.senro.metadata.model.impl.MetadataMethod)")
 public class HibernateMetadataMethodImpl implements HibernateMetadataMethod {
-    @DeclareParents(value = "org.senro.metadata.impl.MetadataMethod", defaultImpl = HibernateMetadataMethodImpl.class)
+    @DeclareParents(value = "org.senro.metadata.model.impl.MetadataMethod", defaultImpl = HibernateMetadataMethodImpl.class)
     public static HibernateMetadataMethod mixin;
 }

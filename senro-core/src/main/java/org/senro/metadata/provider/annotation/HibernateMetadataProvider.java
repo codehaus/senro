@@ -1,12 +1,10 @@
 package org.senro.metadata.provider.annotation;
 
 import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.impl.MetadataProperty;
 import org.senro.metadata.provider.annotation.impl.*;
 import org.senro.utils.ClassUtils;
 import org.hibernate.SessionFactory;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**

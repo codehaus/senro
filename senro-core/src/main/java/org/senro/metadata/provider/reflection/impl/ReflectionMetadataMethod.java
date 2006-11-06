@@ -12,9 +12,9 @@ import org.aspectj.lang.annotation.DeclareParents;
  * @author Brian Topping
  * @date Sep 19, 2006 9:37:37 PM
  */
-@Aspect("pertarget(org.senro.metadata.impl.MetadataMethod)")
+@Aspect("pertarget(org.senro.metadata.model.impl.MetadataMethod)")
 public class ReflectionMetadataMethod {
-    @DeclareParents(value = "org.senro.metadata.impl.MetadataMethod", defaultImpl = ReflectionMetadataPropertyImpl.class)
+    @DeclareParents(value = "org.senro.metadata.model.impl.MetadataMethod", defaultImpl = ReflectionMetadataPropertyImpl.class)
     public static org.senro.metadata.provider.reflection.ReflectionMetadataProperty mixin;
 
     private String name;

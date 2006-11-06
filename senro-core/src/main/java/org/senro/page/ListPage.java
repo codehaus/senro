@@ -2,9 +2,8 @@ package org.senro.page;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.senro.component.*;
-import org.senro.metadata.impl.MetadataClass;
-import org.senro.metadata.impl.MetadataProperty;
-import org.senro.metadata.util.MetadataManagerUtils;
+import org.senro.metadata.model.impl.MetadataClass;
+import org.senro.metadata.model.impl.MetadataProperty;
 import org.senro.metadata.util.MetadataAccessor;
 import org.senro.servlet.SenroApplication;
 import wicket.AttributeModifier;
@@ -21,7 +20,6 @@ import wicket.markup.html.link.IPageLink;
 import wicket.model.IModel;
 import wicket.model.Model;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

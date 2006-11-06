@@ -2,7 +2,7 @@ package org.senro.metadata.util;
 
 //import org.senro.metadata.MetadataProvider;
 //import org.senro.metadata.Metadata;
-//import org.senro.metadata.impl.simple.SimpleMetadataFactory;
+//import org.senro.sandbox.simple.SimpleMetadataFactory;
 //import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 //import org.senro.demo.good.Apple;
 //import org.springframework.test.AbstractDependencyInjectionSpringContextTests;

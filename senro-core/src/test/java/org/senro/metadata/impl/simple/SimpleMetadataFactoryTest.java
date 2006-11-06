@@ -1,11 +1,11 @@
-package org.senro.metadata.impl.simple;
+package org.senro.sandbox.simple;
 
 //import org.junit.Assert;
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.senro.demo.good.Apple;
-//import org.senro.metadata.impl.simple.MappedMetadata;
-//import org.senro.metadata.impl.simple.SimpleMetadataFactory;
+//import org.senro.sandbox.simple.MappedMetadata;
+//import org.senro.sandbox.simple.SimpleMetadataFactory;
 //import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 //import org.senro.metadata.MetadataProvider;
 //import org.springframework.test.AbstractDependencyInjectionSpringContextTests;

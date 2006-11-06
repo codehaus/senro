@@ -1,7 +1,7 @@
 package org.senro.metadata.util;
 
 import org.senro.metadata.Metadata;
-import org.senro.metadata.impl.simple.MappedMetadata;
+import org.senro.sandbox.simple.MappedMetadata;
 
 /**
  * Provides way to access metadata informations
