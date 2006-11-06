@@ -86,10 +86,11 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
                     if (provider.supports(clazz)) {
                         Object metadata1 = provider.getClassMetadata(clazz);
                         BeanUtils.copyProperties(metadata1, metadata);
-                        List<MetadataProvider> providers = metadata.getProviders();
-                        if (!providers.contains(provider)) {
-                            providers.add(provider);
-                        }
+//todo Brian: what is the use of next lines. I'm asking because adding providers to metadata, wicket will try to serialize these too. 
+//                        List<MetadataProvider> providers = metadata.getProviders();
+//                        if (!providers.contains(provider)) {
+//                            providers.add(provider);
+//                        }
                     }
                 }
                 cache.put(clazz, metadata);
@@ -98,7 +99,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
                 MetadataMethod metadataMethod = (MetadataMethod) cache.get(method);
                 if (metadataMethod == null) {
                     metadataMethod = (MetadataMethod) metadataFactory.createMethod(method);
-                    for (MetadataProvider provider : metadata.getProviders()) {
+                    for (MetadataProvider provider : metadataFactory.getProviders()) {
                         BeanUtils.copyProperties(provider.getMethodMetadata(method), metadataMethod);
                     }
                     cache.put(method, metadataMethod);
