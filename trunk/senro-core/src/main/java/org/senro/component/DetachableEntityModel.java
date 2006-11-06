@@ -1,7 +1,7 @@
 package org.senro.component;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.senro.metadata.model.impl.MetadataClass;
+import org.senro.metadata.Metadata;
 import org.senro.persistence.PersistenceService;
 import wicket.Component;
 import wicket.model.AbstractReadOnlyDetachableModel;
@@ -16,15 +16,15 @@ import java.lang.reflect.Field;
 public class DetachableEntityModel extends AbstractReadOnlyDetachableModel {
     private Object id;
     private Object entity;
-    private MetadataClass classDescriptor;
+    private Metadata metadata;
     private PersistenceService persistenceService;
 
-    public DetachableEntityModel(Object object, MetadataClass classDescriptor, PersistenceService persistenceService) {
+    public DetachableEntityModel(Object object, Metadata metadata, PersistenceService persistenceService) {
         try {
             Field identifierField = (Field) PropertyUtils.getProperty(object, "identifierField");
             id = identifierField.get(object);
             entity = object;
-            this.classDescriptor = classDescriptor;
+            this.metadata = metadata;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -39,7 +39,7 @@ public class DetachableEntityModel extends AbstractReadOnlyDetachableModel {
     protected void onAttach() {
         if (entity == null) {
             try {
-                entity = persistenceService.getInstance((Class) PropertyUtils.getProperty(classDescriptor, "type"), (Serializable) id);
+                entity = persistenceService.getInstance((Class) PropertyUtils.getProperty(metadata, "type"), (Serializable) id);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
