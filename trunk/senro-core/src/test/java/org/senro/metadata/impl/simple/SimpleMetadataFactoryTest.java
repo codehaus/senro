@@ -13,7 +13,7 @@ package org.senro.metadata.impl.simple;
 //import java.util.ArrayList;
 //
 ///**
-// * Author: Claudiu Dumitrescu
+// * @authorClaudiu Dumitrescu
 // */
 //public class SimpleMetadataFactoryTest extends AbstractDependencyInjectionSpringContextTests {
 //

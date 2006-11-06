@@ -5,7 +5,7 @@ import wicket.markup.html.panel.Panel;
 import wicket.model.Model;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class LabelPanel extends Panel {
 

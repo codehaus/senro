@@ -2,7 +2,7 @@ package org.senro.rules;
 
 /**
  * This class holds general information regarding the web context in which an action take place
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class WebContext {
 

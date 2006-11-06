@@ -6,7 +6,7 @@ import wicket.model.Model;
 import org.senro.metadata.exception.NoMetadataFoundException;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @author Claudiu Dumitrescu
  */
 public abstract class ButtonPanel extends Panel {
 

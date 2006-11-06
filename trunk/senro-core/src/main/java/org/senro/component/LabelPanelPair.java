@@ -6,7 +6,7 @@ import wicket.markup.html.panel.Panel;
 import java.io.Serializable;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class LabelPanelPair implements Serializable {
 

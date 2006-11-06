@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class DroolsEngine implements IRulesEngine, ResourceLoaderAware {
     private ResourceLoader resourceLoader;

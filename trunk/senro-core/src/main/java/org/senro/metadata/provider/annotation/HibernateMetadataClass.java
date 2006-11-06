@@ -3,7 +3,7 @@ package org.senro.metadata.provider.annotation;
 import java.lang.reflect.Field;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public interface HibernateMetadataClass {
     

@@ -21,7 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class HibernateMetadataProviderTest extends AbstractDependencyInjectionSpringContextTests {
 

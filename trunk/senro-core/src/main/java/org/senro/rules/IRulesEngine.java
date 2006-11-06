@@ -3,7 +3,7 @@ package org.senro.rules;
 
 /**
  * Define basic behaviour for rules engines.
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public interface IRulesEngine {
 

@@ -6,7 +6,7 @@ import wicket.markup.html.panel.Panel;
 import wicket.markup.html.basic.Label;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class PageLinkPanel extends Panel {
 

@@ -6,7 +6,7 @@ import wicket.markup.html.panel.Panel;
 import wicket.model.PropertyModel;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class TextFieldPanel extends Panel {
 

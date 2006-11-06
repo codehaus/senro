@@ -6,7 +6,7 @@ import wicket.markup.html.list.ListItem;
 import java.util.List;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class ButtonsListView extends ListView {
 
