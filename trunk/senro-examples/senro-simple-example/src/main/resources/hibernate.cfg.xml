@@ -10,13 +10,13 @@
         <mapping class="org.senro.demo.Make"/>
         <mapping class="org.senro.demo.Stuff"/>
         <mapping class="org.senro.demo.Thing"/>
-        <mapping class="org.senro.demo.good.Apple"/>
+        <mapping class="org.senro.demo.Apple"/>
         <mapping class="org.senro.demo.Product"/>
         <mapping class="org.senro.demo.Thing2"/>
         <mapping class="org.senro.demo.TreeNode"/>
         <mapping class="org.senro.demo.Catalog"/>
         <mapping class="org.senro.demo.Person"/>
         <mapping class="org.senro.demo.Category"/>
-        <mapping class="org.senro.demo.good.Fruit"/>
+        <mapping class="org.senro.demo.Fruit"/>
     </session-factory>
 </hibernate-configuration>
