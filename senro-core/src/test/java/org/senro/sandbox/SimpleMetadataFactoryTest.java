@@ -2,6 +2,7 @@ package org.senro.sandbox;
 
 import org.senro.demo.good.Apple;
 import org.senro.metadata.MetadataProvider;
+import org.senro.metadata.provider.annotation.HibernateMetadataProvider;
 import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 import org.senro.sandbox.simple.MappedMetadata;
 import org.senro.sandbox.simple.SimpleMetadataFactory;
@@ -17,12 +18,16 @@ public class SimpleMetadataFactoryTest extends AbstractDependencyInjectionSpring
     private SimpleMetadataFactory metadataFactory;
 
 
+    public void setMetadataFactory(SimpleMetadataFactory metadataFactory) {
+        this.metadataFactory = metadataFactory;
+    }
+
+    protected String[] getConfigLocations() {
+        return new String[]{"classpath:senroMetadataManagerTestContext.xml"};
+    }
+
     public void onSetUp() throws Exception {
-        metadataFactory = new SimpleMetadataFactory();
-        ArrayList<MetadataProvider> list = new ArrayList<MetadataProvider>();
-        list.add(new ReflectionMetadataProvider());
-        metadataFactory.setMetadataProviders(list);
-//        metadataFactory.afterPropertiesSet();
+       
     }
 
 
@@ -31,7 +36,5 @@ public class SimpleMetadataFactoryTest extends AbstractDependencyInjectionSpring
         assertNotNull(metadataClass);
     }
 
-    protected String[] getConfigLocations() {
-        return new String[0];
-    }
+
 }
