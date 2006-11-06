@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class MySortableDataProvider extends wicket.extensions.markup.html.repeater.util.SortableDataProvider {
     private PersistenceService persistenceService;

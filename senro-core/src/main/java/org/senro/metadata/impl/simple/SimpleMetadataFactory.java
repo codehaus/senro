@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class SimpleMetadataFactory implements MetadataFactory {
 

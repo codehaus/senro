@@ -9,7 +9,7 @@ import wicket.util.string.AppendingStringBuffer;
 /**
  * A customized navigation bar for the lists
  * <p/>
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class PageableListViewNavigator extends PagingNavigator {
     private final PageableListView pageableListView;

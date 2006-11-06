@@ -93,14 +93,19 @@
     <distributionManagement>
         <repository>
             <id>senro-release</id>
-            <name>Senro' release repository</name>
+            <name>Senro release repository</name>
             <url>dav:https://dav.codehaus.org/repository/senro/</url>
         </repository>
         <snapshotRepository>
             <id>senro-snapshot</id>
-            <name>Senro' snapshot repository</name>
+            <name>Senro snapshot repository</name>
             <url>dav:https://dav.codehaus.org/snapshots.repository/senro/</url>
         </snapshotRepository>
+        <site>
+            <id>senro-site</id>
+            <name>Senro Site Repository</name>
+            <url>dav:https://dav.codehaus.org/senro/site/</url>
+        </site>
     </distributionManagement>
 
     <dependencies>

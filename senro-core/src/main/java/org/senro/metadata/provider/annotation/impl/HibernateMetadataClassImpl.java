@@ -7,7 +7,7 @@ import org.senro.metadata.provider.annotation.HibernateMetadataClass;
 import java.lang.reflect.Field;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 @Aspect("pertarget(org.senro.metadata.impl.MetadataClass)")
 public class HibernateMetadataClassImpl implements HibernateMetadataClass {

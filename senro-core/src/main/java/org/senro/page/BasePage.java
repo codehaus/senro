@@ -13,7 +13,7 @@ import org.senro.servlet.SenroApplication;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public abstract class BasePage extends WebPage {
 

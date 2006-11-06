@@ -9,7 +9,7 @@ import wicket.markup.html.list.ListView;
 import java.util.List;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class HomePage extends BasePage {
 

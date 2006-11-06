@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 
 /**
- * Author: Claudiu Dumitrescu
+ * @authorClaudiu Dumitrescu
  */
 public class DetachableEntityModel extends AbstractReadOnlyDetachableModel {
     private Object id;
