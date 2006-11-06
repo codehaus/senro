@@ -1,6 +1,7 @@
 package org.senro.servlet;
 
 import org.senro.metadata.MetadataManager;
+import org.senro.metadata.impl.SenroMetadataManager;
 import org.senro.page.HomePage;
 import org.senro.persistence.PersistenceService;
 import wicket.spring.SpringWebApplication;
@@ -19,7 +20,7 @@ public class SenroApplication extends SpringWebApplication {
             synchronized (this) {
                 if (metadataManager == null) {
                     metadataManager = (MetadataManager) createSpringBeanProxy(
-                            MetadataManager.class, "metadataManager");
+                            SenroMetadataManager.class, "metadataManager");
                 }
             }
         }

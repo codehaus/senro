@@ -5,6 +5,7 @@ import org.senro.component.*;
 import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.metadata.model.impl.MetadataProperty;
 import org.senro.metadata.util.MetadataAccessor;
+import org.senro.metadata.Metadata;
 import org.senro.servlet.SenroApplication;
 import wicket.AttributeModifier;
 import wicket.Component;
@@ -36,7 +37,7 @@ public class ListPage extends BasePage {
     }
 
 
-    public ListPage(final MetadataClass metadataClass) {
+    public ListPage(final Metadata metadataClass) {
 
         List columns = new ArrayList();
 
@@ -99,9 +100,9 @@ public class ListPage extends BasePage {
     }
 
 
-    public static PageLinkPanel link(final MetadataClass metadata) throws Exception {
+    public static PageLinkPanel link(final Metadata metadata) throws Exception {
 
-        return new PageLinkPanel(MetadataAccessor.readMetadataInfo(metadata, "displayName"), new IPageLink() {
+        return new PageLinkPanel((String) MetadataAccessor.readMetadataInfo(metadata, "displayName"), new IPageLink() {
             public Page getPage() {
                 return new ListPage(metadata);
             }
@@ -127,7 +128,7 @@ public class ListPage extends BasePage {
         //To change body of created methods use File | Settings | File Templates.
     }
 
-    private void doEdit(MetadataClass metadataClass, Object selectedEntity) {
+    private void doEdit(Metadata metadataClass, Object selectedEntity) {
         RequestCycle requestCycle = getRequestCycle();
         Page page = new EditPage(metadataClass, selectedEntity);
         requestCycle.setResponsePage(page);
@@ -139,7 +140,7 @@ public class ListPage extends BasePage {
      *
      * @param metadataClass Class metadata for entity to be created.
      */
-    protected void doAdd(MetadataClass metadataClass) {
+    protected void doAdd(Metadata metadataClass) {
         RequestCycle requestCycle = getRequestCycle();
         Page page = new EditPage(metadataClass);
         requestCycle.setResponsePage(page);

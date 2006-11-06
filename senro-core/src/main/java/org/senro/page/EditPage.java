@@ -8,6 +8,7 @@ import org.senro.component.PageLinkPanel;
 import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.Metadata;
+import org.senro.metadata.util.MetadataAccessor;
 import org.senro.servlet.SenroApplication;
 import wicket.Page;
 import wicket.RequestCycle;
@@ -23,14 +24,14 @@ import java.util.List;
  */
 public class EditPage extends BasePage {
 
-    public EditPage(MetadataClass classDescriptor) {
+    public EditPage(Metadata classDescriptor) {
         this(classDescriptor, null);
     }
 
-    public EditPage(MetadataClass metadata, Object objectToEdit) {
+    public EditPage(Metadata metadata, Object objectToEdit) {
         if (objectToEdit == null) {
             try {
-                objectToEdit = ((Class) PropertyUtils.getProperty(metadata, "type")).newInstance();
+                objectToEdit = Class.forName(MetadataAccessor.readMetadataInfo(metadata, "type")).newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
