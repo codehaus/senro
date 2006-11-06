@@ -16,13 +16,13 @@ public class HibernateMetadataClassImpl implements HibernateMetadataClass {
     public static HibernateMetadataClass mixin;
 
 
-    private Field identifierField;
+    private String identifierField;
 
-    public void setIdentifierField(Field field) {
+    public void setIdentifierField(String  field) {
         identifierField = field;
     }
 
-    public Field getIdentifierField() {
+    public String getIdentifierField() {
         return identifierField;
     }
 
