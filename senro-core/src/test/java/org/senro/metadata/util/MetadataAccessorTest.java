@@ -6,6 +6,7 @@ import org.senro.sandbox.simple.SimpleMetadataFactory;
 import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 import org.senro.demo.good.Apple;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
+import org.apache.commons.lang.ClassUtils;
 
 import java.util.ArrayList;
 
@@ -30,7 +31,9 @@ public class MetadataAccessorTest extends AbstractDependencyInjectionSpringConte
 
     public void testReadMetadataInfo() throws Exception{
         Metadata metadata = metadataFactory.createClass(Apple.class);
-        Object isChild = MetadataAccessor.readMetadataInfo(metadata,  "child");
-        assertEquals(isChild,"false");
+        assertFalse(MetadataAccessor.readMetadataInfo(metadata,  "child", Instance.BOOLEAN));
+        String name = MetadataAccessor.readMetadataInfo(metadata,  "displayName", Instance.STRING);
+        Object apple=MetadataAccessor.readMetadataInfo(metadata,  "type", Instance.CLASS).newInstance();
+        assertEquals(Apple.class, apple.getClass());
     }
 }

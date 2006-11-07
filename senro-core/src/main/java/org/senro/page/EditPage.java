@@ -9,6 +9,7 @@ import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.util.MetadataAccessor;
+import org.senro.metadata.util.Instance;
 import org.senro.servlet.SenroApplication;
 import wicket.Page;
 import wicket.RequestCycle;
@@ -31,7 +32,7 @@ public class EditPage extends BasePage {
     public EditPage(Metadata metadata, Object objectToEdit) {
         if (objectToEdit == null) {
             try {
-                objectToEdit = Class.forName(MetadataAccessor.readMetadataInfo(metadata, "type")).newInstance();
+                objectToEdit = (MetadataAccessor.readMetadataInfo(metadata, "type", Instance.CLASS)).newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

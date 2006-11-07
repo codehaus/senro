@@ -5,6 +5,7 @@ import org.senro.component.*;
 import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.metadata.model.impl.MetadataProperty;
 import org.senro.metadata.util.MetadataAccessor;
+import org.senro.metadata.util.Instance;
 import org.senro.metadata.Metadata;
 import org.senro.servlet.SenroApplication;
 import wicket.AttributeModifier;
@@ -60,8 +61,8 @@ public class ListPage extends BasePage {
         // this is probably broken?
         for (Method aField : metadataClass.getProperties()) {
             try {
-                MetadataProperty metadataProperty = (MetadataProperty) getMetadata(aField);
-                String name = (String) PropertyUtils.getProperty(metadataProperty, "name");
+                Metadata metadataProperty = getMetadata(aField);
+                String name = MetadataAccessor.readMetadataInfo(metadataProperty,"name");
                 columns.add(new PropertyColumn(new Model(name), name, name));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -102,7 +103,7 @@ public class ListPage extends BasePage {
 
     public static PageLinkPanel link(final Metadata metadata) throws Exception {
 
-        return new PageLinkPanel((String) MetadataAccessor.readMetadataInfo(metadata, "displayName"), new IPageLink() {
+        return new PageLinkPanel(MetadataAccessor.readMetadataInfo(metadata,"type", Instance.CLASS).getName(), new IPageLink() {
             public Page getPage() {
                 return new ListPage(metadata);
             }

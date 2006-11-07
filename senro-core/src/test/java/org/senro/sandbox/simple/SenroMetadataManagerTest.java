@@ -35,7 +35,7 @@ public class SenroMetadataManagerTest extends AbstractDependencyInjectionSpringC
     public void testMetadataClass() throws Exception {
         Metadata result = metadataManager.getMetadata(Apple.class);
         BeanInfo beanInfo = Introspector.getBeanInfo(Apple.class);
-        assertEquals("correct metadata retrieval", Apple.class.toString().substring(6), MetadataAccessor.readMetadataInfo(result, "type"));
+        assertEquals("correct metadata retrieval", Apple.class, MetadataAccessor.readMetadataInfo(result, "type"));
         assertEquals("properties copy for reflective", beanInfo.getBeanDescriptor().getDisplayName(), MetadataAccessor.readMetadataInfo(result, "displayName"));
     }
 

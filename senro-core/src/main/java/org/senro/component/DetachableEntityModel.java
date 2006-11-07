@@ -3,7 +3,9 @@ package org.senro.component;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.senro.metadata.Metadata;
+import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.metadata.util.MetadataAccessor;
+import org.senro.metadata.util.Instance;
 import org.senro.persistence.PersistenceService;
 import org.senro.utils.ClassUtils;
 import wicket.Component;
@@ -24,8 +26,7 @@ public class DetachableEntityModel extends AbstractReadOnlyDetachableModel {
 
     public DetachableEntityModel(Object object, Metadata metadata, PersistenceService persistenceService) {
         try {
-
-            id = BeanUtils.getProperty(object, MetadataAccessor.readMetadataInfo(metadata, "identifierField"));
+            id = PropertyUtils.getProperty(object, (String) MetadataAccessor.readMetadataInfo(metadata, "identifierField"));
             entity = object;
             this.metadata = metadata;
         } catch (Exception e) {
@@ -34,7 +35,6 @@ public class DetachableEntityModel extends AbstractReadOnlyDetachableModel {
         this.persistenceService = persistenceService;
     }
 
-
     public IModel getNestedModel() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -42,7 +42,7 @@ public class DetachableEntityModel extends AbstractReadOnlyDetachableModel {
     protected void onAttach() {
         if (entity == null) {
             try {
-                entity = persistenceService.getInstance((Class) PropertyUtils.getProperty(metadata, "type"), (Serializable) id);
+                entity = persistenceService.getInstance(MetadataAccessor.readMetadataInfo(metadata,"type", Instance.CLASS), (Serializable) id);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
