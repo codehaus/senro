@@ -2,6 +2,7 @@ package org.senro.sandbox.simple;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang.ArrayUtils;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataProvider;
 
@@ -21,16 +22,19 @@ public class MappedMetadata implements Metadata {
     /**
      * Add informations from supplied object to informations map hold by this metadata holder.
      *
-     * @param metadataInformations An Object supplied who contains metadata informations.
+     * @param metadataInformations An Object supplied who contains metadata informations. If supplied parameter is null, method return silently.
      */
     public void addMetadata(Object metadataInformations) {
+        if (metadataInformations == null){
+            return;
+        }
         try {
             Map<String, String> info = BeanUtils.describe(metadataInformations);
             Iterator iterator = info.keySet().iterator();
             while (iterator.hasNext()){
                 String key = (String) iterator.next();
                 String value = info.get(key);
-                if (value.startsWith("class ")){
+                if (value!= null && value.startsWith("class ")){
                     metadataMap.put(key, value.substring(6));
                 }else{
                     metadataMap.put(key, value);
@@ -51,6 +55,12 @@ public class MappedMetadata implements Metadata {
     }
 
     public Iterable<? extends Method> getMethods() {
+        String thisClassType = readInformation("type");
+        try {
+            return Arrays.asList(Class.forName(thisClassType).getMethods());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return Collections.EMPTY_LIST;
     }
 
