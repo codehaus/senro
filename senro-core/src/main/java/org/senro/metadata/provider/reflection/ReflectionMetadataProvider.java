@@ -45,7 +45,18 @@ public class ReflectionMetadataProvider implements MetadataProvider {
     }
 
     public Object getMethodMetadata(Method element) {
-        return null;//To change body of implemented methods use File | Settings | File Templates.
+        ReflectionMetadataMethod result = null;
+        try {
+            result = ReflectionMetadataMethod.class.newInstance();
+            result.setArgumentTypes(element.getParameterTypes());
+            result.setName(element.getName());
+            result.setType(element.getReturnType());
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public Object getPackageMetadata(Package element) {
