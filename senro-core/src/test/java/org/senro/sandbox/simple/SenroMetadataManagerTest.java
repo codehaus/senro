@@ -1,4 +1,4 @@
-package org.senro.sandbox;
+package org.senro.sandbox.simple;
 
 import org.senro.demo.good.Apple;
 import org.senro.metadata.Metadata;
