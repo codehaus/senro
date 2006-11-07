@@ -35,5 +35,10 @@ public class SimpleMetadataFactoryTest extends AbstractDependencyInjectionSpring
         assertNotNull(metadataMethod);
     }
 
+    public void testCreateProperty() throws Exception {
+        Metadata metadataMethod = metadataFactory.createMethod(Apple.class.getMethod("getName"));
+        assertNotNull(metadataMethod);
+    }
+
 
 }
