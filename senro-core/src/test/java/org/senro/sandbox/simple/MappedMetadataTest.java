@@ -30,4 +30,10 @@ public class MappedMetadataTest extends AbstractDependencyInjectionSpringContext
         assertNotNull(methods);
     }
 
+    public void testGetProperties() throws Exception {
+        MappedMetadata mappedMetadata = metadataFactory.createClass(Apple.class);
+        List methods = (List) mappedMetadata.getProperties();
+        assertTrue(methods.size()>0);
+    }
+
 }
