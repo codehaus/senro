@@ -4,7 +4,7 @@ import org.senro.persistence.PersistenceService;
 import org.senro.metadata.model.impl.MetadataClass;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.util.MetadataAccessor;
-import org.apache.commons.beanutils.PropertyUtils;
+import org.senro.metadata.util.Instance;
 import wicket.extensions.markup.html.repeater.util.SortParam;
 import wicket.model.IModel;
 
@@ -42,7 +42,7 @@ public class MySortableDataProvider extends wicket.extensions.markup.html.repeat
     public Iterator iterator(int first, int count) {
         SortParam sp = getSort();
         try {
-            return persistenceService.getAllInstances(Class.forName(MetadataAccessor.readMetadataInfo(metadata, "type"))).iterator();
+            return persistenceService.getAllInstances(MetadataAccessor.readMetadataInfo(metadata,"type", Instance.CLASS)).iterator();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -53,7 +53,7 @@ public class MySortableDataProvider extends wicket.extensions.markup.html.repeat
      */
     public int size() {
         try {
-            return persistenceService.getAllInstances(Class.forName(MetadataAccessor.readMetadataInfo(metadata, "type"))).size();
+            return persistenceService.getAllInstances(MetadataAccessor.readMetadataInfo(metadata,"type", Instance.CLASS)).size();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
