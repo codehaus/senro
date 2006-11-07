@@ -24,4 +24,10 @@ public class ReflectionMetadataProviderTest extends AbstractDependencyInjectionS
         ReflectionMetadataMethod metadataMethod = (ReflectionMetadataMethod) reflectionProvider.getMethodMetadata(method);
         assertNotNull(metadataMethod);
     }
+    
+    public void testGetPropertyMetadata(){
+        Method method = A.class.getMethods()[0];
+        ReflectionMetadataProperty metadataMethod = (ReflectionMetadataProperty) reflectionProvider.getPropertyMetadata(method);
+        assertNotNull(metadataMethod);
+    }
 }

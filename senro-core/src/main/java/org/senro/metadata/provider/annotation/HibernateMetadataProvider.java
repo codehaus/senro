@@ -35,7 +35,7 @@ public class HibernateMetadataProvider implements MetadataProvider {
         return metadataClass;
     }
     public Object getPropertyMetadata(Method element) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new Object();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Object getMethodMetadata(Method element) {
