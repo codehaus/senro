@@ -36,7 +36,12 @@ public class SimpleMetadataFactory implements MetadataFactory {
     }
 
     public Metadata createMethod(Method element) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        org.senro.sandbox.simple.MappedMetadata metadata = new org.senro.sandbox.simple.MappedMetadata();
+        for (MetadataProvider metadataProvider : metadataProviders) {
+            Object metadataInformations = metadataProvider.getMethodMetadata(element);
+            metadata.addMetadata(metadataInformations);
+        }
+        return metadata;
     }
 
     public Metadata createPackage(Package element) {
