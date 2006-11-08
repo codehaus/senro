@@ -1,10 +1,8 @@
 package org.senro.metadata.util;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.senro.metadata.Metadata;
 import org.senro.sandbox.simple.MappedMetadata;
-import org.apache.commons.lang.ClassUtils;
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.collections.TransformerUtils;
 
 /**
  * Provides way to access metadata informations
@@ -19,14 +17,21 @@ public class MetadataAccessor {
      * @param metadata     Metadata holder
      * @return A metadata info.
      */
-    public static <T>T readMetadataInfo(Metadata metadata, String propertyName) {
+    public static <T> T readMetadataInfo(Metadata metadata, String propertyName) throws RuntimeException {
         Object information = null;
         if (metadata instanceof MappedMetadata) {
             information = ((MappedMetadata) metadata).readInformation(propertyName);
+        } else {
+            try {
+                information = PropertyUtils.getProperty(metadata, propertyName);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return (T) information;
     }
+
     /**
      * Reads an information from a metadata holder
      *
@@ -34,10 +39,16 @@ public class MetadataAccessor {
      * @param metadata     Metadata holder
      * @return A metadata info.
      */
-    public static <T>T readMetadataInfo(Metadata metadata, String propertyName, T returnAs) {
+    public static <T> T readMetadataInfo(Metadata metadata, String propertyName, T returnAs) {
         Object information = null;
         if (metadata instanceof MappedMetadata) {
             information = ((MappedMetadata) metadata).readInformation(propertyName);
+        } else {
+            try {
+                information = PropertyUtils.getProperty(metadata, propertyName);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         return (T) information;
     }
