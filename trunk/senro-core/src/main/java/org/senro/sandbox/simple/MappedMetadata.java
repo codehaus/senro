@@ -4,6 +4,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.map.HashedMap;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataProvider;
+import org.senro.metadata.util.MetadataAccessor;
+import org.senro.metadata.util.Instance;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -59,7 +61,8 @@ public class MappedMetadata implements Metadata {
     public Iterable<? extends Method> getProperties() {
         List<Method> propertiesList = new ArrayList<Method>();
         try {
-            PropertyDescriptor[] properties = Introspector.getBeanInfo(((Class) readInformation("type"))).getPropertyDescriptors();
+            Class aClass = MetadataAccessor.readMetadataInfo(this, "type", Instance.CLASS);
+            PropertyDescriptor[] properties = Introspector.getBeanInfo(aClass).getPropertyDescriptors();
             for (PropertyDescriptor property : properties) {
                 if (!"class".equals(property.getName())) {
                     propertiesList.add(property.getReadMethod());
