@@ -86,7 +86,7 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
                     if (provider.supports(clazz)) {
                         Object metadata1 = provider.getClassMetadata(clazz);
                         BeanUtils.copyProperties(metadata1, metadata);
-//todo Brian: what is the use of next lines. I'm asking because adding providers to metadata, wicket will try to serialize these too. 
+//todo Brian: what is the use of next lines. I'm asking because adding providers to metadata, wicket will try to serialize these too.
 //                        List<MetadataProvider> providers = metadata.getProviders();
 //                        if (!providers.contains(provider)) {
 //                            providers.add(provider);
