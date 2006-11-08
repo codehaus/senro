@@ -1,13 +1,16 @@
 package org.senro.sandbox.simple;
 
 import org.senro.demo.good.Apple;
+import org.senro.demo.good.Car;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.impl.SenroMetadataManager;
 import org.senro.metadata.util.MetadataAccessor;
+import org.senro.metadata.util.Instance;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
+import java.lang.reflect.Method;
 
 /**
  * Author: Claudiu Dumitrescu
@@ -39,5 +42,9 @@ public class SenroMetadataManagerTest extends AbstractDependencyInjectionSpringC
         assertEquals("properties copy for reflective", beanInfo.getBeanDescriptor().getDisplayName(), MetadataAccessor.readMetadataInfo(result, "displayName"));
     }
 
-
+      public void testGetPropertyMetadata() throws Exception {
+       Method modelProperty = Car.class.getMethod("getModel");
+       Metadata metadataProperty = metadataManager.getMetadata(modelProperty);
+       assertTrue(MetadataAccessor.readMetadataInfo(metadataProperty, "manyToOne", Instance.BOOLEAN));
+   }
 }

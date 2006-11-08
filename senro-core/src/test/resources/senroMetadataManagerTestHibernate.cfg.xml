@@ -4,5 +4,8 @@
     <session-factory>
         <mapping class="org.senro.demo.good.Apple"/>
         <mapping class="org.senro.demo.good.Fruit"/>
+        <mapping class="org.senro.demo.good.Car"/>
+        <mapping class="org.senro.demo.good.Make"/>
+        <mapping class="org.senro.demo.good.Model"/>
     </session-factory>
 </hibernate-configuration>
