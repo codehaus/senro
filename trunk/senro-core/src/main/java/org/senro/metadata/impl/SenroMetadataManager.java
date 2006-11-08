@@ -95,16 +95,16 @@ public class SenroMetadataManager implements MetadataManager, InitializingBean {
                 }
                 cache.put(clazz, metadata);
             }
-            for (Method method : metadata.getMethods()) {
-                Metadata metadataMethod = cache.get(method);
-                if (metadataMethod == null) {
-                    metadataMethod = metadataFactory.createMethod(method);
-                    for (MetadataProvider provider : metadataFactory.getProviders()) {
-                        BeanUtils.copyProperties(provider.getMethodMetadata(method), metadataMethod);
-                    }
-                    cache.put(method, metadataMethod);
-                }
-            }
+//            for (Method method : metadata.getMethods()) {
+//                Metadata metadataMethod = cache.get(method);
+//                if (metadataMethod == null) {
+//                    metadataMethod = metadataFactory.createMethod(method);
+//                    for (MetadataProvider provider : metadataFactory.getProviders()) {
+//                        BeanUtils.copyProperties(provider.getMethodMetadata(method), metadataMethod);
+//                    }
+//                    cache.put(method, metadataMethod);
+//                }
+//            }
             for (Method method : metadata.getProperties()) {
                 Metadata metadataProperty =  cache.get(method);
                 if (metadataProperty == null) {

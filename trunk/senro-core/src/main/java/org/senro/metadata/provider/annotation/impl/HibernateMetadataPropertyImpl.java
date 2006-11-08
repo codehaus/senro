@@ -12,8 +12,18 @@ import org.senro.metadata.provider.annotation.HibernateMetadataProperty;
  * To change this template use File | Settings | File Templates.
  */
 @Aspect("pertarget(org.senro.metadata.model.impl.MetadataProperty)")
-public class HibernateMetadataPropertyImpl extends HibernateMetadataProperty {
+public class HibernateMetadataPropertyImpl implements HibernateMetadataProperty {
     @DeclareParents(value = "org.senro.metadata.model.impl.MetadataProperty", defaultImpl = HibernateMetadataPropertyImpl.class)
     public static HibernateMetadataProperty mixin;
 
+    private boolean manyToOne = false;
+
+
+    public boolean isManyToOne() {
+        return manyToOne;
+    }
+
+    public void setManyToOne(boolean manyToOne) {
+        this.manyToOne = manyToOne;
+    }
 }

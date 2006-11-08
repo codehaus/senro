@@ -1,10 +1,10 @@
 package org.senro.metadata.provider.annotation;
 
+import org.hibernate.SessionFactory;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.provider.annotation.impl.*;
-import org.senro.utils.ClassUtils;
-import org.hibernate.SessionFactory;
 
+import javax.persistence.ManyToOne;
 import java.lang.reflect.Method;
 
 /**
@@ -34,8 +34,16 @@ public class HibernateMetadataProvider implements MetadataProvider {
         metadataClass.setIdentifierField(identifierName);
         return metadataClass;
     }
+
     public Object getPropertyMetadata(Method element) {
-        return new Object();  //To change body of implemented methods use File | Settings | File Templates.
+        HibernateMetadataPropertyImpl metadataProperty = null;
+        try {
+            metadataProperty = HibernateMetadataPropertyImpl.class.newInstance();
+            metadataProperty.setManyToOne(element.getAnnotation(ManyToOne.class)!=null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return metadataProperty;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Object getMethodMetadata(Method element) {
@@ -63,7 +71,7 @@ public class HibernateMetadataProvider implements MetadataProvider {
     }
 
     public Class getReferenceClass() {
-        return HibernateMetadataReferenceImpl.class;  
+        return HibernateMetadataReferenceImpl.class;
     }
 
     public boolean supports(Class clazz) {

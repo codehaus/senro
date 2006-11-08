@@ -30,7 +30,7 @@ public class SimpleMetadataFactory implements MetadataFactory {
     public Metadata createProperty(Method element) {
         org.senro.sandbox.simple.MappedMetadata metadata = new org.senro.sandbox.simple.MappedMetadata();
         for (MetadataProvider metadataProvider : metadataProviders) {
-            Object metadataInformations = metadataProvider.getMethodMetadata(element);
+            Object metadataInformations = metadataProvider.getPropertyMetadata(element);
             metadata.addMetadata(metadataInformations);
         }
         return metadata;
