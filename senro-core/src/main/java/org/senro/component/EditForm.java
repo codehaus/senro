@@ -39,6 +39,7 @@ public class EditForm extends Form {
             LabelPanelPair lpp = null;
             Field field = null;
             for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
+                //todo Claudiu: check metadata against drools here
                 try {
                     field = ClassUtils.getField(entity.getClass(), descriptor.getName());
                 } catch (RuntimeException e) {
