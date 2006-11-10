@@ -5,8 +5,9 @@ import org.hibernate.criterion.DetachedCriteria;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Arrays;
+
+import wicket.extensions.markup.html.repeater.util.SortParam;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +21,7 @@ public class MockPersistenceService implements PersistenceService {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public List getAllInstances(Class type) {
+    public List getAllInstances(Class type, SortParam ...sortParams) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
