@@ -75,7 +75,7 @@
     <bean id="transactionAttributeSource"
           class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
 
-    <bean id="persistenceService" class="org.senro.hibernate.HibernatePersistenceService" autowire="autodetect"/>
+    <bean id="persistenceService" class="org.senro.persistence.hibernate.HibernatePersistenceService" autowire="autodetect"/>
 
 
 
