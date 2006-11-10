@@ -148,7 +148,7 @@ public class ListPage extends BasePage {
         requestCycle.setRedirect(true);
     }
 
-    private static class HighlitableDataItem extends OddEvenItem {
+    private class HighlitableDataItem extends OddEvenItem {
         private boolean highlite = false;
 
         /**
@@ -165,11 +165,12 @@ public class ListPage extends BasePage {
          * @param index
          * @param model
          */
-        public HighlitableDataItem(String id, int index, IModel model) {
+        public HighlitableDataItem(String id, int index, final IModel model) {
             super(id, index, model);
+
             add(new AttributeModifier("style", true, new Model("background-color:red;")) {
                 public boolean isEnabled() {
-                    return highlite;
+                    return model.getObject(HighlitableDataItem.this).equals(selectedEntity);
                 }
             });
         }
