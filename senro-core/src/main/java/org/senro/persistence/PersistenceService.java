@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.criterion.DetachedCriteria;
+import wicket.extensions.markup.html.repeater.util.SortParam;
 
 
 /**
@@ -30,10 +31,10 @@ public interface PersistenceService
     /**
      * Get a list with all instances of supplied Entity, ordered by supplied properties.
      * @param type Entity type.
-     * @param orderByClauses Properties to order by.
+     * @param sortParams Sorting parameters
      * @return A entities list from database
      */
-    public List getAllInstances(Class type, String ...orderByClauses);
+    public List getAllInstances(Class type, SortParam ...sortParams);
     
     /**
      * 
