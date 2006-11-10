@@ -9,10 +9,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
-package org.senro.hibernate;
+package org.senro.persistence.hibernate;
 
 import org.hibernate.*;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.metadata.ClassMetadata;
 import org.senro.persistence.PersistenceException;
 import org.senro.persistence.PersistenceService;
@@ -28,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,9 +59,13 @@ public class HibernatePersistenceService extends HibernateDaoSupport implements
      * @see org.blah.service.IPersistenceService#getAllInstances(java.lang.Class)
      */
     @Transactional
-    public List getAllInstances(Class type) {
-        // return getHibernateTemplate().find("from "+ type.getName());
-        return new ArrayList(new HashSet(getHibernateTemplate().loadAll(Utils.checkForCGLIB(type))));
+    public List getAllInstances(Class type, String... orderBy) {
+        Session session = getSessionFactory().getCurrentSession();
+        Criteria searchCriteria = session.createCriteria(Utils.checkForCGLIB(type));
+        for (String orderClause : orderBy) {
+            searchCriteria.addOrder(Order.asc(orderClause));
+        }
+        return searchCriteria.list();
     }
 
     /*
