@@ -25,6 +25,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
+import wicket.extensions.markup.html.repeater.util.SortParam;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -59,11 +60,15 @@ public class HibernatePersistenceService extends HibernateDaoSupport implements
      * @see org.blah.service.IPersistenceService#getAllInstances(java.lang.Class)
      */
     @Transactional
-    public List getAllInstances(Class type, String... orderBy) {
+    public List getAllInstances(Class type, SortParam... sortParams) {
         Session session = getSessionFactory().getCurrentSession();
         Criteria searchCriteria = session.createCriteria(Utils.checkForCGLIB(type));
-        for (String orderClause : orderBy) {
-            searchCriteria.addOrder(Order.asc(orderClause));
+        for (SortParam sortParam : sortParams) {
+            if (sortParam.isAscending()) {
+                searchCriteria.addOrder(Order.asc(sortParam.getProperty()));
+            }else{
+                searchCriteria.addOrder(Order.desc(sortParam.getProperty()));
+            }
         }
         return searchCriteria.list();
     }
