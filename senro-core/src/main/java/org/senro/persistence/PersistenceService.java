@@ -27,7 +27,13 @@ public interface PersistenceService
 {
     public <T> T getInstance(Class<T> type, Serializable id);
 
-    public List getAllInstances(Class type);
+    /**
+     * Get a list with all instances of supplied Entity, ordered by supplied properties.
+     * @param type Entity type.
+     * @param orderByClauses Properties to order by.
+     * @return A entities list from database
+     */
+    public List getAllInstances(Class type, String ...orderByClauses);
     
     /**
      * 
