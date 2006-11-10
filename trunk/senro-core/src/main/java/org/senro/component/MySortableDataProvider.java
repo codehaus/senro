@@ -42,7 +42,8 @@ public class MySortableDataProvider extends wicket.extensions.markup.html.repeat
     public Iterator iterator(int first, int count) {
         SortParam sp = getSort();
         try {
-            return persistenceService.getAllInstances(MetadataAccessor.readMetadataInfo(metadata,"type", Instance.CLASS)).iterator();
+            Class entityType = MetadataAccessor.readMetadataInfo(metadata, "type", Instance.CLASS);
+            return persistenceService.getAllInstances(entityType, getSort()).iterator();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -53,7 +54,8 @@ public class MySortableDataProvider extends wicket.extensions.markup.html.repeat
      */
     public int size() {
         try {
-            return persistenceService.getAllInstances(MetadataAccessor.readMetadataInfo(metadata,"type", Instance.CLASS)).size();
+            Class type = MetadataAccessor.readMetadataInfo(metadata, "type", Instance.CLASS);
+            return persistenceService.getAllInstances(type).size();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
