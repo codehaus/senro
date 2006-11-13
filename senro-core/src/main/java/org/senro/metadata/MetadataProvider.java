@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 /**
  * Abstract interface for all Metadata implementations.  It looks like these interfaces are going to have to cascade their
  * return types... instead of taking an Object, the caller needs to use the result of the higher order call.
+ *
  * @author Brian Topping
  * @date Sep 19, 2006 12:53:22 AM
  */
@@ -28,6 +29,12 @@ public interface MetadataProvider {
 
     Object getClassMetadata(Class clazz);
 
+    /**
+     * Obtain metadata informations for specified property.
+     *
+     * @param element Accessor method for a property.
+     * @return Metadata object.
+     */
     Object getPropertyMetadata(Method element);
 
     Object getMethodMetadata(Method element);
