@@ -5,6 +5,7 @@ import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.provider.annotation.impl.*;
 
 import javax.persistence.ManyToOne;
+import javax.persistence.Id;
 import java.lang.reflect.Method;
 
 /**
@@ -40,6 +41,7 @@ public class HibernateMetadataProvider implements MetadataProvider {
         try {
             metadataProperty = HibernateMetadataPropertyImpl.class.newInstance();
             metadataProperty.setManyToOne(element.getAnnotation(ManyToOne.class)!=null);
+            metadataProperty.setIdentifier(element.getAnnotation(Id.class)!=null);
         } catch (Exception e) {
             e.printStackTrace();
         }
