@@ -75,11 +75,14 @@
     <bean id="transactionAttributeSource"
           class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
 
-    <bean id="persistenceService" class="org.senro.persistence.hibernate.HibernatePersistenceService" autowire="autodetect"/>
-
+    <bean id="persistenceService" class="org.senro.persistence.hibernate.HibernatePersistenceService"
+          autowire="autodetect"/>
 
 
     <bean id="wicketApplication" class="org.senro.servlet.SenroApplication"/>
-
+    <bean id="componentFactory" class="org.senro.component.ComponentFactory" singleton="true">
+        <property name="metadataManager" ref="metadataManager"/>
+        <property name="persistenceService" ref="persistenceService"/>
+    </bean>
 
 </beans>
