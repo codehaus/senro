@@ -1,17 +1,13 @@
 package org.senro.metadata.provider.reflection;
 
 import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.provider.reflection.impl.ReflectionMetadataClassImpl;
-import org.senro.metadata.provider.reflection.impl.ReflectionMetadataMethod;
-import org.senro.metadata.provider.reflection.impl.ReflectionMetadataPackage;
-import org.senro.metadata.provider.reflection.impl.ReflectionMetadataPropertyImpl;
-import org.senro.metadata.provider.reflection.impl.ReflectionMetadataReference;
+import org.senro.metadata.provider.reflection.impl.*;
 import org.springframework.beans.BeanUtils;
 
-import java.lang.reflect.Method;
 import java.beans.BeanInfo;
-import java.beans.Introspector;
 import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.lang.reflect.Method;
 
 /*
 *  Copyright 2004-2006 Brian Topping
@@ -41,11 +37,13 @@ public class ReflectionMetadataProvider implements MetadataProvider {
     }
 
     public Object getPropertyMetadata(Method element) {
+        //methods are only getters
+        assert element.getName().startsWith("get");
         ReflectionMetadataProperty result = null;
         try {
             result = ReflectionMetadataPropertyImpl.class.newInstance();
             result.setDeclaringClass(element.getDeclaringClass());
-            result.setName(element.getName());
+            result.setName(element.getName().substring(3));
             result.setType(element.getReturnType());
         } catch (InstantiationException e) {
             e.printStackTrace();
