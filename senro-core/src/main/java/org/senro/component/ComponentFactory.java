@@ -21,11 +21,17 @@ public class ComponentFactory {
     private static PersistenceService persistenceService;
 
 
-    public static void setPersistenceService(PersistenceService persistenceService) {
-        ComponentFactory.persistenceService = persistenceService;
+    private static ComponentFactory _instance = new ComponentFactory();
+
+    public static ComponentFactory getInstance(){
+        return _instance;
     }
 
-    public static void setMetadataManager(MetadataManager aMetadataManager) {
+    public void setPersistenceService(PersistenceService persistenceService) {
+        this.persistenceService = persistenceService;
+    }
+
+    public void setMetadataManager(MetadataManager aMetadataManager) {
         metadataManager = aMetadataManager;
     }
 
@@ -42,8 +48,8 @@ public class ComponentFactory {
         if (MetadataAccessor.readMetadataInfo(metadata, "manyToOne", Instance.BOOLEAN)) {
 
         } else {
-            LabelPanelPair component = new LabelPanelPair(null);
             String label = MetadataAccessor.readMetadataInfo(metadata, "name", Instance.STRING);
+            LabelPanelPair component = new LabelPanelPair(label);
             component.setLabel(new Label("propertyLabel", label));
             component.setPanel(new TextFieldPanel(label, formBackingEntity));
             return component;

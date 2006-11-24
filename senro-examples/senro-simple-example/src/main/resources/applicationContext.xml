@@ -80,7 +80,7 @@
 
 
     <bean id="wicketApplication" class="org.senro.servlet.SenroApplication"/>
-    <bean id="componentFactory" class="org.senro.component.ComponentFactory" singleton="true">
+    <bean id="componentFactory" class="org.senro.component.ComponentFactory" singleton="true" init-method="getInstance">
         <property name="metadataManager" ref="metadataManager"/>
         <property name="persistenceService" ref="persistenceService"/>
     </bean>
