@@ -8,8 +8,10 @@ import org.senro.metadata.util.MetadataAccessor;
 import org.senro.persistence.PersistenceService;
 import wicket.Component;
 import wicket.markup.html.basic.Label;
+import wicket.markup.html.form.ChoiceRenderer;
 
 import java.lang.reflect.AnnotatedElement;
+import java.util.List;
 
 /**
  * //todo Claudiu: here the rule engine should be introduced also
@@ -23,7 +25,7 @@ public class ComponentFactory {
 
     private static ComponentFactory _instance = new ComponentFactory();
 
-    public static ComponentFactory getInstance(){
+    public static ComponentFactory getInstance() {
         return _instance;
     }
 
@@ -46,7 +48,12 @@ public class ComponentFactory {
     public static Component createFormComponent(AnnotatedElement element, Object formBackingEntity) throws NoMetadataFoundException {
         Metadata metadata = metadataManager.getMetadata(element);
         if (MetadataAccessor.readMetadataInfo(metadata, "manyToOne", Instance.BOOLEAN)) {
-
+            String label = MetadataAccessor.readMetadataInfo(metadata, "name", Instance.STRING);
+            LabelPanelPair component = new LabelPanelPair(label);
+            component.setLabel(new Label("propertyLabel", label));
+            List list = persistenceService.getAllInstances(MetadataAccessor.readMetadataInfo(metadata, "type", Instance.CLASS));
+            component.setPanel(new ComboFieldPanel(label, formBackingEntity, list, new ChoiceRenderer("name")));
+            return component;
         } else {
             String label = MetadataAccessor.readMetadataInfo(metadata, "name", Instance.STRING);
             LabelPanelPair component = new LabelPanelPair(label);
@@ -54,7 +61,6 @@ public class ComponentFactory {
             component.setPanel(new TextFieldPanel(label, formBackingEntity));
             return component;
         }
-        return null;
     }
 
 }
