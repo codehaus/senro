@@ -7,11 +7,13 @@ import org.senro.metadata.util.Instance;
 import org.senro.metadata.util.MetadataAccessor;
 import org.senro.persistence.PersistenceService;
 import wicket.Component;
+import wicket.extensions.markup.html.datepicker.DatePicker;
 import wicket.markup.html.basic.Label;
 import wicket.markup.html.form.ChoiceRenderer;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
+import java.util.Date;
 
 /**
  * //todo Claudiu: here the rule engine should be introduced also
@@ -53,6 +55,12 @@ public class ComponentFactory {
             component.setLabel(new Label("propertyLabel", label));
             List list = persistenceService.getAllInstances(MetadataAccessor.readMetadataInfo(metadata, "type", Instance.CLASS));
             component.setPanel(new ComboFieldPanel(label, formBackingEntity, list, new ChoiceRenderer("name")));
+            return component;
+        } else if (Date.class.isAssignableFrom(MetadataAccessor.readMetadataInfo(metadata,"type",Instance.CLASS))) {
+            String label = MetadataAccessor.readMetadataInfo(metadata, "name", Instance.STRING);
+            LabelPanelPair component = new LabelPanelPair(label);
+            component.setLabel(new Label("propertyLabel", label));
+            component.setPanel(new DateFieldPanel(label, formBackingEntity));
             return component;
         } else {
             String label = MetadataAccessor.readMetadataInfo(metadata, "name", Instance.STRING);
