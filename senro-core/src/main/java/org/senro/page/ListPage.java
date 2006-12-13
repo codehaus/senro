@@ -58,7 +58,6 @@ public class ListPage extends BasePage {
             }
         });
 
-        // this is probably broken?
         for (Method aField : metadataClass.getProperties()) {
             try {
                 Metadata metadataProperty = getMetadata(aField);
@@ -73,7 +72,7 @@ public class ListPage extends BasePage {
         dataProvider.setPersistenceService(((SenroApplication) getApplication()).getPersistenceService());
         add(new DefaultDataTable("table", columns, dataProvider, 8) {
             protected Item newRowItem(String id, int index, IModel model) {
-                return new HighlitableDataItem(id, index, model);    //To change body of overridden methods use File | Settings | File Templates.
+                return new HighlitableDataItem(id, index, model);
             }
         });
 
@@ -82,18 +81,18 @@ public class ListPage extends BasePage {
         List buttonsList = new ArrayList();
         buttonsList.add(new ButtonPanel("Add") {
             public void onClick() {
-                doAdd(metadataClass);    //To change body of overridden methods use File | Settings | File Templates.
+                doAdd(metadataClass);
             }
         });
         buttonsList.add(new ButtonPanel("Edit") {
             public void onClick() {
-                doEdit(metadataClass, selectedEntity);    //To change body of overridden methods use File | Settings | File Templates.
+                doEdit(metadataClass, selectedEntity);    
             }
         });
 
         buttonsList.add(new ButtonPanel("Delete") {
             public void onClick() {
-                doDelete(selectedEntity);    //To change body of overridden methods use File | Settings | File Templates.
+                doDelete(selectedEntity);
             }
         });
         form.add(new ButtonsListView("buttons", buttonsList));
@@ -109,7 +108,7 @@ public class ListPage extends BasePage {
             }
 
             public Class getPageIdentity() {
-                return ListPage.class;  //To change body of implemented methods use File | Settings | File Templates.
+                return ListPage.class;
             }
         });
 
