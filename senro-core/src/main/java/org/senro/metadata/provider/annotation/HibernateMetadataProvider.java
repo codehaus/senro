@@ -6,7 +6,12 @@ import org.senro.metadata.provider.annotation.impl.*;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.annotation.Annotation;
+
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 /**
  * @author Brian Topping
@@ -40,8 +45,21 @@ public class HibernateMetadataProvider implements MetadataProvider {
         HibernateMetadataPropertyImpl metadataProperty = null;
         try {
             metadataProperty = HibernateMetadataPropertyImpl.class.newInstance();
-            metadataProperty.setManyToOne(element.getAnnotation(ManyToOne.class)!=null);
-            metadataProperty.setIdentifier(element.getAnnotation(Id.class)!=null);
+            metadataProperty.setManyToOne(element.getAnnotation(ManyToOne.class) != null);
+            OneToMany oneToMany = element.getAnnotation(OneToMany.class);
+            if (oneToMany != null) {
+                metadataProperty.setOneToMany(true);
+                Class targetEntity = oneToMany.targetEntity();
+                if (targetEntity == null || targetEntity.getName().equals("void")) {
+                    Type[] actualTypes = ((ParameterizedTypeImpl) element.getGenericReturnType()).getActualTypeArguments();
+                    if (actualTypes.length >0){
+                        metadataProperty.setTargetEntity((Class) actualTypes[0]);
+                    }
+                } else {
+                    metadataProperty.setTargetEntity(targetEntity);
+                }
+            }
+            metadataProperty.setIdentifier(element.getAnnotation(Id.class) != null);
         } catch (Exception e) {
             e.printStackTrace();
         }

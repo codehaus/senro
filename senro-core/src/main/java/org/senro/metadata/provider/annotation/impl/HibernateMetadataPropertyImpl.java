@@ -31,6 +31,11 @@ public class HibernateMetadataPropertyImpl implements HibernateMetadataProperty 
      */
     private boolean oneToMany = false;
 
+    /**
+     * Target entity if this field represents a one to many relation
+     */
+    private Class targetEntity;
+
     public boolean isManyToOne() {
         return manyToOne;
     }
@@ -45,5 +50,22 @@ public class HibernateMetadataPropertyImpl implements HibernateMetadataProperty 
 
     public boolean isIdentifier() {
         return identifier;
+    }
+
+    public boolean isOneToMany() {
+        return oneToMany;
+    }
+
+    public void setOneToMany(boolean oneToMany) {
+        this.oneToMany = oneToMany;
+    }
+
+    public void setTargetEntity(Class aClass) {
+        this.targetEntity = aClass;
+    }
+
+
+    public Class getTargetEntity() {
+        return targetEntity;
     }
 }
