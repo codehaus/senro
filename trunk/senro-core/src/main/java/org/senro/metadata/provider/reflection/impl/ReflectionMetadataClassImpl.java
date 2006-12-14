@@ -13,9 +13,9 @@ import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
  * @author Brian Topping
  * @date Sep 19, 2006 9:37:37 PM
  */
-@Aspect("pertarget(org.senro.metadata.model.aop.MetadataClass)")
+@Aspect("pertarget(org.senro.metadata.model.impl.MetadataClass)")
 public class ReflectionMetadataClassImpl implements ReflectionMetadataClass {
-    @DeclareParents(value="org.senro.metadata.model.aop.MetadataClass",defaultImpl=ReflectionMetadataClassImpl.class)
+    @DeclareParents(value="org.senro.metadata.model.impl.MetadataClass",defaultImpl=ReflectionMetadataClassImpl.class)
     public static ReflectionMetadataClass mixin;
 
     private boolean child;
