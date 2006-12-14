@@ -1,32 +1,39 @@
 package org.senro.metadata;
 
-import org.senro.metadata.impl.SenroMetadataManager;
+/*
+   Copyright 2006, Senro Project Developers
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
+import org.senro.metadata.aop.AOPMetadataManager;
 import org.senro.metadata.provider.reflection.ReflectionMetadataClass;
-import org.senro.metadata.provider.reflection.ReflectionMetadataProperty;
-import org.senro.metadata.model.impl.MetadataClass;
-import org.senro.metadata.model.impl.MetadataProperty;
 import org.senro.demo.bad.A;
-import org.senro.demo.bad.B;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
-import java.lang.reflect.Method;
-
-/*
-*  Copyright 2004-2006 Brian Topping
-*
-*/
 
 /**
  * 
  * @author topping
  * @date Sep 19, 2006 1:22:02 AM
  */
-public class SenroMetadataManagerTest extends AbstractDependencyInjectionSpringContextTests {
-    private SenroMetadataManager metadataManager;
+public class AOPMetadataManagerTest
+	extends AbstractDependencyInjectionSpringContextTests {
+    private AOPMetadataManager metadataManager;
 
-    public void setMetadataManager(SenroMetadataManager metadataManager) {
+    public void setMetadataManager( AOPMetadataManager metadataManager) {
         this.metadataManager = metadataManager;
     }
 

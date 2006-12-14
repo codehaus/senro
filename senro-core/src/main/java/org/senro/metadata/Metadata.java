@@ -1,7 +1,5 @@
 package org.senro.metadata;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.List;
 import java.lang.reflect.Method;
 import java.io.Serializable;
@@ -23,17 +21,15 @@ import java.io.Serializable;
 */
 
 /**
- * Provides a base interface for all metadata returned by MetadataManager.  Returned instances of Metadata are Proxy objects
- * composed with AOP such that they mulitply inherit their properties from all of the metadata implementations installed
- * in the system.
+ * Provides a base interface for all metadata returned by MetadataManager.
  * @author Brian Topping
  * @date Sep 19, 2006 12:44:24 AM
  */
 public interface Metadata extends Serializable {
 
     /**
-     * Returns a list of providers that contributed this metadata.  In other words, a list of MetadataProviders that helped
-     * compose the schema of this Metadata object.  Useful for metadata introspection.
+     * Returns a list of providers that contributed to this metadata.  In other words, a list of MetadataProviders that
+     * helped compose the schema of this Metadata object.  Useful for metadata introspection.
      * @return List of MetadataProvider objects
      */
     List<MetadataProvider> getProviders();

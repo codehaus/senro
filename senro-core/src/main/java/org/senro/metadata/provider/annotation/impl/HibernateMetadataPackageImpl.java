@@ -11,8 +11,8 @@ import org.senro.metadata.provider.annotation.HibernateMetadataPackage;
  * Time: 1:55:19 PM
  * To change this template use File | Settings | File Templates.
  */
-@Aspect("pertarget(org.senro.metadata.model.impl.MetadataPackage)")
+@Aspect("pertarget(org.senro.metadata.model.aop.MetadataPackage)")
 public class HibernateMetadataPackageImpl implements HibernateMetadataPackage {
-    @DeclareParents(value = "org.senro.metadata.model.impl.MetadataPackage", defaultImpl = HibernateMetadataPackageImpl.class)
+    @DeclareParents(value = "org.senro.metadata.model.aop.MetadataPackage", defaultImpl = HibernateMetadataPackageImpl.class)
     public static HibernateMetadataPackage mixin;
 }
