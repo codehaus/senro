@@ -3,7 +3,7 @@ package org.senro.sandbox.simple;
 import org.senro.demo.good.Apple;
 import org.senro.demo.good.Car;
 import org.senro.metadata.Metadata;
-import org.senro.metadata.impl.SenroMetadataManager;
+import org.senro.metadata.aop.AOPMetadataManager;
 import org.senro.metadata.util.MetadataAccessor;
 import org.senro.metadata.util.Instance;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
@@ -16,14 +16,14 @@ import java.lang.reflect.Method;
  * Author: Claudiu Dumitrescu
  */
 public class SenroMetadataManagerTest extends AbstractDependencyInjectionSpringContextTests {
-    private SenroMetadataManager metadataManager;
+    private AOPMetadataManager metadataManager;
 
 
     protected String[] getConfigLocations() {
         return new String[]{"classpath:senroMetadataManagerTestContext.xml"};
     }
 
-    public void setMetadataManager(SenroMetadataManager metadataManager) {
+    public void setMetadataManager( AOPMetadataManager metadataManager) {
         this.metadataManager = metadataManager;
     }
 

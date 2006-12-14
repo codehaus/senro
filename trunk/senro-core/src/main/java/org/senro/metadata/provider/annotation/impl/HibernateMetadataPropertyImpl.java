@@ -11,9 +11,9 @@ import org.senro.metadata.provider.annotation.HibernateMetadataProperty;
  * Time: 1:54:53 PM
  * To change this template use File | Settings | File Templates.
  */
-@Aspect("pertarget(org.senro.metadata.model.impl.MetadataProperty)")
+@Aspect("pertarget(org.senro.metadata.model.aop.MetadataProperty)")
 public class HibernateMetadataPropertyImpl implements HibernateMetadataProperty {
-    @DeclareParents(value = "org.senro.metadata.model.impl.MetadataProperty", defaultImpl = HibernateMetadataPropertyImpl.class)
+    @DeclareParents(value = "org.senro.metadata.model.aop.MetadataProperty", defaultImpl = HibernateMetadataPropertyImpl.class)
     public static HibernateMetadataProperty mixin;
 
     /**

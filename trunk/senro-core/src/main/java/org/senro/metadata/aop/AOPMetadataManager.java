@@ -1,21 +1,4 @@
-package org.senro.metadata.impl;
-
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.BeanUtils;
-import org.senro.metadata.Metadata;
-import org.senro.metadata.MetadataFactory;
-import org.senro.metadata.MetadataManager;
-import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.model.impl.MetadataProperty;
-import org.senro.metadata.model.impl.MetadataMethod;
-import org.senro.metadata.exception.NoMetadataFoundException;
-
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+package org.senro.metadata.aop;
 
 /*
    Copyright 2006, Senro Project Developers
@@ -33,13 +16,28 @@ import java.util.Set;
    limitations under the License.
 */
 
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.BeanUtils;
+import org.senro.metadata.Metadata;
+import org.senro.metadata.MetadataFactory;
+import org.senro.metadata.MetadataManager;
+import org.senro.metadata.MetadataProvider;
+import org.senro.metadata.exception.NoMetadataFoundException;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Default implementation of MetadataManager.  This should share a cache with the MetadataProviders
  *
  * @author Brian Topping
  * @date Sep 19, 2006 1:08:01 AM
  */
-public class SenroMetadataManager implements MetadataManager, InitializingBean {
+public class AOPMetadataManager
+	implements MetadataManager, InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
     private Map<AnnotatedElement, Metadata> cache = new HashMap<AnnotatedElement, Metadata>();

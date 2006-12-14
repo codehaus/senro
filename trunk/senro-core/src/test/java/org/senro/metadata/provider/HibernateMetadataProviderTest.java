@@ -1,40 +1,43 @@
 package org.senro.metadata.provider;
 
-import org.hibernate.SessionFactory;
+/*
+   Copyright 2006, Senro Project Developers
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 import org.senro.demo.good.Apple;
-import org.senro.demo.good.Car;
-import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.Metadata;
-import org.senro.metadata.impl.SenroMetadataFactory;
-import org.senro.metadata.impl.SenroMetadataManager;
-import org.senro.metadata.model.impl.MetadataClass;
+import org.senro.metadata.aop.AOPMetadataManager;
 import org.senro.metadata.provider.annotation.HibernateMetadataProvider;
 import org.senro.metadata.provider.annotation.impl.HibernateMetadataClassImpl;
 import org.senro.metadata.util.MetadataAccessor;
-import org.senro.metadata.util.Instance;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-
 /**
- * @authorClaudiu Dumitrescu
+ * @author Claudiu Dumitrescu
  */
 public class HibernateMetadataProviderTest extends AbstractDependencyInjectionSpringContextTests {
 
     private HibernateMetadataProvider hibernateProvider = null;
-    private SenroMetadataManager metadataManager = null;
+    private AOPMetadataManager metadataManager = null;
 
     protected String[] getConfigLocations() {
         return new String[]{"classpath:testContext-hibernate.xml"};
     }
 
 
-    public void setMetadataManager(SenroMetadataManager metadataManager) {
+    public void setMetadataManager( AOPMetadataManager metadataManager) {
         this.metadataManager = metadataManager;
     }
 

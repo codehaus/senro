@@ -1,20 +1,4 @@
-package org.senro.metadata.impl;
-
-import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.util.ClassUtils;
-import org.senro.metadata.Metadata;
-import org.senro.metadata.MetadataFactory;
-import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.model.impl.MetadataPackage;
-import org.senro.metadata.model.impl.MetadataProperty;
-import org.senro.metadata.model.impl.MetadataMethod;
-import org.senro.metadata.model.impl.MetadataClass;
-import org.senro.metadata.model.impl.MetadataReference;
-
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Collection;
+package org.senro.metadata.aop;
 
 /*
    Copyright 2006, Senro Project Developers
@@ -32,11 +16,29 @@ import java.util.Collection;
    limitations under the License.
 */
 
+import org.springframework.aop.aspectj.annotation.AspectJProxyFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.ClassUtils;
+import org.senro.metadata.Metadata;
+import org.senro.metadata.MetadataFactory;
+import org.senro.metadata.MetadataProvider;
+import org.senro.metadata.model.impl.MetadataPackage;
+import org.senro.metadata.model.impl.MetadataProperty;
+import org.senro.metadata.model.impl.MetadataMethod;
+import org.senro.metadata.model.impl.MetadataClass;
+import org.senro.metadata.model.impl.MetadataReference;
+
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Collection;
+
 /**
+ * A MetadataFactory implementation using AOP to return concrete representations of available metadata for an entity.
  * @author Brian Topping
  * @date Sep 19, 2006 8:43:29 PM
  */
-public class SenroMetadataFactory implements MetadataFactory, InitializingBean {
+public class AOPMetadataFactory
+	implements MetadataFactory, InitializingBean {
 // ------------------------------ FIELDS ------------------------------
 
     private AspectJProxyFactory classFactory;

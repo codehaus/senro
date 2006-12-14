@@ -1,7 +1,5 @@
 package org.senro.metadata;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -24,11 +22,11 @@ import java.util.Collection;
 /**
  * <p>This is a Service Provider Interface for an implementation that returns composed metadata.  It should never be called
  * by clients directly, only by the current system MetadataManager.</p>
- * <p>The first (and currently only) implementation of this is SenroMetadataFactory, and it uses AOP to compose the
+ * <p>The first implementation of this interface is AOPMetadataFactory, and it uses AOP to compose the
  * objects. That does not mean that every implementation must use AOP! As such, a different implementation of
  * MetadataFactory that can compose the objects using Hashes, for instance, may be plugged into MetadataManager. Clients
  * who use MetadataManager to recover metadata have no clue that they are working with Metadata objects that are
- * composed differently, in part because the collection semantics are limited to Iterator. </p>
+ * composed differently by the Factory, in part because the collection semantics are limited to Iterator. </p>
  * @author Brian Topping
  * @date Sep 19, 2006 5:33:10 PM
  */

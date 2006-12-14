@@ -10,7 +10,7 @@
     <!-- ========================= Metadata ========================= -->
 
     <bean id="reflectionProvider" class="org.senro.metadata.provider.reflection.ReflectionMetadataProvider"/>
-    <bean id="metadataFactory" class="org.senro.metadata.impl.SenroMetadataFactory">
+    <bean id="metadataFactory" class="org.senro.metadata.aop.AOPMetadataFactory">
         <property name="metadataProviders">
             <list>
                 <ref bean="reflectionProvider"/>
@@ -18,7 +18,7 @@
         </property>
     </bean>
 
-    <bean id="metadataManager" class="org.senro.metadata.impl.SenroMetadataManager">
+    <bean id="metadataManager" class="org.senro.metadata.aop.AOPMetadataManager">
         <property name="metadataFactory" ref="metadataFactory"/>
         <property name="types">
             <bean id="persistenceService.allTypes"
