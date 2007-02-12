@@ -59,12 +59,22 @@
         <url>http://svn.senro.codehaus.org/</url>
     </scm>
 
-
+		
     <repositories>
     		<repository>
             <id>senro.codehaus.org</id>
             <name>Senro Repository</name>
             <url>http://senro.codehaus.org/repository/</url>
+        </repository>
+        <repository>
+            <id>static.springframework.org</id>
+            <name>Spring Repository</name>
+            <url>http://static.springframework.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>wicketstuff.org</id>
+            <name>Wicket Repository</name>
+            <url>http://wicketstuff.org/maven/repository/</url>
         </repository>
         <repository>
             <id>iblio.org</id>
@@ -109,6 +119,27 @@
     </distributionManagement>
 
     <dependencies>
+    		<dependency>
+            <groupId>wicket</groupId>
+            <artifactId>wicket</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>wicket</groupId>
+            <artifactId>wicket-spring</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>wicket</groupId>
+            <artifactId>wicket-extensions</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>drools</groupId>
             <artifactId>drools-compiler</artifactId>
@@ -124,13 +155,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>wicket</groupId>
-            <artifactId>wicket</artifactId>
-            <version>1.2.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.7.0</version>
@@ -142,22 +166,19 @@
             <artifactId>log4j</artifactId>
             <version>1.2.13</version>
             <type>jar</type>
-            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>wicket</groupId>
-            <artifactId>wicket-spring</artifactId>
-            <version>1.2.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>wicket</groupId>
-            <artifactId>wicket-extensions</artifactId>
-            <version>1.2.2</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+					<version>1.1.0</version>
+				</dependency>
+				<dependency>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+					<version>1.1.0</version>
+					<optional>true</optional>
+					<scope>compile</scope>
+				</dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -199,6 +220,13 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>surefire-report-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+        				<groupId>org.apache.maven.plugins</groupId>
+        				<artifactId>maven-ejb-plugin</artifactId>
+        				<configuration>
+          					<ejbVersion>3.0</ejbVersion>
+        				</configuration>
+      			</plugin>
         </plugins>
         <extensions>
             <extension>
