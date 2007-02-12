@@ -1,0 +1,125 @@
+div.senro-tree {
+	white-space: nowrap;
+	border: 1px solid #ccc;
+	width: 20em;
+	overflow: auto;
+	margin: 10px;
+	line-height: 1.5em;
+}
+
+div.senro-tree a {
+	text-decoration: none;
+	color: #3311aa;
+	float: left;
+}
+
+div.senro-tree div.row,
+div.senro-tree div.row-selected {
+	height: 1.5em;
+	overflow:hidden;
+	width: 100%;
+	padding: 0px; margin: 0px;
+}
+
+div.senro-tree div.a_ {
+	/* prevent hiding text */
+	padding-left: 1em; margin: 0px;
+	width: 2000px;
+}
+
+div.senro-tree span.junction,
+div.senro-tree span.junction-last,
+div.senro-tree span.plus,
+div.senro-tree span.minus,
+div.senro-tree span.corner,
+div.senro-tree span.indent-line,
+div.senro-tree span.icon {
+	float: left;
+	width: 18px;
+	height: 1.5em;
+	min-height: 18px;
+}
+
+div.senro-tree span.junction,
+div.senro-tree span.junction-last {
+	_margin-left: 3px; /* ie 3px bug fix*/
+	cursor: pointer;
+}
+
+div.senro-tree span.junction {
+	background-image: url("tree-images.png");
+	background-position: -36px 0px;
+	background-repeat: repeat-y;
+}
+
+div.senro-tree span.junction-last {
+	background-image: url("tree-images.png");
+	background-position: -72px 0px;
+	background-repeat: no-repeat;
+}
+
+div.senro-tree span.plus,
+div.senro-tree span.minus,
+div.senro-tree span.corner {
+	background-repeat: no-repeat;
+}
+
+div.senro-tree span.plus {
+	background-image: url("tree-images.png");
+	background-position: 0px center;
+}
+
+div.senro-tree span.minus {
+	background-image: url("tree-images.png");
+	background-position: -18px center;
+}
+
+div.senro-tree span.corner {
+	background-image: url("tree-images.png");
+	background-position: -54px center;
+}
+div.senro-tree span.indent {
+	clear: left;
+	float: left;
+}
+
+div.senro-tree a:hover {
+	text-decoration: underline;
+}
+
+
+div.senro-tree span.icon {
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	margin-left: 2px;
+	margin-top: -1px;
+}
+
+div.senro-tree a {
+	-moz-outline: none;
+}
+
+div.senro-tree span.indent-blank {
+	width: 18px;
+	height: 1em;
+	float: left;
+}
+
+div.senro-tree span.indent-line {
+	_margin-left: 3px;	/* ie 3px bug fix*/
+	overflow: hidden;
+	background-image: url("tree-images.png");
+	background-position: -36px 0px;
+	background-repeat: repeat-y;
+}
+
+div.senro-tree div.row,
+div.senro-tree div.row-selected {
+	overflow: hidden;
+	clear: both;
+}
+
+div.senro-tree div.row-selected {
+	background-color: #E0E8FF;
+	font-weight: bold;
+}
