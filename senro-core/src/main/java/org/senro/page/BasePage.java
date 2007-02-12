@@ -1,28 +1,30 @@
 package org.senro.page;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.senro.metadata.Metadata;
-import org.senro.metadata.MetadataManager;
-import org.senro.metadata.exception.NoMetadataFoundException;
-import org.senro.persistence.PersistenceService;
-import org.senro.servlet.SenroApplication;
-import wicket.markup.html.WebPage;
-import wicket.markup.html.link.BookmarkablePageLink;
-
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.senro.metadata.Metadata;
+import org.senro.metadata.MetadataManager;
+import org.senro.metadata.exception.NoMetadataFoundException;
+import org.senro.metadata.util.Instance;
+import org.senro.metadata.util.MetadataAccessor;
+import org.senro.persistence.PersistenceService;
+import org.senro.servlet.SenroApplication;
+
+import wicket.markup.html.WebPage;
+import wicket.markup.html.link.BookmarkablePageLink;
+
 /**
  * @authorClaudiu Dumitrescu
  */
 public abstract class BasePage extends WebPage {
-
-
     public BasePage() {
-        add(new BookmarkablePageLink("home-link", HomePage.class));
+        new BookmarkablePageLink(this, "home-link", HomePage.class);
     }
 
     /**
@@ -56,6 +58,18 @@ public abstract class BasePage extends WebPage {
         return metadataList;
     }
 
+    @Override
+    protected void onAttach() {
+    	((SenroApplication)getApplication()).getPersistenceService().startTransaction();
+    	super.onAttach();
+    }
+
+    @Override
+    protected void onDetach() {
+    	super.onDetach();
+    	((SenroApplication)getApplication()).getPersistenceService().endTransaction();
+    }
+
     /**
      * Return a default persistence service implementing CRUD operations.
      * @return Default persistence service.
@@ -65,4 +79,7 @@ public abstract class BasePage extends WebPage {
 
     }
 
+    protected void fireRules() {
+    	((SenroApplication)getApplication()).getRulesEngine().fireRules();
+    }
 }

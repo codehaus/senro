@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @authorClaudiu Dumitrescu
+ * @author Claudiu Dumitrescu
  */
 public class SimpleMetadataFactory implements MetadataFactory {
 
@@ -37,7 +37,7 @@ public class SimpleMetadataFactory implements MetadataFactory {
     }
 
     public Metadata createProperty(Field element) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public Metadata createMethod(Method element) {
@@ -50,11 +50,11 @@ public class SimpleMetadataFactory implements MetadataFactory {
     }
 
     public Metadata createPackage(Package element) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public Collection<MetadataProvider> getProviders() {
-        return metadataProviders;  //To change body of implemented methods use File | Settings | File Templates.
+        return metadataProviders;
     }
 
     public void setMetadataProviders(List<MetadataProvider> metadataProviders) {

@@ -1,17 +1,15 @@
 package org.senro.rules;
 
-
 /**
  * Define basic behaviour for rules engines.
- * @authorClaudiu Dumitrescu
+ *
+ * @author Flavius Burca <flavius.burca@gmail.com>
  */
 public interface IRulesEngine {
-
-    //todo Claudiu: add a method to impose a rules repository (eg. setRulesReposotiry) to every engine
+	public void setRulesRepository(RulesRepository rulesRepository);
 
     /**
      * Apply any existing rules.
      */
     void fireRules();
-
 }

@@ -1,31 +1,4 @@
-/*
- * Copyright 2004 Chris Nelson
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and limitations under the License.
- */
 package org.senro.persistence.hibernate;
-
-import org.hibernate.*;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.metadata.ClassMetadata;
-import org.senro.persistence.PersistenceException;
-import org.senro.persistence.PersistenceService;
-import org.senro.utils.Utils;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.transaction.annotation.Transactional;
-import wicket.extensions.markup.html.repeater.util.SortParam;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -33,75 +6,65 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.EntityMode;
+import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.metadata.ClassMetadata;
+import org.senro.exception.SenroBaseException;
+import org.senro.metadata.MetadataManager;
+import org.senro.persistence.PersistenceException;
+import org.senro.persistence.PersistenceService;
+import org.senro.utils.Utils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.jta.JtaTransactionManager;
+
 /**
  * @author fus8882
- *         <p/>
- *         TODO To change the template for this generated type comment go to Window - Preferences - Java - Code Style -
- *         Code Templates
+ * @author Flavius Burca <flavius.burca@gmail.com>
  */
 public class HibernatePersistenceService extends HibernateDaoSupport implements
-        PersistenceService, ApplicationContextAware {
-    private ApplicationContext appContext;
+        PersistenceService, InitializingBean {
+    private JtaTransactionManager transactionManager;
+    private MetadataManager metadataManager;
 
-    /*
-    * (non-Javadoc)
-    *
-    * @see org.blah.service.IPersistenceService#getInstance(java.lang.Class,
-    *      java.io.Serializable)
-    */
     @Transactional
     public <T> T getInstance(Class<T> type, Serializable id) {
         return (T) getHibernateTemplate().get(Utils.checkForCGLIB(type), id);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.blah.service.IPersistenceService#getAllInstances(java.lang.Class)
-     */
     @Transactional
-    public List getAllInstances(Class type, SortParam... sortParams) {
-        Session session = getSessionFactory().getCurrentSession();
-        Criteria searchCriteria = session.createCriteria(Utils.checkForCGLIB(type));
-        for (SortParam sortParam : sortParams) {
-            if (sortParam.isAscending()) {
-                searchCriteria.addOrder(Order.asc(sortParam.getProperty()));
-            }else{
-                searchCriteria.addOrder(Order.desc(sortParam.getProperty()));
-            }
-        }
-        return searchCriteria.list();
-    }
+    public List getAllInstances(Class type) {
+    	Session session = getSessionFactory().getCurrentSession();
+    	Query query = session.createQuery(" from "+type.getClass());
+    	return query.list();
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.blah.service.IPersistenceService#save(java.lang.Object)
-     */
     @Transactional
-    public <T> T save(T instance) {
+    public <T> T save(T instance) throws SenroBaseException {
         try {
             return (T) getHibernateTemplate().merge(instance);
         }
         catch (DataAccessException dex) {
-            throw new PersistenceException(dex);
+            throw new SenroBaseException(dex);
         }
-
     }
 
     @Transactional
-    public void remove(Object instance) {
+    public void remove(Object instance) throws SenroBaseException {
         // merge first to avoid NonUniqueObjectException
         getHibernateTemplate().delete(getHibernateTemplate().merge(instance));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.senro.persistence.PersistenceService#getInstances(org.senro.persistence.Query)
-     */
     @Transactional
-    public List getInstances(final DetachedCriteria criteria) {
+    public List getAllInstances(final DetachedCriteria criteria) {
         // TODO Auto-generated method stub
         return (List) getHibernateTemplate().execute(new HibernateCallback() {
             public Object doInHibernate(Session session)
@@ -125,16 +88,28 @@ public class HibernatePersistenceService extends HibernateDaoSupport implements
     @Transactional
     public void reattach(Object model) {
         getSession().lock(model, LockMode.NONE);
-
     }
 
-    public List getInstances(Object example) {
-        return null;
-    }
+    @Transactional
+	public List getAllInstances(Class type, String whereClause) {
+		Session session = getSessionFactory().getCurrentSession();
+		Query query = session.createQuery(" from "+type.getClass()+" where "+whereClause);
+		return query.list();
+	}
+
+    public void setMetadataManager(MetadataManager metadataManager) {
+		this.metadataManager = metadataManager;
+	}
+
+    public void setTransactionManager(JtaTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+
+	public void endTransaction() {
+	}
+
+	public void startTransaction() {
+	}
 
 
-    public void setApplicationContext(ApplicationContext arg0) throws BeansException {
-        this.appContext = arg0;
-
-    }
 }

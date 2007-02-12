@@ -4,25 +4,25 @@ import wicket.markup.html.basic.Label;
 import wicket.markup.html.panel.Panel;
 import wicket.markup.MarkupStream;
 import wicket.Component;
+import wicket.MarkupContainer;
 import wicket.model.IModel;
 
 import java.io.Serializable;
 
 /**
- * @authorClaudiu Dumitrescu
+ * @author Claudiu Dumitrescu
  */
 public class LabelPanelPair extends Component implements Serializable {
 
     private Label label;
-
     private Panel panel;
 
-    public LabelPanelPair(String id) {
-        super(id);
+    public LabelPanelPair(MarkupContainer parent, String id) {
+        super(parent, id);
     }
 
-    public LabelPanelPair(String id, IModel model) {
-        super(id, model);
+    public LabelPanelPair(MarkupContainer parent, String id, IModel model) {
+        super(parent, id, model);
     }
 
 
@@ -42,11 +42,7 @@ public class LabelPanelPair extends Component implements Serializable {
         this.panel = panel;
     }
 
-    /**
-     * ATENTION!!! THIS METHOD DOES NOTHING FOR THIS CLASS.
-     * @param markupStream
-     */
-    protected void onRender(final MarkupStream markupStream) {
-        //do nothing
-    }
+	@Override
+	protected void onRender(MarkupStream markupStream) {
+	}
 }

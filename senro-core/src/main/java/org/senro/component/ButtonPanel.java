@@ -1,5 +1,9 @@
 package org.senro.component;
 
+import wicket.MarkupContainer;
+import wicket.ajax.AjaxEventBehavior;
+import wicket.ajax.AjaxRequestTarget;
+import wicket.ajax.ClientEvent;
 import wicket.markup.html.panel.Panel;
 import wicket.markup.html.form.Button;
 import wicket.model.Model;
@@ -10,20 +14,23 @@ import org.senro.metadata.exception.NoMetadataFoundException;
  */
 public abstract class ButtonPanel extends Panel {
 
-    public ButtonPanel(String id) {
-        super("buttonPanel");
-        Button button = new Button("button", new Model(id)) {
-            protected void onSubmit() {
-                try {
+    public ButtonPanel(MarkupContainer parent, String id) {
+        super(parent,"buttonPanel");
+        Button button = new Button(this,"button", new Model(id)) {
+        	public void onSubmit() {}
+        };
+
+        button.add(new AjaxEventBehavior(ClientEvent.CLICK) {
+			@Override
+			protected void onEvent(AjaxRequestTarget target) {
+				try {
                     onClick();
                 } catch (NoMetadataFoundException e) {
                     e.printStackTrace();
                 }
-            }
-        };
-        add(button);
+			}
+        });
     }
 
     public abstract void onClick() throws NoMetadataFoundException;
-
 }
