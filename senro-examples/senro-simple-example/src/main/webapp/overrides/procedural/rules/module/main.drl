@@ -1,0 +1,10 @@
+package org.senro.rules.module
+
+import org.senro.rules.WebContext
+
+rule "Module"
+	agenda-group "MODULE"
+when
+	WebContext()
+then
+end;
