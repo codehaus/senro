@@ -1,0 +1,46 @@
+<wicket:panel>
+	<div class="senro-tree-table">
+		<div class="header">
+			<span wicket:id="headerSideColumns" class="text"></span>
+			<div class="a_">
+				<span wicket:id="headerMiddleColumns" class="text"></span>
+			</div>
+		</div>
+
+		
+		<div class="filter">
+			<span wicket:id="filterSideColumns" class="text"/>
+			<div class="a_">
+				<span wicket:id="filterMiddleColumns" class="text"/>
+			</div>
+			<input type="button" wicket:id="filterButton" style="display: none" />
+		</div>
+		
+		
+		<div class="senro-tree-table-body">
+			<div wicket:id="i">
+				<span wicket:id="sideColumns"></span>
+				<div class="a_">
+					<span wicket:id="middleColumns"></span>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+	
+	<wicket:fragment wicket:id="fragment">
+		<span wicket:id="indent"></span>
+	
+		<a wicket:id="link" style="">
+			<span wicket:id="image"/>
+		</a>
+	
+		<a wicket:id="nodeLink" class="node-link">
+			<span class="icon" wicket:id="icon"></span>
+		</a>
+		<span wicket:id="label" class="text"></span>
+	</wicket:fragment>
+
+	<script wicket:id="attachJavascript">
+	</script>
+</wicket:panel>
