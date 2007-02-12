@@ -1,0 +1,10 @@
+package org.senro.rules.metadata
+
+import org.senro.rules.WebContext
+
+rule "Metadata"
+	agenda-group "METADATA"
+when
+	WebContext()
+then
+end;
