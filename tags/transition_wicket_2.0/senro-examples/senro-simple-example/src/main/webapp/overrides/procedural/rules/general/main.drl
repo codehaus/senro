@@ -1,0 +1,27 @@
+package org.senro.rules
+
+import org.senro.rules.WebContext;
+import org.senro.rules.Action;
+import java.util.Map;
+import org.senro.component.grid.Widget;
+import org.senro.component.grid.AbstractWidget;
+import wicket.markup.html.panel.Panel;
+import wicket.MarkupContainer;
+import org.senro.component.*;
+
+rule "Default component mapping"
+	agenda-group "GENERAL"
+when
+	WebContext( action == Action.INIT )
+	$mappings : Map()
+then
+	$mappings.put(ComponentType.String, TextFieldPanel.class);
+	$mappings.put(ComponentType.Boolean, CheckboxPanel.class);
+	$mappings.put(ComponentType.Integer, TextFieldPanel.class);
+	$mappings.put(ComponentType.Combobox, ComboboxPanel.class);
+	$mappings.put(ComponentType.Date, DateFieldPanel.class);
+	$mappings.put(ComponentType.Selector, SelectorPanel.class);
+	$mappings.put(ComponentType.Label, LabelPanel.class);
+	$mappings.put(ComponentType.TextArea, TextAreaPanel.class);
+	$mappings.put(ComponentType.Generic, TextFieldPanel.class);
+end;

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+
+    <!-- ========================= Metadata ========================= -->
+    <bean id="reflectionProvider" class="org.senro.metadata.provider.reflection.ReflectionMetadataProvider"/>
+    <bean id="senroProvider" class="org.senro.metadata.provider.senro.SenroMetadataProvider"/>
+    <bean id="jpaProvider" class="org.senro.metadata.provider.jpa.JPAMetadataProvider"/>
+	<bean id="ejb3Provider" class="org.senro.metadata.provider.ejb3.EJB3MetadataProvider"/>
+
+    <bean id="metadataFactory" class="org.senro.sandbox.simple.SimpleMetadataFactory">
+        <property name="metadataProviders">
+            <list>
+                <ref bean="reflectionProvider"/>
+                <ref bean="senroProvider"/>
+                <ref bean="jpaProvider"/>
+                <ref bean="ejb3Provider"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="metadataManager" class="org.senro.metadata.aop.AOPMetadataManager" scope="singleton">
+        <property name="metadataFactory" ref="metadataFactory"/>
+        <property name="types">
+            <bean id="persistenceService.allTypes"
+                  class="org.springframework.beans.factory.config.PropertyPathFactoryBean"/>
+        </property>
+    </bean>
+
+
+    <!-- Message source for this context, loaded from localized "messages_xx" files -->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename">
+            <value>messages</value>
+        </property>
+    </bean>
+
+
+    <!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+    <bean id="autoproxy" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" autowire="autodetect"/>
+    <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor" autowire="byName"/>
+    <bean id="transactionAdvisor" class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor" autowire="autodetect"/>
+    <bean id="transactionAttributeSource" class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" autowire="autodetect">
+    	<property name="autodetectTransactionManager">
+    		<value>true</value>
+    	</property>
+    	<property name="userTransactionName">
+    		<value>java:comp/UserTransaction</value>
+    	</property>
+    </bean>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <bean id="persistenceService" class="org.senro.persistence.ejb3.Ejb3PersistenceService" autowire="autodetect">
+    	<property name="transactionManager" ref="transactionManager" />
+    	<property name="metadataManager" ref="metadataManager" />
+    </bean>
+
+    <bean id="wicketApplication" class="org.senro.servlet.SenroApplication" />
+	<bean id="rulesEngine" class="org.senro.rules.DroolsEngine"/>
+</beans>

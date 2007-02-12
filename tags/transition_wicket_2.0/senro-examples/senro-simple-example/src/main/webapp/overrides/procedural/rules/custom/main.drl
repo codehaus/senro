@@ -1,0 +1,10 @@
+package org.senro.rules.custom
+
+import org.senro.rules.WebContext
+
+rule "Custom"
+	agenda-group "CUSTOM"
+when
+	WebContext()
+then
+end;
