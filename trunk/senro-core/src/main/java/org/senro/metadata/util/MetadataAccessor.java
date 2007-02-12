@@ -53,4 +53,15 @@ public class MetadataAccessor {
         return (T) information;
     }
 
+    public static void addMetadata(Metadata metadata, Object metadataInformation) {
+    	if (metadataInformation == null) {
+            return;
+        }
+
+    	if (metadata instanceof MappedMetadata) {
+    		((MappedMetadata)metadata).addMetadata(metadataInformation);
+    	} else {
+    		throw new IllegalArgumentException("Provided argument is not an instance of MappedMetadata");
+    	}
+    }
 }

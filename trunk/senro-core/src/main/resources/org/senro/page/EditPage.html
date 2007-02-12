@@ -1,22 +1,18 @@
 <head>
-    <title>Wicket Examples - generic</title>
     <link rel="stylesheet" type="text/css" href="/style/style.css"/>
 </head>
+
 <wicket:extend>
     <form wicket:id="editForm">
-        <tr wicket:id="formFields">
-            <td wicket:id="propertyLabel">
-                Property name
-            </td>
-            <td wicket:id="valuePanel">
-                Property Input
-            </td>
-            <br>
-        </tr>
-        <tr wicket:id="buttons">
-            <td wicket:id="buttonPanel"></td>
-        </tr>
+        <span wicket:id="grid" />
+        <div>
+        	<input type="button" wicket:id="btnBack" />
+        	<input type="submit" wicket:id="btnSave" />
+        	<input type="submit" wicket:id="btnDelete" />
+        </div>
+        
         <div wicket:id="tabs" class="tabpanel">[tabbed panel will be here]</div>
     </form>
-
+	
+	<div wicket:id="feebackPanel">[form errors]</div>
 </wicket:extend>

@@ -6,7 +6,7 @@ import java.util.Collection;
 
 /**
  * This class will hold contextual information that needs to be passed to the rules engine
- * @authorClaudiu Dumitrescu
+ * @author Claudiu Dumitrescu
  */
 public class ThreadLocalContext {
     private static ThreadLocal threadLocal = new ThreadLocal();

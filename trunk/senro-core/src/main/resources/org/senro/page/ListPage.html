@@ -1,18 +1,24 @@
+<wicket:head>
+	<style>
+		form {
+			margin: 0px; padding: 0px;
+		}
+		div.senroTreeContainer {
+			height: 400px;
+			max-height: 400px;
+			overflow: scroll;
+		}
+	</style>
+</wicket:head>
 
-<head>
-    <title>Wicket Examples - displaytag</title>
-    <meta http-equiv="Expires" content="-1"/>
-    <meta http-equiv="Pragma" content="no-cache"/>
-    <meta http-equiv="Cache-Control" content="no-cache"/>
-    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"/>
-</head>
 <wicket:extend>
-<table class="list" cellspacing="0" wicket:id="table">[table]</table>
-<br/>
 
-<form wicket:id="actionsForm">
-    <tr wicket:id="buttons">
-        <td wicket:id="buttonPanel"></td>
-    </tr>
-</form>
+	<div class="senroTreeContainer">
+		<div wicket:id="treeTable"></div>
+	</div>
+	
+	<div wicket:id="buttons">
+		<span wicket:id="buttonPanel"></span>
+	</div>
+	
 </wicket:extend>

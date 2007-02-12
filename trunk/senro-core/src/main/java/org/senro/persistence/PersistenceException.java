@@ -2,7 +2,6 @@ package org.senro.persistence;
 
 public class PersistenceException extends RuntimeException
 {
-
     public PersistenceException()
     {
         super();

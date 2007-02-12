@@ -1,178 +1,122 @@
 package org.senro.page;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.senro.component.*;
-import org.senro.metadata.model.impl.MetadataClass;
-import org.senro.metadata.model.impl.MetadataProperty;
-import org.senro.metadata.util.MetadataAccessor;
-import org.senro.metadata.util.Instance;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
+
+import org.senro.component.ButtonsListView;
+import org.senro.component.PageLinkPanel;
+import org.senro.component.ButtonsListView.ButtonCallback;
+import org.senro.component.factory.OneToManyComponentFactory;
+import org.senro.component.treetable.Column;
+import org.senro.component.treetable.TreeTable;
+import org.senro.component.treetable.DefaultBaseTree.TreeType;
+import org.senro.component.treetable.datasource.HibernateDatasource;
+import org.senro.io.DetachableTreeModel;
 import org.senro.metadata.Metadata;
+import org.senro.metadata.util.Instance;
+import org.senro.metadata.util.MetadataAccessor;
+import org.senro.metadata.util.MetadataUtils;
 import org.senro.servlet.SenroApplication;
-import wicket.AttributeModifier;
-import wicket.Component;
+
+import wicket.MarkupContainer;
 import wicket.Page;
 import wicket.RequestCycle;
-import wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
-import wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
-import wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
-import wicket.extensions.markup.html.repeater.refreshing.Item;
-import wicket.extensions.markup.html.repeater.refreshing.OddEvenItem;
-import wicket.markup.html.form.Form;
 import wicket.markup.html.link.IPageLink;
-import wicket.model.IModel;
-import wicket.model.Model;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * @authorClaudiu Dumitrescu
+ * @author Flavius Burca <flavius.burca@gmail.com>
  */
-public class ListPage extends BasePage {
+public class ListPage extends BasePage
+{
+	private final Class entityClass;
+	private Metadata classMetadata;
 
-    private Object selectedEntity;
+	public ListPage(final Metadata classMetadata)
+	{
+		this.classMetadata = classMetadata;
+		entityClass = MetadataUtils.getType(classMetadata);
 
+		Column[] columns =
+			OneToManyComponentFactory.getTreeTableColumns(classMetadata, ((SenroApplication)getApplication()).getMetadataManager());
 
-    public ListPage() {
-    }
+		HibernateDatasource ds = new HibernateDatasource(entityClass, ((SenroApplication)getApplication()).getPersistenceService());
+		DetachableTreeModel treeModel = new DetachableTreeModel(ds);
 
+		final TreeTable tree = new TreeTable( this, "treeTable", treeModel, columns, TreeType.LIST );
 
-    public ListPage(final Metadata metadataClass) {
+		// add buttons
+		Map<String, ButtonCallback> buttonsMap = new HashMap<String, ButtonCallback>();
+		buttonsMap.put("Add", new ButtonCallback(){
+			public void onClick() {
+				doAdd(classMetadata, tree.getTreeState().getSelectedNodes());
+			}
+    	});
+		buttonsMap.put("Edit", new ButtonCallback(){
+			public void onClick() {
+				doEdit(classMetadata, tree.getTreeState().getSelectedNodes());
+			}
+    	});
+		buttonsMap.put("Delete", new ButtonCallback(){
+			public void onClick() {
+				doDelete(classMetadata, tree.getTreeState().getSelectedNodes());
+			}
+    	});
+		new ButtonsListView(this, "buttons", buttonsMap);
+	}
 
-        List columns = new ArrayList();
+	public static PageLinkPanel link(final MarkupContainer parent, final Metadata metadata) throws Exception {
+		Class type = MetadataUtils.getType(metadata);
+		String displayName = type.getSimpleName();
+		return new PageLinkPanel(parent, displayName, new IPageLink() {
+			public Page getPage() {
+				return new ListPage(metadata);
+			}
 
+	        public Class<ListPage> getPageIdentity() {
+	        	return ListPage.class;
+	        }
+		});
+	}
 
-        columns.add(new AbstractColumn(new Model("Select")) {
-            public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
-                cellItem.add(new ActionPanel("cell", rowModel) {
-                    public void doAction(Object modelObject) {
-                        selectedEntity = modelObject;
-                        Component item = cellItem;
-                        while (!item.getClass().equals(HighlitableDataItem.class)) {
-                            item = item.getParent();
-                        }
-                        ((HighlitableDataItem) item).toggleHighlite();
-                    }
-                });
-            }
-        });
+	protected Object getSelectedEntity(Collection<TreeNode> selectedNodes) {
+		for (TreeNode node : selectedNodes) {
+			if (node instanceof DefaultMutableTreeNode)
+				return ((DefaultMutableTreeNode)node).getUserObject();
+		}
 
-        for (Method aField : metadataClass.getProperties()) {
-            try {
-                Metadata metadataProperty = getMetadata(aField);
-                String name = MetadataAccessor.readMetadataInfo(metadataProperty,"name");
-                columns.add(new PropertyColumn(new Model(name), name, name));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+		return null;
+	}
 
-        MySortableDataProvider dataProvider = new MySortableDataProvider(metadataClass, "id");
-        dataProvider.setPersistenceService(((SenroApplication) getApplication()).getPersistenceService());
-        add(new DefaultDataTable("table", columns, dataProvider, 8) {
-            protected Item newRowItem(String id, int index, IModel model) {
-                return new HighlitableDataItem(id, index, model);
-            }
-        });
+	protected void doDelete(Metadata classMetadata, Collection<TreeNode> selectedNodes) {
+		Object selectedEntity = getSelectedEntity(selectedNodes);
 
-        Form form = new Form("actionsForm");
+		if (selectedEntity == null)
+			return;
 
-        List buttonsList = new ArrayList();
-        buttonsList.add(new ButtonPanel("Add") {
-            public void onClick() {
-                doAdd(metadataClass);
-            }
-        });
-        buttonsList.add(new ButtonPanel("Edit") {
-            public void onClick() {
-                doEdit(metadataClass, selectedEntity);    
-            }
-        });
+		System.out.println("Delete: "+selectedEntity);
+	}
 
-        buttonsList.add(new ButtonPanel("Delete") {
-            public void onClick() {
-                doDelete(selectedEntity);
-            }
-        });
-        form.add(new ButtonsListView("buttons", buttonsList));
-        add(form);
-    }
+	protected void doEdit(Metadata classMetadata, Collection<TreeNode> selectedNodes) {
+		Object selectedEntity = getSelectedEntity(selectedNodes);
 
+		if (selectedEntity == null)
+			return;
 
-    public static PageLinkPanel link(final Metadata metadata) throws Exception {
+		RequestCycle cycle = getRequestCycle();
+		Page editPage = new EditPage(classMetadata, selectedEntity);
+		cycle.setResponsePage(editPage);
+		cycle.setRedirect(true);
+	}
 
-        return new PageLinkPanel(MetadataAccessor.readMetadataInfo(metadata,"type", Instance.CLASS).getName(), new IPageLink() {
-            public Page getPage() {
-                return new ListPage(metadata);
-            }
-
-            public Class getPageIdentity() {
-                return ListPage.class;
-            }
-        });
-
-    }
-
-
-    /**
-     * Build a list with defaults buttons for this type of page.
-     *
-     * @return
-     */
-//     protected List buildButtonsList() {
-//
-//         return buttonsList;
-//     }
-    private void doDelete(Object selectedEntity) {
-        //To change body of created methods use File | Settings | File Templates.
-    }
-
-    private void doEdit(Metadata metadataClass, Object selectedEntity) {
-        RequestCycle requestCycle = getRequestCycle();
-        Page page = new EditPage(metadataClass, selectedEntity);
-        requestCycle.setResponsePage(page);
-        requestCycle.setRedirect(true);
-    }
-
-    /**
-     * Sends the user to the add new entity page
-     *
-     * @param metadataClass Class metadata for entity to be created.
-     */
-    protected void doAdd(Metadata metadataClass) {
-        RequestCycle requestCycle = getRequestCycle();
-        Page page = new EditPage(metadataClass);
-        requestCycle.setResponsePage(page);
-        requestCycle.setRedirect(true);
-    }
-
-    private class HighlitableDataItem extends OddEvenItem {
-        private boolean highlite = false;
-
-        /**
-         * toggles highlite
-         */
-        public void toggleHighlite() {
-            highlite = !highlite;
-        }
-
-        /**
-         * Constructor
-         *
-         * @param id
-         * @param index
-         * @param model
-         */
-        public HighlitableDataItem(String id, int index, final IModel model) {
-            super(id, index, model);
-
-            add(new AttributeModifier("style", true, new Model("background-color:red;")) {
-                public boolean isEnabled() {
-                    return model.getObject(HighlitableDataItem.this).equals(selectedEntity);
-                }
-            });
-        }
-    }
-
+	protected void doAdd(Metadata classMetadata, Collection<TreeNode> selectedNodes) {
+		RequestCycle cycle = getRequestCycle();
+		Page editPage = new EditPage(classMetadata);
+		cycle.setResponsePage(editPage);
+		cycle.setRedirect(true);
+	}
 }
+

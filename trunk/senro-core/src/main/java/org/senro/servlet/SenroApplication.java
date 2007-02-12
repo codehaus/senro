@@ -1,23 +1,37 @@
 package org.senro.servlet;
 
+import java.lang.reflect.AnnotatedElement;
+
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataManager;
-import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.metadata.aop.AOPMetadataManager;
+import org.senro.metadata.exception.NoMetadataFoundException;
 import org.senro.page.HomePage;
 import org.senro.persistence.PersistenceService;
-import wicket.spring.SpringWebApplication;
+import org.senro.rules.IRulesEngine;
+import org.senro.rules.RulesRepository;
 
-import java.lang.reflect.AnnotatedElement;
+import wicket.markup.html.AjaxServerAndClientTimeFilter;
 
 /**
  * Created by <a href="mailto:claudiu.dumitrescu@gmail.com">Claudiu Dumitrescu</a>
+ * Flavius Burca <flavius.burca@gmail.com>
  */
 public class SenroApplication extends SpringWebApplication {
 
     MetadataManager metadataManager;
     PersistenceService persistenceService;
+    IRulesEngine rulesEngine;
 
+	@Override
+	protected void init() {
+    	getRequestCycleSettings().addResponseFilter(new AjaxServerAndClientTimeFilter());
+    	getDebugSettings().setAjaxDebugModeEnabled(true);
+    	getResourceSettings().setThrowExceptionOnMissingResource(true);
+
+    	RulesRepository.initDefaultRepository(getWicketFilter().getFilterConfig().getServletContext().getRealPath("/"));
+    	getRulesEngine().setRulesRepository(RulesRepository.DEFAULT_REPOSITORY);
+	}
 
     public MetadataManager getMetadataManager() {
         if (metadataManager == null) {
@@ -41,6 +55,17 @@ public class SenroApplication extends SpringWebApplication {
             }
         }
         return persistenceService;
+    }
+
+    public IRulesEngine getRulesEngine() {
+    	if (rulesEngine == null) {
+    		synchronized (this) {
+				if (rulesEngine == null) {
+					rulesEngine = (IRulesEngine) createSpringBeanProxy(IRulesEngine.class, "rulesEngine");
+				}
+			}
+    	}
+    	return rulesEngine;
     }
 
     public Class getHomePage() {

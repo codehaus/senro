@@ -5,6 +5,7 @@ import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.util.MetadataAccessor;
 import org.senro.metadata.util.Instance;
+import org.senro.metadata.util.MetadataUtils;
 
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -37,7 +38,6 @@ public class MappedMetadata implements Metadata {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public Object readInformation(String propertyName) {
@@ -55,16 +55,26 @@ public class MappedMetadata implements Metadata {
     public Iterable<? extends Method> getProperties() {
         List<Method> propertiesList = new ArrayList<Method>();
         try {
-            Class aClass = MetadataAccessor.readMetadataInfo(this, "type", Instance.CLASS);
+            Class aClass = MetadataUtils.getType(this);
             PropertyDescriptor[] properties = Introspector.getBeanInfo(aClass).getPropertyDescriptors();
             for (PropertyDescriptor property : properties) {
                 if (!"class".equals(property.getName())) {
-                    propertiesList.add(property.getReadMethod());
+                	if (property.getReadMethod() == null) {
+                		System.out.println("WARNING: Property "+property.getName()+" has no getter method");
+                		continue;
+                	}
+                	else {
+                		propertiesList.add(property.getReadMethod());
+                	}
                 }
             }
         } catch (IntrospectionException e) {
             e.printStackTrace();
         }
         return propertiesList;
+    }
+
+    public String toString() {
+    	return metadataMap.toString();
     }
 }
