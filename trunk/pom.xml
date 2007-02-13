@@ -77,6 +77,11 @@
             <url>http://wicketstuff.org/maven/repository/</url>
         </repository>
         <repository>
+            <id>team.andromda.org/maven2</id>
+            <name>AndroMDA repository</name>
+            <url>http://team.andromda.org/maven2/</url>
+        </repository>
+        <repository>
             <id>iblio.org</id>
             <name>Iblio Repository</name>
             <url>http://www.ibiblio.org/maven2/</url>
