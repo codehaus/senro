@@ -109,6 +109,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-ejb3x</artifactId>
+            <version>4.0.5-GA</version>
+        </dependency>
+        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.1</version>
