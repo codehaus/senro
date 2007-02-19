@@ -19,8 +19,8 @@ package org.senro.metadata.provider;
 import org.senro.demo.good.Apple;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.aop.AOPMetadataManager;
-import org.senro.metadata.provider.annotation.HibernateMetadataProvider;
-import org.senro.metadata.provider.annotation.impl.HibernateMetadataClassImpl;
+import org.senro.metadata.provider.hibernate.HibernateMetadataProvider;
+import org.senro.metadata.provider.hibernate.impl.HibernateMetadataClassImpl;
 import org.senro.metadata.util.MetadataAccessor;
 import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
