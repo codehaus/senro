@@ -43,7 +43,7 @@ public class HibernatePersistenceService extends HibernateDaoSupport implements
     @Transactional
     public List getAllInstances(Class type) {
     	Session session = getSessionFactory().getCurrentSession();
-    	Query query = session.createQuery(" from "+type.getClass());
+    	Query query = session.createQuery(" from "+type.getName());
     	return query.list();
 	}
 
@@ -63,18 +63,17 @@ public class HibernatePersistenceService extends HibernateDaoSupport implements
         getHibernateTemplate().delete(getHibernateTemplate().merge(instance));
     }
 
+
     @Transactional
-    public List getAllInstances(final DetachedCriteria criteria) {
-        // TODO Auto-generated method stub
-        return (List) getHibernateTemplate().execute(new HibernateCallback() {
-            public Object doInHibernate(Session session)
-                    throws HibernateException, SQLException {
-                criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-                return criteria.getExecutableCriteria(session).list();
-            }
-        }, true);
+    public List getAllInstances(DetachedCriteria criteria, int first, int max) {
+        return getHibernateTemplate().findByCriteria(criteria, first, max);
     }
 
+    @Transactional
+    public List getAllInstances(DetachedCriteria criteria) {
+        return getAllInstances(criteria, 0, 0);
+    }
+    
     public List getAllTypes() {
         ArrayList allTypes = new ArrayList();
         for (Iterator iter = getSessionFactory().getAllClassMetadata().values()

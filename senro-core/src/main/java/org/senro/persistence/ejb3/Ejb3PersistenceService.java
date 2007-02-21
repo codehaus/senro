@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Flavius Burca <flavius.burca@gmail.com>
@@ -92,8 +93,12 @@ public class Ejb3PersistenceService implements PersistenceService, InitializingB
 		throw new UnsupportedOperationException("Operation not supported with EJB3 persistence manager");
 	}
 
+    @Transactional
+    public List getAllInstances(DetachedCriteria criteria, int first, int max) {
+        throw new UnsupportedOperationException("Operation not supported with EJB3 persistence manager");
+    }
 
-	public void reattach(Object model) {
+    public void reattach(Object model) {
 		model = getInstance(model.getClass(), ((GenericEntityBean)model).getId());
 	}
 

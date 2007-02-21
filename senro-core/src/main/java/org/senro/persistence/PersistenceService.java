@@ -7,6 +7,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.senro.exception.SenroBaseException;
 import org.senro.metadata.MetadataManager;
 import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Flavius Burca <flavius.burca@gmail.com>
@@ -36,4 +37,7 @@ public interface PersistenceService
 
 	public void startTransaction();
 	public void endTransaction();
+
+    @Transactional
+    List getAllInstances(DetachedCriteria criteria, int first, int max);
 }
