@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE application PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application 1.3//EN" "http://java.sun.com/dtd/application_1_3.dtd">
+
+<application id="Senro">
+	<display-name>Senro</display-name>
+
+	<module id="Ejb3Module">
+        <ejb>svapnt.jar</ejb>
+    </module>
+
+	<module id="WebModule">
+		<web>
+    		<web-uri>svapnt.war</web-uri>
+	        <context-root>SVAPNT</context-root>
+		</web>
+	</module>
+
+	<module>
+		<java>svapnt.war/WEB-INF/classes</java>
+    </module>
+    <module>
+		<java>lib/senro-core.jar</java>
+    </module>
+    <module>
+		<java>lib/spring-2.0.2.jar</java>
+    </module>
+    <module>
+		<java>lib/slf4j-log4j12-1.1.0.jar</java>
+    </module>
+    <module>
+		<java>lib/slf4j-api-1.1.0.jar</java>
+    </module>
+    <module>
+		<java>lib/drools-core-3.0.5.jar</java>
+    </module>
+    <module>
+		<java>lib/drools-compiler-3.0.5.jar</java>
+    </module>
+    <module>
+		<java>lib/commons-jci-core-1.0-406301.jar</java>
+    </module>
+    <module>
+		<java>lib/commons-jci-eclipse-3.2.0.666.jar</java>
+    </module>
+    <module>
+		<java>lib/antlr-3.0ea8.jar</java>
+    </module>
+    <module>
+		<java>lib/stringtemplate-2.3b6.jar</java>
+    </module>
+    <module>
+		<java>lib/core-3.2.0.666.jar</java>
+    </module>
+</application>

@@ -1,0 +1,42 @@
+<project name="SVAPNT" default="makeJAR">
+
+	<path id="svapnt.path">
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="../senro-core">
+			<include name="senro-core.jar"/>
+		</fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="target" failonerror="false"/>
+	</target>
+
+	<target name="compile">
+		<mkdir dir="target"/>
+		<javac
+			srcdir="src"
+			destdir="target"
+			source="1.5"
+			target="1.5"
+			debug="on"
+			debuglevel="lines,vars,source"
+			classpathref="svapnt.path"/>
+	</target>
+
+    <target name="makeJAR" depends="compile">
+    	<copy todir="target/META-INF">
+    		<fileset dir="META-INF">
+    			<include name="**/**"/>
+    		</fileset>
+    	</copy>
+
+		<jar destfile="svapnt.jar">
+			<fileset dir="target">
+				<include name="**/**"/>
+			</fileset>
+		</jar>
+    </target>
+
+</project>

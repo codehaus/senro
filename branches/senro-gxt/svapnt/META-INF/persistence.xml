@@ -1,0 +1,10 @@
+<persistence>
+  <persistence-unit name="svapnt">
+    <jta-data-source>java:/OracleDS</jta-data-source>
+    <properties>
+    	<property name="jboss.entity.manager.jndi.name" value="java:/svapnt/EntityManager"/>
+    	<property name="jboss.entity.manager.factory.jndi.name" value="java:/svapnt/EntityManagerFactory"/>
+    	<property name="hibernate.show_sql" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>

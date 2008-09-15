@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jboss-ejb3x.jar"/>
+	<classpathentry kind="lib" path="lib/ejb3-persistence.jar"/>
+	<classpathentry kind="lib" path="lib/siveco_tools.jar"/>
+	<classpathentry kind="lib" path="lib/siveco_utils.jar"/>
+	<classpathentry kind="lib" path="lib/spring-2.0.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/senro-core"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

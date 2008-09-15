@@ -1,0 +1,80 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+    	<mapping package="ro.siveco.svapnt.configuration.entity"/>
+    	<mapping package="ro.siveco.svapnt.common.entity"/>
+
+        <mapping class="ro.siveco.svapnt.configuration.entity.User"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.UserEntityRight"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.ModelEntity"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.UserRole"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.Role"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.UserModuleRight"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.Module"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.PropertyCondition"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.EntityProperty"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.KeyPath"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.EntityRelationship"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.RoleModuleRight"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.RoleRole"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.RoleEntityRight"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.Parameter"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.Lov"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.DataType"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.ParamValue"/>
+        <mapping class="ro.siveco.svapnt.configuration.entity.LovValues"/>
+        
+        <mapping class="ro.siveco.svapnt.common.entity.Country"/>
+        <mapping class="ro.siveco.svapnt.common.entity.Currency"/>
+        <mapping class="ro.siveco.svapnt.common.entity.Employee"/>
+		<mapping class="ro.siveco.svapnt.common.entity.OrgUnit"/>
+		<mapping class="ro.siveco.svapnt.common.entity.ResTrade"/>
+		<mapping class="ro.siveco.svapnt.common.entity.Religion"/>
+		<mapping class="ro.siveco.svapnt.common.entity.OrgUnitType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.City"/>
+		<mapping class="ro.siveco.svapnt.common.entity.District"/>
+		<mapping class="ro.siveco.svapnt.common.entity.Street"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CityType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerCategory"/>
+		<mapping class="ro.siveco.svapnt.common.entity.StreetType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.ZoneDetail"/>
+		<mapping class="ro.siveco.svapnt.common.entity.Zone"/>
+		<mapping class="ro.siveco.svapnt.common.entity.ZoneType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerAddress"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PremisesType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.BuildingType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.FloorType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.EntranceType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.AddressType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CurrencyRate"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CurrencyRateType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.Company"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CompanyOrg"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CompanyProfile"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CompanyClassification"/>
+		<mapping class="ro.siveco.svapnt.common.entity.BankAccount"/>
+		<mapping class="ro.siveco.svapnt.common.entity.Bank"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerZone"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerCategoryWrapper"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerAttributeWrapper"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerAttribute"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PersonalIdCard"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PersonalIDCardType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PersonDocument"/>
+		<mapping class="ro.siveco.svapnt.common.entity.DocumentType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PersonContact"/>
+		<mapping class="ro.siveco.svapnt.common.entity.ContactType"/>
+		<mapping class="ro.siveco.svapnt.common.entity.EmployeeCard"/>
+		<mapping class="ro.siveco.svapnt.common.entity.OrgUnitContact"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerCategoryAttribute"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerAttributeValue"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerDisplayOption"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CurrencyRateTypeUser"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CompanyContact"/>
+		<mapping class="ro.siveco.svapnt.common.entity.CompanyDocument"/>
+		<mapping class="ro.siveco.svapnt.common.entity.PartnerAttrWrapperValue"/>
+	</session-factory>
+</hibernate-configuration>

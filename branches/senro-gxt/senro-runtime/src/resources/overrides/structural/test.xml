@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<structural-override>
+	<context>
+		<key name="ctx1key1" value="ctx1val1"/>
+		<key name="ctx1key2" value="ctx1val2"/>
+		<key name="ctx1key3" value="ctx1val3"/>
+
+		<entity name="OrgUnit" package="ro.siveco.svapnt.common">
+			<meta key="meta1" value="metaValue1" remove="true"/>
+			<meta key="meta2" value="metaValue2" remove="true"/>
+
+			<property name="property1" type="String">
+				<meta key="metaProperty1" value="metaPropertyValue1" remove="true"/>
+				<meta key="metaProperty2" value="metaPropertyValue2" remove="false"/>
+			</property>
+			<property name="property2" type="String">
+				<meta key="metaProperty3" value="metaPropertyValue3" remove="false"/>
+				<meta key="metaProperty4" value="metaPropertyValue4" remove="false"/>
+			</property>
+		</entity>
+		<entity name="Company" package="ro.siveco.svapnt.common">
+			<meta key="meta15" value="metaValue15" remove="true"/>
+			<meta key="meta25" value="metaValue25" remove="true"/>
+
+			<property name="property15" type="String">
+				<meta key="metaProperty15" value="metaPropertyValue15" remove="true"/>
+				<meta key="metaProperty25" value="metaPropertyValue25" remove="false"/>
+			</property>
+		</entity>
+	</context>
+
+	<context>
+		<entity name="Car" package="ro.siveco.svapnt.config">
+			<meta key="meta15" value="metaValue15" remove="true"/>
+			<meta key="meta25" value="metaValue25" remove="true"/>
+
+			<property name="property15" type="String">
+				<meta key="metaProperty15" value="metaPropertyValue15" remove="true"/>
+				<meta key="metaProperty25" value="metaPropertyValue25" remove="false"/>
+			</property>
+		</entity>
+	</context>
+
+	<context>
+		<entity name="Person" package="ro.siveco.svapnt.common">
+			<meta key="meta1" value="metaValue1" remove="true"/>
+
+			<property name="property2" type="String">
+				<meta key="metaProperty3" value="metaPropertyValue3" remove="false"/>
+				<meta key="metaProperty4" value="metaPropertyValue4" remove="false"/>
+			</property>
+		</entity>
+	</context>
+</structural-override>
