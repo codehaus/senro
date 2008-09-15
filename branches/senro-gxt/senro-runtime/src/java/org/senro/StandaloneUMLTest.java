@@ -115,7 +115,6 @@ public class StandaloneUMLTest {
 		DefaultMetadataFactory factory = new DefaultMetadataFactory();
 		List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
 		providers.add(new UMLMetadataProvider());
-		providers.add(new ReflectionMetadataProvider());
 		factory.setMetadataProviders(providers);
 		manager.setMetadataFactory(factory);
 		manager.setTypes( loadUMLTypes( file ) );
