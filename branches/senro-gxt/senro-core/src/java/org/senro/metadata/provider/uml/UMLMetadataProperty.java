@@ -1,7 +1,13 @@
 package org.senro.metadata.provider.uml;
 
-import org.senro.metadata.provider.reflection.ReflectionMetadataProperty;
 
-public interface UMLMetadataProperty extends ReflectionMetadataProperty {
-
+public interface UMLMetadataProperty  {
+	public String getName();
+	public void setName(String name);
+	
+	public String getType();
+	public void setType(String type);
+	
+	public String getDeclaringClass();
+	public void setDeclaringClass(String declaringClass);
 }
