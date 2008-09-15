@@ -1,0 +1,103 @@
+<project name="SENRO Example" default="makeEAR">
+	<property name="jboss.deploy" location="C:/jboss-4.2.2.GA/server/default/deploy"/>
+
+	<target name="init">
+		<path id="example.build.path">
+			<fileset dir="lib">
+				<include name="*.jar"/>
+			</fileset>
+
+			<fileset dir="../senro-core">
+				<include name="senro-core.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="target" />
+		<delete dir="senro-example.war" />
+		<delete dir="${jboss.deploy}/svapnt.ear" failonerror="false"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<ant antfile="../senro-core/build.xml" dir="../senro-core" target="makeJAR" />
+		<ant antfile="../svapnt/build.xml" dir="../svapnt" target="makeJAR" />
+
+		<mkdir dir="target/WEB-INF/classes"/>
+
+		<javac
+			srcdir="src/java"
+			destdir="target/WEB-INF/classes"
+			classpathref="example.build.path"
+			source="1.5"
+			target="1.5"
+			debug="true"
+			debuglevel="lines,vars,source"
+		/>
+
+		<copy todir="target">
+			<fileset dir="src/resources" />
+		</copy>
+
+		<copy todir="target/WEB-INF/lib">
+			<fileset dir="lib">
+				<include name="itext-1.4.8.jar"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="makeEAR" depends="clean, compile">
+		<mkdir dir="${jboss.deploy}/svapnt.ear/svapnt.war"/>
+		<!--<delete dir="${jboss.deploy}/svapnt.ear" failonerror="false" />-->
+
+		<copy todir="${jboss.deploy}/svapnt.ear">
+			<fileset dir="svapnt.ear">
+				<include name="**"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${jboss.deploy}/svapnt.ear/svapnt.war">
+			<fileset dir="target/">
+				<include name="**/**"/>
+				<exclude name="svapnt.ear"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${jboss.deploy}/svapnt.ear/lib">
+			<fileset dir="../senro-core">
+				<include name="senro-core.jar"/>
+			</fileset>
+			
+			<fileset dir="../senro-client">
+				<include name="senro-client.jar"/>
+			</fileset>
+			
+			<fileset dir="lib">
+				<include name="antlr-3.0ea8.jar"/>
+				<include name="asm-1.5.3.jar"/>
+				<include name="commons-beanutils-1.6.1.jar"/>
+				<include name="commons-jci-core-1.0-406301.jar"/>
+				<include name="commons-digester-1.8.jar"/>
+				<include name="commons-collections-3.1.jar"/>
+				<include name="commons-jci-eclipse-3.2.0.666.jar"/>
+				<include name="commons-lang-2.2.jar"/>
+				<include name="core-3.2.0.666.jar"/>
+				<include name="drools-compiler-3.0.5.jar"/>
+				<include name="drools-core-3.0.5.jar"/>
+				<include name="slf4j-api-1.1.0.jar"/>
+				<include name="slf4j-log4j12-1.1.0.jar"/>
+				<include name="spring-2.0.2.jar"/>
+				<include name="stringtemplate-2.3b6.jar"/>
+				<include name="gwt-servlet.jar"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${jboss.deploy}/svapnt.ear">
+			<fileset dir="../svapnt">
+				<include name="svapnt.jar"/>
+			</fileset>
+		</copy>
+
+		<touch file="${jboss.deploy}/svapnt.ear/META-INF/application.xml"/>
+	</target>
+</project>
