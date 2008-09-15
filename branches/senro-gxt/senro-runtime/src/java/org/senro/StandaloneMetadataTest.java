@@ -45,9 +45,9 @@ public class StandaloneMetadataTest {
 		
 		manager.afterPropertiesSet();
 
-		Metadata metadata = metadataManager.getMetadata(Country.class);
+		Metadata metadata = metadataManager.getMetadata(Country.class.getName());
 		System.out.println(metadata);
-		for( Method property : metadata.getProperties() ) {
+		for( String property : metadata.getProperties() ) {
 			Metadata propMetadata = metadataManager.getMetadata(property);
 			System.out.println(propMetadata);
 		}
