@@ -1,5 +1,6 @@
 package org.senro.metadata.provider.uml;
 
+import org.eclipse.uml2.uml.Property;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.provider.uml.impl.UMLMetadataClassImpl;
 import org.senro.metadata.provider.uml.impl.UMLMetadataMethodImpl;
@@ -15,6 +16,8 @@ public class UMLMetadataProvider implements MetadataProvider {
 			try {
 				UMLMetadataClass result = UMLMetadataClassImpl.class.newInstance();
 				org.eclipse.uml2.uml.Class umlClass = (org.eclipse.uml2.uml.Class) object;
+				result.setName( umlClass.getName() );
+				result.setQualifiedName( umlClass.getQualifiedName() );
 				return result;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -36,7 +39,6 @@ public class UMLMetadataProvider implements MetadataProvider {
 	}
 
 	public Object getPackageMetadata(Object element) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -44,13 +46,23 @@ public class UMLMetadataProvider implements MetadataProvider {
 		return UMLMetadataPropertyImpl.class;
 	}
 
-	public Object getPropertyMetadata(Object element) {
-		// TODO Auto-generated method stub
+	public Object getPropertyMetadata(Object object) {
+		if( object instanceof org.eclipse.uml2.uml.Property ) {
+			try {
+				UMLMetadataProperty result = new UMLMetadataPropertyImpl();
+				Property property = (Property) object;
+				result.setName(property.getName());
+				result.setType(property.getDatatype().getQualifiedName());
+				result.setDeclaringClass(property.getClass_().getQualifiedName());
+				return result;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 
 	public Class<?> getReferenceClass() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

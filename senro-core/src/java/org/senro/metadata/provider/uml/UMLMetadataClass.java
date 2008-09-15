@@ -2,11 +2,9 @@ package org.senro.metadata.provider.uml;
 
 
 public interface UMLMetadataClass {
-	String getDisplayName();
-
-    void setDisplayName(String displayName);
-
-    String getType();
-
-    void setType(String type);
+	String getQualifiedName();
+	void setQualifiedName(String qualifiedName);
+	
+	String getName();
+    void setName(String displayName);
 }
