@@ -19,12 +19,15 @@ import org.eclipse.uml2.uml.Package;
 import org.eclipse.uml2.uml.Profile;
 import org.eclipse.uml2.uml.UMLPackage;
 import org.eclipse.uml2.uml.resource.UMLResource;
+import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataManager;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.impl.DefaultMetadataFactory;
 import org.senro.metadata.impl.DefaultMetadataManager;
 import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 import org.senro.metadata.provider.uml.UMLMetadataProvider;
+
+import ro.siveco.svapnt.common.entity.Country;
 
 /**
  * 
@@ -45,8 +48,8 @@ public class StandaloneUMLTest {
 			}
 			else if (elem instanceof org.eclipse.uml2.uml.Class ) {
 				org.eclipse.uml2.uml.Class umlClass = (org.eclipse.uml2.uml.Class) elem;
-				umlClass.eClass().getInstanceClass();
 				types.add(umlClass);
+				System.out.println(umlClass.getQualifiedName());
 			}
 		}
 	}
@@ -72,7 +75,6 @@ public class StandaloneUMLTest {
 		
 		if( uml2Package instanceof Model ) {
 			Model model = (Model) uml2Package;
-			dumpProfiles(model);
 			parseModel(types, model.getMembers());
 		}
 		else {
@@ -114,13 +116,22 @@ public class StandaloneUMLTest {
 		DefaultMetadataManager manager = new DefaultMetadataManager();
 		DefaultMetadataFactory factory = new DefaultMetadataFactory();
 		List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
+		
 		providers.add(new UMLMetadataProvider());
+		
 		factory.setMetadataProviders(providers);
 		manager.setMetadataFactory(factory);
 		manager.setTypes( loadUMLTypes( file ) );
 		this.metadataManager = manager;	
 		
 		manager.afterPropertiesSet();
+		
+		Metadata metadata = manager.getMetadata("common::ro::siveco::svapnt::common::City");
+		System.out.println(metadata);
+		for( String prop : metadata.getProperties() ) {
+			Metadata propMetadata = manager.getMetadata(prop);
+			System.out.println(propMetadata);
+		}
 	}
 	
 	public static void main(String[] args) throws Exception {
