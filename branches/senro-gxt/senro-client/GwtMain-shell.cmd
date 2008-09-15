@@ -1,0 +1,1 @@
+@java -cp "%~dp0\src;%~dp0\bin;C:/temp/gwt-1.5M1/gwt-user.jar;C:/temp/gwt-1.5M1/gwt-dev-windows.jar" com.google.gwt.dev.GWTShell -out "%~dp0\www" %* org.senro.gwt.GwtMain/GwtMain.html
