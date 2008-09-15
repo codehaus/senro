@@ -1,6 +1,5 @@
 package org.senro.metadata.impl;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -10,8 +9,6 @@ import org.senro.metadata.MetadataFactory;
 import org.senro.metadata.MetadataManager;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.exception.NoMetadataFoundException;
-import org.senro.metadata.util.MetadataAccessor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -51,27 +48,22 @@ public class DefaultMetadataManager
             Metadata metadata = cache.get(clazz);
             if (metadata == null) {
                 metadata = metadataFactory.createClass(clazz);
-                for (MetadataProvider provider : metadataFactory.getProviders()) {
-                    if (provider.supports(clazz)) {
-                        Object metadata1 = provider.getClassMetadata(clazz);
-                        if( metadata1 != null )
-                        	BeanUtils.copyProperties(metadata1, metadata);
-                    }
-                }
                 cache.put(clazz, metadata);
             }
             
+            for( MetadataProvider provider : metadataFactory.getProviders() ) {
+            	if( provider.supports(clazz) ) {
+            		if( provider.getProperties(clazz) != null )
+            			((MappedMetadata)metadata).addProperties(provider.getProperties(clazz));
+            	}
+            }
+            
             if ( metadata.getProperties() != null ) {
-	            for (Method method : metadata.getProperties()) {
-	                Metadata metadataProperty =  cache.get(method);
+	            for (String property : metadata.getProperties()) {
+	                Metadata metadataProperty =  cache.get(property);
 	                if (metadataProperty == null) {
-	                    metadataProperty = metadataFactory.createProperty(method);
-	                    for (MetadataProvider provider : metadataFactory.getProviders()) {
-	                    	if( provider.supports(MetadataAccessor.readMetadataInfo(metadata, "type")) ) {
-	                    		BeanUtils.copyProperties(provider.getPropertyMetadata(method), metadataProperty);
-	                    	}
-	                    }
-	                    cache.put(method, metadataProperty);
+	                    metadataProperty = metadataFactory.createProperty(property);
+	                    cache.put(property, metadataProperty);
 	                }
 	            }
             }
@@ -80,7 +72,7 @@ public class DefaultMetadataManager
 
 // --------------------- Interface MetadataManager ---------------------
 
-    public Metadata getMetadata(Object element) throws NoMetadataFoundException {
+    public Metadata getMetadata(String element) throws NoMetadataFoundException {
         return cache.get(element);
     }
 }

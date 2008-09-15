@@ -35,6 +35,6 @@ public interface MetadataManager {
      * @return Metadata created
      * @throws NoMetadataFoundException if <code>element</code> is not known
      */
-    Metadata getMetadata(Object element) throws NoMetadataFoundException;
+    Metadata getMetadata(String element) throws NoMetadataFoundException;
 
 }

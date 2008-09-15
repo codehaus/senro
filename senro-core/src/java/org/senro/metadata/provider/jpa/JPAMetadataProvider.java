@@ -2,6 +2,7 @@ package org.senro.metadata.provider.jpa;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collection;
 
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -110,6 +111,14 @@ public class JPAMetadataProvider implements MetadataProvider {
 
 	public boolean supports(Object clazz) {
 		return clazz instanceof Class;
+	}
+
+	public Collection<String> getMethods(Object element) {
+		return null;
+	}
+
+	public Collection<String> getProperties(Object element) {
+		return null;
 	}
 
 }

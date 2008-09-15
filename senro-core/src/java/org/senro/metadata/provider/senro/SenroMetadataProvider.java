@@ -1,6 +1,7 @@
 package org.senro.metadata.provider.senro;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import org.senro.annotations.Label;
 import org.senro.annotations.Length;
@@ -136,6 +137,14 @@ public class SenroMetadataProvider implements MetadataProvider {
 	}
 
 	public Object getPackageMetadata(Object element) {
+		return null;
+	}
+
+	public Collection<String> getMethods(Object element) {
+		return null;
+	}
+
+	public Collection<String> getProperties(Object element) {
 		return null;
 	}
 }

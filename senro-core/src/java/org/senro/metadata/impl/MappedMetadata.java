@@ -1,19 +1,19 @@
 package org.senro.metadata.impl;
 
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.senro.metadata.Metadata;
 import org.senro.metadata.MetadataProvider;
-import org.senro.metadata.util.MetadataUtils;
 
 /**
  * @author Flavius Burca
@@ -23,7 +23,8 @@ public class MappedMetadata implements Metadata {
 	
 	private List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
     private Map<String, Object> metadataMap = new HashMap<String, Object>();
-
+    private Set<String> properties = new HashSet<String>();
+    
     /**
      * Add informations from supplied object to informations map hold by this metadata holder.
      *
@@ -51,31 +52,16 @@ public class MappedMetadata implements Metadata {
         return providers;
     }
 
-    public Iterable<? extends Method> getMethods() {
-        return Arrays.asList(((Class<?>)readInformation("type")).getMethods());
+    public Iterable<String> getMethods() {
+        return null;
     }
 
-    public Iterable<? extends Method> getProperties() {
-        List<Method> propertiesList = new ArrayList<Method>();
-        try {
-            Class<?> aClass = MetadataUtils.getType(this);
-            if( aClass != null ) {
-	            PropertyDescriptor[] properties = Introspector.getBeanInfo(aClass).getPropertyDescriptors();
-	            for (PropertyDescriptor property : properties) {
-	                if (!"class".equals(property.getName())) {
-	                	if (property.getReadMethod() == null) {
-	                		continue;
-	                	}
-	                	else {
-	                		propertiesList.add(property.getReadMethod());
-	                	}
-	                }
-	            }
-            }
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        }
-        return propertiesList;
+    public void addProperties( Collection<String> props ) {
+    	properties.addAll(props);
+    }
+    
+    public Iterable<String> getProperties() {
+        return properties;
     }
 
     public String toString() {

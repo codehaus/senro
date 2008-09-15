@@ -1,5 +1,7 @@
 package org.senro.metadata;
 
+import java.util.Collection;
+
 
 /**
  * @author Flavius Burca
@@ -12,17 +14,15 @@ public interface MetadataProvider {
 
     Object getMethodMetadata(Object element);
 
-    Object getPackageMetadata(Object element);
-
+    Collection<String> getProperties(Object element); 
+    
+    Collection<String> getMethods(Object element);
+    
     Class<?> getClassClass();
 
     Class<?> getPropertyClass();
 
     Class<?> getMethodClass();
-
-    Class<?> getPackageClass();
-
-    Class<?> getReferenceClass();
 
     boolean supports(Object type);
 }
