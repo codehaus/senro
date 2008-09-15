@@ -1,5 +1,10 @@
 package org.senro.metadata.provider.uml;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.uml2.uml.Property;
 import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.provider.uml.impl.UMLMetadataClassImpl;
@@ -52,7 +57,8 @@ public class UMLMetadataProvider implements MetadataProvider {
 				UMLMetadataProperty result = new UMLMetadataPropertyImpl();
 				Property property = (Property) object;
 				result.setName(property.getName());
-				result.setType(property.getDatatype().getQualifiedName());
+				if( property.getType() != null )
+					result.setType(property.getType().getQualifiedName());
 				result.setDeclaringClass(property.getClass_().getQualifiedName());
 				return result;
 			} catch (Exception e) {
@@ -68,5 +74,21 @@ public class UMLMetadataProvider implements MetadataProvider {
 
 	public boolean supports(Object type) {
 		return type instanceof org.eclipse.uml2.uml.Class;
+	}
+
+	public Collection<String> getMethods(Object element) {
+		return null;
+	}
+
+	public Collection<String> getProperties(Object element) {
+		java.util.List<String> properties = new ArrayList<String>();
+		org.eclipse.uml2.uml.Class umlClass = (org.eclipse.uml2.uml.Class) element;
+		EList attrs = umlClass.getAllAttributes();
+		for(Iterator<Property> iter=attrs.iterator(); iter.hasNext(); ) {
+			Property prop = iter.next();
+			properties.add(prop.getClass_().getQualifiedName()+"."+prop.getName());
+			
+		}
+		return properties;
 	}
 }

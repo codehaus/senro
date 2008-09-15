@@ -1,6 +1,7 @@
 package org.senro.metadata.provider.ejb3;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import org.senro.annotations.SessionName;
 import org.senro.metadata.MetadataProvider;
@@ -73,6 +74,14 @@ public class EJB3MetadataProvider implements MetadataProvider {
 	}
 
 	public Object getPackageMetadata(Object element) {
+		return null;
+	}
+
+	public Collection<String> getMethods(Object element) {
+		return null;
+	}
+
+	public Collection<String> getProperties(Object element) {
 		return null;
 	}
 }

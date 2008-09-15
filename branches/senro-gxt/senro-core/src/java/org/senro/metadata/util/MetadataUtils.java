@@ -42,7 +42,7 @@ public class MetadataUtils {
 			while (typesSet.hasNext()) {
 				Class<?> aClass = typesSet.next();
 				if( aClass.getName().equals(typeName) ) {
-					result = metadataManager.getMetadata(aClass);
+					result = metadataManager.getMetadata(aClass.getName());
 					break;
 				}
 			}
@@ -156,7 +156,7 @@ public class MetadataUtils {
 	public static List<Metadata> getVisibleDetailFields(Metadata classMetadata, MetadataManager manager) {
 		List<Metadata> visibleReferred = new ArrayList<Metadata>();
 		try {
-			for (Method visField : classMetadata.getProperties() ) {
+			for (String visField : classMetadata.getProperties() ) {
 				Metadata meta = manager.getMetadata(visField);
 				if ( isVisibleDetail(meta) )
 					visibleReferred.add(meta);
@@ -169,7 +169,7 @@ public class MetadataUtils {
 	public static List<Metadata> getVisibleListFields(Metadata classMetadata, MetadataManager manager) {
 		List<Metadata> visibleReferred = new ArrayList<Metadata>();
 		try {
-			for (Method visField : classMetadata.getProperties() ) {
+			for (String visField : classMetadata.getProperties() ) {
 				Metadata meta = manager.getMetadata(visField);
 				if ( isVisibleList(meta) )
 					visibleReferred.add(meta);
@@ -182,7 +182,7 @@ public class MetadataUtils {
 	public static List<Metadata> getVisibleReferredFields(Metadata classMetadata, MetadataManager manager) {
 		List<Metadata> visibleReferred = new ArrayList<Metadata>();
 		try {
-			for (Method visField : classMetadata.getProperties() ) {
+			for (String visField : classMetadata.getProperties() ) {
 				Metadata meta = manager.getMetadata(visField);
 				if ( isVisibleReferred(meta) )
 					visibleReferred.add(meta);
@@ -195,7 +195,7 @@ public class MetadataUtils {
 	public static List<Metadata> getManyToOneFields( Metadata classMetadata, MetadataManager manager ) {
 		List<Metadata> manyToOnes = new ArrayList<Metadata>();
 		try {
-			for (Method visField : classMetadata.getProperties() ) {
+			for (String visField : classMetadata.getProperties() ) {
 				Metadata meta = manager.getMetadata(visField);
 				if ( isManyToOne(meta) )
 					manyToOnes.add(meta);
@@ -208,7 +208,7 @@ public class MetadataUtils {
 	public static List<Metadata> getOneToManyFields( Metadata classMetadata, MetadataManager manager ) {
 		List<Metadata> oneToManys = new ArrayList<Metadata>();
 		try {
-			for (Method visField : classMetadata.getProperties() ) {
+			for (String visField : classMetadata.getProperties() ) {
 				Metadata meta = manager.getMetadata(visField);
 				if ( isOneToMany(meta) )
 					oneToManys.add(meta);

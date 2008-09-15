@@ -1,14 +1,13 @@
 package org.senro.metadata;
 
-import java.util.List;
-import java.lang.reflect.Method;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Flavius Burca
  */
 public interface Metadata extends Serializable {
     public List<MetadataProvider> getProviders();
-    public Iterable<? extends Method> getMethods();
-    public Iterable<? extends Method> getProperties();
+    public Iterable<String> getMethods();
+    public Iterable<String> getProperties();
 }

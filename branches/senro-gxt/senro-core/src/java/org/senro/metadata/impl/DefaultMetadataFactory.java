@@ -20,6 +20,7 @@ public class DefaultMetadataFactory implements MetadataFactory {
         	if( metadataProvider.supports(observedClass) ) {
         		Object metadataInformations = metadataProvider.getClassMetadata(observedClass);
         		metadataClass.addMetadata(metadataInformations);
+        		metadataClass.getProviders().add(metadataProvider);
         	}
         }
 
@@ -30,6 +31,7 @@ public class DefaultMetadataFactory implements MetadataFactory {
         org.senro.metadata.impl.MappedMetadata metadata = new org.senro.metadata.impl.MappedMetadata();
         for (MetadataProvider metadataProvider : metadataProviders) {
             Object metadataInformations = metadataProvider.getPropertyMetadata(element);
+            metadata.getProviders().add(metadataProvider);
             metadata.addMetadata(metadataInformations);
         }
         return metadata;
@@ -39,6 +41,7 @@ public class DefaultMetadataFactory implements MetadataFactory {
         org.senro.metadata.impl.MappedMetadata metadata = new org.senro.metadata.impl.MappedMetadata();
         for (MetadataProvider metadataProvider : metadataProviders) {
             Object metadataInformations = metadataProvider.getMethodMetadata(element);
+            metadata.getProviders().add(metadataProvider);
             metadata.addMetadata(metadataInformations);
         }
         return metadata;

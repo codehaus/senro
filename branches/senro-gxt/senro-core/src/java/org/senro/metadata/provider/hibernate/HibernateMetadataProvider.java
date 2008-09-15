@@ -1,6 +1,7 @@
 package org.senro.metadata.provider.hibernate;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import org.hibernate.SessionFactory;
 import org.senro.metadata.MetadataProvider;
@@ -104,4 +105,12 @@ public class HibernateMetadataProvider implements MetadataProvider {
     public boolean supports(Object clazz) {
         return clazz instanceof Class;
     }
+
+	public Collection<String> getMethods(Object element) {
+		return null;
+	}
+
+	public Collection<String> getProperties(Object element) {
+		return null;
+	}
 }

@@ -42,7 +42,7 @@ public class Ejb3PersistenceService implements PersistenceService, InitializingB
 		String jndiName = DEFAULT_JNDI_NAME;
 
 		try {
-			Metadata classMetadata = metadataManager.getMetadata(type);
+			Metadata classMetadata = metadataManager.getMetadata(type.getName());
 			jndiName = MetadataUtils.getSessionBeanName(classMetadata);
 		} catch (NoMetadataFoundException e) {
 			e.printStackTrace();
@@ -64,7 +64,7 @@ public class Ejb3PersistenceService implements PersistenceService, InitializingB
 		String jndiName = DEFAULT_JNDI_NAME;
 
 		try {
-			Metadata classMetadata = metadataManager.getMetadata(type);
+			Metadata classMetadata = metadataManager.getMetadata(type.getName());
 			jndiName = MetadataUtils.getSessionBeanName(classMetadata);
 		} catch (NoMetadataFoundException e) {
 			e.printStackTrace();
