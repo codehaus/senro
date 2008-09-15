@@ -1,0 +1,44 @@
+<project name="SENRO" default="makeJAR">
+
+	<target name="init">
+		<ant antfile="../senro-client/build.xml" dir="../senro-client" target="makeJAR" />
+		
+		<path id="senro.build.path">
+			<fileset dir="lib">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="../senro-client">
+				<include name="senro-client.jar"/>
+			</fileset>
+		</path>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="target" />
+		<delete file="senro-core.jar" />
+	</target>
+
+	<target name="compile" depends="init">		
+		<mkdir dir="target"/>
+
+		<javac
+			srcdir="src/java"
+			destdir="target"
+			classpathref="senro.build.path"
+			source="1.5"
+			target="1.5"
+			debug="true"
+			debuglevel="lines,vars,source"
+		/>
+
+		<copy todir="target">
+			<fileset dir="src/resources" />
+		</copy>
+	</target>
+
+	<target name="makeJAR" depends="clean, compile">
+		<jar destfile="senro-core.jar">
+			<fileset dir="target" />
+		</jar>
+	</target>
+</project>
