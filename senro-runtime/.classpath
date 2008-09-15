@@ -10,14 +10,7 @@
 	<classpathentry kind="lib" path="lib/hibernate-annotations-3.2.0.ga.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.1.jar"/>
 	<classpathentry kind="lib" path="lib/persistence-api-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/spring-context-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/spring-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/spring-aop-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/spring-beans-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/spring-core-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/spring-dao-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/spring-mock-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/spring-web-2.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/drools-compiler-3.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/drools-core-3.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.2.0.v200606271057.jar"/>
@@ -27,10 +20,6 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.uml2.uml_2.0.2.v200610251409.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.uml2.uml.resources_2.0.2.v200610251409.jar"/>
 	<classpathentry kind="lib" path="lib/svapnt.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjlib.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjrt.jar"/>
-	<classpathentry kind="lib" path="lib/aspectjweaver.jar"/>
-	<classpathentry kind="lib" path="lib/ojdbc14.jar"/>
 	<classpathentry kind="lib" path="lib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-2.7.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
