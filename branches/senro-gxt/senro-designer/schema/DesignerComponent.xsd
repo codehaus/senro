@@ -5,10 +5,44 @@
            targetNamespace="http://www.siveco.ro/senro/DesignerComponent" elementFormDefault="qualified"
         >
 
+    <!-- Definition of the generic types used in this schema -->
+
+    <xs:simpleType name="positiveInteger">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="strictPositiveInteger">
+        <xs:restriction base="xs:integer">
+            <xs:minExclusive value="0"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="BasicComponentType">
+        <xs:sequence>
+            <xs:element name="Id" type="xs:string" minOccurs="0"/>
+            <xs:element name="Name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="UIComponentType">
+        <xs:complexContent>
+            <xs:extension base="BasicComponentType">
+                <xs:attribute name="x" type="positiveInteger" default="0"/>
+                <xs:attribute name="y" type="positiveInteger" default="0"/>
+                <xs:attribute name="rowSpan" type="strictPositiveInteger" default="1"/>
+                <xs:attribute name="colSpan" type="strictPositiveInteger" default="1"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- Top element -->
+
     <xs:element name="DesignerComponent">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="Layout" maxOccurs="1"/>
+                <xs:element ref="Forms" maxOccurs="1"/>
                 <xs:element ref="Server" maxOccurs="1"/>
                 <xs:element ref="Client" maxOccurs="1"/>
                 <xs:element ref="Params" maxOccurs="1"/>
@@ -17,35 +51,39 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="Layout">
+    <xs:element name="Forms">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="Columns" maxOccurs="1"/>
-                <xs:element ref="Rows" maxOccurs="1"/>
-                <xs:element name="Components">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                                <xs:element name="Label" type="LabelType"/>
-                                <xs:element name="TextField" type="TextFieldType"/>
-                                <xs:element name="TextArea" type="TextAreaType"/>
-                                <xs:element name="Button" type="ButtonType"/>
-                                <xs:element name="CheckBox" type="CheckBoxType"/>
-                                <xs:element name="ComboBox" type="ComboBoxType"/>
-                                <xs:element name="Grid" type="GridType"/>
-                            </xs:choice>
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element name="Form" type="FormType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="BasicComponentType">
-        <xs:sequence>
-            <xs:element name="Id" type="xs:string" minOccurs="0"/>
-            <xs:element name="Name" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
+    <xs:complexType name="FormType">
+        <xs:complexContent>
+            <xs:extension base="UIComponentType">
+                <xs:sequence>
+                    <xs:element ref="Columns" maxOccurs="1"/>
+                    <xs:element ref="Rows" maxOccurs="1"/>
+                    <xs:element name="Components">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                    <xs:element name="Label" type="LabelType"/>
+                                    <xs:element name="TextField" type="TextFieldType"/>
+                                    <xs:element name="TextArea" type="TextAreaType"/>
+                                    <xs:element name="Button" type="ButtonType"/>
+                                    <xs:element name="CheckBox" type="CheckBoxType"/>
+                                    <xs:element name="ComboBox" type="ComboBoxType"/>
+                                    <xs:element name="Grid" type="GridType"/>
+                                    <xs:element name="Form" type="FormType"/>
+                                </xs:choice>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="GridSpecificationElement">
@@ -100,19 +138,6 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="UIComponentType">
-        <xs:complexContent>
-            <xs:extension base="BasicComponentType">
-                <xs:sequence>
-                    <xs:element name="x" type="xs:integer"/>
-                    <xs:element name="y" type="xs:integer"/>
-                    <xs:element name="RowSpan" type="xs:integer" maxOccurs="1"/>
-                    <xs:element name="ColSpan" type="xs:integer" maxOccurs="1"/>
-                </xs:sequence>
-            </xs:extension>
-        </xs:complexContent>
-    </xs:complexType>
-
     <xs:complexType name="LabelType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
@@ -140,6 +165,9 @@
     <xs:complexType name="ButtonType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
+                <xs:sequence>
+                    <xs:element name="Label" type="xs:string"/>
+                </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -166,6 +194,39 @@
     </xs:complexType>
 
     <xs:element name="Server">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="SenroContext" type="SenroContextType" maxOccurs="1"/>
+                    <xs:element name="GridAllocator" type="GridAllocatorType" maxOccurs="1"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="SenroContextType">
+        <xs:complexContent>
+            <xs:extension base="BasicComponentType">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="GridAllocatorType">
+        <xs:complexContent>
+            <xs:extension base="BasicComponentType">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="Client">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="DisplayGroup" type="DisplayGroupType" maxOccurs="1"/>
+                    <xs:element name="EditingContext" type="EditingContextType" maxOccurs="1"/>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
     </xs:element>
 
     <xs:complexType name="DisplayGroupType">
@@ -184,17 +245,6 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-
-    <xs:element name="Client">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                    <xs:element name="DisplayGroup" type="DisplayGroupType" maxOccurs="1"/>
-                    <xs:element name="EditingContext" type="EditingContextType" maxOccurs="1"/>
-                </xs:choice>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
 
     <xs:element name="Params">
         <xs:complexType>
