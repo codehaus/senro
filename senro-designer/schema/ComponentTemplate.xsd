@@ -98,7 +98,7 @@
                 </xs:simpleType>
             </xs:element>
             <xs:element name="Resize" minOccurs="0" maxOccurs="1" type="xs:decimal"/>
-            <xs:element name="Size">
+            <xs:element name="Size" minOccurs="0">
                 <xs:complexType>
                     <xs:choice>
                         <xs:element name="Constant" type="xs:integer"/>
