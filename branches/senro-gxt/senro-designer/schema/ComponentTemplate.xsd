@@ -74,8 +74,8 @@
                                     <xs:element name="CheckBox" type="CheckBoxType"/>
                                     <xs:element name="ComboBox" type="ComboBoxType"/>
                                     <xs:element name="Grid" type="GridType"/>
-                                    <xs:element name="Template" type="TemplateType">
-                                    </xs:element>
+                                    <xs:element name="Template" type="TemplateType" />
+                                    <xs:element name="DateField" type="DateFieldType"/>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
@@ -154,6 +154,13 @@
         </xs:complexContent>
     </xs:complexType>
     
+	<xs:complexType name="DateFieldType">
+        <xs:complexContent>
+            <xs:extension base="UIComponentType">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="TextAreaType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
