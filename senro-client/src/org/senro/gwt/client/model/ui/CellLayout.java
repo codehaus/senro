@@ -10,6 +10,17 @@ public class CellLayout implements IsSerializable, Serializable {
 	private int row = -1;
 	private int column = -1;
 	private int orderNo = 0;
+	private HorizontalAlignment horizontalAlignment;
+	private VerticalAlignment verticalAlignment;
+	
+	public CellLayout(int colSpan, int rowSpan, int row, int column, int orderNo) {
+		
+		 this.colSpan = colSpan;
+		 this.rowSpan = rowSpan;
+		 this.row = row;
+		 this.column = column;
+		 this.orderNo = orderNo;
+	}
 	
 	public CellLayout() {
 	}
@@ -52,6 +63,22 @@ public class CellLayout implements IsSerializable, Serializable {
 
 	public void setColumn(int column) {
 		this.column = column;
+	}
+	
+	public HorizontalAlignment getHorizontalAlignment() {
+		return horizontalAlignment;
+	}
+	
+	public void setHorizontalAlignment(HorizontalAlignment horizontalAlignment) {
+		this.horizontalAlignment = horizontalAlignment;
+	}
+	
+	public VerticalAlignment getVerticalAlignment() {
+		return verticalAlignment;
+	}
+	
+	public void setVerticalAlignment(VerticalAlignment verticalAlignment) {
+		this.verticalAlignment = verticalAlignment;
 	}
 	
 	@Override
