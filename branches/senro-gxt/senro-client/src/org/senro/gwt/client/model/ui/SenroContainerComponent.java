@@ -45,6 +45,6 @@ public class SenroContainerComponent extends SenroComponent implements IsSeriali
 	
 	@Override
 	public String toString() {
-		return super.toString()+", Layout: "+(layout != null ? layout.toString() : "null");
+		return super.toString()+", Layout: "+(layout != null ? layout.toString() : "null")+"\nContents:\n"+components.toString();
 	}
 }

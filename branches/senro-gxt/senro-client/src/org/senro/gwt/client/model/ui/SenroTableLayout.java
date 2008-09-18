@@ -11,6 +11,11 @@ public class SenroTableLayout implements IsSerializable, Serializable {
 	public SenroTableLayout() {
 	}
 	
+	public SenroTableLayout(int rows, int columns) {
+		this.rows = rows;
+		this.columns = columns;
+	}
+	
 	public SenroTableLayout(int columns) {
 		setColumns(columns);
 	}

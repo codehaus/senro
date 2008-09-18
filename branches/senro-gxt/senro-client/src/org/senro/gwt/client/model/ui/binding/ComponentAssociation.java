@@ -1,6 +1,16 @@
 package org.senro.gwt.client.model.ui.binding;
 
-import java.util.Date;
+import org.senro.gwt.client.model.ui.SenroComponent;
+import org.senro.gwt.client.model.ui.component.SenroButton;
+import org.senro.gwt.client.model.ui.component.SenroCheckbox;
+import org.senro.gwt.client.model.ui.component.SenroCombobox;
+import org.senro.gwt.client.model.ui.component.SenroDateField;
+import org.senro.gwt.client.model.ui.component.SenroLabel;
+import org.senro.gwt.client.model.ui.component.SenroTextArea;
+import org.senro.gwt.client.model.ui.component.SenroTextField;
+
+import com.google.gwt.user.client.ui.Widget;
+
 
 public class ComponentAssociation {
 	public static final String TEXTFIELD = "TEXTFIELD";
@@ -12,28 +22,26 @@ public class ComponentAssociation {
 	public static final String LABEL = "LABEL";
 	public static final String DUMMY = "DUMMY";
 	public static final String CUSTOM = "CUSTOM";
-
-	public static String get( Class javaType ) {
-		if( Character.class == javaType )
-			return TEXTFIELD;
-		else if( String.class == javaType )
-			return TEXTFIELD;
-		else if( Short.class == javaType )
-			return COMBOBOX;
-		else if( Integer.class == javaType )
-			return NUMERICFIELD;
-		else if( Long.class == javaType )
-			return NUMERICFIELD;
-		else if( Float.class == javaType )
-			return NUMERICFIELD;
-		else if( Double.class == javaType )
-			return NUMERICFIELD;
-		else if( Boolean.class == javaType )
-			return CHECKBOX;
-		else if( Date.class == javaType )
-			return DATEFIELD;
-		else
-			return CUSTOM;
+	public static final String BUTTON = "BUTTON";
+	public static final String GRID = "GRID";
+	
+	public static Widget getWidget( SenroComponent component ) {
+		if( LABEL.equals( component.getRenderComponent() ) )
+			return new SenroLabel(component.getModel());
+		if( TEXTFIELD.equals( component.getRenderComponent() ) )
+			return new SenroTextField(component.getModel());
+		if( TEXTAREA.equals( component.getRenderComponent() ) )
+			return new SenroTextArea(component.getModel());
+		if( CHECKBOX.equals( component.getRenderComponent() ) )
+			return new SenroCheckbox(component.getModel());
+		if( COMBOBOX.equals( component.getRenderComponent() ) )
+			return new SenroCombobox(component.getModel());
+		if( DATEFIELD.equals( component.getRenderComponent() ) )
+			return new SenroDateField(component.getModel());
+		if( BUTTON.equals( component.getRenderComponent() ) )
+			return new SenroButton(component.getModel());
+		
+		return null;
 	}
 }
 

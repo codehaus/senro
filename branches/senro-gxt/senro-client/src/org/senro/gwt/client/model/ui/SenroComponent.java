@@ -2,8 +2,17 @@ package org.senro.gwt.client.model.ui;
 
 import java.io.Serializable;
 
-import org.senro.gwt.client.model.ui.binding.Model;
+import org.senro.gwt.client.model.ui.binding.ComponentAssociation;
+import org.senro.gwt.client.model.ui.binding.DataModel;
+import org.senro.gwt.client.model.ui.binding.StringModel;
 
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.DateField;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -12,8 +21,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class SenroComponent implements IsSerializable, Serializable {
 	private String id;
+	private String name;
 	private String renderComponent;
-	private Model model;
+	private DataModel model;
+	private CellLayout layoutData;
 	private SenroComponent parent;
 	
 	private boolean remove;
@@ -33,16 +44,32 @@ public class SenroComponent implements IsSerializable, Serializable {
 		this.id = id;
 	}
 
-	public void setModel(Model model) {
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setModel(DataModel model) {
 		this.model = model;
 	}
 		
-	public Model getModel() {
+	public DataModel getModel() {
 		return model;
 	}
 
 	public SenroComponent getParent() {
 		return parent;
+	}
+	
+	public CellLayout getLayoutData() {
+		return layoutData;
+	}
+
+	public void setLayoutData(CellLayout layoutData) {
+		this.layoutData = layoutData;
 	}
 	
 	public void setParent(SenroComponent parent) {
@@ -76,6 +103,25 @@ public class SenroComponent implements IsSerializable, Serializable {
 
 	@Override
 	public String toString() {
-		return "id="+id+", remove="+remove+", replace="+replace+", parent="+(parent != null ? parent.getId() : "null");
+		return "\ntype="+renderComponent+" ,id="+id+" ,name="+name+", parent="+(parent != null ? parent.getId() : "null");
+	}
+	
+	public void paint (ContentPanel panel, TableData td) {
+		td.setColspan(this.getLayoutData().getColSpan());		
+		
+		String rendererComponent = this.renderComponent;
+		
+		if (rendererComponent.equals(ComponentAssociation.LABEL))
+			panel.add(new LabelField((String)((StringModel)this.getModel().getDataObject()).getValue()),td);
+		if (rendererComponent.equals(ComponentAssociation.TEXTFIELD))
+			panel.add(new TextField(),td);
+		if (rendererComponent.equals(ComponentAssociation.CHECKBOX))
+			panel.add(new CheckBox(),td);
+		if (rendererComponent.equals(ComponentAssociation.DATEFIELD))
+			panel.add(new DateField(),td);
+		if (rendererComponent.equals(ComponentAssociation.COMBOBOX))
+			panel.add(new TextField(),td);
+		if (rendererComponent.equals(ComponentAssociation.BUTTON))
+			panel.add(new Button((String)((StringModel)this.getModel().getDataObject()).getValue()),td);
 	}
 }

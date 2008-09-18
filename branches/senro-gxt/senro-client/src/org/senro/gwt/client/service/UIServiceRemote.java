@@ -15,7 +15,7 @@ public interface UIServiceRemote extends RemoteService {
 			if (instance == null) {
 				instance = (UIServiceRemoteAsync) GWT.create(UIServiceRemote.class);
 				ServiceDefTarget target = (ServiceDefTarget) instance;
-				target.setServiceEntryPoint(ServiceLocator.BASE_URL + "UIService");
+				target.setServiceEntryPoint(GWT.getModuleBaseURL() + "UIService");
 			}
 			return instance;
 		}
