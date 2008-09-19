@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="lib/svapnt.jar"/>
 	<classpathentry kind="lib" path="lib/cglib-nodep-2.1_3.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-2.7.6.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/senro-client"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
