@@ -66,16 +66,20 @@
                     <xs:element name="Components">
                         <xs:complexType>
                             <xs:sequence>
-                                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                                    <xs:element name="Label" type="LabelType"/>
-                                    <xs:element name="TextField" type="TextFieldType"/>
-                                    <xs:element name="TextArea" type="TextAreaType"/>
-                                    <xs:element name="Button" type="ButtonType"/>
-                                    <xs:element name="CheckBox" type="CheckBoxType"/>
-                                    <xs:element name="ComboBox" type="ComboBoxType"/>
-                                    <xs:element name="Grid" type="GridType"/>
-                                    <xs:element name="Template" type="TemplateType" />
-                                    <xs:element name="DateField" type="DateFieldType"/>
+                                <xs:choice maxOccurs="unbounded">
+                                    <xs:element ref="Label"/>
+                                    <xs:element ref="TextField"/>
+                                    <xs:element ref="TextArea"/>
+                                    <xs:element ref="DateField"/>
+                                    <xs:element ref="ComboBox"/>
+                                    <xs:element ref="CheckBox"/>
+                                    <xs:element ref="Button"/>
+                                    <xs:element ref="Grid"/>
+                                    <xs:element ref="Template"/>
+                                    <xs:element ref="Iterator"/>
+                                    <xs:element ref="Conditional"/>
+                                    <xs:element ref="Tree"/>
+                                    <xs:element ref="RootPanel"/>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
@@ -280,5 +284,199 @@
 
     <xs:element name="Associations">
     </xs:element>
+
+    <xs:element name="Label" type="LabelType"/>
+
+    <xs:element name="TextField" type="TextFieldType"/>
+
+    <xs:element name="TextArea" type="TextAreaType"/>
+
+    <xs:element name="Button" type="ButtonType"/>
+
+    <xs:element name="CheckBox" type="CheckBoxType"/>
+
+    <xs:element name="ComboBox" type="ComboBoxType"/>
+
+    <xs:element name="Grid" type="GridType"/>
+
+    <xs:element name="Template" type="TemplateType"/>
+
+    <xs:element name="DateField" type="DateFieldType"/>
+
+    <xs:complexType name="IteratorType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:sequence>
+
+                    <xs:choice maxOccurs="unbounded">
+
+                        <xs:element ref="Label"/>
+
+                        <xs:element ref="TextField"/>
+
+                        <xs:element ref="TextArea"/>
+
+                        <xs:element ref="DateField"/>
+
+                        <xs:element ref="ComboBox"/>
+
+                        <xs:element ref="CheckBox"/>
+
+                        <xs:element ref="Button"/>
+
+                        <xs:element ref="Grid"/>
+
+                        <xs:element ref="Template"/>
+
+                        <xs:element ref="Iterator"/>
+
+                        <xs:element ref="Conditional"/>
+
+                        <xs:element ref="Tree"/>
+
+                        <xs:element ref="TreeNode"/>
+
+                    </xs:choice>
+
+                    <xs:element name="CurrentItem" minOccurs="0" maxOccurs="1"/>
+
+                </xs:sequence>
+
+                <xs:attribute name="list" type="xs:string" use="required"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="Iterator" type="IteratorType"/>
+
+    <xs:complexType name="ConditionalType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:sequence>
+
+                    <xs:element name="If" type="IfType"/>
+
+                    <xs:element name="Else" type="ElseType"/>
+
+                </xs:sequence>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="Conditional" type="ConditionalType"/>
+
+    <xs:complexType name="IfType">
+
+        <xs:complexContent>
+
+            <xs:extension base="ComponentChoiceType">
+
+                <xs:attribute name="condition" type="xs:string" use="required"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="ElseType">
+
+        <xs:complexContent>
+
+            <xs:extension base="ComponentChoiceType"/>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="TreeType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:sequence maxOccurs="unbounded">
+
+                    <xs:element ref="TreeNode" minOccurs="0"/>
+
+                    <xs:element ref="Iterator" minOccurs="0"/>
+
+                </xs:sequence>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="Tree" type="TreeType"/>
+
+    <xs:complexType name="TreeNodeType">
+
+        <xs:complexContent>
+
+            <xs:extension base="ComponentChoiceType"/>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="ComponentChoiceType">
+
+        <xs:choice maxOccurs="unbounded">
+
+            <xs:element ref="Label"/>
+
+            <xs:element ref="TextField"/>
+
+            <xs:element ref="TextArea"/>
+
+            <xs:element ref="DateField"/>
+
+            <xs:element ref="ComboBox"/>
+
+            <xs:element ref="CheckBox"/>
+
+            <xs:element ref="Button"/>
+
+            <xs:element ref="Grid"/>
+
+            <xs:element ref="Template"/>
+
+            <xs:element ref="Iterator"/>
+
+            <xs:element ref="Conditional"/>
+
+            <xs:element ref="Tree"/>
+
+        </xs:choice>
+
+    </xs:complexType>
+
+    <xs:complexType name="RootPanelType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType"/>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="RootPanel" type="RootPanelType"/>
+
+    <xs:element name="TreeNode" type="TreeNodeType"/>
 
 </xs:schema>
