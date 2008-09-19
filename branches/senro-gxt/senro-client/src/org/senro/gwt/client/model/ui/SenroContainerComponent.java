@@ -35,6 +35,11 @@ public class SenroContainerComponent extends SenroComponent implements IsSeriali
 		component.setParent(this);
 	}
 	
+	public void add( List<SenroComponent> components ) {
+		for( SenroComponent component : components )
+			add(component);
+	}
+	
 	public List<SenroComponent> getComponents() {
 		return components;
 	}

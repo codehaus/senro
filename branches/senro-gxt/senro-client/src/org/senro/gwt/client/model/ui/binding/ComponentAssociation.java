@@ -24,6 +24,8 @@ public class ComponentAssociation {
 	public static final String CUSTOM = "CUSTOM";
 	public static final String BUTTON = "BUTTON";
 	public static final String GRID = "GRID";
+	public static final String ROOTPANEL = "ROOTPANEL";
+	public static final String TREE = "TREE";
 	
 	public static Widget getWidget( SenroComponent component ) {
 		if( LABEL.equals( component.getRenderComponent() ) )
