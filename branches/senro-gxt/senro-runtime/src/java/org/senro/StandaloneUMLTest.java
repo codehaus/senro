@@ -1,10 +1,8 @@
 package org.senro;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
@@ -19,15 +17,11 @@ import org.eclipse.uml2.uml.Package;
 import org.eclipse.uml2.uml.Profile;
 import org.eclipse.uml2.uml.UMLPackage;
 import org.eclipse.uml2.uml.resource.UMLResource;
-import org.senro.metadata.Metadata;
+import org.senro.metadata.MetadataClass;
 import org.senro.metadata.MetadataManager;
-import org.senro.metadata.MetadataProvider;
 import org.senro.metadata.impl.DefaultMetadataFactory;
 import org.senro.metadata.impl.DefaultMetadataManager;
-import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
 import org.senro.metadata.provider.uml.UMLMetadataProvider;
-
-import ro.siveco.svapnt.common.entity.Country;
 
 /**
  * 
@@ -49,13 +43,15 @@ public class StandaloneUMLTest {
 			else if (elem instanceof org.eclipse.uml2.uml.Class ) {
 				org.eclipse.uml2.uml.Class umlClass = (org.eclipse.uml2.uml.Class) elem;
 				types.add(umlClass);
-				System.out.println(umlClass.getQualifiedName());
 			}
 		}
 	}
 	
 	private Set<Object> loadUMLTypes( String file ) throws Exception {		
 		ResourceSet resourceSet = new ResourceSetImpl();
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put( 
+			"epx", UMLResource.Factory.INSTANCE
+		);
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put( 
 			UMLResource.FILE_EXTENSION, UMLResource.Factory.INSTANCE
 		);
@@ -75,6 +71,7 @@ public class StandaloneUMLTest {
 		
 		if( uml2Package instanceof Model ) {
 			Model model = (Model) uml2Package;
+			model.getAllAppliedProfiles();
 			parseModel(types, model.getMembers());
 		}
 		else {
@@ -114,28 +111,26 @@ public class StandaloneUMLTest {
 	
 	public void initSenro( String file ) throws Exception {
 		DefaultMetadataManager manager = new DefaultMetadataManager();
-		DefaultMetadataFactory factory = new DefaultMetadataFactory();
-		List<MetadataProvider> providers = new ArrayList<MetadataProvider>();
-		
-		providers.add(new UMLMetadataProvider());
-		
-		factory.setMetadataProviders(providers);
+		DefaultMetadataFactory factory = new DefaultMetadataFactory();		
+		factory.setMetadataProvider(new UMLMetadataProvider());
 		manager.setMetadataFactory(factory);
 		manager.setTypes( loadUMLTypes( file ) );
 		this.metadataManager = manager;	
 		
 		manager.afterPropertiesSet();
 		
-		Metadata metadata = manager.getMetadata("common::ro::siveco::svapnt::common::City");
+		MetadataClass metadata = manager.getMetadata("common.ro.siveco.svapnt.common.Country");
 		System.out.println(metadata);
-		for( String prop : metadata.getProperties() ) {
-			Metadata propMetadata = manager.getMetadata(prop);
-			System.out.println(propMetadata);
-		}
+		
+		System.out.println(metadata.getProperties());
+		System.out.println(metadata.getMethods());
 	}
 	
 	public static void main(String[] args) throws Exception {
+		long start = System.currentTimeMillis();
 		StandaloneUMLTest test = new StandaloneUMLTest();
-		test.initSenro( "src/resources/BlankModel.uml" );
+		test.initSenro( "src/resources/BlankModel.epx" );
+		test.initSenro( "src/resources/BlankModel.epx" );
+		System.out.println(System.currentTimeMillis()-start);
 	}
 }
