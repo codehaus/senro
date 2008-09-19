@@ -2,45 +2,51 @@ package org.senro;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.senro.metadata.MetadataClass;
-import org.senro.metadata.MetadataManager;
+import org.senro.gwt.client.model.ui.SenroContainerComponent;
+import org.senro.gwt.client.model.ui.context.SenroContext;
 import org.senro.metadata.impl.DefaultMetadataFactory;
 import org.senro.metadata.impl.DefaultMetadataManager;
 import org.senro.metadata.provider.reflection.ReflectionMetadataProvider;
+import org.senro.ui.template.TemplateParser;
 
 /**
  * 
- * @author Flavius
+ * @author FlaviusB
  *
  */
-public class StandaloneMetadataTest {
-	private MetadataManager metadataManager;	
-	
-	public void initSenro() throws Exception {
+public class TemplateTest {
+	public static void main(String[] args) throws Exception {
 		DefaultMetadataManager manager = new DefaultMetadataManager();
 		DefaultMetadataFactory factory = new DefaultMetadataFactory();
 		manager.setMetadataFactory(factory);
 		factory.setMetadataProvider(new ReflectionMetadataProvider());
-		
 		manager.setTypes( loadClassTypes("ro.siveco.svapnt.common.entity") );
-		this.metadataManager = manager;	
-		
 		manager.afterPropertiesSet();
 		
-		MetadataClass m = manager.getMetadata("ro.siveco.svapnt.common.entity.Country");
-		System.out.println(m);
+		InputStream stream = TemplateParser.class.getClassLoader().getResourceAsStream("MainPage.xml");
+		
+		Map<String, Object> ctx = new HashMap<String, Object>();
+		ctx.put("senroContext", new SenroContext());
+		ctx.put("allEntities", manager.getCache().values());
+		
+		TemplateParser parser = new TemplateParser( stream );
+		SenroContainerComponent component = parser.render(ctx); 
+		System.out.println( component );
 	}
 	
-	private Set<Object> loadClassTypes( String pkgName ) throws Exception {
+	private static Set<Object> loadClassTypes( String pkgName ) throws Exception {
 		Set<Object> result = new HashSet<Object>();
 		
 		String name = new String(pkgName);
@@ -71,7 +77,7 @@ public class StandaloneMetadataTest {
         return result;
 	}
 	
-	private List<Class<?>> getClasseNamesInPackage(String jarName, String packageName) {
+	private static List<Class<?>> getClasseNamesInPackage(String jarName, String packageName) {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		packageName = packageName.replaceAll("\\." , "/");
 		try{
@@ -95,10 +101,5 @@ public class StandaloneMetadataTest {
 			e.printStackTrace ();
 		}
 		return classes;
-	}
-	
-	public static void main(String[] args) throws Throwable {
-		StandaloneMetadataTest test = new StandaloneMetadataTest();
-		test.initSenro();
 	}
 }
