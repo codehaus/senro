@@ -30,8 +30,13 @@
 	<classpathentry kind="lib" path="lib/log4j-1.2.13.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.uml2.uml_2.0.2.v200610251409.jar"/>
 	<classpathentry kind="lib" path="lib/svapnt.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.2.0.v200606271057.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.2.0.v200606271057.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.2.0.v200606271057.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi_2.2.0.v200606271057.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.uml2.common_1.2.2.v200610251409.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.uml2.uml.resources_2.0.2.v200610251409.jar"/>
+	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="lib/mvel-2.0M1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/senro-client"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
