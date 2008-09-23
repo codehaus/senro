@@ -4,35 +4,36 @@
 		<Grid id="grid1" name="grid1">
 			<Columns>
 				<Column>
-					<Alignment>Left</Alignment>
-				</Column>
-				<Column>
-					<Alignment>Center</Alignment>
+					<Alignment>Right</Alignment>
 				</Column>
 			</Columns>
+
 			<Rows>
 				<Row>
 					<Alignment>Center</Alignment>
 				</Row>
+				<Row>
+					<Alignment>Center</Alignment>
+				</Row>
 			</Rows>
+
 			<Components>
-				<Tree id="tree1" name="menu" row="0" col="0">
-					<Iterator id="iter1" name="menuIterator" list="@{allEntities}">
-						<TreeNode>
-							<Text>@{menuIterator.currentItem.qualifiedName}</Text>
-						</TreeNode>
-					</Iterator>
-				</Tree>
-				<RootPanel id="rootPanel" name="rootPanel" row="0" col="1" />
+				<List id="list" name="list" entity="@{entity}" row="0" col="0" />
+				<Button id="btnNew" name="btnNew" row="1" col="0">
+					<Label>New</Label>
+				</Button>
 			</Components>
 		</Grid>
 	</Layout>
 
-	<Server/>
-	<Client/>
+	<Server>
+	</Server>
+	
+	<Client>
+	</Client>
 
 	<Params>
-		<Parameter name="allEntities" type="java.util.List"/>
+		<Parameter name="entity" type="org.senro.metadata.MetadataClass"/>
 	</Params>
 
 	<Associations/>

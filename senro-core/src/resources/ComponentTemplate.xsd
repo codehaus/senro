@@ -80,6 +80,8 @@
                                     <xs:element ref="Conditional"/>
                                     <xs:element ref="Tree"/>
                                     <xs:element ref="RootPanel"/>
+                                    <xs:element ref="GridAllocatorRenderer"/>
+                                    <xs:element ref="List"/>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
@@ -98,6 +100,9 @@
                         <xs:enumeration value="Center"/>
                         <xs:enumeration value="Right"/>
                         <xs:enumeration value="Fill"/>
+                        <xs:enumeration value="Top"/>
+                        <xs:enumeration value="Middle"/>
+                        <xs:enumeration value="Bottom"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
@@ -339,6 +344,10 @@
 
                         <xs:element ref="TreeNode"/>
 
+                        <xs:element ref="GridAllocatorRenderer"/>
+
+                        <xs:element ref="List"/>
+
                     </xs:choice>
 
                     <xs:element name="CurrentItem" minOccurs="0" maxOccurs="1"/>
@@ -425,11 +434,11 @@
 
     <xs:complexType name="TreeNodeType">
 
-        <xs:complexContent>
+        <xs:sequence>
 
-            <xs:extension base="ComponentChoiceType"/>
+            <xs:element name="Text" type="xs:string"/>
 
-        </xs:complexContent>
+        </xs:sequence>
 
     </xs:complexType>
 
@@ -461,6 +470,10 @@
 
             <xs:element ref="Tree"/>
 
+            <xs:element ref="GridAllocatorRenderer"/>
+
+            <xs:element ref="List"/>
+
         </xs:choice>
 
     </xs:complexType>
@@ -478,5 +491,37 @@
     <xs:element name="RootPanel" type="RootPanelType"/>
 
     <xs:element name="TreeNode" type="TreeNodeType"/>
+
+    <xs:complexType name="GridAllocatorRendererType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:attribute name="gridAllocator" type="xs:string"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="GridAllocatorRenderer" type="GridAllocatorRendererType"/>
+
+    <xs:complexType name="ListType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:attribute name="entity" type="xs:string"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="List" type="ListType"/>
 
 </xs:schema>
