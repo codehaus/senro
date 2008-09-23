@@ -14,32 +14,16 @@
 				<Row>
 					<Alignment>Center</Alignment>
 				</Row>
-				<Row>
-					<Alignment>Center</Alignment>
-				</Row>
 			</Rows>
 			<Components>
-				<Tree id="tree1" name="menu" row="1" col="1">
-				    <TreeNode>
-						<Label id="lbl123" name="lbl123">
-							<Text>1234</Text>
-						</Label>
-					</TreeNode>
+				<Tree id="tree1" name="menu" row="0" col="0">
 					<Iterator id="iter1" name="menuIterator" list="@{allEntities}">
 						<TreeNode>
-							<Label>
-								<Text>@{menuIterator.currentItem.metadata.name}</Text>
-							</Label>
+							<Text>@{menuIterator.currentItem.qualifiedName}</Text>
 						</TreeNode>
 					</Iterator>
 				</Tree>
-				<RootPanel id="rootPanel" name="rootPanel" row="1" col="2" />
-				<Label id="label1" name="label1" row="2" col="1">
-					<Text>Hello world</Text>
-				</Label>
-				<Label id="label2" name="label2" row="2" col="1">
-					<Text>Mesajul de la label1 este: @{label1.text}</Text>
-				</Label>
+				<RootPanel id="rootPanel" name="rootPanel" row="0" col="1" />
 			</Components>
 		</Grid>
 	</Layout>

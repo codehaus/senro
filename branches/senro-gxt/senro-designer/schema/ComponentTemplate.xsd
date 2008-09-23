@@ -80,6 +80,7 @@
                                     <xs:element ref="Conditional"/>
                                     <xs:element ref="Tree"/>
                                     <xs:element ref="RootPanel"/>
+                                    <xs:element ref="GridAllocatorRenderer"/>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
@@ -339,6 +340,8 @@
 
                         <xs:element ref="TreeNode"/>
 
+                        <xs:element ref="GridAllocatorRenderer"/>
+
                     </xs:choice>
 
                     <xs:element name="CurrentItem" minOccurs="0" maxOccurs="1"/>
@@ -425,11 +428,11 @@
 
     <xs:complexType name="TreeNodeType">
 
-        <xs:complexContent>
+        <xs:sequence>
 
-            <xs:extension base="ComponentChoiceType"/>
+            <xs:element name="Text" type="xs:string"/>
 
-        </xs:complexContent>
+        </xs:sequence>
 
     </xs:complexType>
 
@@ -461,6 +464,8 @@
 
             <xs:element ref="Tree"/>
 
+            <xs:element ref="GridAllocatorRenderer"/>
+
         </xs:choice>
 
     </xs:complexType>
@@ -478,5 +483,21 @@
     <xs:element name="RootPanel" type="RootPanelType"/>
 
     <xs:element name="TreeNode" type="TreeNodeType"/>
+
+    <xs:complexType name="GridAllocatorRendererType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:attribute name="gridAllocator" type="xs:string"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="GridAllocatorRenderer" type="GridAllocatorRendererType"/>
 
 </xs:schema>
