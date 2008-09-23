@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/DesignerComponent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.siveco.ro/senro/DesignerComponent ComponentTemplate.xsd">
+	<Layout>
+		<Grid id="grid1" name="grid1">
+			<Columns>
+				<Column>
+					<Alignment>Right</Alignment>
+				</Column>
+			</Columns>
+
+			<Rows>
+				<Row>
+					<Alignment>Center</Alignment>
+				</Row>
+				<Row>
+					<Alignment>Center</Alignment>
+				</Row>
+			</Rows>
+
+			<Components>
+				<List id="list" name="list" entity="@{entity}" row="0" col="0" />
+				<Button id="btnNew" name="btnNew" row="1" col="0">
+					<Label>New</Label>
+				</Button>
+			</Components>
+		</Grid>
+	</Layout>
+
+	<Server>
+	</Server>
+	
+	<Client>
+	</Client>
+
+	<Params>
+		<Parameter name="entity" type="org.senro.metadata.MetadataClass"/>
+	</Params>
+
+	<Associations/>
+</ComponentTemplate>
