@@ -6,15 +6,6 @@
 				<Column>
 					<Alignment>Right</Alignment>
 				</Column>
-				<Column>
-					<Alignment>Left</Alignment>
-				</Column>
-				<Column>
-					<Alignment>Right</Alignment>
-				</Column>
-				<Column>
-					<Alignment>Left</Alignment>
-				</Column>
 			</Columns>
 
 			<Rows>
@@ -24,148 +15,29 @@
 				<Row>
 					<Alignment>Center</Alignment>
 				</Row>
-				<Row>
-					<Alignment>Center</Alignment>
-				</Row>
-				<Row>
-					<Alignment>Center</Alignment>
-				</Row>
-				<Row>
-					<Alignment>Center</Alignment>
-				</Row>
-				<Row>
-					<Alignment>Center</Alignment>
-				</Row>
 			</Rows>
 
 			<Components>
-				<!-- Row 1-->
-				<Label id="label1" name="lblTitle1" row="1" col="2" colSpan="2">
-					<Text>Currency</Text>
-				</Label>
-
-				<!-- Row 2-->
-				<Label id="label2" name="lblCode" row="2" col="1">
-					<Text>Code:</Text>
-				</Label>
-				<TextField id="textfield1" name="txtCode" row="2" col="2"/>
-				<Label id="label3" name="lblValid" row="2" col="3">
-					<Text>Valid:</Text>
-				</Label>
-				<CheckBox id="checkbox1" name="cbValid1" row="2" col="4"/>
-				
-				<!-- Row 3-->
-				<Label id="label4" name="lblName" row="3" col="1">
-					<Text>Name:</Text>
-				</Label>
-				<TextField id="textfield2" name="txtName" row="3" col="2"/>
-				<Label id="label5" name="lblType" row="3" col="3">
-					<Text>Type:</Text>
-				</Label>
-				<ComboBox id="combobox1" name="cbType" row="3" col="4"/>
-
-				<!-- Row 4-->
-				<Label id="label6" name="lblDate" row="4" col="1">
-					<Text>Date:</Text>
-				</Label>
-				<DateField id="datefield1" name="dtDate" row="4" col="2"/>
-
-				<!-- Row 5-->
-				<Button id="button1" name="btnSave" row="5" col="1" colSpan="2">
-					<Label>Save</Label>
-				</Button>
-				<Button id="button2" name="btnBack" row="5" col="3" colSpan="2">
+				<GridAllocatorRenderer id="gridRenderer" name="gridRenderer" gridAllocator="@{gridAllocator}" row="0" col="0" colSpan="2" />
+				<Button id="btnBack" name="btnBack" row="1" col="0">
 					<Label>Back</Label>
 				</Button>
-
-				<Grid id="grid2" name="grid2" row="6" col="1" colSpan="4">
-					<Columns>
-						<Column>
-							<Alignment>Right</Alignment>
-						</Column>
-						<Column>
-							<Alignment>Left</Alignment>
-						</Column>
-						<Column>
-							<Alignment>Right</Alignment>
-						</Column>
-						<Column>
-							<Alignment>Left</Alignment>
-						</Column>
-					</Columns>
-				
-					<Rows>
-						<Row>
-							<Alignment>Center</Alignment>
-						</Row>
-						<Row>
-							<Alignment>Center</Alignment>
-						</Row>
-						<Row>
-							<Alignment>Center</Alignment>
-						</Row>
-						<Row>
-							<Alignment>Center</Alignment>
-						</Row>
-						<Row>
-							<Alignment>Center</Alignment>
-						</Row>
-					</Rows>
-
-					<Components>
-						<!-- Row 1-->
-						<Label id="label7" name="lblTitle2" row="1" col="2" colSpan="2">
-							<Text>Currency2</Text>
-						</Label>
-
-						<!-- Row 2-->
-						<Label id="label8" name="lblCode2" row="2" col="1">
-							<Text>Code2:</Text>
-						</Label>
-						<TextField id="textfield3" name="txtCode2" row="2" col="2"/>
-						<Label id="label9" name="lblValid2" row="2" col="3">
-							<Text>Valid2:</Text>
-						</Label>
-						<CheckBox id="checkbox2" name="cbValid2" row="2" col="4"/>
-				
-						<!-- Row 3-->
-						<Label id="label10" name="lblName2" row="3" col="1">
-							<Text>Name2:</Text>
-						</Label>
-						<TextField id="textfield4" name="txtName2" row="3" col="2"/>
-						<Label id="label11" name="lblType2" row="3" col="3">
-							<Text>Type2:</Text>
-						</Label>
-						<ComboBox id="combobox2" name="cbType2" row="3" col="4"/>
-
-						<!-- Row 4-->
-						<Label id="label12" name="lblDate2" row="4" col="1">
-							<Text>Date2:</Text>
-						</Label>
-						<DateField id="datefield2" name="dtDate2" row="4" col="2"/>
-
-						<!-- Row 5-->
-						<Button id="button3" name="btnSave2" row="5" col="1" colSpan="2">
-							<Label>Save2</Label>
-						</Button>
-						<Button id="button4" name="btnBack2" row="5" col="3" colSpan="2">
-							<Label>Back2</Label>
-						</Button>
-					</Components>
-				</Grid>
+				<Button id="btnSave" name="btnSave" row="1" col="1">
+					<Label>Save</Label>
+				</Button>
 			</Components>
 		</Grid>
 	</Layout>
 
 	<Server>
-		<GridAllocator id="gridAllocator1" name="gridAllocator" columns="4" entity="$entity"/>
+		<GridAllocator id="gridAllocator1" name="gridAllocator" columns="4" entity="@{entity}"/>
 	</Server>
 	
 	<Client>
 	</Client>
 
 	<Params>
-		<Parameter name="entity" type="java.lang.Class" defaultValue="$senroContext.mainEntity"/>
+		<Parameter name="entity" type="org.senro.metadata.MetadataClass"/>
 	</Params>
 
 	<Associations/>
