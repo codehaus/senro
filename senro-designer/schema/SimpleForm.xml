@@ -4,16 +4,22 @@
 		<Grid id="grid1" name="grid1">
 			<Columns>
 				<Column>
-					<Alignment>Right</Alignment>
+					<Alignment>Left</Alignment>
+				</Column>
+				<Column>
+					<Alignment>Left</Alignment>
 				</Column>
 			</Columns>
 
 			<Rows>
 				<Row>
-					<Alignment>Center</Alignment>
+					<Alignment>Middle</Alignment>
 				</Row>
 				<Row>
-					<Alignment>Center</Alignment>
+					<Alignment>Middle</Alignment>
+				</Row>
+				<Row>
+					<Alignment>Middle</Alignment>
 				</Row>
 			</Rows>
 
@@ -25,6 +31,17 @@
 				<Button id="btnSave" name="btnSave" row="1" col="1">
 					<Label>Save</Label>
 				</Button>
+				<TabPanel id="tabPanel" name="tabPanel" row="2" col="0" colSpan="2">
+					<Iterator id="tabIter" name="tabIter" list="@{entity.properties}">
+						<Conditional>
+							<If condition="@{tabIter.currentItem.isMany}">
+								<Template file="SimpleList.xml">
+									<Param name="entity" value="@{metadataManager.getMetadata(tabIter.currentItem.type)}" />
+								</Template>
+							</If>
+						</Conditional>
+					</Iterator>
+				</TabPanel>
 			</Components>
 		</Grid>
 	</Layout>
@@ -38,6 +55,7 @@
 
 	<Params>
 		<Parameter name="entity" type="org.senro.metadata.MetadataClass"/>
+		<Parameter name="metadataManager" type="org.senro.metadata.MetadataManager"/>
 	</Params>
 
 	<Associations/>

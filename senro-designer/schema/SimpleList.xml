@@ -10,10 +10,10 @@
 
 			<Rows>
 				<Row>
-					<Alignment>Center</Alignment>
+					<Alignment>Middle</Alignment>
 				</Row>
 				<Row>
-					<Alignment>Center</Alignment>
+					<Alignment>Middle</Alignment>
 				</Row>
 			</Rows>
 

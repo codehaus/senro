@@ -81,6 +81,8 @@
                                     <xs:element ref="Tree"/>
                                     <xs:element ref="RootPanel"/>
                                     <xs:element ref="GridAllocatorRenderer"/>
+                                    <xs:element ref="List"/>
+                                    <xs:element ref="TabPanel"/>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
@@ -203,7 +205,7 @@
 	<xs:complexType name="TemplateType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
-                <xs:sequence>
+                <xs:sequence maxOccurs="unbounded">
                     <xs:element name="Param">
                         <xs:complexType>
                             <xs:attribute name="name" type="xs:string"/>
@@ -211,6 +213,7 @@
                         </xs:complexType>
                     </xs:element>
                 </xs:sequence>
+                <xs:attribute name="file" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -345,6 +348,10 @@
 
                         <xs:element ref="GridAllocatorRenderer"/>
 
+                        <xs:element ref="List"/>
+
+                        <xs:element ref="TabPanel"/>
+
                     </xs:choice>
 
                     <xs:element name="CurrentItem" minOccurs="0" maxOccurs="1"/>
@@ -469,6 +476,10 @@
 
             <xs:element ref="GridAllocatorRenderer"/>
 
+            <xs:element ref="List"/>
+
+            <xs:element ref="TabPanel"/>
+
         </xs:choice>
 
     </xs:complexType>
@@ -502,5 +513,59 @@
     </xs:complexType>
 
     <xs:element name="GridAllocatorRenderer" type="GridAllocatorRendererType"/>
+
+    <xs:complexType name="ListType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:attribute name="entity" type="xs:string"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="List" type="ListType"/>
+
+    <xs:complexType name="TabPanelType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:sequence maxOccurs="unbounded">
+
+                    <xs:element ref="TabPage"/>
+
+                    <xs:element ref="Iterator"/>
+
+                </xs:sequence>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="TabPageType">
+
+        <xs:complexContent>
+
+            <xs:extension base="ComponentChoiceType">
+
+                <xs:attribute name="orderNo"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="TabPage" type="TabPageType"/>
+
+    <xs:element name="TabPanel" type="TabPanelType"/>
 
 </xs:schema>
