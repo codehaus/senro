@@ -40,6 +40,9 @@ import java.awt.event.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ArrayList;
+
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 /**
  * The main frame window for the application
@@ -147,6 +150,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
      */
     private FrameDocker m_docker;
 
+    private DesignerManager designerManager;
+
     public static final String ID_FRAME_BOUNDS = "main.frame.bounds";
 
     public IBMainFrame()
@@ -214,8 +219,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
             m_split.add(editor_panel);
             m_split.add(controls_panel);
 
-            JPanel p = new JPanel();
-            p.setBackground(Color.BLUE.darker().darker());
+            designerManager = new DesignerManager(this);
+            JPanel p = designerManager.getDesignerPanel();
             top_split.add(m_split);
             top_split.add(p);
             // End block
@@ -238,6 +243,28 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         } catch (Exception e) {
             FormsLogger.debug(e);
         }
+    }
+
+    public java.util.List<FormComponent> getForms()
+    {
+        java.util.List<FormComponent> forms = new ArrayList<FormComponent>();
+        for(int i = 0; i < m_forms_tab.getTabCount(); i++) {
+            FormEditor ed = (FormEditor)m_forms_tab.getComponentAt(i);
+            ed.saveFocusPolicy();
+            forms.add(ed.getFormComponent());
+        }
+        return forms;
+    }
+
+    public java.util.List<GridView> getTopGrids()
+    {
+        java.util.List<GridView> grids = new ArrayList<GridView>();
+        for(int i = 0; i < m_forms_tab.getTabCount(); i++) {
+            FormEditor ed = (FormEditor)m_forms_tab.getComponentAt(i);
+            ed.saveFocusPolicy();
+            grids.add(ed.getFormComponent().getChildView());
+        }
+        return grids;
     }
 
     /**
@@ -495,9 +522,9 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         m_composite_finder.add(menu_finder);
 
         JMenu menu = new JMenu(I18N.getLocalizedMessage("File"));
-        menu.add(i18n_createMenuItem("New Form", MainFrameNames.ID_CREATE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_N,
+        menu.add(i18n_createMenuItem("New Grid", MainFrameNames.ID_CREATE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_N,
                 InputEvent.CTRL_MASK, false)));
-        menu.add(i18n_createMenuItem("Open Form", MainFrameNames.ID_OPEN_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_O,
+        menu.add(i18n_createMenuItem("Open Grid", MainFrameNames.ID_OPEN_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 InputEvent.CTRL_MASK, false)));
         menu.add(i18n_createMenuItem("Save", MainFrameNames.ID_SAVE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 InputEvent.CTRL_MASK, false)));
@@ -506,6 +533,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
 
         menu.addSeparator();
         menu.add(i18n_createMenuItem("New Project", MainFrameNames.ID_CREATE_PROJECT, null));
+        menu.add(i18n_createMenuItem("Save Project", MainFrameNames.ID_SAVE_PROJECT, null));
         menu.add(i18n_createMenuItem("Open Project", MainFrameNames.ID_OPEN_PROJECT, null));
         menu.add(i18n_createMenuItem("Close Project", MainFrameNames.ID_CLOSE_PROJECT, null));
         menu.addSeparator();
@@ -1235,39 +1263,13 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         protected abstract Component loadView();
     }
 
-    private class AssocDrawer extends MouseAdapter
+    public DesignerManager getDesignerManager()
     {
-        private int startX;
-        private int startY;
-        private int currentX;
-        private int currentY;
+        return designerManager;
+    }
 
-        public AssocDrawer()
-        {
-            IBMainFrame.this.addMouseListener(this);
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e)
-        {
-            System.out.println("mouseClicked");
-            super.mouseClicked(e);
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e)
-        {
-            System.out.println("mousePressed");
-            super.mousePressed(e);
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e)
-        {
-            System.out.println("mouseReleased");
-            super.mouseReleased(e);
-        }
-
-
+    public IBMainFrameController getController()
+    {
+        return m_controller;
     }
 }

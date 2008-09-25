@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns="http://www.siveco.ro/senro/DesignerComponent"
+           xmlns="http://www.siveco.ro/senro/ComponentTemplate"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           targetNamespace="http://www.siveco.ro/senro/DesignerComponent" elementFormDefault="qualified"
+           targetNamespace="http://www.siveco.ro/senro/ComponentTemplate" elementFormDefault="qualified"
         >
 
     <!-- Definition of the generic types used in this schema -->
@@ -66,7 +66,7 @@
                     <xs:element name="Components">
                         <xs:complexType>
                             <xs:sequence>
-                                <xs:choice maxOccurs="unbounded">
+                                <xs:choice minOccurs="0" maxOccurs="unbounded">
                                     <xs:element ref="Label"/>
                                     <xs:element ref="TextField"/>
                                     <xs:element ref="TextArea"/>
@@ -94,12 +94,14 @@
 
     <xs:complexType name="GridSpecificationElement">
         <xs:sequence>
-            <xs:element name="Alignment" minOccurs="0" maxOccurs="1">
+            <xs:element name="Alignment" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:NMTOKEN">
                         <xs:enumeration value="Left"/>
-                        <xs:enumeration value="Center"/>
                         <xs:enumeration value="Right"/>
+                        <xs:enumeration value="Top"/>
+                        <xs:enumeration value="Bottom"/>
+                        <xs:enumeration value="Center"/>
                         <xs:enumeration value="Fill"/>
                         <xs:enumeration value="Top"/>
                         <xs:enumeration value="Middle"/>
@@ -108,7 +110,7 @@
                 </xs:simpleType>
             </xs:element>
             <xs:element name="Resize" minOccurs="0" maxOccurs="1" type="xs:decimal"/>
-            <xs:element name="Size" minOccurs="0">
+            <xs:element name="Size" minOccurs="1" maxOccurs="1">
                 <xs:complexType>
                     <xs:choice>
                         <xs:element name="Constant" type="xs:integer"/>
@@ -191,6 +193,9 @@
     <xs:complexType name="CheckBoxType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
+                <xs:sequence>
+                    <xs:element name="Label" type="xs:string"/>
+                </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

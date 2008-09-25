@@ -21,20 +21,21 @@ package com.jeta.swingbuilder.gui.main;
 
 public class MainFrameNames extends FormEditorNames
 {
-   public static final String ID_CREATE_FORM     = "create.form";
-   public static final String ID_CREATE_PROJECT  = "create.project";
-   public static final String ID_OPEN_FORM       = "open.form";
-   public static final String ID_OPEN_PROJECT    = "open.project";
-   public static final String ID_CLOSE_PROJECT   = "close.project";
+   public static final String ID_CREATE_FORM      = "create.form";
+   public static final String ID_CREATE_PROJECT   = "create.project";
+   public static final String ID_OPEN_FORM        = "open.form";
+   public static final String ID_OPEN_PROJECT     = "open.project";
+   public static final String ID_CLOSE_PROJECT    = "close.project";
 
-   public static final String ID_SAVE_FORM       = "save.form";
-   public static final String ID_SAVE_FORM_AS    = "save.form.as";
-   public static final String ID_SHOW_FORM       = "show.form";
-   public static final String ID_CLOSE_FORM      = "close.form";
+   public static final String ID_SAVE_FORM        = "save.form";
+   public static final String ID_SAVE_FORM_AS     = "save.form.as";
+   public static final String ID_SAVE_PROJECT     = "save.project";
+   public static final String ID_SHOW_FORM        = "show.form";
+   public static final String ID_CLOSE_FORM       = "close.form";
 
-   public static final String ID_FORM_PROPERTIES = "form.properties";
+   public static final String ID_FORM_PROPERTIES  = "form.properties";
 
-   public static final String ID_ABOUT           = "show.about";
+   public static final String ID_ABOUT            = "show.about";
 
 
    public static final String ID_LOOK_AND_FEEL_MANAGER   = "look.and.feel.manager";
