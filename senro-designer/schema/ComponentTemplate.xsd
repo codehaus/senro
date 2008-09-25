@@ -357,6 +357,8 @@
 
                         <xs:element ref="TabPanel"/>
 
+                        <xs:element ref="TabPage"/>
+
                     </xs:choice>
 
                     <xs:element name="CurrentItem" minOccurs="0" maxOccurs="1"/>
@@ -453,7 +455,11 @@
 
     <xs:complexType name="ComponentChoiceType">
 
-        <xs:choice maxOccurs="unbounded">
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:choice maxOccurs="unbounded">
 
             <xs:element ref="Label"/>
 
@@ -485,7 +491,13 @@
 
             <xs:element ref="TabPanel"/>
 
+            <xs:element ref="TabPage"/>
+
         </xs:choice>
+
+            </xs:extension>
+
+        </xs:complexContent>
 
     </xs:complexType>
 
@@ -562,6 +574,8 @@
             <xs:extension base="ComponentChoiceType">
 
                 <xs:attribute name="orderNo"/>
+
+                <xs:attribute name="title"/>
 
             </xs:extension>
 

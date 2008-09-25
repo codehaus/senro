@@ -35,9 +35,11 @@
 					<Iterator id="tabIter" name="tabIter" list="@{entity.properties}">
 						<Conditional>
 							<If condition="@{tabIter.currentItem.isMany}">
-								<Template file="SimpleList.xml">
-									<Param name="entity" value="@{metadataManager.getMetadata(tabIter.currentItem.type)}" />
-								</Template>
+								<TabPage title="@{tabIter.currentItem.type}">
+									<Template file="SimpleList.xml">
+										<Param name="entity" value="@{metadataManager.getMetadata(tabIter.currentItem.type)}" />
+									</Template>
+								</TabPage>
 							</If>
 						</Conditional>
 					</Iterator>
