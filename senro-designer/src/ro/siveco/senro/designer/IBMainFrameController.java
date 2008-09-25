@@ -43,21 +43,27 @@ import com.jeta.swingbuilder.interfaces.userprops.TSUserPropertiesUtils;
 import com.jeta.swingbuilder.store.ProjectModel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Dimension;
+import java.awt.Component;
+import java.awt.Rectangle;
 import java.io.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import org.apache.log4j.Logger;
 
 /**
  * Controller class for MainFrame
  */
 public class IBMainFrameController extends IBFormEditorController
 {
+    private static Logger logger = Logger.getLogger(IBMainFrameController.class);
+
     private IBMainFrame m_frame;
 
     /**
@@ -83,15 +89,17 @@ public class IBMainFrameController extends IBFormEditorController
     {
         super(frame, frame.m_form_popup);
         m_frame = frame;
-        assignAction(MainFrameNames.ID_CREATE_FORM, new NewFormAction());
-        assignAction(MainFrameNames.ID_CREATE_PROJECT, new NewProjectAction());
-        assignAction(MainFrameNames.ID_CLOSE_PROJECT, new CloseProjectAction());
+        assignAction(MainFrameNames.ID_CREATE_FORM, new NewDesignerGridAction());
         assignAction(MainFrameNames.ID_OPEN_FORM, new OpenFormAction());
-        assignAction(MainFrameNames.ID_OPEN_PROJECT, new OpenProjectAction());
         assignAction(MainFrameNames.ID_SHOW_FORM, new ShowFormAction());
         assignAction(MainFrameNames.ID_SAVE_FORM, new SaveFormAction());
         assignAction(MainFrameNames.ID_SAVE_FORM_AS, new SaveAsAction());
         assignAction(MainFrameNames.ID_CLOSE_FORM, new CloseFormAction());
+
+        assignAction(MainFrameNames.ID_CREATE_PROJECT, new NewDesignerProjectAction());
+        assignAction(MainFrameNames.ID_OPEN_PROJECT, new OpenDesignerProjectAction());
+        assignAction(MainFrameNames.ID_SAVE_PROJECT, new SaveDesignerProjectAction());
+        assignAction(MainFrameNames.ID_CLOSE_PROJECT, new CloseDesignerProjectAction());
 
         assignAction(FormEditorNames.ID_EXPORT_COMPONENT_NAMES, new ExportNamesAction());
         assignAction(MainFrameNames.ID_FORWARD_ENGINEER, new ForwardEngineerAction());
@@ -345,7 +353,7 @@ public class IBMainFrameController extends IBFormEditorController
      * @param saveAs if true, then prompts the user for a new file name. If false,
      *               uses the current filename for the selected form.
      */
-    private File saveForm(boolean saveAs)
+    public File saveForm(boolean saveAs)
     {
         m_frame.unitTest();
         m_frame.getPropertyContainer().stopEditing();
@@ -976,5 +984,45 @@ public class IBMainFrameController extends IBFormEditorController
 			}
 		}
 	}
+
+    public class NewDesignerProjectAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent evt)
+        {
+            m_frame.getDesignerManager().newProject();
+        }
+    }
+
+    public class SaveDesignerProjectAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            m_frame.getDesignerManager().saveProject();
+        }
+    }
+
+    public class OpenDesignerProjectAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            m_frame.getDesignerManager().openProject();
+        }
+    }
+
+    public class CloseDesignerProjectAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            m_frame.getDesignerManager().closeProject();
+        }
+    }
+
+    public class NewDesignerGridAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent evt)
+        {
+            m_frame.getDesignerManager().newGrid(IBMainFrameController.this);
+        }
+    }
 
 }

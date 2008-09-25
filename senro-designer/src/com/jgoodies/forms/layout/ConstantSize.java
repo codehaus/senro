@@ -280,7 +280,7 @@ public final class ConstantSize implements Size, Serializable {
 
     // Helper Code **********************************************************
 
-    private int intValue() {
+    public int intValue() {
         return (int) Math.round(value);
     }
     

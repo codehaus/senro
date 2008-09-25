@@ -196,7 +196,7 @@ public abstract class FormSpec implements Serializable {
      * 
      * @return true if it can grow, false if it can't grow
      */
-    final boolean canGrow() {
+    public final boolean canGrow() {
         return getResizeWeight() != NO_GROW;
     }
 

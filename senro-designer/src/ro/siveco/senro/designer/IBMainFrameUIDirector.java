@@ -46,9 +46,9 @@ public class IBMainFrameUIDirector implements UIDirector
         m_frame.enableComponent(MainFrameNames.ID_CREATE_FORM, has_project);
         m_frame.enableComponent(MainFrameNames.ID_OPEN_FORM, has_project);
         m_frame.enableComponent(MainFrameNames.ID_PROJECT_SETTINGS, has_project);
-        m_frame.enableComponent(MainFrameNames.ID_CREATE_PROJECT, !has_project);
-        m_frame.enableComponent(MainFrameNames.ID_CLOSE_PROJECT, has_project);
-        m_frame.enableComponent(MainFrameNames.ID_OPEN_PROJECT, !has_project);
+//        m_frame.enableComponent(MainFrameNames.ID_CREATE_PROJECT, !has_project);
+//        m_frame.enableComponent(MainFrameNames.ID_CLOSE_PROJECT, has_project);
+//        m_frame.enableComponent(MainFrameNames.ID_OPEN_PROJECT, !has_project);
 
         boolean has_editor = (m_frame.getCurrentEditor() != null);
 

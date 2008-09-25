@@ -1,0 +1,63 @@
+package ro.siveco.senro.designer.ui;
+
+import ro.siveco.senro.designer.objects.*;
+import ro.siveco.senro.designer.engine.DesignerManager;
+
+import javax.swing.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.net.URL;
+
+public class DesignerCellFactory implements CellFactory
+{
+    protected MatrixView matrixView = null;
+    protected static Map<String, ImageIcon> iconForClass;
+    public static final String DISPLAY_GROUP_IMAGE_FILE = "DisplayGroup.png";
+    public static final String EDITING_CONTEXT_IMAGE_FILE = "EditingContext.png";
+    public static final String SENRO_CONTEXT_IMAGE_FILE = "SenroContext.png";
+    public static final String GRID_ALLOCATOR_IMAGE_FILE = "GridAllocator.png";
+
+    public MatrixCell getCellForData(Object data)
+    {
+        if(data == null)
+            return null;
+        ObjectDescription obj_desc = (ObjectDescription) data;
+        String class_name = obj_desc.getObjectClassName();
+        String name = obj_desc.getName();
+        ImageIcon icon = iconForClass.get(class_name);
+        return new SfdCell(matrixView, icon, name);
+    }
+
+    public MatrixView getMatrixView()
+    {
+        return matrixView;
+    }
+
+    public void setMatrixView(MatrixView matrixView)
+    {
+        this.matrixView = matrixView;
+    }
+
+
+    public static ImageIcon getIconForImage(String image_path)
+    {
+        ImageIcon icon = null;
+        URL img_URL = DesignerCellFactory.class.getResource(image_path);
+        if (img_URL != null) {
+            icon = new ImageIcon(img_URL, image_path);
+        }
+        return icon;
+    }
+
+    static {
+        iconForClass = new HashMap<String, ImageIcon>();
+        ImageIcon dg_icon = getIconForImage(DesignerManager.RELATIVE_PATH_TO_IMG + DISPLAY_GROUP_IMAGE_FILE);
+        ImageIcon ec_icon = getIconForImage(DesignerManager.RELATIVE_PATH_TO_IMG + EDITING_CONTEXT_IMAGE_FILE);
+        ImageIcon sc_icon = getIconForImage(DesignerManager.RELATIVE_PATH_TO_IMG + SENRO_CONTEXT_IMAGE_FILE);
+        ImageIcon ga_icon = getIconForImage(DesignerManager.RELATIVE_PATH_TO_IMG + GRID_ALLOCATOR_IMAGE_FILE);
+        iconForClass.put(DisplayGroupDescription.OBJECT_CLASS_NAME, dg_icon);
+        iconForClass.put(EditingContextDescription.OBJECT_CLASS_NAME, ec_icon);
+        iconForClass.put(SenroContextDescription.OBJECT_CLASS_NAME, sc_icon);
+        iconForClass.put(GridAllocatorDescription.OBJECT_CLASS_NAME, ga_icon);
+    }
+}

@@ -46,7 +46,7 @@ import java.util.List;
  * @see	Sizes.ComponentSize
  */
 
-final class BoundedSize implements Size, Serializable {
+public final class BoundedSize implements Size, Serializable {
     
     /**
      * Holds the base size.
@@ -130,6 +130,24 @@ final class BoundedSize implements Size, Serializable {
         return size;
     }
 
+    public boolean hasMax()
+    {
+        return lowerBound != null;
+    }
+
+    public boolean hasMin()
+    {
+        return upperBound != null;
+    }
+
+    public int getConstantValue()
+    {
+        if(hasMax()) {
+            return ((ConstantSize)lowerBound).intValue();
+        } else {
+            return ((ConstantSize)upperBound).intValue();
+        }
+    }
 
     // Overriding Object Behavior *******************************************
     
