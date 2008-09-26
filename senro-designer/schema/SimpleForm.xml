@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<ComponentTemplate xmlns="http://www.siveco.ro/senro/DesignerComponent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.siveco.ro/senro/DesignerComponent ComponentTemplate.xsd">
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/ComponentTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.siveco.ro/senro/ComponentTemplate ComponentTemplate.xsd">
 	<Layout>
 		<Grid id="grid1" name="grid1">
 			<Columns>
 				<Column>
-					<Alignment>Left</Alignment>
+					<Alignment>Right</Alignment>
 				</Column>
 				<Column>
 					<Alignment>Left</Alignment>
@@ -27,6 +27,8 @@
 				<GridAllocatorRenderer id="gridRenderer" name="gridRenderer" gridAllocator="@{gridAllocator}" row="0" col="0" colSpan="2" />
 				<Button id="btnBack" name="btnBack" row="1" col="0">
 					<Label>Back</Label>
+					<Entity>@{entity.qualifiedName}</Entity>
+					<Task>list</Task>
 				</Button>
 				<Button id="btnSave" name="btnSave" row="1" col="1">
 					<Label>Save</Label>
@@ -34,7 +36,7 @@
 				<TabPanel id="tabPanel" name="tabPanel" row="2" col="0" colSpan="2">
 					<Iterator id="tabIter" name="tabIter" list="@{entity.properties}">
 						<Conditional>
-							<If condition="@{tabIter.currentItem.isMany}">
+							<If condition="@{tabIter.currentItem.isMany}">	
 								<TabPage title="@{tabIter.currentItem.type}">
 									<Template file="SimpleList.xml">
 										<Param name="entity" value="@{metadataManager.getMetadata(tabIter.currentItem.type)}" />
