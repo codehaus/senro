@@ -267,7 +267,10 @@ public class ComponentsToolBar extends JETAPanel implements ComponentSource
 
 	 boolean add_forms = true;
 	 Collection default_beans = bm.getDefaultBeans();
-	 Iterator iter = default_beans.iterator();
+          btns.add(registerBean(ID_EMBEDDED_FORM_COMPONENT, I18N.getLocalizedMessage("Embedded Form"),
+                                new EmbeddedFormComponentFactory(this),
+                                Icons.EMBEDDED_FORM_16));
+          Iterator iter = default_beans.iterator();
 	 while( iter.hasNext() )
 	 {
 	    RegisteredBean rbean = (RegisteredBean)iter.next();

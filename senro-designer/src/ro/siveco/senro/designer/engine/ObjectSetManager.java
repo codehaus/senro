@@ -47,6 +47,8 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     protected JPanel palettesPanel;
     protected CardLayout card;
     protected ObjectSetPalette objSetPalette;
+    protected boolean isActive = false;
+    protected boolean isClean = true;
 
     public ObjectSetManager(String obj_set_name, InspectorManager inspector_manager)
     {
@@ -63,6 +65,16 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         for (int i = 0; i < cols * rows; i++) {
             dataObjects.add(null);
         }
+    }
+
+    public boolean isActive()
+    {
+        return isActive;
+    }
+
+    public void setActive(boolean active)
+    {
+        isActive = active;
     }
 
     public JPanel getPresentationPanel()
@@ -164,6 +176,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         changed_data.add(dragged_cell);
         changed_data.add(end_dragg_cell);
         matrixView.modelDataDidChanged(changed_data);
+        setClean(false);
         return true;
     }
 
@@ -178,6 +191,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
                 List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
                 changed_data.add(unique_obj_coord);
                 matrixView.modelDataDidChanged(changed_data);
+                setClean(false);
             }
         } else {
             addRow();
@@ -229,6 +243,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
                     setDataAt(null, cell.col, cell.row);
                 }
                 matrixView.modelDataDidChanged(new ArrayList<CellCoordinates>(removable_obj));
+                setClean(false);
                 break;
             case JOptionPane.NO_OPTION:
                 break;
@@ -238,16 +253,23 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
 
     public void selectionDidChange(Set<CellCoordinates> new_selected_cells)
     {
-        // empty selection in others ObjectSetManagers
-         for(ObjectSetManager other: otherObjSetManagers) {
-            other.resetSelection();
+        if(!isActive() && !new_selected_cells.isEmpty()) {
+            setActive(true);
+            // empty selection in others ObjectSetManagers
+             for(ObjectSetManager other: otherObjSetManagers) {
+                other.setActive(false);
+                other.resetSelection();
+            }
+            // show the specific palette associated with this ObjectSetManager
+            showObjSetPalette();
         }
-        // show the specific palette associated with this ObjectSetManager
-        showObjSetPalette();
-        Set<CellCoordinates> selected_cells = matrixView.getSelectedCells();
+        if(!isActive()) {
+            return;
+        }
+        // inspect new selection
         ObjectDescription obj_to_inspect;
-        if(selected_cells.size() == 1) {
-            CellCoordinates sel_cell = selected_cells.iterator().next();
+        if(new_selected_cells.size() == 1) {
+            CellCoordinates sel_cell = new_selected_cells.iterator().next();
             obj_to_inspect = (ObjectDescription) getDataAt(sel_cell.col, sel_cell.row);
         } else {
            obj_to_inspect = null;
@@ -279,6 +301,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
         changed_data.add(cell_coordinates);
         matrixView.modelDataDidChanged(changed_data);
+        setClean(false);
         inspectObject(new_obj);
         objSetPalette.selectToggleButtonWithCmd(ObjectSetPalette.ARROW_BUTTON_ACTION_CMD);
     }
@@ -389,27 +412,41 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         return data;
     }
 
+    private List<ObjectDescription> getEmptyStateList(int new_cols, int new_rows)
+    {
+        int size = new_cols * new_rows;
+        List<ObjectDescription> new_data_obj = new ArrayList<ObjectDescription>(size);
+        for (int i = 0; i < size; i++) {
+            new_data_obj.add(null);
+        }
+        return new_data_obj;
+    }
+
     public void addColumn()
     {
-        List<ObjectDescription> new_data_obj = new ArrayList<ObjectDescription>((cols + 1) * rows);
+        List<ObjectDescription> new_data_obj = getEmptyStateList(cols + 1, rows);
         // preserve the old cell positions in matrix
         for (int col = 0; col < cols; col++) {
             for (int row = 0; row < rows; row++) {
                 new_data_obj.set((cols + 1) * row + col, (ObjectDescription) getDataAt(col, row));
             }
         }
-        // add null in new column
-        for (int row = 0; row < rows; row++) {
-            new_data_obj.set((cols + 1) * row + cols, null);
-        }
         dataObjects = new_data_obj;
         cols += 1;
         matrixView.refreshCellStructure();
+        setClean(false);
     }
 
     public void removeColumn()
     {
-        List<ObjectDescription> new_data_obj = new ArrayList<ObjectDescription>((cols - 1) * rows);
+        for (int r = 0; r < rows; r++) {
+            ObjectDescription obj_desc = (ObjectDescription) getDataAt(cols - 1, r);
+            if (obj_desc != null) {
+                JOptionPane.showMessageDialog(matrixView, "Remove objects before removing column!", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+        }
+        List<ObjectDescription> new_data_obj = getEmptyStateList(cols - 1, rows);
         // preserve the old cell positions in matrix for the remaining columns
         for (int col = 0; col < cols - 1; col++) {
             for (int row = 0; row < rows; row++) {
@@ -419,29 +456,34 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         dataObjects = new_data_obj;
         cols -= 1;
         matrixView.refreshCellStructure();
+        setClean(false);
     }
 
     public void addRow()
     {
-        List<ObjectDescription> new_data_obj = new ArrayList<ObjectDescription>(cols * (rows + 1));
+        List<ObjectDescription> new_data_obj = getEmptyStateList(cols, rows + 1);
         // preserve the old cell positions in matrix
         for (int col = 0; col < cols; col++) {
             for (int row = 0; row < rows; row++) {
                 new_data_obj.set(cols * row + col, (ObjectDescription) getDataAt(col, row));
             }
         }
-        // add null in new row
-        for (int col = 0; col < cols; col++) {
-            new_data_obj.set(cols * rows + col, null);
-        }
         dataObjects = new_data_obj;
         rows += 1;
         matrixView.refreshCellStructure();
+        setClean(false);
     }
 
     public void removeRow()
     {
-        List<ObjectDescription> new_data_obj = new ArrayList<ObjectDescription>(cols * (rows - 1));
+        for (int c = 0; c < cols; c++) {
+            ObjectDescription obj_desc = (ObjectDescription) getDataAt(c, rows - 1);
+            if (obj_desc != null) {
+                JOptionPane.showMessageDialog(matrixView, "Remove objects before removing row!", "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+        }
+        List<ObjectDescription> new_data_obj = getEmptyStateList(cols, rows - 1);
         // preserve the old cell positions in matrix for the remaining rows
         for (int col = 0; col < cols; col++) {
             for (int row = 0; row < rows - 1; row++) {
@@ -451,10 +493,22 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         dataObjects = new_data_obj;
         rows -= 1;
         matrixView.refreshCellStructure();
+        setClean(false);
     }
 
     public void objectDidChange(ObjectDescription o)
     {
         matrixView.modelDataDidChanged(Collections.<CellCoordinates>emptyList());
+        setClean(false);
+    }
+
+    public boolean isClean()
+    {
+        return isClean;
+    }
+
+    public void setClean(boolean clean)
+    {
+        isClean = clean;
     }
 }

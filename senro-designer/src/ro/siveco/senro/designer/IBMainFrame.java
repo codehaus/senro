@@ -526,9 +526,9 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
                 InputEvent.CTRL_MASK, false)));
         menu.add(i18n_createMenuItem("Open Grid", MainFrameNames.ID_OPEN_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_O,
                 InputEvent.CTRL_MASK, false)));
-        menu.add(i18n_createMenuItem("Save", MainFrameNames.ID_SAVE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_S,
-                InputEvent.CTRL_MASK, false)));
-        menu.add(i18n_createMenuItem("Save As", MainFrameNames.ID_SAVE_FORM_AS, null));
+//        menu.add(i18n_createMenuItem("Save", MainFrameNames.ID_SAVE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//                InputEvent.CTRL_MASK, false)));
+//        menu.add(i18n_createMenuItem("Save As", MainFrameNames.ID_SAVE_FORM_AS, null));
         menu.add(i18n_createMenuItem("Close Form", MainFrameNames.ID_CLOSE_FORM, null));
 
         menu.addSeparator();
@@ -691,7 +691,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_PROJECT, Icons.OPEN_PROJECT_24, "Open Project"));
 
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_FORM, Icons.OPEN_24, "Open Form"));
-        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_SAVE_FORM, Icons.SAVE_24, "Save Form"));
+        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_SAVE_PROJECT, Icons.SAVE_24, "Save Project"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_FORM, Icons.ADD_24, "Create Form"));
 
         toolbar.addSeparator();

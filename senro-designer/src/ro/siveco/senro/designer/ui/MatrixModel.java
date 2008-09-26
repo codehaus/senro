@@ -13,4 +13,8 @@ public interface MatrixModel {
 	public boolean swapCells(CellCoordinates dragged_cell, CellCoordinates end_dragg_cell);
     public void removeObjects(Set<CellCoordinates> objects_to_remove);
     public void mousePressedAtCoordinates(CellCoordinates cell_coordinates);
+    public void addColumn();
+    public void addRow();
+    public void removeColumn();
+    public void removeRow();
 }

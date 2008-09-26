@@ -100,7 +100,7 @@ public class InspectorManager
         FormLayout layout = new FormLayout("1dlu, fill:pref:grow, 1dlu",
                 "1dlu, fill:pref, 1dlu, 1dlu, fill:pref:grow, 1dlu");
         PanelBuilder builder = new PanelBuilder(layout);
-        builder.setBorder(BorderFactory.createTitledBorder("Inspector Manager"));
+        builder.setBorder(BorderFactory.createTitledBorder("Object Inspector"));
         CellConstraints cc = new CellConstraints();
         inspectorsChoice.addItemListener(new InspectorsItemListener());
         builder.add(inspectorsChoice, cc.xy(2, 2));
