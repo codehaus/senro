@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ComponentTemplate xmlns="http://www.siveco.ro/senro/DesignerComponent" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.siveco.ro/senro/DesignerComponent ComponentTemplate.xsd">
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/ComponentTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.siveco.ro/senro/ComponentTemplate ComponentTemplate.xsd">
 	<Layout>
 		<Grid id="grid1" name="grid1">
 			<Columns>
@@ -21,6 +21,8 @@
 				<List id="list" name="list" entity="@{entity}" row="0" col="0" />
 				<Button id="btnNew" name="btnNew" row="1" col="0">
 					<Label>New</Label>
+					<Entity>@{entity.qualifiedName}</Entity>
+					<Task>new</Task>
 				</Button>
 			</Components>
 		</Grid>

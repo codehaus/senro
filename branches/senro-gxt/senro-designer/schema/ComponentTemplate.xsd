@@ -110,7 +110,7 @@
                 </xs:simpleType>
             </xs:element>
             <xs:element name="Resize" minOccurs="0" maxOccurs="1" type="xs:decimal"/>
-            <xs:element name="Size" minOccurs="1" maxOccurs="1">
+            <xs:element name="Size" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:choice>
                         <xs:element name="Constant" type="xs:integer"/>
@@ -185,6 +185,8 @@
             <xs:extension base="UIComponentType">
                 <xs:sequence>
                     <xs:element name="Label" type="xs:string"/>
+					<xs:element name="Entity" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Task" type="xs:string" minOccurs="0"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -383,9 +385,9 @@
 
                 <xs:sequence>
 
-                    <xs:element name="If" type="IfType"/>
+                    <xs:element name="If" type="IfType" minOccurs="1"/>
 
-                    <xs:element name="Else" type="ElseType"/>
+                    <xs:element name="Else" type="ElseType" minOccurs="0"/>
 
                 </xs:sequence>
 
@@ -555,9 +557,9 @@
 
                 <xs:sequence maxOccurs="unbounded">
 
-                    <xs:element ref="TabPage"/>
+                    <xs:element ref="TabPage" minOccurs="0"/>
 
-                    <xs:element ref="Iterator"/>
+                    <xs:element ref="Iterator" minOccurs="0"/>
 
                 </xs:sequence>
 
