@@ -179,8 +179,8 @@ public class DefaultBeanManager implements BeanManager {
       registerDefaultBean(I18N.getLocalizedMessage("JLabel"),
                com.jeta.forms.components.label.JETALabel.class.getName(), FormDesignerUtils.loadImage(Icons.LABEL_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JRadioButton"), "javax.swing.JRadioButton", FormDesignerUtils
-               .loadImage(Icons.RADIO_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JRadioButton"), "javax.swing.JRadioButton", FormDesignerUtils
+//               .loadImage(Icons.RADIO_16));
 
       registerDefaultBean(I18N.getLocalizedMessage("JCheckBox"), "javax.swing.JCheckBox", FormDesignerUtils
                .loadImage(Icons.CHECK_16));
@@ -188,75 +188,75 @@ public class DefaultBeanManager implements BeanManager {
       registerDefaultBean(I18N.getLocalizedMessage("JButton"), "javax.swing.JButton", FormDesignerUtils
                .loadImage(Icons.BUTTON_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JToggleButton"), "javax.swing.JToggleButton", FormDesignerUtils
-               .loadImage(Icons.TOGGLE_BUTTON_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JToggleButton"), "javax.swing.JToggleButton", FormDesignerUtils
+//               .loadImage(Icons.TOGGLE_BUTTON_16));
 
       registerDefaultBean(I18N.getLocalizedMessage("JComboBox"), "javax.swing.JComboBox", FormDesignerUtils
                .loadImage(Icons.COMBO_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JList"), "javax.swing.JList", FormDesignerUtils
-               .loadImage(Icons.LIST_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JList"), "javax.swing.JList", FormDesignerUtils
+//               .loadImage(Icons.LIST_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JTable"), "javax.swing.JTable", FormDesignerUtils
-               .loadImage(Icons.TABLE_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JTable"), "javax.swing.JTable", FormDesignerUtils
+//               .loadImage(Icons.TABLE_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JTree"), "javax.swing.JTree", FormDesignerUtils
-               .loadImage(Icons.TREE_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JTree"), "javax.swing.JTree", FormDesignerUtils
+//               .loadImage(Icons.TREE_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JProgressBar"), "javax.swing.JProgressBar", FormDesignerUtils
-               .loadImage(Icons.PROGRESS_BAR_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JProgressBar"), "javax.swing.JProgressBar", FormDesignerUtils
+//               .loadImage(Icons.PROGRESS_BAR_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JSlider"), "javax.swing.JSlider", FormDesignerUtils
-               .loadImage(Icons.SLIDER_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JSlider"), "javax.swing.JSlider", FormDesignerUtils
+//               .loadImage(Icons.SLIDER_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JSpinner"), "javax.swing.JSpinner", FormDesignerUtils
-               .loadImage(Icons.SPINNER_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JSpinner"), "javax.swing.JSpinner", FormDesignerUtils
+//               .loadImage(Icons.SPINNER_16));
 
       registerDefaultBean(I18N.getLocalizedMessage("JTextField"), "javax.swing.JTextField", FormDesignerUtils
                .loadImage(Icons.TEXT_FIELD_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JPasswordField"), "javax.swing.JPasswordField", FormDesignerUtils
-               .loadImage(Icons.PASSWORD_FIELD_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JPasswordField"), "javax.swing.JPasswordField", FormDesignerUtils
+//               .loadImage(Icons.PASSWORD_FIELD_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JFormattedTextField"), "javax.swing.JFormattedTextField",
-               FormDesignerUtils.loadImage(Icons.FORMATTED_FIELD_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JFormattedTextField"), "javax.swing.JFormattedTextField",
+//               FormDesignerUtils.loadImage(Icons.FORMATTED_FIELD_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JTextArea"), "javax.swing.JTextArea", FormDesignerUtils
-               .loadImage(Icons.TEXT_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JTextArea"), "javax.swing.JTextArea", FormDesignerUtils
+//               .loadImage(Icons.TEXT_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JEditorPane"), "javax.swing.JEditorPane", FormDesignerUtils
-               .loadImage(Icons.RICH_TEXT_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JEditorPane"), "javax.swing.JEditorPane", FormDesignerUtils
+//               .loadImage(Icons.RICH_TEXT_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JTabbedPane"), "javax.swing.JTabbedPane", FormDesignerUtils
-               .loadImage(Icons.TABPANE_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JTabbedPane"), "javax.swing.JTabbedPane", FormDesignerUtils
+//               .loadImage(Icons.TABPANE_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("Horizontal Line"), HorizontalLineComponent.class.getName(),
-               FormDesignerUtils.loadImage(Icons.HORIZONTAL_LINE_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Horizontal Line"), HorizontalLineComponent.class.getName(),
+//               FormDesignerUtils.loadImage(Icons.HORIZONTAL_LINE_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("Vertical Line"), VerticalLineComponent.class.getName(),
-               FormDesignerUtils.loadImage(Icons.VERTICAL_LINE_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Vertical Line"), VerticalLineComponent.class.getName(),
+//               FormDesignerUtils.loadImage(Icons.VERTICAL_LINE_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("Color Well"), JETAColorWell.class.getName(), FormDesignerUtils
-               .loadImage(Icons.COLOR_WELL_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Color Well"), JETAColorWell.class.getName(), FormDesignerUtils
+//               .loadImage(Icons.COLOR_WELL_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("Image"), "com.jeta.forms.components.image.ImageComponent",
-               FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Image"), "com.jeta.forms.components.image.ImageComponent",
+//               FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Label"), TitledBorderLabel.class.getName(),
-               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_LABEL_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Label"), TitledBorderLabel.class.getName(),
+//               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_LABEL_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Bottom"), TitledBorderBottom.class.getName(),
-               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_BOTTOM_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Bottom"), TitledBorderBottom.class.getName(),
+//               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_BOTTOM_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Side"), TitledBorderSide.class.getName(),
-               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_SIDE_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Side"), TitledBorderSide.class.getName(),
+//               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_SIDE_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JGoodies Separator"),
-               com.jeta.forms.components.separator.TitledSeparator.class.getName(), FormDesignerUtils
-                        .loadImage(Icons.JGOODIES_SEPARATOR_16));
-      registerDefaultBean(I18N.getLocalizedMessage("SENRO Panel"),
-               JPanel.class.getName(), FormDesignerUtils
-                        .loadImage(Icons.PORTRAIT_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("JGoodies Separator"),
+//               com.jeta.forms.components.separator.TitledSeparator.class.getName(), FormDesignerUtils
+//                        .loadImage(Icons.JGOODIES_SEPARATOR_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("SENRO Panel"),
+//               JPanel.class.getName(), FormDesignerUtils
+//                        .loadImage(Icons.PORTRAIT_16));
    }
 
    public void setModel(ImportedBeansModel ibm) {

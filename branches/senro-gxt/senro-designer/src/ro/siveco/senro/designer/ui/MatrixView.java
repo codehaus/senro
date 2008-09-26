@@ -8,11 +8,15 @@ import java.util.List;
 
 import javax.swing.*;
 
-public class MatrixView extends JPanel
+public class MatrixView extends JPanel implements ActionListener
 {
 
     private static final long serialVersionUID = 1L;
     private static final int NO_VALUE = -1;
+    public static final String ADD_COLUMN = "Add Column";
+    public static final String ADD_ROW = "Add Row";
+    public static final String REMOVE_COLUMN = "Remove Column";
+    public static final String REMOVE_ROW = "Remove Row";
 
     private MatrixModel model = null;
     private CellFactory cellFactory = null;
@@ -35,26 +39,27 @@ public class MatrixView extends JPanel
     private int mouseX = NO_VALUE;
     private int mouseY = NO_VALUE;
     private Color underDraggedCellColor;
-    MatrixMouseListener matrixMouseListener = new MatrixMouseListener();
-    MatrixKeyListener matrixKeyListener = new MatrixKeyListener();
+    private MatrixMouseListener matrixMouseListener = new MatrixMouseListener();
+    private MatrixKeyListener matrixKeyListener = new MatrixKeyListener();
+    private JPopupMenu menu = new JPopupMenu("Modify View");
 
     public MatrixView()
     {
         setAutoscrolls(true);
-        setBackground(Color.WHITE);
         setCellWidth(100);
         setCellHeight(100);
         setCellHorizBorder(4);
         setCellVertBorder(6);
-        setSelectionColor(Color.RED);
+        setSelectionColor(Color.RED.darker());
         setSelectionBorderWidth(5);
         setUnderDraggedCellColor(Color.CYAN);
+        populatePopupMenu();
+        updateUI();
         setEnabled(true);
     }
 
     public void setEnabled(boolean enabled)
     {
-        super.setEnabled(enabled);
         if (enabled) {
             addMouseListener(matrixMouseListener);
             addMouseMotionListener(matrixMouseListener);
@@ -298,12 +303,35 @@ public class MatrixView extends JPanel
         return selectedCells;
     }
 
+    public void setSelectedCell(CellCoordinates selected_cell)
+    {
+        if (selectedCells.size() == 1 && selectedCells.iterator().next().equals(selected_cell)) {
+            return;
+        }
+        selectedCells.clear();
+        selectedCells.add(selected_cell);
+        repaintVisibleRect();
+        notifySelectionListeners();
+    }
+
+    private void switchSelectionInCell(CellCoordinates clickedCell)
+    {
+        if (selectedCells.contains(clickedCell)) {
+            selectedCells.remove(clickedCell);
+        } else {
+            selectedCells.add(clickedCell);
+        }
+        repaintVisibleRect();
+        notifySelectionListeners();
+    }
+
     public void setSelectedCells(Set<CellCoordinates> selected_cells)
     {
         if(selectedCells.equals(selected_cells))
             return;
         selectedCells.clear();
         selectedCells.addAll(selected_cells);
+        repaintVisibleRect();
         notifySelectionListeners();
     }
 
@@ -348,26 +376,6 @@ public class MatrixView extends JPanel
         repaintVisibleRect();
     }
 
-    public void setSelectedCell(CellCoordinates selected_cell)
-    {
-        if(selectedCells.size() == 1 && selectedCells.iterator().next().equals(selected_cell)) {
-            return;
-        }
-        selectedCells.clear();
-        selectedCells.add(selected_cell);
-        notifySelectionListeners();
-    }
-
-    private void switchSelectionInCell(CellCoordinates clickedCell)
-    {
-        if (selectedCells.contains(clickedCell)) {
-            selectedCells.remove(clickedCell);
-        } else {
-            selectedCells.add(clickedCell);
-        }
-        notifySelectionListeners();
-    }
-
     public Color getUnderDraggedCellColor()
     {
         return underDraggedCellColor;
@@ -387,6 +395,47 @@ public class MatrixView extends JPanel
         mouseY = NO_VALUE;
     }
 
+    private void populatePopupMenu()
+    {
+        // Add Column Item
+        JMenuItem ac_menu_item = new JMenuItem(ADD_COLUMN);
+        ac_menu_item.setActionCommand(ADD_COLUMN);
+        ac_menu_item.addActionListener(this);
+        menu.add(ac_menu_item);
+        // Add Row Item
+        JMenuItem ar_menu_item = new JMenuItem(ADD_ROW);
+        ar_menu_item.setActionCommand(ADD_ROW);
+        ar_menu_item.addActionListener(this);
+        menu.add(ar_menu_item);
+        // Remove Column Item
+        JMenuItem rc_menu_item = new JMenuItem(REMOVE_COLUMN);
+        rc_menu_item.setActionCommand(REMOVE_COLUMN);
+        rc_menu_item.addActionListener(this);
+        menu.add(rc_menu_item);
+        // Remove Row Item
+        JMenuItem rr_menu_item = new JMenuItem(REMOVE_ROW);
+        rr_menu_item.setActionCommand(REMOVE_ROW);
+        rr_menu_item.addActionListener(this);
+        menu.add(rr_menu_item);
+    }
+
+    public void actionPerformed(ActionEvent e)
+    {
+        if (!isReady()) {
+            return;
+        }
+        String selected_action_cmd = e.getActionCommand();
+        if (selected_action_cmd.equals(ADD_COLUMN)) {
+            model.addColumn();
+        } else if (selected_action_cmd.equals(ADD_ROW)) {
+            model.addRow();
+        } else if (selected_action_cmd.equals(REMOVE_COLUMN)) {
+            model.removeColumn();
+        } else if (selected_action_cmd.equals(REMOVE_ROW)) {
+            model.removeRow();
+        }
+    }
+
     public class MatrixMouseListener extends MouseAdapter
     {
 
@@ -395,6 +444,10 @@ public class MatrixView extends JPanel
             requestFocusInWindow();
             int x = e.getX();
             int y = e.getY();
+            if (e.getButton() == MouseEvent.BUTTON3) {
+                menu.show(MatrixView.this, x, y);
+                return;
+            }
             int selectedCol = x / getCellWidth();
             int selectedRow = y / getCellHeight();
             CellCoordinates clickedCell = new CellCoordinates(selectedCol, selectedRow);
@@ -403,7 +456,6 @@ public class MatrixView extends JPanel
             } else {
                 setSelectedCell(clickedCell);
             }
-            repaintVisibleRect();
             model.mousePressedAtCoordinates(clickedCell);
         }
 
