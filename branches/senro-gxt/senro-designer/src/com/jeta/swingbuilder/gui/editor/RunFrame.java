@@ -18,8 +18,6 @@
 
 package com.jeta.swingbuilder.gui.editor;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,7 +25,6 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import com.jeta.forms.components.panel.FormPanel;
@@ -62,11 +59,11 @@ public class RunFrame extends JFrame
 	 setJMenuBar( menuBar );
 
 	 JMenu menu = new JMenu( "Test" );
-	 menu.add( createMenuItem( "Iterator", "std.iterator" ) );
-	 menu.add( createMenuItem( "Nested Iterator", "nested.iterator" ) );
+	 menu.add( createMenuItem( "IteratorComponent", "std.iterator" ) );
+	 menu.add( createMenuItem( "Nested IteratorComponent", "nested.iterator" ) );
 	 menu.add( createMenuItem( "Remove Named", "remove.named" ) );
-	 menu.add( createMenuItem( "Iterator Remove Named", "iterator.remove.named" ) );
-	 menu.add( createMenuItem( "Nested Iterator Remove Named", "iterator.remove.nested" ) );
+	 menu.add( createMenuItem( "IteratorComponent Remove Named", "iterator.remove.named" ) );
+	 menu.add( createMenuItem( "Nested IteratorComponent Remove Named", "iterator.remove.nested" ) );
 	 menu.add( createMenuItem( "Remove All", "iterator.remove.all" ) );
 	 menu.add( createMenuItem( "Nested Remove All", "iterator.remove.all.nested" ) );
 	 menuBar.add( menu );

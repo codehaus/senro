@@ -176,22 +176,22 @@ public class DefaultBeanManager implements BeanManager {
     * Loads the default Swing components supported by the application
     */
    private void registerDefaultBeans() {
-      registerDefaultBean(I18N.getLocalizedMessage("JLabel"),
+      registerDefaultBean(I18N.getLocalizedMessage("Label"),
                com.jeta.forms.components.label.JETALabel.class.getName(), FormDesignerUtils.loadImage(Icons.LABEL_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JRadioButton"), "javax.swing.JRadioButton", FormDesignerUtils
 //               .loadImage(Icons.RADIO_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JCheckBox"), "javax.swing.JCheckBox", FormDesignerUtils
+      registerDefaultBean(I18N.getLocalizedMessage("CheckBox"), "javax.swing.JCheckBox", FormDesignerUtils
                .loadImage(Icons.CHECK_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JButton"), "javax.swing.JButton", FormDesignerUtils
+      registerDefaultBean(I18N.getLocalizedMessage("Button"), "javax.swing.JButton", FormDesignerUtils
                .loadImage(Icons.BUTTON_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JToggleButton"), "javax.swing.JToggleButton", FormDesignerUtils
 //               .loadImage(Icons.TOGGLE_BUTTON_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JComboBox"), "javax.swing.JComboBox", FormDesignerUtils
+      registerDefaultBean(I18N.getLocalizedMessage("ComboBox"), "javax.swing.JComboBox", FormDesignerUtils
                .loadImage(Icons.COMBO_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JList"), "javax.swing.JList", FormDesignerUtils
@@ -212,7 +212,10 @@ public class DefaultBeanManager implements BeanManager {
 //      registerDefaultBean(I18N.getLocalizedMessage("JSpinner"), "javax.swing.JSpinner", FormDesignerUtils
 //               .loadImage(Icons.SPINNER_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("JTextField"), "javax.swing.JTextField", FormDesignerUtils
+      registerDefaultBean(I18N.getLocalizedMessage("TextField"), "javax.swing.JTextField", FormDesignerUtils
+               .loadImage(Icons.TEXT_FIELD_16));
+
+      registerDefaultBean(I18N.getLocalizedMessage("DateField"), "ro.siveco.senro.designer.components.DateFieldComponent", FormDesignerUtils
                .loadImage(Icons.TEXT_FIELD_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JPasswordField"), "javax.swing.JPasswordField", FormDesignerUtils
@@ -227,8 +230,8 @@ public class DefaultBeanManager implements BeanManager {
 //      registerDefaultBean(I18N.getLocalizedMessage("JEditorPane"), "javax.swing.JEditorPane", FormDesignerUtils
 //               .loadImage(Icons.RICH_TEXT_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("JTabbedPane"), "javax.swing.JTabbedPane", FormDesignerUtils
-//               .loadImage(Icons.TABPANE_16));
+      registerDefaultBean(I18N.getLocalizedMessage("JTabbedPane"), "javax.swing.JTabbedPane", FormDesignerUtils
+               .loadImage(Icons.TABPANE_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("Horizontal Line"), HorizontalLineComponent.class.getName(),
 //               FormDesignerUtils.loadImage(Icons.HORIZONTAL_LINE_16));
@@ -257,6 +260,15 @@ public class DefaultBeanManager implements BeanManager {
 //      registerDefaultBean(I18N.getLocalizedMessage("SENRO Panel"),
 //               JPanel.class.getName(), FormDesignerUtils
 //                        .loadImage(Icons.PORTRAIT_16));
+      registerDefaultBean(I18N.getLocalizedMessage("GridAllocatorRenderer"),
+                         "ro.siveco.senro.designer.components.GridAllocatorRendererComponent",
+                          FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
+      registerDefaultBean(I18N.getLocalizedMessage("Template"),
+                         "ro.siveco.senro.designer.components.TemplateComponent",
+                          FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
+      registerDefaultBean(I18N.getLocalizedMessage("RootPanel"),
+                         "ro.siveco.senro.designer.components.RootPanelComponent",
+                          FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
    }
 
    public void setModel(ImportedBeansModel ibm) {

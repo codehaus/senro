@@ -87,4 +87,9 @@ public class LinkedFormComponentFactory extends FormComponentFactoryBase
       return create( getComponentSource(), compName, parentView );
    }
 
+    public String getGridViewClassName()
+    {
+        return GridView.class.getName();
+    }
+
 }

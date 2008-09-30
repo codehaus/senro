@@ -41,60 +41,58 @@ import com.jeta.open.registry.JETARegistry;
 
 /**
  * ComponentFactory for creating forms.
- * 
+ *
  * @author Jeff Tassin
  */
 public abstract class FormComponentFactoryBase extends AbstractComponentFactory
 {
 
-   /**
-    * ctor
-    */
-   public FormComponentFactoryBase()
-   {
-   }
+    /**
+     * ctor
+     */
+    public FormComponentFactoryBase()
+    {
+    }
 
-   /**
-    * ctor
-    */
-   public FormComponentFactoryBase( ComponentSource compsrc )
-   {
-      super( compsrc );
-   }
+    /**
+     * ctor
+     */
+    public FormComponentFactoryBase(ComponentSource compsrc)
+    {
+        super(compsrc);
+    }
 
-   /**
-    * Helper method for creating a composite component that has a GridView as a child.
-    */
-   public FormComponent create( ComponentSource compsrc, String compName, GridView parentView, int cols, int rows, boolean embedded ) throws FormException
-   {
-      JETABean jbean = JETABeanFactory.createBean( GridView.class.getName(), compName, true, true );
-      GridView childview = (GridView)jbean.getDelegate();
-      childview.initialize( cols, rows );
+    /**
+     * Helper method for creating a composite component that has a GridView as a child.
+     */
+    public FormComponent create(ComponentSource compsrc, String compName, GridView parentView, int cols, int rows,
+                                boolean embedded) throws FormException
+    {
+        JETABean jbean = JETABeanFactory.createBean(getGridViewClassName(), compName, true, true);
+        GridView childview = (GridView)jbean.getDelegate();
+        childview.initialize(cols, rows);
 
-      String id = FormUtils.createUID();
-      if ( compName != null && compName.indexOf( "top.parent" ) >= 0 )
-      {
-	 id = "top.parent" + id;
-      }
-      else if ( embedded )
-      {
-	 id = "embedded." + id;
-      }
+        String id = FormUtils.createUID();
+        if(compName != null && compName.indexOf("top.parent") >= 0) {
+            id = "top.parent" + id;
+        } else if(embedded) {
+            id = "embedded." + id;
+        }
 
 
-      FormComponent form = new DesignFormComponent( id, jbean, parentView, embedded );
-      installHandlers( form );
-      FormManager fmgr = (FormManager)JETARegistry.lookup( FormManager.COMPONENT_ID );
-      if ( fmgr != null )
-      {
-	 fmgr.registerForm( form );
-      }
-      return form;
-   }
+        FormComponent form = new DesignFormComponent(id, jbean, parentView, embedded);
+        installHandlers(form);
+        FormManager fmgr = (FormManager)JETARegistry.lookup(FormManager.COMPONENT_ID);
+        if(fmgr != null) {
+            fmgr.registerForm(form);
+        }
+        return form;
+    }
 
-   /**
-    * ComponentFactory implementation
-    */
-   public abstract GridComponent createComponent( String compName, GridView parentView) throws FormException;
+    /**
+     * ComponentFactory implementation
+     */
+    public abstract GridComponent createComponent(String compName, GridView parentView) throws FormException;
 
+    public abstract String getGridViewClassName();
 }

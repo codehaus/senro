@@ -60,7 +60,7 @@ public class Registry {
      * @param listener  The DTD.InvalidateListener to be removed. */
     public void removeInvalidateListener( InvalidateListener listener ) {
         synchronized( listeners ) {
-            // Iterator on LinkedList allows remove()
+            // IteratorComponent on LinkedList allows remove()
             for( Iterator it = listeners.iterator(); it.hasNext(); ) {
                 WeakReference ref = (WeakReference)it.next();
                 InvalidateListener obj = (InvalidateListener)ref.get();

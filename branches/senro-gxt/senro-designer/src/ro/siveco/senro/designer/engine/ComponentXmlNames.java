@@ -30,7 +30,22 @@ public interface ComponentXmlNames
     public static final String ROW_SPAN_ATTRIBUTE = "rowSpan";
     public static final String COL_SPAN_ATTRIBUTE = "colSpan";
 
+    public static final String ORDER_NO_ATTRIBUTE = "orderNo";
+    public static final String TITLE_ATTRIBUTE = "title";
+
     public static final String NAME_ATTRIBUTE = "name";
     public static final String ID_ATTRIBUTE = "id";
+
+    public static final String ITERATOR_ELEMENT = "Iterator";
+    public static final String CONDITIONAL_ELEMENT = "Conditional";
+
+    public static final String TAB_PANEL_ELEMENT = "TabPanel";
+    public static final String TAB_PAGE_ELEMENT = "TabPage";
+
+    public static final String GRID_ALLOCATOR_RENDERER_ELEMENT = "GridAllocatorRenderer";
+    public static final String DATE_FIELD_ELEMENT = "DateField";
+    public static final String TEMPLATE_ELEMENT = "Template";
+    public static final String ROOT_PANEL_ELEMENT = "RootPanel";
+
 
 }
