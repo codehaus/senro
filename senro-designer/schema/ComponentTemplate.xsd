@@ -212,7 +212,7 @@
 	<xs:complexType name="TemplateType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
-                <xs:sequence maxOccurs="unbounded">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
                     <xs:element name="Param">
                         <xs:complexType>
                             <xs:attribute name="name" type="xs:string"/>
@@ -569,21 +569,23 @@
 
     </xs:complexType>
 
+
     <xs:complexType name="TabPageType">
 
-        <xs:complexContent>
+        <xs:choice minOccurs="1" maxOccurs="1">
 
-            <xs:extension base="ComponentChoiceType">
+            <xs:element ref="Conditional" minOccurs="0" maxOccurs="1"/>
 
-                <xs:attribute name="orderNo"/>
+            <xs:element ref="Grid" minOccurs="0" maxOccurs="1"/>
 
-                <xs:attribute name="title"/>
+        </xs:choice>
 
-            </xs:extension>
+        <xs:attribute name="orderNo"/>
 
-        </xs:complexContent>
+        <xs:attribute name="title"/>
 
     </xs:complexType>
+
 
     <xs:element name="TabPage" type="TabPageType"/>
 

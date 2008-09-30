@@ -106,6 +106,9 @@ public class BeanProperties
     */
    public void register( JETAProperty prop )
    {
+       if("text".equals(prop.getName())) {
+           System.out.println("Hi");
+       }
       if ( prop != null )
       {
 	 m_props.put( prop.getName(), prop );

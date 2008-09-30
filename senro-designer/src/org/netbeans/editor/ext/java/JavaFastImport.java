@@ -18,13 +18,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 import javax.swing.ListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JList;
-import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 import org.netbeans.editor.DialogSupport;
 import org.netbeans.editor.LocaleSupport;
@@ -165,7 +162,7 @@ public class JavaFastImport implements ActionListener {
             JCFinder finder = JavaCompletion.getFinder();
             ret = finder.findClasses(null, exp, true);
 
-/*            Iterator it = ret.iterator();
+/*            IteratorComponent it = ret.iterator();
             while (it.hasNext()) {
                 JCClass cls = (JCClass)it.next();
                 if (cls.getName().indexOf('.') >= 0) {

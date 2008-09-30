@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
 
 import java.awt.event.ActionEvent;
@@ -38,7 +37,6 @@ import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -51,10 +49,6 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import com.jeta.forms.gui.common.FormUtils;
 
@@ -78,7 +72,6 @@ import com.jeta.swingbuilder.common.ComponentNames;
 import com.jeta.swingbuilder.gui.components.TSComponentNames;
 import com.jeta.swingbuilder.gui.editor.FormEditor;
 import com.jeta.swingbuilder.gui.formmgr.EditorManager;
-import com.jeta.swingbuilder.gui.formmgr.FormManagerDesignUtils;
 import com.jeta.swingbuilder.gui.lookandfeel.DefaultLookAndFeelManager;
 import com.jeta.swingbuilder.gui.lookandfeel.LookAndFeelInfo;
 import com.jeta.swingbuilder.gui.handler.AbstractMouseHandler;
@@ -87,25 +80,20 @@ import com.jeta.swingbuilder.gui.properties.PropertyPaneContainer;
 import com.jeta.swingbuilder.resources.Icons;
 import com.jeta.swingbuilder.project.DefaultProjectManager;
 import com.jeta.swingbuilder.store.ProjectModel;
-import com.jeta.swingbuilder.store.FrameState;
 import com.jeta.swingbuilder.support.DesignTimeComponentFinder;
 
 import com.jeta.swingbuilder.gui.components.TSButtonBar;
 import com.jeta.swingbuilder.gui.components.TSCell;
 import com.jeta.swingbuilder.interfaces.app.ObjectStore;
 
-import com.jeta.swingbuilder.gui.components.CustomSplitPane;
 import com.jeta.swingbuilder.gui.utils.FormDesignerUtils;
 
-import com.jeta.open.gui.framework.JETAController;
 import com.jeta.open.gui.framework.JETAContainer;
 import com.jeta.open.gui.framework.JETAPanel;
 import com.jeta.open.gui.framework.UIDirector;
 import com.jeta.open.gui.utils.JETAToolbox;
 import com.jeta.open.i18n.I18N;
 import com.jeta.open.registry.JETARegistry;
-import com.jeta.open.resources.AppResourceLoader;
-import com.jeta.open.resources.ResourceLoader;
 import com.jeta.open.support.CompositeComponentFinder;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -938,7 +926,7 @@ public class MainFrame extends JFrame implements ComponentSource, GridViewListen
    public void setFocusSelected(boolean focus_sel) {
       /*
        * Collection comps = getComponentsByName( MainFrameNames.ID_FOCUS_MANAGER );
-       * Iterator iter = comps.iterator(); while( iter.hasNext() ) { Component
+       * IteratorComponent iter = comps.iterator(); while( iter.hasNext() ) { Component
        * comp = (Component)iter.next(); if ( comp instanceof
        * javax.swing.AbstractButton ) {
        * ((javax.swing.AbstractButton)comp).setSelected( focus_sel ); } }

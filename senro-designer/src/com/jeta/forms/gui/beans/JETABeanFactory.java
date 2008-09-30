@@ -49,6 +49,11 @@ import com.jeta.forms.components.image.*;
 import com.jeta.forms.components.label.*;
 import com.jeta.forms.components.separator.*;
 import com.jeta.forms.logger.FormsLogger;
+import ro.siveco.senro.designer.components.IteratorComponent;
+import ro.siveco.senro.designer.components.IteratorComponentFactory;
+import ro.siveco.senro.designer.components.IteratorBeanFactory;
+import ro.siveco.senro.designer.components.ConditionalComponent;
+import ro.siveco.senro.designer.components.ConditionalBeanFactory;
 
 /**
  * This is a factory for creating a JETABean wrapper for a given Swing component
@@ -115,6 +120,11 @@ public class JETABeanFactory
       registerFactory( TitledBorderSide.class.getName(), new TitledBorderSideFactory() );
       registerFactory( TitledBorderBottom.class.getName(), new TitledBorderBottomFactory() );
       registerFactory( TitledSeparator.class.getName(), new TitledSeparatorFactory() );
+
+       /* custom senro components */
+       registerFactory(IteratorComponent.class.getName(), new IteratorBeanFactory());
+       registerFactory(ConditionalComponent.class.getName(), new ConditionalBeanFactory());
+
    }
 
    /**

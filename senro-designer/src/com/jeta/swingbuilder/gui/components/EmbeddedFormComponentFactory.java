@@ -36,57 +36,59 @@ import com.jeta.open.i18n.I18N;
 
 /**
  * ComponentFactory for creating embedded forms.
- * 
+ *
  * @author Jeff Tassin
  */
 public class EmbeddedFormComponentFactory extends FormComponentFactoryBase
 {
 
-   /**
-    * ctor
-    */
-   public EmbeddedFormComponentFactory()
-   {
-   }
+    /**
+     * ctor
+     */
+    public EmbeddedFormComponentFactory()
+    {
+    }
 
-   /**
-    * ctor
-    */
-   public EmbeddedFormComponentFactory( ComponentSource compsrc )
-   {
-      super( compsrc );
-   }
+    /**
+     * ctor
+     */
+    public EmbeddedFormComponentFactory(ComponentSource compsrc)
+    {
+        super(compsrc);
+    }
 
-   /**
-    * Helper method for creating a composite component that has a GridView as a child.
-    */
-   public FormComponent create( ComponentSource compsrc, String compName, GridView parentView ) throws FormException
-   {
-      /**
-       * Shows a dialog that prompts the user to enter the number of columns and rows for the new view.
-       */
-      GridSizePanel view = new GridSizePanel();
-      JETADialog dlg = (JETADialog)JETAToolbox.createDialog( JETADialog.class, parentView, true );
-      dlg.setTitle( I18N.getLocalizedMessage( "Grid Parameters" ) );
-      dlg.addValidator( view, view );
-      dlg.setPrimaryPanel( view );
-      dlg.setSize( dlg.getPreferredSize() );
-      dlg.showCenter();
-      if ( dlg.isOk() )
-      {
-	 FormComponent fc = create( compsrc, compName, parentView, view.getColumns(), view.getRows(), true );
-	 GridView.fillCells( fc.getChildView(), compsrc );
-	 return fc;
-      }
-      else
-      {
-	 return null;
-      }
-   }
+    /**
+     * Helper method for creating a composite component that has a GridView as a child.
+     */
+    public FormComponent create(ComponentSource compsrc, String compName, GridView parentView) throws FormException
+    {
+        /**
+         * Shows a dialog that prompts the user to enter the number of columns and rows for the new view.
+         */
+        GridSizePanel view = new GridSizePanel();
+        JETADialog dlg = (JETADialog)JETAToolbox.createDialog(JETADialog.class, parentView, true);
+        dlg.setTitle(I18N.getLocalizedMessage("Grid Parameters"));
+        dlg.addValidator(view, view);
+        dlg.setPrimaryPanel(view);
+        dlg.setSize(dlg.getPreferredSize());
+        dlg.showCenter();
+        if(dlg.isOk()) {
+            FormComponent fc = create(compsrc, compName, parentView, view.getColumns(), view.getRows(), true);
+            GridView.fillCells(fc.getChildView(), compsrc);
+            return fc;
+        } else {
+            return null;
+        }
+    }
 
-   public GridComponent createComponent( String compName, GridView parentView) throws FormException
-   {
-      return create( getComponentSource(), compName, parentView );
-   }
+    public GridComponent createComponent(String compName, GridView parentView) throws FormException
+    {
+        return create(getComponentSource(), compName, parentView);
+    }
+
+    public String getGridViewClassName()
+    {
+        return GridView.class.getName();
+    }
 
 }

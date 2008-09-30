@@ -753,7 +753,9 @@ public class FormComponent extends GridComponent
 	 FormUtils.safeAssert( fmgr != null );
       }
 
-      JETABean viewbean = JETABeanFactory.createBean( "com.jeta.forms.gui.form.GridView", "gridview", true, true );
+       String comp_class_name = state.getPropertiesMemento().getBeanClassName();
+//      JETABean viewbean = JETABeanFactory.createBean( "com.jeta.forms.gui.form.GridView", "gridview", true, true );
+      JETABean viewbean = JETABeanFactory.createBean(comp_class_name, "gridview", true, true );
       GridView view = (GridView)viewbean.getDelegate();
       view.initialize( state.getColumnSpecs(), state.getRowSpecs() );
       view.setCellPainters( state.getCellPainters() );

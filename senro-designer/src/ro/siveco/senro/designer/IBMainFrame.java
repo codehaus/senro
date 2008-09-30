@@ -957,7 +957,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
     {
         /*
         * Collection comps = getComponentsByName( MainFrameNames.ID_FOCUS_MANAGER );
-        * Iterator iter = comps.iterator(); while( iter.hasNext() ) { Component
+        * IteratorComponent iter = comps.iterator(); while( iter.hasNext() ) { Component
         * comp = (Component)iter.next(); if ( comp instanceof
         * javax.swing.AbstractButton ) {
         * ((javax.swing.AbstractButton)comp).setSelected( focus_sel ); } }
