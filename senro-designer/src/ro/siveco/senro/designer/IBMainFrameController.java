@@ -107,6 +107,7 @@ public class IBMainFrameController extends IBFormEditorController
         assignAction(MainFrameNames.ID_BEAN_MANAGER, new BeanManagerAction());
         assignAction(MainFrameNames.ID_SYSTEM_PROPERTIES, new SystemPropertiesAction());
         assignAction(MainFrameNames.ID_ENV_SETTINGS, new UserPreferencesAction());
+        assignAction(MainFrameNames.ID_PARAMETERS_MANAGER, new ShowParametersAction());
 
         assignAction(MainFrameNames.ID_ABOUT, new AboutAction());
         assignAction(MainFrameNames.ID_EXIT, new ExitAction());
@@ -1006,6 +1007,14 @@ public class IBMainFrameController extends IBFormEditorController
         public void actionPerformed(ActionEvent e)
         {
             m_frame.getDesignerManager().openProject();
+        }
+    }
+
+    public class ShowParametersAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            m_frame.getDesignerManager().getProject().showParameters();
         }
     }
 

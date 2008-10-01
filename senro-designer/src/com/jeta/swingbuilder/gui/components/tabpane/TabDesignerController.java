@@ -21,65 +21,80 @@ package com.jeta.swingbuilder.gui.components.tabpane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JTable;
+
 import com.jeta.forms.store.properties.TabProperty;
 import com.jeta.open.gui.framework.JETAController;
 import com.jeta.open.gui.framework.JETADialog;
+import com.jeta.open.gui.framework.JETAPanel;
 import com.jeta.open.gui.utils.JETAToolbox;
 import com.jeta.open.i18n.I18N;
 import com.jeta.swingbuilder.gui.components.list.ListItemView;
 import com.jeta.swingbuilder.gui.utils.TableSupportHandler;
+import com.jgoodies.forms.layout.FormLayout;
 
 public class TabDesignerController extends TableSupportHandler
 {
-   private TabDesignerView m_view;
+    private TabDesignerView m_view;
 
-   /** @link dependency */
+    /**
+     * @link dependency
+     */
 
-   /*# TabDesignerNames lnkTabDesignerNames; */
+    /*# TabDesignerNames lnkTabDesignerNames; */
+    public TabDesignerController(TabDesignerView view)
+    {
+        super(view, TabDesignerNames.ID_TABS_TABLE, TabDesignerNames.ID_DELETE_TAB, TabDesignerNames.ID_MOVE_UP,
+              TabDesignerNames.ID_MOVE_DOWN);
+        m_view = view;
+        assignAction(TabDesignerNames.ID_ADD_TAB, new AddTabAction());
+        assignAction(TabDesignerNames.ID_EDIT_TAB, new EditTabAction());
+    }
 
-   public TabDesignerController(TabDesignerView view)
-   {
-      super(view, TabDesignerNames.ID_TABS_TABLE, TabDesignerNames.ID_DELETE_TAB, TabDesignerNames.ID_MOVE_UP, TabDesignerNames.ID_MOVE_DOWN);
-      m_view = view;
-      assignAction(TabDesignerNames.ID_ADD_TAB, new AddTabAction());
-      assignAction(TabDesignerNames.ID_EDIT_TAB, new EditTabAction());
-   }
-
-   public class AddTabAction implements ActionListener
-   {
-      public void actionPerformed(ActionEvent evt)
-      {
-         ListItemView view = new ListItemView();
-         JETADialog dlg = JETAToolbox.invokeDialog(view, m_view, I18N.getLocalizedMessage("Tab Properties"));
-         if (dlg.isOk())
-         {
-            TabProperty tp = new TabProperty();
-            tp.setTitle(view.getLabel());
-            tp.setIconProperty(view.getIconProperty());
-            m_view.addTabProperty(tp);
-         }
-      }
-   }
-
-
-   public class EditTabAction implements ActionListener
-   {
-      public void actionPerformed(ActionEvent evt)
-      {
-         TabProperty tp = m_view.getSelectedTabProperty();
-         if (tp != null)
-         {
-            ListItemView view = new ListItemView(tp.getTitle(), tp.getIconProperty());
+    public class AddTabAction implements ActionListener
+    {
+//        public void actionPerformed(ActionEvent evt)
+//        {
+//            ListItemView view = new ListItemView();
+//            JETADialog dlg = JETAToolbox.invokeDialog(view, m_view, I18N.getLocalizedMessage("Tab Properties"));
+//            if(dlg.isOk()) {
+//                TabProperty tp = new TabProperty();
+//                tp.setTitle(view.getLabel());
+//                tp.setIconProperty(view.getIconProperty());
+//                m_view.addTabProperty(tp);
+//            }
+//        }
+        public void actionPerformed(ActionEvent evt)
+        {
+            NewTabView view = new NewTabView();
             JETADialog dlg = JETAToolbox.invokeDialog(view, m_view, I18N.getLocalizedMessage("Tab Properties"));
-            if (dlg.isOk())
-            {
-               TabProperty newtp = new TabProperty();
-               newtp.setValue(tp);
-               newtp.setTitle(view.getLabel());
-               newtp.setIconProperty(view.getIconProperty());
-               m_view.setTabProperty(newtp, tp);
+            if(dlg.isOk()) {
+                TabProperty tp = new TabProperty();
+                tp.setTitle(view.getLabel());
+                tp.setIconProperty(view.getIconProperty());
+                tp.setContentClass(view.getComponentType());
+                m_view.addTabProperty(tp);
             }
-         }
-      }
-   }
+        }
+    }
+
+
+    public class EditTabAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent evt)
+        {
+            TabProperty tp = m_view.getSelectedTabProperty();
+            if(tp != null) {
+                ListItemView view = new ListItemView(tp.getTitle(), tp.getIconProperty());
+                JETADialog dlg = JETAToolbox.invokeDialog(view, m_view, I18N.getLocalizedMessage("Tab Properties"));
+                if(dlg.isOk()) {
+                    TabProperty newtp = new TabProperty();
+                    newtp.setValue(tp);
+                    newtp.setTitle(view.getLabel());
+                    newtp.setIconProperty(view.getIconProperty());
+                    m_view.setTabProperty(newtp, tp);
+                }
+            }
+        }
+    }
+
 }

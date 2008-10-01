@@ -48,6 +48,7 @@ import com.jeta.forms.store.memento.FormMemento;
 import com.jeta.forms.store.memento.StateRequest;
 
 import com.jeta.open.registry.JETARegistry;
+import org.apache.commons.lang.ObjectUtils;
 
 /**
  * A <code>TabProperty</code> defines a single tab in a JTabbedPane. Included
@@ -60,7 +61,11 @@ import com.jeta.open.registry.JETARegistry;
 public class TabProperty extends JETAProperty {
 	static final long serialVersionUID = 2375434406561274626L;
 
-	/**
+    public static final String GRID_CONTENT = "Grid";
+    public static final String ITERATOR_CONTENT = "Iterator";
+    public static final String CONDITIONAL_CONTENT = "Conditional";
+
+    /**
 	 * The current version number of this class
 	 */
 	public static final int VERSION = 1;
@@ -70,7 +75,9 @@ public class TabProperty extends JETAProperty {
 	 */
 	private String m_title;
 
-	/**
+    private String contentClass = GRID_CONTENT;
+
+    /**
 	 * The icon for the tab.
 	 */
 	private IconProperty m_icon_property;
@@ -100,7 +107,8 @@ public class TabProperty extends JETAProperty {
 
 	/**
 	 * Creates a <code>TabProperty</code> instance with the given title.
-	 */
+     * @param title tab title
+     */
 	public TabProperty(String title) {
 		super(PROPERTY_ID);
 		m_title = title;
@@ -115,7 +123,13 @@ public class TabProperty extends JETAProperty {
 		if (m_form == null) {
 			ContainedFormFactory factory = (ContainedFormFactory) JETARegistry.lookup(ContainedFormFactory.COMPONENT_ID);
 			FormUtils.safeAssert(factory != null);
-			m_form = factory.createContainedForm(JTabbedPane.class, m_memento);
+            ContainedFormFactory.GridType grid_type = ContainedFormFactory.GridType.GRID_VIEW;
+            if(contentClass.equals(ITERATOR_CONTENT)) {
+                grid_type = ContainedFormFactory.GridType.ITERATOR;
+            } else if(contentClass.equals(CONDITIONAL_CONTENT)) {
+                grid_type = ContainedFormFactory.GridType.CONDITIONAL;
+            }
+            m_form = factory.createContainedForm(JTabbedPane.class, m_memento, grid_type);
 		}
 		return m_form;
 	}
@@ -125,6 +139,7 @@ public class TabProperty extends JETAProperty {
 	 * contained by this tab.
 	 * 
 	 * @return the memento for the form contained by this tab.
+     * @throws FormException if an error occurs
 	 */
 	public FormMemento getFormMemento() throws FormException {
 		if (m_form != null)
@@ -185,7 +200,8 @@ public class TabProperty extends JETAProperty {
 			TabProperty tp = (TabProperty) prop;
 			m_title = tp.m_title;
 			m_form = tp.m_form;
-			m_memento = tp.m_memento;
+            contentClass = tp.contentClass;
+            m_memento = tp.m_memento;
 
 			if (m_icon_property == null)
 				m_icon_property = new IconProperty();
@@ -203,7 +219,19 @@ public class TabProperty extends JETAProperty {
 		m_title = title;
 	}
 
-	/**
+    public String getContentClass()
+    {
+        return contentClass;
+    }
+
+    public void setContentClass(String content_class)
+    {
+        if(!ObjectUtils.equals(contentClass, content_class)) {
+            contentClass = content_class;
+        }
+    }
+
+    /**
 	 * Updates the bean with the current value of this property
 	 */
 	public void updateBean(JETABean jbean) {
@@ -218,7 +246,8 @@ public class TabProperty extends JETAProperty {
 		int version = in.readVersion();
 		m_title = (String) in.readObject( "title" );
 		m_icon_property = (IconProperty) in.readObject( "icon" );
-		m_memento = (FormMemento) in.readObject( "form" );
+        contentClass = (String)in.readObject("content");
+        m_memento = (FormMemento) in.readObject( "form" );
 		m_form = null;
 	}
 
@@ -230,6 +259,7 @@ public class TabProperty extends JETAProperty {
 		out.writeVersion(VERSION);
 		out.writeObject( "title", m_title);
 		out.writeObject( "icon", m_icon_property);
+		out.writeObject( "content", contentClass);
       /**
        * This is a hack to obtain the state request which is set by the
        * caller. There is no way to obtain this value other than getting

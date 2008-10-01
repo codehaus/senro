@@ -41,6 +41,7 @@ public class MainFrameNames extends FormEditorNames
    public static final String ID_LOOK_AND_FEEL_MANAGER   = "look.and.feel.manager";
    public static final String ID_FOCUS_MANAGER   = "focus.manager";
    public static final String ID_BEAN_MANAGER    = "bean.manager";
+   public static final String ID_PARAMETERS_MANAGER    = "parameters.manager";
 
    public static final String ID_SHOW_FORM_MANAGER = "show.form.manager";
    public static final String ID_SHOW_UNDO_MANAGER = "show.undo.manager";
@@ -53,7 +54,7 @@ public class MainFrameNames extends FormEditorNames
 
    public static final String ID_FORWARD_ENGINEER  = "forward.engineer";
    public static final String ID_PROJECT_SETTINGS  = "project.settings";
-   
+
    public static final String ID_SYSTEM_PROPERTIES = "system.properties";
    public static final String ID_ENV_SETTINGS      = "global.user.preferences";
 

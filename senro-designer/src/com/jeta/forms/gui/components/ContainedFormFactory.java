@@ -55,7 +55,7 @@ public interface ContainedFormFactory
     * not directly editable.
     * @return the top level parent form.
     */
-   FormComponent createContainedForm( Class swingClass, FormMemento fm ) throws FormException;
+   FormComponent createContainedForm( Class swingClass, FormMemento fm, GridType gridType ) throws FormException;
 
    /**
     * This method creates a top-level parent form that is used to contain a form
@@ -68,4 +68,10 @@ public interface ContainedFormFactory
     */
    FormComponent createTopParent( Container parent, ComponentSource compsrc, FormComponent form ) throws FormException;
 
+    public static enum GridType
+    {
+        GRID_VIEW,
+        CONDITIONAL,
+        ITERATOR
+    }
 }

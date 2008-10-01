@@ -269,6 +269,9 @@ public class DefaultBeanManager implements BeanManager {
       registerDefaultBean(I18N.getLocalizedMessage("RootPanel"),
                          "ro.siveco.senro.designer.components.RootPanelComponent",
                           FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
+      registerDefaultBean(I18N.getLocalizedMessage("Tree"),
+                         "ro.siveco.senro.designer.components.TreeComponent",
+                          FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
    }
 
    public void setModel(ImportedBeansModel ibm) {

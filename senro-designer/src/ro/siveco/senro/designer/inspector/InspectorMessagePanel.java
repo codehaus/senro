@@ -28,17 +28,17 @@ public class InspectorMessagePanel extends JPanel
         messageSP = new JScrollPane(messageTA);
         messageSP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         messageSP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        setLayout(new GridLayout(1, 1));
+        setLayout(new BorderLayout());
     }
 
     public void setMessageForClass(String class_name)
     {
         removeAll();
         if (class_name == null) {
-            add(messageL);
+            add(messageL, BorderLayout.CENTER);
         } else {
             messageTA.setText(NO_INSPECTOR + class_name);
-            add(messageSP);
+            add(messageSP, BorderLayout.CENTER);
         }
         updateUI();
         revalidate();
