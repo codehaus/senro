@@ -31,6 +31,8 @@
                 <xs:attribute name="col" type="positiveInteger" default="0"/>
                 <xs:attribute name="rowSpan" type="strictPositiveInteger" default="1"/>
                 <xs:attribute name="colSpan" type="strictPositiveInteger" default="1"/>
+				<xs:attribute name="halign" type="xs:string" default="Left"/>
+				<xs:attribute name="valign" type="xs:string" default="Middle"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -212,7 +214,7 @@
 	<xs:complexType name="TemplateType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
-                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:sequence maxOccurs="unbounded">
                     <xs:element name="Param">
                         <xs:complexType>
                             <xs:attribute name="name" type="xs:string"/>
@@ -569,23 +571,21 @@
 
     </xs:complexType>
 
-
     <xs:complexType name="TabPageType">
 
-        <xs:choice minOccurs="1" maxOccurs="1">
+        <xs:complexContent>
 
-            <xs:element ref="Conditional" minOccurs="0" maxOccurs="1"/>
+            <xs:extension base="ComponentChoiceType">
 
-            <xs:element ref="Grid" minOccurs="0" maxOccurs="1"/>
+                <xs:attribute name="orderNo"/>
 
-        </xs:choice>
+                <xs:attribute name="title"/>
 
-        <xs:attribute name="orderNo"/>
+            </xs:extension>
 
-        <xs:attribute name="title"/>
+        </xs:complexContent>
 
     </xs:complexType>
-
 
     <xs:element name="TabPage" type="TabPageType"/>
 
