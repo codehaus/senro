@@ -214,6 +214,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
             // Build designer additions
             JSplitPane top_split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
             top_split.setResizeWeight(1.0);
+
             m_main_panel.add(top_split, BorderLayout.CENTER);
 
             m_split.add(editor_panel);
@@ -635,6 +636,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.add(i18n_createMenuItem("Java Bean Manager", MainFrameNames.ID_BEAN_MANAGER, null));
         menu.add(i18n_createMenuItem("Preferences", MainFrameNames.ID_ENV_SETTINGS, null));
         menu.add(i18n_createMenuItem("System Properties", MainFrameNames.ID_SYSTEM_PROPERTIES, null));
+        menu.add(i18n_createMenuItem("Parameters Manager", MainFrameNames.ID_PARAMETERS_MANAGER, null));
 
         if (FormDesignerUtils.isDebug()) {
             menu.addSeparator();

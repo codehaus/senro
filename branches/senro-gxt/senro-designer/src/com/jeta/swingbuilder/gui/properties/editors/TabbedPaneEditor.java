@@ -20,13 +20,11 @@
 package com.jeta.swingbuilder.gui.properties.editors;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import javax.swing.ImageIcon;
 
-import java.beans.PropertyEditorSupport;
 
 import com.jeta.forms.store.properties.TabbedPaneProperties;
 import com.jeta.swingbuilder.gui.properties.JETAPropertyEditor;
@@ -49,7 +47,7 @@ public class TabbedPaneEditor extends JETAPropertyEditor
     */
    private ValuePainter        m_value_painter;
 
-   private static ImageIcon[]         m_icon = { (ImageIcon)FormDesignerUtils.loadImage( Icons.TABPANE_16 ) };
+   private static ImageIcon[]         m_icon = { FormDesignerUtils.loadImage( Icons.TABPANE_16 ) };
 
 
    /**

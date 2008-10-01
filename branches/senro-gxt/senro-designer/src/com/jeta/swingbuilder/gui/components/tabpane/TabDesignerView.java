@@ -22,7 +22,7 @@ package com.jeta.swingbuilder.gui.components.tabpane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 
 import com.jeta.forms.components.panel.FormPanel;
@@ -35,79 +35,77 @@ import com.jeta.swingbuilder.gui.utils.FormDesignerUtils;
 
 /**
  * View for editing tab properties.
+ *
  * @author Jeff Tassin
  */
 public class TabDesignerView extends JETAPanel
 {
-   private FormPanel   m_view;
+    private FormPanel m_view;
 
-   private TabsModel   m_tabs_model;
+    private TabsModel m_tabs_model;
 
-   public TabDesignerView( TabbedPaneProperties props )
-   {
-      m_view = new FormPanel( "com/jeta/swingbuilder/gui/components/tabpane/tabDesigner.jfrm" );
-      setLayout( new BorderLayout() );
-      add( m_view, BorderLayout.CENTER );
-      setController( new TabDesignerController(this) );
-      
-      
-      m_tabs_model = new TabsModel( props );
-      JTable table = m_view.getTable( TabDesignerNames.ID_TABS_TABLE );
-      table.setModel( m_tabs_model );
-
-      int col_width = 60;
-      TableColumnModel cmodel = table.getColumnModel();
-      cmodel.getColumn( TabsModel.ICON_COLUMN ).setPreferredWidth(col_width);
-      cmodel.getColumn( TabsModel.TITLE_COLUMN ).setPreferredWidth(col_width*5);
-   }
-
-   /**
-    * Adds a tab to the model.
-    */
-   public void addTabProperty( TabProperty tp )
-   {
-      m_tabs_model.addRow( tp );
-   }
-
-   public Dimension getPreferredSize()
-   {
-      return FormDesignerUtils.getWindowDimension( this, 250, 150 );
-   }
-
-   /**
-    * @return the currently selected tab property. Null is returned if no item is selected.
-    */
-   public TabProperty getSelectedTabProperty()
-   {
-      int row = m_view.getTable( TabDesignerNames.ID_TABS_TABLE ).getSelectedRow();
-      if ( row >= 0 )
-      {
-	 return (TabProperty)m_tabs_model.getRow( row );
-      }
-      else
-      {
-	 return null;
-      }
-   }
+    public TabDesignerView(TabbedPaneProperties props)
+    {
+        m_view = new FormPanel("com/jeta/swingbuilder/gui/components/tabpane/tabDesigner.jfrm");
+        setLayout(new BorderLayout());
+        add(m_view, BorderLayout.CENTER);
+        setController(new TabDesignerController(this));
 
 
-   public TabbedPaneProperties getTabbedPaneProperties()
-   {
-      TabbedPaneProperties tprop = new TabbedPaneProperties();
-      for( int row=0; row < m_tabs_model.getRowCount(); row++ )
-      {
-	 tprop.addTab( (TabProperty)m_tabs_model.getRow( row ) );
-      }
-      return tprop;
-   }
+        m_tabs_model = new TabsModel(props);
+        JTable table = m_view.getTable(TabDesignerNames.ID_TABS_TABLE);
+        table.setModel(m_tabs_model);
+
+        int col_width = 60;
+        TableColumnModel cmodel = table.getColumnModel();
+        cmodel.getColumn(TabsModel.ICON_COLUMN).setPreferredWidth(col_width);
+        cmodel.getColumn(TabsModel.TITLE_COLUMN).setPreferredWidth(col_width*5);
+
+    }
+
+    /**
+     * Adds a tab to the model.
+     */
+    public void addTabProperty(TabProperty tp)
+    {
+        m_tabs_model.addRow(tp);
+    }
+
+    public Dimension getPreferredSize()
+    {
+        return FormDesignerUtils.getWindowDimension(this, 300, 150);
+    }
+
+    /**
+     * @return the currently selected tab property. Null is returned if no item is selected.
+     */
+    public TabProperty getSelectedTabProperty()
+    {
+        int row = m_view.getTable(TabDesignerNames.ID_TABS_TABLE).getSelectedRow();
+        if(row >= 0) {
+            return (TabProperty)m_tabs_model.getRow(row);
+        } else {
+            return null;
+        }
+    }
 
 
-   /**
-    * Modifies an existing tab property with a new property
-    */
-   public void setTabProperty( TabProperty newProp, TabProperty oldProp )
-   {
-      m_tabs_model.setTabProperty( newProp, oldProp );
-   }
+    public TabbedPaneProperties getTabbedPaneProperties()
+    {
+        TabbedPaneProperties tprop = new TabbedPaneProperties();
+        for(int row = 0; row < m_tabs_model.getRowCount(); row++) {
+            tprop.addTab((TabProperty)m_tabs_model.getRow(row));
+        }
+        return tprop;
+    }
+
+
+    /**
+     * Modifies an existing tab property with a new property
+     */
+    public void setTabProperty(TabProperty newProp, TabProperty oldProp)
+    {
+        m_tabs_model.setTabProperty(newProp, oldProp);
+    }
 
 }

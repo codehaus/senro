@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.apache.log4j.Logger;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -74,9 +75,8 @@ public class DesignerManager
     public static final String CLIENT_OBJECT_SET_NAME = "Client Objects";
     public static final String SENRO_CONTEXT_DEFAULT_NAME = "Senro Context";
 
-    public static final Dimension INSPECTORS_PANEL_DIM = new Dimension(250, 300);
-
     public static final String COMPONENT_FILE_NAME = "Component.xml";
+    public static final Dimension DESIGNER_PANEL_MIN_DIM = new Dimension(900, 1);
 
     private final Map<FormSpec.DefaultAlignment, String> alignmentText;
     private final Map<Sizes.ComponentSize, String> componentSizes;
@@ -131,6 +131,7 @@ public class DesignerManager
         xml_generators.put(GridAllocatorRendererComponent.class, new GridAllocatorRendererGenerator());
         xml_generators.put(TemplateComponent.class, new TemplateGenerator());
         xml_generators.put(RootPanelComponent.class, new RootPanelGenerator());
+        xml_generators.put(TreeComponent.class, new TreeGenerator());
         xml_generators.put(JTextArea.class, new TextAreaXmlGenerator());
         xml_generators.put(JTable.class, new ListXmlGenerator());
         xml_generators.put(JComboBox.class, new ComboBoxXmlGenerator());
@@ -207,7 +208,7 @@ public class DesignerManager
     private void updateDesignerPanel(JPanel palettes_panel, ObjectSetManager server_obj_set_manager,
                                      ObjectSetManager client_obj_set_manager, JPanel inspectorsPanel)
     {
-        FormLayout layout = new FormLayout("fill:pref, fill:pref:grow", "fill:pref");
+        FormLayout layout = new FormLayout("fill:pref, fill:pref:grow", "fill:pref:grow");
         designerPanel.setLayout(layout);
         designerPanel.setBorder(null);
         CellConstraints cc = new CellConstraints();
@@ -215,19 +216,22 @@ public class DesignerManager
         JPanel server_obj_set_panel = server_obj_set_manager.getPresentationPanel();
         JPanel client_obj_set_panel = client_obj_set_manager.getPresentationPanel();
         JSplitPane obj_split_pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, server_obj_set_panel, client_obj_set_panel);
-        inspectorsPanel.setPreferredSize(INSPECTORS_PANEL_DIM);
-        inspectorsPanel.setMaximumSize(INSPECTORS_PANEL_DIM);
-        inspectorsPanel.setMinimumSize(INSPECTORS_PANEL_DIM);
         obj_split_pane.setResizeWeight(0.5d);
         JSplitPane split_pane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, obj_split_pane, inspectorsPanel);
-        split_pane.setResizeWeight(1d);
+        split_pane.setResizeWeight(1.0);
         split_pane.resetToPreferredSizes();
         designerPanel.add(split_pane, cc.xy(2, 1));
+        designerPanel.setMinimumSize(DESIGNER_PANEL_MIN_DIM);
     }
 
     public JPanel getDesignerPanel()
     {
         return designerPanel;
+    }
+
+    public DesignerProject getProject()
+    {
+        return project;
     }
 
     private Element getLayoutElement(Document doc)
@@ -269,6 +273,13 @@ public class DesignerManager
         }
         Element params_elem = doc.createElement(ComponentXmlNames.PARAMS_ELEMENT);
         root_elem.appendChild(params_elem);
+        for (Parameter param : project.getParametersManager().getParametersList()) {
+            Element param_elem = doc.createElement(ComponentXmlNames.PARAM_ELEMENT);
+            param_elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, param.getName());
+            param_elem.setAttribute(ComponentXmlNames.TYPE_ATTRIBUTE, param.getType());
+            param_elem.setAttribute(ComponentXmlNames.DEFAULT_VALUE_ATTRIBUTE, param.getDefaultValue());
+            params_elem.appendChild(param_elem);
+        }
         Element assoc_elem = doc.createElement(ComponentXmlNames.ASSOCIATIONS_ELEMENT);
         root_elem.appendChild(assoc_elem);
 
@@ -877,6 +888,36 @@ public class DesignerManager
                 DesignFormComponent tab_page = (DesignFormComponent)tabbed_pane.getComponentAt(tab_idx);
                 generateXmlForObject(page_elem, tab_page.getChildView(), null);
             }
+        }
+
+    }
+
+    private class TreeGenerator extends ComponentXmlGenerator
+    {
+
+        public String getTagName()
+        {
+            return ComponentXmlNames.TREE_ELEMENT;
+        }
+
+        public void buildElementBody(Element e, Component comp)
+        {
+            Document doc = e.getOwnerDocument();
+            TreeComponent tree_comp = (TreeComponent)comp;
+
+            Element iterator_elem = doc.createElement(ComponentXmlNames.ITERATOR_ELEMENT);
+            e.appendChild(iterator_elem);
+            String name = (tree_comp.getName() == null ? "" : tree_comp.getName());
+            iterator_elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, name);
+            String list = (tree_comp.getList() == null ? "" : tree_comp.getList());
+            iterator_elem.setAttribute(ComponentXmlNames.LIST_ATTRIBUTE, list);
+
+            Element tree_node_elem = doc.createElement(ComponentXmlNames.TREE_NODE_ELEMENT);
+            iterator_elem.appendChild(tree_node_elem);
+
+            String text = (tree_comp.getText() == null ? "" : tree_comp.getText());
+            Text text_elem = doc.createTextNode(text);
+            tree_node_elem.appendChild(text_elem);
         }
 
     }

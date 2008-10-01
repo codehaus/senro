@@ -62,23 +62,9 @@ public class EmbeddedFormComponentFactory extends FormComponentFactoryBase
      */
     public FormComponent create(ComponentSource compsrc, String compName, GridView parentView) throws FormException
     {
-        /**
-         * Shows a dialog that prompts the user to enter the number of columns and rows for the new view.
-         */
-        GridSizePanel view = new GridSizePanel();
-        JETADialog dlg = (JETADialog)JETAToolbox.createDialog(JETADialog.class, parentView, true);
-        dlg.setTitle(I18N.getLocalizedMessage("Grid Parameters"));
-        dlg.addValidator(view, view);
-        dlg.setPrimaryPanel(view);
-        dlg.setSize(dlg.getPreferredSize());
-        dlg.showCenter();
-        if(dlg.isOk()) {
-            FormComponent fc = create(compsrc, compName, parentView, view.getColumns(), view.getRows(), true);
-            GridView.fillCells(fc.getChildView(), compsrc);
-            return fc;
-        } else {
-            return null;
-        }
+        FormComponent fc = create(compsrc, compName, parentView, 3, 3, true);
+        GridView.fillCells(fc.getChildView(), compsrc);
+        return fc;
     }
 
     public GridComponent createComponent(String compName, GridView parentView) throws FormException

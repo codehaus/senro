@@ -101,7 +101,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * The main frame window for the application
- * 
+ *
  * @author Jeff Tassin
  */
 public class MainFrame extends JFrame implements ComponentSource, GridViewListener, ActionListener, JETAContainer,
@@ -752,7 +752,7 @@ public class MainFrame extends JFrame implements ComponentSource, GridViewListen
 
    /**
     * Enables/Disables the menu/toolbar button associated with the commandid
-    * 
+    *
     * @param commandId
     *           the id of the command whose button to enable/disable
     * @param bEnable
@@ -800,7 +800,7 @@ public class MainFrame extends JFrame implements ComponentSource, GridViewListen
 
    /**
     * JETAContainer implementation
-    * 
+    *
     * @return the component that is NOT a JMenuItem that has the given name
     */
    public Component getComponentByName(String compName) {
@@ -809,7 +809,7 @@ public class MainFrame extends JFrame implements ComponentSource, GridViewListen
 
    /**
     * JETAContainer implementation
-    * 
+    *
     * @return all components in this frame with the given name.
     */
    public Collection getComponentsByName(String compName) {

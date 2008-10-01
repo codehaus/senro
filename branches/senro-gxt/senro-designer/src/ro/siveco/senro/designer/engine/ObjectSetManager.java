@@ -34,7 +34,6 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     public static final int DEFAULT_COL_COUNT = 5;
     public static final int DEFAULT_ROW_COUNT = 3;
     public static final Dimension MATRIXVIEW_SCROLLPANE_PREF_DIM = new Dimension(300, 270);
-    public static final Dimension PRESENTATION_PANEL_PREF_DIM = new Dimension(300, 300);
     public static final Object[] options = {"Delete", "Don't delete", "Cancel"};
 
     protected MatrixView matrixView = null;
@@ -80,7 +79,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     public JPanel getPresentationPanel()
     {
         FormLayout layout = new FormLayout("3dlu, fill:pref:grow, 3dlu",
-                "3dlu, fill:pref, 3dlu, fill:pref, 3dlu");
+                "3dlu, fill:pref, 3dlu, fill:pref:grow, 3dlu");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setBorder(null);
         CellConstraints cc = new CellConstraints();
@@ -91,10 +90,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         scrollPane.setPreferredSize(MATRIXVIEW_SCROLLPANE_PREF_DIM);
         builder.add(label, cc.xy(2, 2));
         builder.add(scrollPane, cc.xy(2, 4));
-        JPanel present_panel = builder.getPanel();
-        present_panel.setMinimumSize(PRESENTATION_PANEL_PREF_DIM);
-        present_panel.setPreferredSize(PRESENTATION_PANEL_PREF_DIM);
-        return present_panel;
+        return builder.getPanel();
     }
 
     public void setPalettesPanel(JPanel palettesPanel)

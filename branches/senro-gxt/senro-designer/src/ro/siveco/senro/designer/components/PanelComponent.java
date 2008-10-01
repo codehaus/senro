@@ -15,8 +15,8 @@ public class PanelComponent extends JPanel
         textL.setFont(FONT);
         textL.setForeground(FOREGROUND_COLOR);
         setPreferredSize(new Dimension(width, height));
-        setLayout(new GridLayout(1, 1));
+        setLayout(new BorderLayout());
         setBorder(BorderFactory.createLineBorder(FOREGROUND_COLOR, BORDER));
-        add(textL);
+        add(textL, BorderLayout.CENTER);
     }
 }

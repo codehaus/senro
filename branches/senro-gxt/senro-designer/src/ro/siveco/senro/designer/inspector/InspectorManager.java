@@ -12,13 +12,11 @@ import java.awt.*;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
-import ro.siveco.senro.designer.objects.ObjectDescription;
-
 public class InspectorManager
 {
     protected static Hashtable<Class, ArrayList<Inspector>> inspectors = new Hashtable<Class, ArrayList<Inspector>>();
     public static InspectorMessagePanel messagePanel = new InspectorMessagePanel();
-    public static final Dimension INSPECTOR_PANEL_PREF_DIM = new Dimension(200, 220);
+    public static final Dimension INSPECTOR_PANEL_PREF_DIM = new Dimension(200, 100);
 
     private JPanel inspectorsPanel;
     protected JPanel inspectorPanel = null;

@@ -41,8 +41,9 @@ public class IBMainFrameUIDirector implements UIDirector
      */
     public void updateComponents(java.util.EventObject evt)
     {
-        boolean has_project = (m_frame.getProject() != null);
+        boolean has_project = (m_frame.getDesignerManager().getProject() != null);
 
+        m_frame.enableComponent(MainFrameNames.ID_PARAMETERS_MANAGER, has_project);
         m_frame.enableComponent(MainFrameNames.ID_CREATE_FORM, has_project);
         m_frame.enableComponent(MainFrameNames.ID_OPEN_FORM, has_project);
         m_frame.enableComponent(MainFrameNames.ID_PROJECT_SETTINGS, has_project);

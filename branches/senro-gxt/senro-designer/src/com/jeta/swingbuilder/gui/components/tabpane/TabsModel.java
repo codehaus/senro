@@ -19,17 +19,12 @@
 
 package com.jeta.swingbuilder.gui.components.tabpane;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.swing.Icon;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.AbstractTableModel;
 
 
 import com.jeta.open.i18n.I18N;
-import com.jeta.open.registry.JETARegistry;
 
 import com.jeta.forms.store.properties.TabProperty;
 import com.jeta.forms.store.properties.TabbedPaneProperties;
@@ -38,100 +33,88 @@ import com.jeta.swingbuilder.gui.components.JETATableModel;
 
 /**
  * This class is the table model for designing tabs in a JTabbedPane
+ *
  * @author Jeff Tassin
  */
 public class TabsModel extends JETATableModel
 {
- 
-   /** column definitions */
-   static final int  ICON_COLUMN            = 0;
-   static final int  TITLE_COLUMN           = 1;
+
+    /**
+     * column definitions
+     */
+    static final int ICON_COLUMN = 0;
+    static final int TITLE_COLUMN = 1;
 
 
-   /**
-    * ctor.  
-    */
-   public TabsModel( TabbedPaneProperties props )
-   {
- 
-      String[] values = { I18N.getLocalizedMessage("Icon"),
-			  I18N.getLocalizedMessage("Title") };			  
+    public TabsModel(TabbedPaneProperties props)
+    {
 
-      setColumnNames( values );
+        String[] values = { I18N.getLocalizedMessage("Icon"),
+                            I18N.getLocalizedMessage("Title") };
 
-      Class[] types = { Icon.class, String.class };
-      setColumnTypes( types );
-      reload( props );
-   }
+        setColumnNames(values);
 
-   /**
-    * Adds the given object to the model
-    */
-   /*public void addRow( TabProperty tp )
-   {
-      if ( m_data == null )
-	 m_data = new ArrayList();
+        Class[] types = { Icon.class, String.class };
+        setColumnTypes(types);
+        reload(props);
+    }
 
-      m_data.add( tp );
-      fireTableRowsInserted( m_data.size()-1, m_data.size()-1 );
-      }*/
+    /**
+     * @return the column value at the given row
+     */
+    public Object getValueAt(int row, int column)
+    {
+        /**  "Icon",  "Title", "Content", "Scrollable" */
+        TabProperty tp = (TabProperty)getRow(row);
+        switch(column) {
+            case ICON_COLUMN:
+                return tp.icon();
+            case TITLE_COLUMN:
+                return tp.getTitle();
+            default:
+                return "";
+        }
+    }
 
+    /**
+     * Reload the model
+     * @param props pane properties
+     */
+    public void reload(TabbedPaneProperties props)
+    {
+        removeAll();
+        if(props != null) {
+            Collection tabs = props.getTabs();
+            for(Object tab : tabs) {
+                TabProperty tp = (TabProperty)tab;
+                addRow(tp);
+            }
+        }
+    }
 
-   /**
-    * @return the column value at the given row
-    */
-   public Object getValueAt(int row, int column)
-   {
-      /**  "Icon",  "Title", "Content", "Scrollable" */
-      TabProperty tp = (TabProperty)getRow( row );
-      if ( column == ICON_COLUMN ) 
-      {
-	 return tp.icon();
-      }
-      else if ( column == TITLE_COLUMN )  
-      {
-	 return tp.getTitle();
-      }
-      else
-	 return "";
-   }
+    /**
+     * Modifies an existing tab property with a new property
+     *
+     * @param newProp modified property
+     * @param oldProp old property
+     */
+    public void setTabProperty(TabProperty newProp, TabProperty oldProp)
+    {
+        int pos = indexOf(oldProp);
+        if(pos >= 0) {
+            set(pos, newProp);
+        }
+    }
 
-   /**
-    * Reload the model
-    */
-   public void reload( TabbedPaneProperties props )
-   {
-      removeAll();
-      if ( props != null )
-      {
-	 Collection tabs = props.getTabs();
-	 Iterator iter = tabs.iterator();
-	 while( iter.hasNext() )
-	 {
-	    TabProperty tp = (TabProperty)iter.next();
-	    addRow(tp);
-	 }
-      }
-   }
+    /**
+     * Sets the tab property at the given index.
+     *
+     * @param index the index where the property will be set
+     * @param prop the property
+     */
+    public void setTabProperty(int index, TabProperty prop)
+    {
+        set(index, prop);
+    }
 
-
-   /**
-    * Modifies an existing tab property with a new property
-    */
-   public void setTabProperty( TabProperty newProp, TabProperty oldProp )
-   {
-      int pos = indexOf( oldProp );
-      if ( pos >= 0 )
-      {
-	 set( pos, newProp );
-      }
-   }
-
-   /**
-    * Sets the tab property at the given index.
-    */
-   public void setTabProperty( int index, TabProperty prop )
-   {
-      set( index, prop );
-   }
 }

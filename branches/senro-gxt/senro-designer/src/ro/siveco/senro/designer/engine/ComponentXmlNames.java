@@ -7,6 +7,7 @@ public interface ComponentXmlNames
     public static final String SERVER_ELEMENT = "Server";
     public static final String CLIENT_ELEMENT = "Client";
     public static final String PARAMS_ELEMENT = "Params";
+    public static final String PARAM_ELEMENT = "Parameter";
     public static final String ASSOCIATIONS_ELEMENT = "Associations";
     public static final String GRID_ELEMENT = "Grid";
 
@@ -35,6 +36,9 @@ public interface ComponentXmlNames
 
     public static final String NAME_ATTRIBUTE = "name";
     public static final String ID_ATTRIBUTE = "id";
+    public static final String TYPE_ATTRIBUTE = "type";
+    public static final String DEFAULT_VALUE_ATTRIBUTE = "defaultValue";
+    public static final String LIST_ATTRIBUTE = "list";
 
     public static final String ITERATOR_ELEMENT = "Iterator";
     public static final String CONDITIONAL_ELEMENT = "Conditional";
@@ -46,6 +50,8 @@ public interface ComponentXmlNames
     public static final String DATE_FIELD_ELEMENT = "DateField";
     public static final String TEMPLATE_ELEMENT = "Template";
     public static final String ROOT_PANEL_ELEMENT = "RootPanel";
+    public static final String TREE_ELEMENT = "Tree";
+    public static final String TREE_NODE_ELEMENT = "TreeNode";
 
 
 }
