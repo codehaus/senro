@@ -348,7 +348,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         m_buttonbar = new TSButtonBar();
         m_buttonbar.addListener(this);
 
-        m_buttonbar.addView(I18N.getLocalizedMessage("Component"), m_propsview, FormDesignerUtils
+        m_buttonbar.addView(I18N.getLocalizedMessage("Selected Component"), m_propsview, FormDesignerUtils
                 .loadImage(Icons.COMPONENT_16));
 
         /**
@@ -629,7 +629,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menuBar.add(m_lfmenu);
 
         menu = new JMenu(I18N.getLocalizedMessage("Tools"));
-        menu.add(i18n_createMenuItem("Form Properties", MainFrameNames.ID_FORM_PROPERTIES, KeyStroke.getKeyStroke(
+        menu.add(i18n_createMenuItem("Grid Properties", MainFrameNames.ID_FORM_PROPERTIES, KeyStroke.getKeyStroke(
                 KeyEvent.VK_F4, 0, false)));
         menu.add(i18n_createMenuItem("Code Generation", MainFrameNames.ID_FORWARD_ENGINEER, null));
         menu.add(i18n_createMenuItem("Project Settings", MainFrameNames.ID_PROJECT_SETTINGS, null));

@@ -47,6 +47,7 @@ import com.jeta.forms.components.border.TitledBorderSide;
 
 import com.jeta.open.i18n.I18N;
 import com.jeta.open.registry.JETARegistry;
+import ro.siveco.senro.designer.ui.DesignerIcon;
 
 /**
  * The bean manager is responsible for managing imported beans in the builder.
@@ -262,16 +263,16 @@ public class DefaultBeanManager implements BeanManager {
 //                        .loadImage(Icons.PORTRAIT_16));
       registerDefaultBean(I18N.getLocalizedMessage("GridAllocatorRenderer"),
                          "ro.siveco.senro.designer.components.GridAllocatorRendererComponent",
-                          FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
+                          new DesignerIcon(20, 12, "GAR"));
       registerDefaultBean(I18N.getLocalizedMessage("Template"),
                          "ro.siveco.senro.designer.components.TemplateComponent",
-                          FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
-      registerDefaultBean(I18N.getLocalizedMessage("RootPanel"),
-                         "ro.siveco.senro.designer.components.RootPanelComponent",
-                          FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
+                          new DesignerIcon(20, 12, "T"));
+//      registerDefaultBean(I18N.getLocalizedMessage("RootPanel"),
+//                         "ro.siveco.senro.designer.components.RootPanelComponent",
+//                          new DesignerIcon(20, 12, "RP"));
       registerDefaultBean(I18N.getLocalizedMessage("Tree"),
                          "ro.siveco.senro.designer.components.TreeComponent",
-                          FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
+                          new DesignerIcon(20, 12, "Tree"));
    }
 
    public void setModel(ImportedBeansModel ibm) {

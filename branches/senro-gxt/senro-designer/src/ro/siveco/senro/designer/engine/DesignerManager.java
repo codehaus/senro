@@ -23,6 +23,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileOutputStream;
+import java.net.URL;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -90,6 +91,10 @@ public class DesignerManager
 
     private DesignerProject project = null;
 
+    private GridXmlGenerator gridXmlGenerator = new GridXmlGenerator();
+
+    private static DesignerManager sharedDesignerManager = null;
+
     public DesignerManager()
     {
         this(null);
@@ -97,6 +102,7 @@ public class DesignerManager
 
     public DesignerManager(IBMainFrame main_frame)
     {
+        sharedDesignerManager = this;
         this.mainFrame = main_frame;
         // init alignmentText map
         Map<FormSpec.DefaultAlignment, String> alignment_text = new HashMap<FormSpec.DefaultAlignment, String>();
@@ -139,7 +145,7 @@ public class DesignerManager
         xml_generators.put(JButton.class, new ButtonXmlGenerator());
         xml_generators.put(JScrollPane.class, new ScrollPaneXmlGenerator());
         xml_generators.put(JTabbedPane.class, new TabPanelXmlGenerator());
-        xml_generators.put(GridView.class, new GridXmlGenerator());
+        xml_generators.put(GridView.class, gridXmlGenerator);
         xml_generators.put(IteratorComponent.class, new IteratorXmlGenerator());
         xml_generators.put(ConditionalComponent.class, new ConditionalXmlGenerator());
 
@@ -232,6 +238,17 @@ public class DesignerManager
     public DesignerProject getProject()
     {
         return project;
+    }
+
+    public static ImageIcon getIconForImage(String image_path)
+    {
+        ImageIcon icon = null;
+        URL img_URL = DesignerManager.class.getResource(RELATIVE_PATH_TO_IMG + image_path);
+        if (img_URL != null) {
+            icon = new ImageIcon(img_URL, image_path);
+        }
+        System.out.println("img_URL "+ img_URL + " image_path " + image_path);
+        return icon;
     }
 
     private Element getLayoutElement(Document doc)
@@ -619,6 +636,11 @@ public class DesignerManager
 
     }
 
+    public static DesignerManager getSharedDesignerManager()
+    {
+        return sharedDesignerManager;
+    }
+
     private abstract class ComponentXmlGenerator extends XmlGenerator
     {
         public Element getXml(Document doc, Object o, Object context)
@@ -933,7 +955,7 @@ public class DesignerManager
 
     }
 
-    private class IteratorXmlGenerator extends GridXmlGenerator
+    private class IteratorXmlGenerator extends ComponentXmlGenerator
     {
 
         public String getTagName()
@@ -941,14 +963,44 @@ public class DesignerManager
             return ComponentXmlNames.ITERATOR_ELEMENT;
         }
 
+        public void buildElementBody(Element e, Component comp)
+        {
+            IteratorComponent itc = (IteratorComponent)comp;
+            String it_list = itc.getList();
+            if(it_list == null) {
+                it_list = "";
+            }
+            e.setAttribute("list", it_list);
+            Document doc = e.getOwnerDocument();
+            Element grid_elem = doc.createElement(ComponentXmlNames.GRID_ELEMENT);
+            e.appendChild(grid_elem);
+            gridXmlGenerator.buildElementBody(grid_elem, comp);
+        }
+
     }
 
-    private class ConditionalXmlGenerator extends GridXmlGenerator
+    private class ConditionalXmlGenerator extends ComponentXmlGenerator
     {
 
         public String getTagName()
         {
             return ComponentXmlNames.CONDITIONAL_ELEMENT;
+        }
+
+        public void buildElementBody(Element e, Component comp)
+        {
+            ConditionalComponent cond_comp = (ConditionalComponent)comp;
+            String cond = cond_comp.getCondition();
+            if(cond == null) {
+                cond = "";
+            }
+            Document doc = e.getOwnerDocument();
+            Element if_elem = doc.createElement(ComponentXmlNames.IF_ELEMENT);
+            e.appendChild(if_elem);
+            Element grid_elem = doc.createElement(ComponentXmlNames.GRID_ELEMENT);
+            if_elem.appendChild(grid_elem);
+            if_elem.setAttribute("condition", cond);
+            gridXmlGenerator.buildElementBody(grid_elem, comp);
         }
 
     }
