@@ -897,21 +897,36 @@ public class DesignerManager
             return ComponentXmlNames.TAB_PANEL_ELEMENT;
         }
 
-        public void buildElementBody(Element e, Component comp)
+        public void buildElementBody(Element tab_pane_elem, Component comp)
         {
-            Document doc = e.getOwnerDocument();
+            Document doc = tab_pane_elem.getOwnerDocument();
             JTabbedPane tabbed_pane = (JTabbedPane)comp;
             int tab_count = tabbed_pane.getTabCount();
             for(int tab_idx = 0; tab_idx < tab_count; tab_idx++) {
-                Element page_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
-                e.appendChild(page_elem);
-                page_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, String.valueOf(tab_idx));
-                page_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, tabbed_pane.getTitleAt(tab_idx));
                 DesignFormComponent tab_page = (DesignFormComponent)tabbed_pane.getComponentAt(tab_idx);
-                generateXmlForObject(page_elem, tab_page.getChildView(), null);
+                Component tab_comp = getTabPageComponent(tab_page);
+//                Component tab_comp = tab_page.getChildView();
+//                System.out.println("*** - tab_comp " + tab_comp.getClass());
+                if(tab_comp instanceof IteratorComponent) {
+                    generateXmlForObject(tab_pane_elem, tab_comp, null);
+                } else {
+                    Element page_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
+                    tab_pane_elem.appendChild(page_elem);
+                    page_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, String.valueOf(tab_idx));
+                    page_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, tabbed_pane.getTitleAt(tab_idx));
+                    generateXmlForObject(page_elem, tab_comp, null);
+                }
             }
         }
 
+        private Component getTabPageComponent(DesignFormComponent tab_page)
+        {
+            Component tab_comp = tab_page.getChildView();
+            GridView top_grid = tab_page.getChildView();
+            Iterator<GridComponent> comp_it = top_grid.gridIterator();
+            GridComponent grid_comp = comp_it.next();
+            return grid_comp.getBeanChildComponent();
+        }
     }
 
     private class TreeGenerator extends ComponentXmlGenerator
