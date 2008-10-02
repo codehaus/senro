@@ -42,6 +42,8 @@ public interface ComponentXmlNames
 
     public static final String ITERATOR_ELEMENT = "Iterator";
     public static final String CONDITIONAL_ELEMENT = "Conditional";
+    public static final String IF_ELEMENT = "If";
+    public static final String ELSE_ELEMENT = "Else";
 
     public static final String TAB_PANEL_ELEMENT = "TabPanel";
     public static final String TAB_PAGE_ELEMENT = "TabPage";

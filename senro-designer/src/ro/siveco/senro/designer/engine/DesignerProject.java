@@ -12,7 +12,9 @@ import java.io.OutputStream;
 import java.io.ObjectInputStream;
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.FileFilter;
 import java.util.*;
+import java.util.List;
 import java.awt.*;
 
 import org.apache.commons.io.IOUtils;
@@ -27,6 +29,8 @@ public class DesignerProject
     public static final String PROJECT_MODEL_FILE_NAME = "model.jfpr";
     public static final String SERVER_OBJECTS_NAME = "server.bin";
     public static final String CLIENT_OBJECTS_NAME = "client.bin";
+
+    private List<Template> templates = new ArrayList<Template>();
 
     private Set<String> gridNames = new HashSet<String>();
     private File projectFilePath;
@@ -44,6 +48,7 @@ public class DesignerProject
         }
         projectModel = new ProjectModel();
         projectModel.setProjectPath(new File(getProjectDir(), PROJECT_MODEL_FILE_NAME).getAbsolutePath());
+        loadTemplates();
     }
 
     private void createParametersManager()
@@ -63,6 +68,25 @@ public class DesignerProject
         parametersFrame.pack();
         parametersFrame.setVisible(true);
         locateOnScreenCenter(parametersFrame);
+    }
+
+    private void loadTemplates()
+    {
+        File projects_path = getProjectDir().getParentFile();
+        File[] f = projects_path.listFiles(new FileFilter()
+        {
+            public boolean accept(File pathname)
+            {
+                if(!pathname.isDirectory()) {
+                    return false;
+                }
+                File proj_file = new File(pathname, PROJECT_FILE_NAME);
+                return proj_file.exists() && !proj_file.isDirectory();
+
+            }
+        });
+
+        // not implemented
     }
 
     public static void locateOnScreenCenter(Component component)
@@ -133,6 +157,11 @@ public class DesignerProject
         is.readInt();
         gridNames = new HashSet<String>((Set<String>)is.readObject());
         parametersManager.setParameters((java.util.List<Parameter>)is.readObject());
+    }
+
+    public List<Template> getTemplates()
+    {
+        return Collections.unmodifiableList(templates);
     }
 
     public boolean close()

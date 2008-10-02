@@ -75,6 +75,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import ro.siveco.senro.designer.components.IteratorComponentFactory;
 import ro.siveco.senro.designer.components.ConditionalComponentFactory;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 
 /**
@@ -270,10 +271,10 @@ public class ComponentsToolBar extends JETAPanel implements ComponentSource
             // senro components
             btns.add(registerBean("Iterator", I18N.getLocalizedMessage("Iterator"),
                                   new IteratorComponentFactory(this),
-                                  Icons.EMBEDDED_FORM_16));
+                                  DesignerManager.getIconForImage("iter_2_16x16.png")));
             btns.add(registerBean("Conditional", I18N.getLocalizedMessage("Conditional"),
                                   new ConditionalComponentFactory(this),
-                                  Icons.EMBEDDED_FORM_16));
+                                  DesignerManager.getIconForImage("cond_16x16.png")));
         Iterator iter = default_beans.iterator();
 	 while( iter.hasNext() )
 	 {
@@ -283,7 +284,7 @@ public class ComponentsToolBar extends JETAPanel implements ComponentSource
 	    {
 	       icon = FormDesignerUtils.loadImage( Icons.BEAN_16 );
 	    }
-	    
+
 	    String bname = rbean.getClassName();
 	    try
 	    {

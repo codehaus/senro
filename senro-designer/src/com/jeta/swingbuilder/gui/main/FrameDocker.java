@@ -48,7 +48,7 @@ import com.jeta.open.i18n.I18N;
 public class FrameDocker
 {
    /**
-    * The main container in the application frame that contains the tool palette, form editor, 
+    * The main container in the application frame that contains the tool palette, form editor,
     * and optionally the properties window
     */
    private JPanel         m_main_panel;
@@ -105,14 +105,14 @@ public class FrameDocker
 	 togglePropertiesFrame();
 
 	 m_properties_frame = new JFrame();
-	 m_properties_frame.setTitle( I18N.getLocalizedMessage( "Form Properties" ) );
+	 m_properties_frame.setTitle( I18N.getLocalizedMessage( "Grid Properties" ) );
 	 javax.swing.ImageIcon icon = FormDesignerUtils.loadImage( Icons.LINKED_FORM_16 );
 	 if ( icon != null )
 	     m_properties_frame.setIconImage( icon.getImage() );
 
-	 ImageComponent btn = (ImageComponent)m_properties_view.getComponentByName( FormPropertiesNames.ID_DOCK_FRAME );  
-	 btn.setIcon( FormDesignerUtils.loadImage( Icons.SPLIT_WINDOWS_16  ) ); 
-	 
+	 ImageComponent btn = (ImageComponent)m_properties_view.getComponentByName( FormPropertiesNames.ID_DOCK_FRAME );
+	 btn.setIcon( FormDesignerUtils.loadImage( Icons.SPLIT_WINDOWS_16  ) );
+
 	 m_properties_frame.getContentPane().add( m_properties_view );
 
 	 if ( bounds == null )
@@ -188,12 +188,12 @@ public class FrameDocker
 
       m_properties_frame.setBounds( x, y, width, height );
    }
-   
+
 
    /**
     * Saves the frame state to the object store and
     */
-   public void shutDown( ) 
+   public void shutDown( )
    {
       try
       {
@@ -240,7 +240,7 @@ public class FrameDocker
 	    else
 	       m_split.setDividerLocation( 0.7 );
 	 }
-	 
+
 	 m_main_panel.revalidate();
 	 m_main_panel.repaint();
       }
