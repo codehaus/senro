@@ -185,7 +185,7 @@ public class DynamicBeanInfo
     * that are either deprecated or irrelevent for the designer.
     * @param propName the name of the property descriptor to remove.
     */
-   void removePropertyDescriptor( String propName )
+   public void removePropertyDescriptor( String propName )
    {
       m_props.remove( propName );
    }

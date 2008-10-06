@@ -41,68 +41,63 @@ import com.jeta.forms.store.properties.TransformOptionsProperty;
 import com.jeta.swingbuilder.gui.properties.JETAPropertyEditor;
 
 
-public class ComboEditor extends JETAPropertyEditor 
+public class ComboEditor extends JETAPropertyEditor
 {
-   private JPanel           m_panel;
-   private JComboBox        m_cbox = new JComboBox();
-	
-   public ComboEditor() 
-   {
-      m_panel = new JPanel( new BorderLayout() );
-      m_panel.add( m_cbox, BorderLayout.CENTER );
-      m_cbox.addActionListener( new ActionListener()
-	 {
-	    public void actionPerformed( ActionEvent evt )
-	    {
-	       setValue( m_cbox.getSelectedItem() );
-	    }
-	 });
-   }
+    private JPanel m_panel;
+    private JComboBox m_cbox = new JComboBox();
 
-   public Component getCustomEditor()
-   {
-      return m_panel;
-   }
+    public ComboEditor()
+    {
+        m_panel = new JPanel(new BorderLayout());
+        m_panel.add(m_cbox, BorderLayout.CENTER);
+        m_cbox.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                setValue(m_cbox.getSelectedItem());
+            }
+        });
+    }
 
-   /**
-    * @return true if this editor supports custom editing inline in the property table.
-    * Property types such as the Java primitives and Strings support inline editing.
-    */
-   public boolean supportsInlineEditing()
-   {
-      return true;
-   }
+    public Component getCustomEditor()
+    {
+        return m_panel;
+    }
 
-   public Object getValue()
-   {
-      return m_cbox.getSelectedItem();
-   }
+    /**
+     * @return true if this editor supports custom editing inline in the property table.
+     *         Property types such as the Java primitives and Strings support inline editing.
+     */
+    public boolean supportsInlineEditing()
+    {
+        return true;
+    }
 
-   /**
-    * 
-    */
-   public void setValue(Object value)
-   {
-      super.setValue( value );
-      if ( value instanceof TransformOptionsProperty )
-      {
-	 TransformOptionsProperty p = (TransformOptionsProperty)value;
-	 m_cbox.removeAllItems();
-	 Collection c = p.getOptions();
-	 if ( c != null )
-	 {
-	    Iterator iter = c.iterator();
-	    while( iter.hasNext() )
-	    {
-	       m_cbox.addItem( iter.next() );
-	    }
-	 }
-	 m_cbox.setSelectedItem( p.getCurrentItem() );
-      }
-      else
-      {
-	 //assert( false );
-      }
-   }
+    public Object getValue()
+    {
+        return m_cbox.getSelectedItem();
+    }
+
+    /**
+     *
+     */
+    public void setValue(Object value)
+    {
+        super.setValue(value);
+        if(value instanceof TransformOptionsProperty) {
+            TransformOptionsProperty p = (TransformOptionsProperty)value;
+            m_cbox.removeAllItems();
+            Collection c = p.getOptions();
+            if(c != null) {
+                Iterator iter = c.iterator();
+                while(iter.hasNext()) {
+                    m_cbox.addItem(iter.next());
+                }
+            }
+            m_cbox.setSelectedItem(p.getCurrentItem());
+        } else {
+            //assert( false );
+        }
+    }
 
 }

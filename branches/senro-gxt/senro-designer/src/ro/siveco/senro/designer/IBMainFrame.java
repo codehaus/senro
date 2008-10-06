@@ -530,7 +530,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
 //        menu.add(i18n_createMenuItem("Save", MainFrameNames.ID_SAVE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_S,
 //                InputEvent.CTRL_MASK, false)));
 //        menu.add(i18n_createMenuItem("Save As", MainFrameNames.ID_SAVE_FORM_AS, null));
-        menu.add(i18n_createMenuItem("Close Form", MainFrameNames.ID_CLOSE_FORM, null));
+        menu.add(i18n_createMenuItem("Close Grid", MainFrameNames.ID_CLOSE_FORM, null));
 
         menu.addSeparator();
         menu.add(i18n_createMenuItem("New Project", MainFrameNames.ID_CREATE_PROJECT, null));
@@ -636,11 +636,11 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.add(i18n_createMenuItem("Java Bean Manager", MainFrameNames.ID_BEAN_MANAGER, null));
         menu.add(i18n_createMenuItem("Preferences", MainFrameNames.ID_ENV_SETTINGS, null));
         menu.add(i18n_createMenuItem("System Properties", MainFrameNames.ID_SYSTEM_PROPERTIES, null));
-        menu.add(i18n_createMenuItem("Parameters Manager", MainFrameNames.ID_PARAMETERS_MANAGER, null));
+        menu.add(i18n_createMenuItem("Parameters", MainFrameNames.ID_PARAMETERS_MANAGER, null));
 
         if (FormDesignerUtils.isDebug()) {
             menu.addSeparator();
-            menu.add(i18n_createMenuItem("Form Manager", MainFrameNames.ID_SHOW_FORM_MANAGER, null));
+            menu.add(i18n_createMenuItem("Grid Manager", MainFrameNames.ID_SHOW_FORM_MANAGER, null));
             menu.add(i18n_createMenuItem("Undo Manager", MainFrameNames.ID_SHOW_UNDO_MANAGER, null));
         }
         menuBar.add(menu);
@@ -692,9 +692,9 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_PROJECT, Icons.NEW_PROJECT_24, "Create Project"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_PROJECT, Icons.OPEN_PROJECT_24, "Open Project"));
 
-        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_FORM, Icons.OPEN_24, "Open Form"));
+        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_FORM, Icons.OPEN_24, "Open Grid"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_SAVE_PROJECT, Icons.SAVE_24, "Save Project"));
-        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_FORM, Icons.ADD_24, "Create Form"));
+        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_FORM, Icons.ADD_24, "Create Grid"));
 
         toolbar.addSeparator();
 

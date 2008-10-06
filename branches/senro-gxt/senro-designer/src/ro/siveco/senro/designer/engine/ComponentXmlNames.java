@@ -35,6 +35,8 @@ public interface ComponentXmlNames
     public static final String TITLE_ATTRIBUTE = "title";
 
     public static final String NAME_ATTRIBUTE = "name";
+    public static final String VALUE_ATTRIBUTE = "value";
+    public static final String TEMPLATE_FILE_ATTRIBUTE = "file";    
     public static final String ID_ATTRIBUTE = "id";
     public static final String TYPE_ATTRIBUTE = "type";
     public static final String DEFAULT_VALUE_ATTRIBUTE = "defaultValue";
@@ -54,6 +56,11 @@ public interface ComponentXmlNames
     public static final String ROOT_PANEL_ELEMENT = "RootPanel";
     public static final String TREE_ELEMENT = "Tree";
     public static final String TREE_NODE_ELEMENT = "TreeNode";
+    public static final String BUTTON_ELEMENT = "Button";
+    public static final String LABEL_ELEMENT = "Label";
+    public static final String ENTITY_ELEMENT = "Entity";
+    public static final String TASK_ELEMENT = "Task";
+    public static final String TEMPLATE_PARAM_ELEMENT = "Param";
 
 
 }

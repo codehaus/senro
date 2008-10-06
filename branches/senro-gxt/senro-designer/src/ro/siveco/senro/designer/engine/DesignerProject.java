@@ -18,8 +18,13 @@ import java.util.List;
 import java.awt.*;
 
 import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.swing.*;
+
+import ro.siveco.senro.designer.util.XmlHelper;
+import ro.siveco.senro.designer.util.XmlException;
 
 public class DesignerProject
 {
@@ -31,6 +36,7 @@ public class DesignerProject
     public static final String CLIENT_OBJECTS_NAME = "client.bin";
 
     private List<Template> templates = new ArrayList<Template>();
+    private Map<String, Template> templatesByName = new HashMap<String, Template>();
 
     private Set<String> gridNames = new HashSet<String>();
     private File projectFilePath;
@@ -38,7 +44,8 @@ public class DesignerProject
     protected ParametersManager parametersManager;
     protected JFrame parametersFrame;
 
-    public DesignerProject(File path, boolean create) throws IOException, ClassNotFoundException
+    public DesignerProject(File path, boolean create)
+        throws IOException, ClassNotFoundException, EngineException
     {
         createParametersManager();
         if(create) {
@@ -70,7 +77,7 @@ public class DesignerProject
         locateOnScreenCenter(parametersFrame);
     }
 
-    private void loadTemplates()
+    private void loadTemplates() throws EngineException
     {
         File projects_path = getProjectDir().getParentFile();
         File[] f = projects_path.listFiles(new FileFilter()
@@ -85,8 +92,51 @@ public class DesignerProject
 
             }
         });
+        for(File proj_dir : f) {
+            if(proj_dir.getAbsolutePath().equals(getProjectDir().getAbsolutePath())) {
+                continue;
+            }
+            String template_name = proj_dir.getName();
+            File comp_file = new File(proj_dir, DesignerManager.COMPONENT_FILE_NAME);
+            List<Parameter> parameter_list = new ArrayList<Parameter>();
+            try {
+                Document doc = XmlHelper.readDocument(comp_file);
+                Element params_elem = XmlHelper.getChild(doc.getDocumentElement(), ComponentXmlNames.PARAMS_ELEMENT);
+                Element param = XmlHelper.getFirstChildElement(params_elem);
+                while(param != null) {
+                    String param_name = param.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE);
+                    String param_type = param.getAttribute(ComponentXmlNames.TYPE_ATTRIBUTE);
+                    String param_default = param.getAttribute(ComponentXmlNames.DEFAULT_VALUE_ATTRIBUTE);
+                    parameter_list.add(new Parameter(param_name, param_type, param_default));
+                    param = XmlHelper.getNextSiblingElement(param);
+                }
+            }
+            catch(XmlException e) {
+                throw new EngineException("Cannot load template from dir: " + proj_dir.getAbsolutePath());
+            }
+            Template tpl = new Template(template_name, parameter_list);
+            templates.add(tpl);
+            templatesByName.put(template_name, tpl);
+        }
+        // create own template
+        String template_name = getProjectDir().getName();
+        List<Parameter> parameter_list = parametersManager.getParametersList();
+        Template tpl = new Template(template_name, parameter_list);
+        templates.add(tpl);
+        templatesByName.put(template_name, tpl);
+        
+        Collections.sort(templates, new Comparator<Template>()
+        {
+            public int compare(Template tpl_1, Template tpl_2)
+            {
+                return tpl_1.getName().compareTo(tpl_2.getName());
+            }
+        });
+    }
 
-        // not implemented
+    public Template getTemplate(String template_name)
+    {
+        return templatesByName.get(template_name);
     }
 
     public static void locateOnScreenCenter(Component component)
