@@ -186,8 +186,12 @@ public class DefaultBeanManager implements BeanManager {
       registerDefaultBean(I18N.getLocalizedMessage("CheckBox"), "javax.swing.JCheckBox", FormDesignerUtils
                .loadImage(Icons.CHECK_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("Button"), "javax.swing.JButton", FormDesignerUtils
-               .loadImage(Icons.BUTTON_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Button"), "javax.swing.JButton", FormDesignerUtils
+//               .loadImage(Icons.BUTTON_16));
+//      registerDefaultBean(I18N.getLocalizedMessage("Button"), "ro.siveco.senro.designer.components.SenroButton",
+//                          FormDesignerUtils.loadImage(Icons.BUTTON_16));
+      registerDefaultBean("Button", "ro.siveco.senro.designer.components.SenroButton",
+                          FormDesignerUtils.loadImage(Icons.BUTTON_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JToggleButton"), "javax.swing.JToggleButton", FormDesignerUtils
 //               .loadImage(Icons.TOGGLE_BUTTON_16));

@@ -10,6 +10,13 @@ public class Parameter implements Serializable
     protected String type = "";
     protected String defaultValue = "";
 
+    public Parameter(String name, String type, String defaultValue)
+    {
+        this.name = name;
+        this.type = type;
+        this.defaultValue = defaultValue;
+    }
+
     public Parameter()
     {
     }

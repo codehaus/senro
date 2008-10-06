@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="D:/workspaces/senro/senro-designer/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="D:/workspaces/senro/senro-designer/lib/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="D:/workspaces/senro/senro-designer/lib/commons-lang-2.3.jar"/>
+	<classpathentry kind="lib" path="D:/workspaces/senro/senro-designer/lib/commons-codec-1.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

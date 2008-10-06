@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 JETA Software, Inc.  All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
- *  o Redistributions of source code must retain the above copyright notice, 
+ *  o Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
- *  o Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  o Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  o Neither the name of JETA Software nor the names of its contributors may 
- *    be used to endorse or promote products derived from this software without 
+ *  o Neither the name of JETA Software nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
  *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -49,11 +49,7 @@ import com.jeta.forms.components.image.*;
 import com.jeta.forms.components.label.*;
 import com.jeta.forms.components.separator.*;
 import com.jeta.forms.logger.FormsLogger;
-import ro.siveco.senro.designer.components.IteratorComponent;
-import ro.siveco.senro.designer.components.IteratorComponentFactory;
-import ro.siveco.senro.designer.components.IteratorBeanFactory;
-import ro.siveco.senro.designer.components.ConditionalComponent;
-import ro.siveco.senro.designer.components.ConditionalBeanFactory;
+import ro.siveco.senro.designer.components.*;
 
 /**
  * This is a factory for creating a JETABean wrapper for a given Swing component
@@ -63,7 +59,7 @@ import ro.siveco.senro.designer.components.ConditionalBeanFactory;
  * to programmatically manage ButtonGroups.  The buttonGroup property will handle
  * this for the design and runtime systems. Each Swing component can have different
  * dynamic properties. For example, tabbed panes have tabs while JList and JTables have scrollBar
- * properties.  So, we use this factory to properly initialize a JETABean for a 
+ * properties.  So, we use this factory to properly initialize a JETABean for a
  * given Swing component.
  *
  * @author Jeff Tassin
@@ -109,7 +105,6 @@ public class JETABeanFactory
       lbf.setBeanClass( JLabel.class );
       registerFactory( "javax.swing.JLabel", lbf );
 
-
       /** custom jetaware components */
       registerFactory( HorizontalLineComponent.class.getName(), new HorizontalLineComponentFactory() );
       registerFactory( VerticalLineComponent.class.getName(), new VerticalLineComponentFactory() );
@@ -122,8 +117,10 @@ public class JETABeanFactory
       registerFactory( TitledSeparator.class.getName(), new TitledSeparatorFactory() );
 
        /* custom senro components */
+       registerFactory(SenroButton.class.getName(), new SenroButtonBeanFactory());
        registerFactory(IteratorComponent.class.getName(), new IteratorBeanFactory());
        registerFactory(ConditionalComponent.class.getName(), new ConditionalBeanFactory());
+       registerFactory(TemplateComponent.class.getName(), new TemplateBeanFactory());
 
    }
 

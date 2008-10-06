@@ -179,7 +179,7 @@ public class PropertiesMemento extends AbstractJETAPersistable {
 	public void read( JETAObjectInput in) throws ClassNotFoundException, IOException {
 		int version = in.readVersion();
 		m_class_name = (String) in.readObject( "classname" );
-		if (version <= 1) {
+        if (version <= 1) {
 		   Object obj = in.readObject("properties");
          if ( obj instanceof HashMap)
             m_props = new PropertyMap((HashMap)obj);

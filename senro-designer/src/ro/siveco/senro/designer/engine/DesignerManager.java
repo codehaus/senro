@@ -142,7 +142,7 @@ public class DesignerManager
         xml_generators.put(JTable.class, new ListXmlGenerator());
         xml_generators.put(JComboBox.class, new ComboBoxXmlGenerator());
         xml_generators.put(JCheckBox.class, new CheckBoxXmlGenerator());
-        xml_generators.put(JButton.class, new ButtonXmlGenerator());
+        xml_generators.put(SenroButton.class, new ButtonXmlGenerator());
         xml_generators.put(JScrollPane.class, new ScrollPaneXmlGenerator());
         xml_generators.put(JTabbedPane.class, new TabPanelXmlGenerator());
         xml_generators.put(GridView.class, gridXmlGenerator);
@@ -247,7 +247,6 @@ public class DesignerManager
         if (img_URL != null) {
             icon = new ImageIcon(img_URL, image_path);
         }
-        System.out.println("img_URL "+ img_URL + " image_path " + image_path);
         return icon;
     }
 
@@ -718,6 +717,23 @@ public class DesignerManager
         {
             return ComponentXmlNames.TEMPLATE_ELEMENT;
         }
+
+        public void buildElementBody(Element e, Component comp)
+        {
+            TemplateComponent tc = (TemplateComponent) comp;
+            String templateName = tc.getTemplate() == null ? "" : tc.getTemplate().getName();
+            e.setAttribute(ComponentXmlNames.TEMPLATE_FILE_ATTRIBUTE, templateName);
+            
+            Document doc = e.getOwnerDocument();
+            for (TemplateParameter templateParameter : tc.getParameters()) {
+                Element param_elem = doc.createElement(ComponentXmlNames.TEMPLATE_PARAM_ELEMENT);
+                e.appendChild(param_elem);
+                String name = (templateParameter.getName() == null ? "" : templateParameter.getName());
+                param_elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, name);
+                String value = (templateParameter.getValue() == null ? "" : templateParameter.getValue());
+                param_elem.setAttribute(ComponentXmlNames.VALUE_ATTRIBUTE, value);
+            }
+        }
     }
 
     private class RootPanelGenerator extends ComponentXmlGenerator
@@ -782,16 +798,22 @@ public class DesignerManager
 
         public String getTagName()
         {
-            return "Button";
+            return ComponentXmlNames.BUTTON_ELEMENT;
         }
 
         public void buildElementBody(Element e, Component comp)
         {
-            JButton button = (JButton) comp;
+            SenroButton button = (SenroButton) comp;
             Document doc = e.getOwnerDocument();
-            Element txt_elem = doc.createElement("Label");
+            Element txt_elem = doc.createElement(ComponentXmlNames.LABEL_ELEMENT);
             e.appendChild(txt_elem);
             txt_elem.appendChild(doc.createTextNode(button.getText()));
+            Element entity_elem = doc.createElement(ComponentXmlNames.ENTITY_ELEMENT);
+            e.appendChild(entity_elem);
+            entity_elem.appendChild(doc.createTextNode(button.getEntity()));
+            Element task_elem = doc.createElement(ComponentXmlNames.TASK_ELEMENT);
+            e.appendChild(task_elem);
+            task_elem.appendChild(doc.createTextNode(button.getTask()));
         }
 
     }
@@ -906,7 +928,6 @@ public class DesignerManager
                 DesignFormComponent tab_page = (DesignFormComponent)tabbed_pane.getComponentAt(tab_idx);
                 Component tab_comp = getTabPageComponent(tab_page);
 //                Component tab_comp = tab_page.getChildView();
-//                System.out.println("*** - tab_comp " + tab_comp.getClass());
                 if(tab_comp instanceof IteratorComponent) {
                     generateXmlForObject(tab_pane_elem, tab_comp, null);
                 } else {

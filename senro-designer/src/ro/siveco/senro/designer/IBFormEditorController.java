@@ -269,7 +269,6 @@ public abstract class IBFormEditorController extends JETAController
         public void actionPerformed(ActionEvent evt)
         {
             try {
-                System.out.println("CopyAction........................ ");
                 GridComponent gc = getCurrentEditor().getSelectedComponent();
                 if (gc != null) {
                     ComponentTransferable transferable = new ComponentTransferable(gc);

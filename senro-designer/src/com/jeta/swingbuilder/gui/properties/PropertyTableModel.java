@@ -25,10 +25,6 @@ import java.awt.Color;
 
 import java.beans.*;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -37,7 +33,6 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import javax.swing.Icon;
-import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 
 import com.jeta.forms.logger.FormsLogger;
@@ -51,10 +46,14 @@ import com.jeta.swingbuilder.gui.commands.SetPropertyCommand;
 import com.jeta.swingbuilder.gui.commands.CommandUtils;
 import com.jeta.swingbuilder.gui.editor.FormEditor;
 import com.jeta.swingbuilder.gui.properties.editors.UnknownEditor;
+import ro.siveco.senro.designer.components.editors.TemplateProperty;
+import ro.siveco.senro.designer.components.editors.TemplatePropertyEditor;
+import ro.siveco.senro.designer.components.editors.TemplateParametersProperty;
+import ro.siveco.senro.designer.components.editors.TemplateParametersPropertyEditor;
 
 /**
  * TableModel for managing properties for a given bean.
- * 
+ *
  * @author Jeff Tassin
  */
 public class PropertyTableModel extends AbstractTableModel {
@@ -114,7 +113,7 @@ public class PropertyTableModel extends AbstractTableModel {
    /**
     * Filters the table to display only properties with specific attributes.
     * Will sort the table after the data has been filtered.
-    * 
+    *
     * @param view
     *           The properties to display.
     */
@@ -163,7 +162,7 @@ public class PropertyTableModel extends AbstractTableModel {
 
    /**
     * Sets the current filter of the Properties.
-    * 
+    *
     * @param filter
     *           one of VIEW_ constants
     */
@@ -205,7 +204,7 @@ public class PropertyTableModel extends AbstractTableModel {
 
    /**
     * Check if given cell is editable
-    * 
+    *
     * @param row
     *           table row
     * @param col
@@ -231,7 +230,7 @@ public class PropertyTableModel extends AbstractTableModel {
 
    /**
     * Get text value for cell of table
-    * 
+    *
     * @param row
     *           table row
     * @param col
@@ -340,7 +339,7 @@ public class PropertyTableModel extends AbstractTableModel {
 
    /**
     * Gets the customizer for the current object.
-    * 
+    *
     * @return New instance of the customizer or null if there isn't a
     *         customizer.
     */
@@ -413,6 +412,8 @@ public class PropertyTableModel extends AbstractTableModel {
                com.jeta.swingbuilder.gui.properties.editors.ItemsEditor.class);
       PropertyEditorManager.registerEditor(com.jeta.forms.store.properties.TransformOptionsProperty.class,
                com.jeta.swingbuilder.gui.properties.editors.ComboEditor.class);
+      PropertyEditorManager.registerEditor(TemplateProperty.class, TemplatePropertyEditor.class);
+      PropertyEditorManager.registerEditor(TemplateParametersProperty.class, TemplateParametersPropertyEditor.class);
       PropertyEditorManager.registerEditor(com.jeta.forms.store.properties.CompoundBorderProperty.class,
                com.jeta.swingbuilder.gui.properties.editors.BorderEditor.class);
       PropertyEditorManager.registerEditor(com.jeta.forms.store.properties.CompoundLineProperty.class,
