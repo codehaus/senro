@@ -78,6 +78,7 @@ public class DesignerManager
 
     public static final String COMPONENT_FILE_NAME = "Component.xml";
     public static final Dimension DESIGNER_PANEL_MIN_DIM = new Dimension(900, 1);
+    public static final Object[] options = {"Save", "Don't save", "Cancel"};
 
     private final Map<FormSpec.DefaultAlignment, String> alignmentText;
     private final Map<Sizes.ComponentSize, String> componentSizes;
@@ -427,44 +428,30 @@ public class DesignerManager
         }
     }
 
-    private boolean closeEditor(FormEditor editor)
-    {
-        if (editor != null) {
-            if (editor.isModified() && editor.isLinked()) {
-                String filename = editor.getForm().getFileName();
-                String msg = I18N.format("Form_is_modified_save_1", filename);
-                String title = I18N.getLocalizedMessage("Confirm");
-                int result = JOptionPane.showConfirmDialog(mainFrame, msg, title, JOptionPane.YES_NO_CANCEL_OPTION);
-                if (result == JOptionPane.YES_OPTION) {
-                    if (saveGrid(editor) == null) {
-                        return false;
-                    }
-                } else if (result == JOptionPane.CANCEL_OPTION) {
-                    return false;
-                }
-            }
-            FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
-            fmgr.closeForm(editor.getForm().getId());
-        }
-        return true;
-    }
-
-    private boolean closeGrids()
+    public boolean areGridsClean()
     {
         mainFrame.getPropertyContainer().stopEditing();
         Collection editors = mainFrame.getEditors();
         for (Object editor_obj : editors) {
             FormEditor editor = (FormEditor) editor_obj;
-            if (!closeEditor(editor)) {
+            if (editor.isModified()) {
                 return false;
             }
         }
         return true;
     }
 
-    private void closeObjSetManager(ObjectSetManager objSetManager)
+    private void closeGrids()
     {
-
+        mainFrame.getPropertyContainer().stopEditing();
+        Collection editors = mainFrame.getEditors();
+        for (Object editor_obj : editors) {
+            FormEditor editor = (FormEditor) editor_obj;
+            if(editor != null) {
+                FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
+                fmgr.closeForm(editor.getForm().getId());
+            }
+        }
     }
 
     public void closeProject()
@@ -473,13 +460,24 @@ public class DesignerManager
             return;
         }
         // incomplete implementation
-        if (closeGrids()) {
+        if (areGridsClean() && serverObjSetManager.isClean() && clientObjSetManager.isClean()) {
             project = null;
         } else {
-            return;
+            int n = JOptionPane.showOptionDialog(mainFrame, "There are unsaved project files, save them ?", "Confirm Project Save",
+                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            switch (n) {
+                case JOptionPane.YES_OPTION:
+                    saveProject();
+                    project = null;
+                    break;
+                case JOptionPane.NO_OPTION:
+                    project = null;
+                    break;
+                case JOptionPane.CANCEL_OPTION:
+                    return;
+            }
         }
-        closeObjSetManager(serverObjSetManager);
-        closeObjSetManager(clientObjSetManager);
+        closeGrids();
         serverObjSetManager.clear();
         serverObjSetManager.setEnabled(false);
         clientObjSetManager.clear();
@@ -552,6 +550,14 @@ public class DesignerManager
         if (e != null) {
             parent_elem.appendChild(e);
         }
+    }
+
+    private static Component getTabPageComponent(DesignFormComponent tab_page)
+    {
+        GridView top_grid = tab_page.getChildView();
+        Iterator<GridComponent> comp_it = top_grid.gridIterator();
+        GridComponent grid_comp = comp_it.next();
+        return grid_comp.getBeanChildComponent();
     }
 
     private abstract class XmlGenerator
@@ -723,7 +729,7 @@ public class DesignerManager
             TemplateComponent tc = (TemplateComponent) comp;
             String templateName = tc.getTemplate() == null ? "" : tc.getTemplate().getName();
             e.setAttribute(ComponentXmlNames.TEMPLATE_FILE_ATTRIBUTE, templateName);
-            
+
             Document doc = e.getOwnerDocument();
             for (TemplateParameter templateParameter : tc.getParameters()) {
                 Element param_elem = doc.createElement(ComponentXmlNames.TEMPLATE_PARAM_ELEMENT);
@@ -927,7 +933,6 @@ public class DesignerManager
             for(int tab_idx = 0; tab_idx < tab_count; tab_idx++) {
                 DesignFormComponent tab_page = (DesignFormComponent)tabbed_pane.getComponentAt(tab_idx);
                 Component tab_comp = getTabPageComponent(tab_page);
-//                Component tab_comp = tab_page.getChildView();
                 if(tab_comp instanceof IteratorComponent) {
                     generateXmlForObject(tab_pane_elem, tab_comp, null);
                 } else {
@@ -940,14 +945,6 @@ public class DesignerManager
             }
         }
 
-        private Component getTabPageComponent(DesignFormComponent tab_page)
-        {
-            Component tab_comp = tab_page.getChildView();
-            GridView top_grid = tab_page.getChildView();
-            Iterator<GridComponent> comp_it = top_grid.gridIterator();
-            GridComponent grid_comp = comp_it.next();
-            return grid_comp.getBeanChildComponent();
-        }
     }
 
     private class TreeGenerator extends ComponentXmlGenerator
@@ -1033,10 +1030,15 @@ public class DesignerManager
             Document doc = e.getOwnerDocument();
             Element if_elem = doc.createElement(ComponentXmlNames.IF_ELEMENT);
             e.appendChild(if_elem);
-            Element grid_elem = doc.createElement(ComponentXmlNames.GRID_ELEMENT);
-            if_elem.appendChild(grid_elem);
             if_elem.setAttribute("condition", cond);
-            gridXmlGenerator.buildElementBody(grid_elem, comp);
+            Component if_comp = getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(0));
+            generateXmlForObject(if_elem, if_comp, null);
+            if(cond_comp.getHasElseBranch()) {
+                Element else_elem = doc.createElement(ComponentXmlNames.ELSE_ELEMENT);
+                e.appendChild(else_elem);
+                Component else_comp = getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(1));
+                generateXmlForObject(else_elem, else_comp, null);
+            }
         }
 
     }

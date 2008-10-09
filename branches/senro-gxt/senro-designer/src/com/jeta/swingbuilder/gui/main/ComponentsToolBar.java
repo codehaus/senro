@@ -272,9 +272,7 @@ public class ComponentsToolBar extends JETAPanel implements ComponentSource
             btns.add(registerBean("Iterator", I18N.getLocalizedMessage("Iterator"),
                                   new IteratorComponentFactory(this),
                                   DesignerManager.getIconForImage("iter_2_16x16.png")));
-            btns.add(registerBean("Conditional", I18N.getLocalizedMessage("Conditional"),
-                                  new ConditionalComponentFactory(this),
-                                  DesignerManager.getIconForImage("cond_16x16.png")));
+            
         Iterator iter = default_beans.iterator();
 	 while( iter.hasNext() )
 	 {

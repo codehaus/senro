@@ -19,23 +19,12 @@
 package com.jeta.swingbuilder.gui.editor;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
-import com.jeta.forms.beanmgr.BeanManager;
-
-import com.jeta.forms.components.panel.FormPanel;
 
 import com.jeta.forms.gui.beans.JETABean;
 
@@ -48,8 +37,6 @@ import com.jeta.forms.gui.form.*;
 
 import com.jeta.forms.gui.formmgr.FormManager;
 
-import com.jeta.forms.logger.FormsLogger;
-
 import com.jeta.forms.project.ProjectManager;
 
 import com.jeta.forms.store.memento.ComponentMemento;
@@ -59,7 +46,6 @@ import com.jeta.open.registry.JETARegistry;
 import com.jeta.open.resources.AppResourceLoader;
 
 import ro.siveco.senro.designer.components.IteratorComponent;
-import ro.siveco.senro.designer.components.ConditionalComponent;
 import ro.siveco.senro.designer.engine.DesignerManager;
 
 /**
@@ -160,19 +146,6 @@ public class DesignFormComponent extends FormComponent implements GridViewListen
             btn.setFocusable(false);
 
             m_iter_btn = btn;
-            m_btnpanel.add(btn);
-        }
-        if (component instanceof ConditionalComponent) {
-            m_btnpanel.add(javax.swing.Box.createHorizontalStrut(2));
-            btn = new JButton(DesignerManager.getIconForImage("cond_11x11.png"));
-            btn.setPreferredSize(d);
-            btn.setMinimumSize(d);
-            btn.setBorderPainted(false);
-            btn.setFocusPainted(false);
-            btn.setContentAreaFilled(false);
-            btn.setFocusable(false);
-
-            m_cond_btn = btn;
             m_btnpanel.add(btn);
         }
         return m_btnpanel;
@@ -317,6 +290,7 @@ public class DesignFormComponent extends FormComponent implements GridViewListen
      * Shows or hides the grid view associated with this form.  This is different
      * than showing the grid lines. This call also shows/hides the underlying
      * components in the view in addition to the grid lines.
+     * @param bvis true to show the grid view associated with this form
      */
     public void setGridViewVisible(boolean bvis)
     {
@@ -376,7 +350,7 @@ public class DesignFormComponent extends FormComponent implements GridViewListen
                 for (int row = 1; row <= view.getRowCount(); row++) {
                     GridComponent gc = view.getGridComponent(col, row);
                     if (gc == null) {
-                        gc = (StandardComponent) factory.createComponent("empty", view);
+                        gc = factory.createComponent("empty", view);
                         view.addComponent(gc, new ReadOnlyConstraints(col, row));
                     }
                 }

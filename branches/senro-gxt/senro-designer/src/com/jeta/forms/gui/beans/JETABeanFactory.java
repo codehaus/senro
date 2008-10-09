@@ -119,7 +119,7 @@ public class JETABeanFactory
        /* custom senro components */
        registerFactory(SenroButton.class.getName(), new SenroButtonBeanFactory());
        registerFactory(IteratorComponent.class.getName(), new IteratorBeanFactory());
-       registerFactory(ConditionalComponent.class.getName(), new ConditionalBeanFactory());
+       registerFactory(ConditionalComponent.class.getName(), new ConditionalComponentFactory());
        registerFactory(TemplateComponent.class.getName(), new TemplateBeanFactory());
 
    }

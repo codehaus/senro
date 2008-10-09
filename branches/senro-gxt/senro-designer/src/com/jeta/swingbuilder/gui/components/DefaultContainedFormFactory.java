@@ -66,9 +66,6 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
 
         EmbeddedFormComponentFactory embedded_fac;
         switch(grid_type) {
-            case CONDITIONAL:
-                embedded_fac = new ConditionalComponentFactory(compsrc);
-                break;
             case ITERATOR:
                 embedded_fac = new IteratorComponentFactory(compsrc);
                 break;

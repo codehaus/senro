@@ -40,6 +40,7 @@ import com.jeta.swingbuilder.gui.project.UserPreferencesNames;
 import com.jeta.swingbuilder.store.ProjectModel;
 
 import com.jeta.swingbuilder.interfaces.userprops.TSUserPropertiesUtils;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 /**
  * Concrete implementation of ProjectManager
@@ -252,6 +253,9 @@ public class DefaultProjectManager implements ProjectManager {
          } catch (Exception e) {
             e.printStackTrace();
          }
+          if(result == null) {
+              result = DesignerManager.getIconForImage(imageName);
+          }
 
          if (result == null && m_empty_icon == null) {
             int width = 16;

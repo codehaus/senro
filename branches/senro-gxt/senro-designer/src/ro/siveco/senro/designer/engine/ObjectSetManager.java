@@ -56,6 +56,11 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         setDefaultEmptyState();
     }
 
+    public String getObjSetName()
+    {
+        return objSetName;
+    }
+
     public void setDefaultEmptyState()
     {
         cols = DEFAULT_COL_COUNT;

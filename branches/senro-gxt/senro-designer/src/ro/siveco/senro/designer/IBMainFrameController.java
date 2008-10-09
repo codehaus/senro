@@ -54,8 +54,12 @@ import java.io.*;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
+import ro.siveco.senro.designer.ui.OpenGridDialog;
+import ro.siveco.senro.designer.engine.DesignerProject;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 /**
  * Controller class for MainFrame
@@ -772,15 +776,21 @@ public class IBMainFrameController extends IBFormEditorController
         public void actionPerformed(ActionEvent evt)
         {
             try {
-                FileChooserConfig fcc = new FileChooserConfig(".form", new TSFileFilter("jfrm,xml", "Form Files(*.jfrm,*.xml)"));
-                fcc.setParentComponent(m_frame);
-                File f = TSFileChooserFactory.showOpenDialog(fcc);
-                if (f != null) {
-                    FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
-                    fmgr.deactivateForms(m_frame.getCurrentEditor());
-                    FormComponent fc = fmgr.openLinkedForm(f);
-                    fmgr.activateForm(fc.getId());
-                    fmgr.showForm(fc.getId());
+                DesignerProject project = DesignerManager.getSharedDesignerManager().getProject();
+                if(project == null) {
+                    return;
+                }
+                List<String> gridFileNamesList = project.getGridFileNamesList();
+                List<String> selectedGridFileNames = OpenGridDialog.showOpenGridDialog(m_frame,gridFileNamesList);
+                for (String selectedGridFileName : selectedGridFileNames) {
+                    File f = new File(project.getProjectDir(), selectedGridFileName);
+                    if (f != null) {
+                        FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
+                        fmgr.deactivateForms(m_frame.getCurrentEditor());
+                        FormComponent fc = fmgr.openLinkedForm(f);
+                        fmgr.activateForm(fc.getId());
+                        fmgr.showForm(fc.getId());
+                    }                    
                 }
             } catch (Exception e) {
                 e.printStackTrace();
