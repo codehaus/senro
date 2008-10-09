@@ -48,6 +48,7 @@ import com.jeta.forms.components.border.TitledBorderSide;
 import com.jeta.open.i18n.I18N;
 import com.jeta.open.registry.JETARegistry;
 import ro.siveco.senro.designer.ui.DesignerIcon;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 /**
  * The bean manager is responsible for managing imported beans in the builder.
@@ -271,9 +272,9 @@ public class DefaultBeanManager implements BeanManager {
       registerDefaultBean(I18N.getLocalizedMessage("Template"),
                          "ro.siveco.senro.designer.components.TemplateComponent",
                           new DesignerIcon(20, 12, "T"));
-//      registerDefaultBean(I18N.getLocalizedMessage("RootPanel"),
-//                         "ro.siveco.senro.designer.components.RootPanelComponent",
-//                          new DesignerIcon(20, 12, "RP"));
+      registerDefaultBean(I18N.getLocalizedMessage("Conditional"),
+                         "ro.siveco.senro.designer.components.ConditionalComponent",
+                          DesignerManager.getIconForImage("cond_16x16.png"));
       registerDefaultBean(I18N.getLocalizedMessage("Tree"),
                          "ro.siveco.senro.designer.components.TreeComponent",
                           new DesignerIcon(20, 12, "Tree"));

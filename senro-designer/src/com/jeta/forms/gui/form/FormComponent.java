@@ -1,34 +1,34 @@
 /*
  * Copyright (c) 2004 JETA Software, Inc.  All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
- *  o Redistributions of source code must retain the above copyright notice, 
+ *  o Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
- *  o Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  o Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  o Neither the name of JETA Software nor the names of its contributors may 
- *    be used to endorse or promote products derived from this software without 
+ *  o Neither the name of JETA Software nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
  *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 
-package com.jeta.forms.gui.form; 
+package com.jeta.forms.gui.form;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -79,11 +79,12 @@ import com.jeta.open.registry.JETARegistry;
 import com.jeta.open.resources.AppResourceLoader;
 
 import com.jgoodies.forms.layout.CellConstraints;
+import ro.siveco.senro.designer.components.ConditionalComponent;
 
 
 /**
- * A <code>FormComponent</code> is a type of GridComponent that contains a nested form 
- * in a GridView. A FormComponent represents a top-level form or nested form whereas 
+ * A <code>FormComponent</code> is a type of GridComponent that contains a nested form
+ * in a GridView. A FormComponent represents a top-level form or nested form whereas
  * StandardComponents represent Swing components (Java beans).
  *
  * Forms come in two types:  Embedded and Linked.  An embedded form is a nested form
@@ -100,7 +101,7 @@ import com.jgoodies.forms.layout.CellConstraints;
  *        -- JETABean -maintains the properties for the form.
  *             |
  *              -- GridView -a GridView has N child components that occupy the cells in the view
- *                    |                           
+ *                    |
  *                    //-- GridView.FormContainer ---------------------> FormLayout
  *                            |                         (layoutmgr)
  *                             -- GridComponent1
@@ -204,7 +205,7 @@ public class FormComponent extends GridComponent
 
    /**
     * Returns the total width in pixels of the cells occupied by this component.
-    * @return the total width in pixels of the cells occupied by this component 
+    * @return the total width in pixels of the cells occupied by this component
     */
    public int getCellWidth()
    {
@@ -216,7 +217,7 @@ public class FormComponent extends GridComponent
 
    /**
     * Returns the total height in pixels of the cells occupied by this component.
-    * @return the total height in pixels of the cells occupied by this component 
+    * @return the total height in pixels of the cells occupied by this component
     */
    public int getCellHeight()
    {
@@ -288,7 +289,7 @@ public class FormComponent extends GridComponent
 	    int pos = path.lastIndexOf( '/' );
 	    if ( pos < 0 )
 	       pos = path.lastIndexOf( '\\' );
-	    
+
 	    if ( pos >= 0 )
 	    {
 	       return path.substring( pos+1, path.length() );
@@ -403,8 +404,8 @@ public class FormComponent extends GridComponent
    /**
     * Saves this form's state as a memento object.
     * @param si a state request that has some control over how the form state is
-    * stored.  For example, in some cases we want to store full copy of a linked form 
-    * in the memento as oposed to the link reference.  
+    * stored.  For example, in some cases we want to store full copy of a linked form
+    * in the memento as oposed to the link reference.
     * @return the state of this object as a mememento
     */
    public ComponentMemento getState( StateRequest si ) throws FormException
@@ -445,7 +446,7 @@ public class FormComponent extends GridComponent
 	    state.addComponent( ccm );
 	 }
       }
-      
+
       /** store the view properties */
       BeanSerializerFactory fac = (BeanSerializerFactory)JETARegistry.lookup( BeanSerializerFactory.COMPONENT_ID );
       BeanSerializer bs = fac.createSerializer();
@@ -511,7 +512,7 @@ public class FormComponent extends GridComponent
       if ( comp == null )
 	 return null;
 
-      
+
       while( comp != null && !(comp instanceof java.awt.Window) )
       {
 	 if ( comp instanceof FormComponent && ((FormComponent)comp).isTopLevelForm() )
@@ -533,8 +534,8 @@ public class FormComponent extends GridComponent
 
    /**
     * Returns true if this form is linked.  A linked form is stored in its own form file
-    * on disk. 
-    * @return true if this form is a linked form.  
+    * on disk.
+    * @return true if this form is a linked form.
     */
    public boolean isLinked()
    {
@@ -571,13 +572,13 @@ public class FormComponent extends GridComponent
 
 
    /**
-    * PostInitialize is called once after all components in a FormPanel have been instantiated 
-    * at runtime (not design time).  This gives each property and component a chance to 
-    * do some last minute initializations that might depend on the top level parent. 
+    * PostInitialize is called once after all components in a FormPanel have been instantiated
+    * at runtime (not design time).  This gives each property and component a chance to
+    * do some last minute initializations that might depend on the top level parent.
     * FormComponent simply forwards the call to any children.
     * @param panel the top-level form container
     * @param cc a container whose child components are to be (post)intitialized.
-    */ 
+    */
    public void _postInitialize( FormPanel panel, Container cc )
    {
       if ( cc == null )
@@ -594,13 +595,13 @@ public class FormComponent extends GridComponent
    }
 
    /**
-    * PostInitialize is called once after all components in a form have been re-instantiated 
-    * at runtime (not design time).  This gives each property and component a chance to 
+    * PostInitialize is called once after all components in a form have been re-instantiated
+    * at runtime (not design time).  This gives each property and component a chance to
     * do some last minute initializations that might depend on the top level parent.  An
     * example of this is button groups which are global to a form.
     * FormComponent simply forwards the call to any children.
     * @param panel the top-level form container
-    */ 
+    */
    public void postInitialize( FormPanel panel )
    {
       _postInitialize( panel, this );
@@ -608,14 +609,14 @@ public class FormComponent extends GridComponent
 
    /**
     * Performs any final initialization of this form component after it's state has been restored.
-    * The main operation is to add empty components where needed. When in design mode, every cell 
-    * in the grid has a GridComponent.  The reason is because we need to enforce a minimum size 
-    * for the cell when the  user sets the row/col size to preferred.  If not, the cell size would 
-    * be zero if nothing  were there.  However, in run mode, we don't want to create an empty 
-    * component for every single cell.  For example, a 20x20 grid would require 400 components.  
-    * To prevent this, we only add 1 empty component per row and column.  This allows the 
-    * runtime form to look approximately like the design time forms with rows/cols that have no 
-    * components.  We use the grid_cache to keep track of which columns and rows 
+    * The main operation is to add empty components where needed. When in design mode, every cell
+    * in the grid has a GridComponent.  The reason is because we need to enforce a minimum size
+    * for the cell when the  user sets the row/col size to preferred.  If not, the cell size would
+    * be zero if nothing  were there.  However, in run mode, we don't want to create an empty
+    * component for every single cell.  For example, a 20x20 grid would require 400 components.
+    * To prevent this, we only add 1 empty component per row and column.  This allows the
+    * runtime form to look approximately like the design time forms with rows/cols that have no
+    * components.  We use the grid_cache to keep track of which columns and rows
     * have had empty components added.
     */
    protected void postSetState( ComponentMemento cm )
@@ -683,7 +684,7 @@ public class FormComponent extends GridComponent
    protected void setBean( JETABean jbean )
    {
       super.setBean( jbean );
-      
+
       FormUtils.safeAssert( jbean.getDelegate() instanceof GridView );
       setLayout( new BorderLayout());
 
@@ -694,7 +695,7 @@ public class FormComponent extends GridComponent
 
       add( jbean, BorderLayout.CENTER );
    }
-   
+
 
    /**
     * Sets the absolute path for this form.
@@ -762,7 +763,7 @@ public class FormComponent extends GridComponent
       setBean( viewbean );
       view.setRowGroups( state.getRowGroups() );
       view.setColumnGroups( state.getColumnGroups() );
-  
+
       /** set the view properties */
       PropertiesMemento pm = state.getPropertiesMemento();
       if ( pm != null )
@@ -823,7 +824,7 @@ public class FormComponent extends GridComponent
 		     JETABean bean = new JETABean( elabel );
 		     StandardComponent gc = new StandardComponent( bean, view );
 		     view.addComponent( gc, fm.getCellConstraintsMemento().createCellConstraints() );
-		     
+
 		     /**
 		      * Unable to add form.
 		      */
@@ -843,7 +844,7 @@ public class FormComponent extends GridComponent
 	       BeanMemento bm = (BeanMemento)cm;
 	       if ( bm.getBeanClass() == null )
 	       {
-		  // ignore empty components here.  
+		  // ignore empty components here.
 		  continue;
 	       }
 	    }

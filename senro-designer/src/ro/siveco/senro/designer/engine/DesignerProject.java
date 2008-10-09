@@ -18,6 +18,8 @@ import java.util.List;
 import java.awt.*;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -60,7 +62,7 @@ public class DesignerProject
 
     private void createParametersManager()
     {
-        parametersFrame = new JFrame("Parameters Manager");
+        parametersFrame = new JFrame("Parameters");
         parametersFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         parametersManager = new ParametersManager();
         FormLayout layout = new FormLayout("1dlu, fill:pref:grow, 1dlu", "1dlu, fill:pref:grow, 1dlu");
@@ -124,7 +126,7 @@ public class DesignerProject
         Template tpl = new Template(template_name, parameter_list);
         templates.add(tpl);
         templatesByName.put(template_name, tpl);
-        
+
         Collections.sort(templates, new Comparator<Template>()
         {
             public int compare(Template tpl_1, Template tpl_2)
@@ -177,6 +179,27 @@ public class DesignerProject
             IOUtils.closeQuietly(fis);
         }
         projectFilePath = path;
+    }
+
+    public List<String> getGridFileNamesList()
+    {
+        File prj_dir = getProjectDir();
+        File[] gridFiles = prj_dir.listFiles(new FileFilter() {
+
+            public boolean accept(File file)
+            {
+                String grid_file_name = file.getName();
+                if(grid_file_name.equals(DesignerManager.COMPONENT_FILE_NAME) || !grid_file_name.endsWith(".xml")) {
+                    return false;
+                }
+                return true;
+            }
+        });
+        List<String> gridFileNamesList = new ArrayList<String>();
+        for (File gridFile : gridFiles) {
+            gridFileNamesList.add(gridFile.getName());
+        }
+        return gridFileNamesList;
     }
 
     public void save() throws IOException

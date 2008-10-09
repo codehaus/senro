@@ -1,10 +1,13 @@
 package ro.siveco.senro.designer.components;
 
-import com.jeta.forms.gui.form.GridView;
+import javax.swing.*;
+import java.awt.Component;
 
-public class ConditionalComponent extends GridView
+public class ConditionalComponent extends JTabbedPane
 {
+
     private String condition;
+    private boolean hasElseBranch;
 
     public String getCondition()
     {
@@ -15,4 +18,30 @@ public class ConditionalComponent extends GridView
     {
         this.condition = condition;
     }
+
+    public boolean getHasElseBranch()
+    {
+        return hasElseBranch;
+    }
+
+    public void setHasElseBranch(boolean hasElseBranch)
+    {
+        this.hasElseBranch = hasElseBranch;
+    }
+
+    public boolean isHasElseBranch()
+    {
+        return hasElseBranch;
+    }
+
+    public Component getIfComponent()
+    {
+        return getComponentAt(0);
+    }
+
+    public Component getElseComponent()
+    {
+        return getComponentAt(1);
+    }
+
 }

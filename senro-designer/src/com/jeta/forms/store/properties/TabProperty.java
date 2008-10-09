@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 JETA Software, Inc.  All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
- *  o Redistributions of source code must retain the above copyright notice, 
+ *  o Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
- *  o Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  o Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  o Neither the name of JETA Software nor the names of its contributors may 
- *    be used to endorse or promote products derived from this software without 
+ *  o Neither the name of JETA Software nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
  *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -55,7 +55,7 @@ import org.apache.commons.lang.ObjectUtils;
  * in this description is the tab title, icon, and the content of the tab -
  * which is a form. This class is used by <code>TabbedPaneProperties</code> to
  * intialize a JTabbedPane during runtime.
- * 
+ *
  * @author Jeff Tassin
  */
 public class TabProperty extends JETAProperty {
@@ -63,7 +63,6 @@ public class TabProperty extends JETAProperty {
 
     public static final String GRID_CONTENT = "Grid";
     public static final String ITERATOR_CONTENT = "Iterator";
-    public static final String CONDITIONAL_CONTENT = "Conditional";
 
     /**
 	 * The current version number of this class
@@ -116,7 +115,7 @@ public class TabProperty extends JETAProperty {
 
 	/**
 	 * Returns the form component contained by this tab property.
-	 * 
+	 *
 	 * @return the form component contained by this tab property.
 	 */
 	public FormComponent getForm() throws FormException {
@@ -126,9 +125,7 @@ public class TabProperty extends JETAProperty {
             ContainedFormFactory.GridType grid_type = ContainedFormFactory.GridType.GRID_VIEW;
             if(contentClass.equals(ITERATOR_CONTENT)) {
                 grid_type = ContainedFormFactory.GridType.ITERATOR;
-            } else if(contentClass.equals(CONDITIONAL_CONTENT)) {
-                grid_type = ContainedFormFactory.GridType.CONDITIONAL;
-            }
+            } 
             m_form = factory.createContainedForm(JTabbedPane.class, m_memento, grid_type);
 		}
 		return m_form;
@@ -137,7 +134,7 @@ public class TabProperty extends JETAProperty {
 	/**
 	 * Returns a memento object that completely defines the state of the form
 	 * contained by this tab.
-	 * 
+	 *
 	 * @return the memento for the form contained by this tab.
      * @throws FormException if an error occurs
 	 */
@@ -150,7 +147,7 @@ public class TabProperty extends JETAProperty {
 
 	/**
 	 * Returns the title of this tab.
-	 * 
+	 *
 	 * @return the title of this tab.
 	 */
 	public String getTitle() {
@@ -160,7 +157,7 @@ public class TabProperty extends JETAProperty {
 	/**
 	 * Returns the icon property for this tab. This property defines the icon
 	 * used by this tab.
-	 * 
+	 *
 	 * @return the icon property for this tab.
 	 */
 	public IconProperty getIconProperty() {
@@ -170,7 +167,7 @@ public class TabProperty extends JETAProperty {
 	/**
 	 * Return the underlying icon that is specified by the IconProperty. This
 	 * value can be null if no icon is specified.
-	 * 
+	 *
 	 * @return the underlying icon.
 	 */
 	public Icon icon() {
@@ -179,7 +176,7 @@ public class TabProperty extends JETAProperty {
 
 	/**
 	 * Sets the icon property for this tab.
-	 * 
+	 *
 	 * @param iprop
 	 *           the icon property.
 	 */
@@ -191,7 +188,7 @@ public class TabProperty extends JETAProperty {
 
 	/**
 	 * Sets this property to that of another TabProperty
-	 * 
+	 *
 	 * @param prop
 	 *           a TabProperty instance.
 	 */
@@ -211,7 +208,7 @@ public class TabProperty extends JETAProperty {
 
 	/**
 	 * Sets the title for this tab.
-	 * 
+	 *
 	 * @param title
 	 *           the tab title
 	 */

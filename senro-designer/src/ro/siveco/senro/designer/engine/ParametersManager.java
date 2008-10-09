@@ -45,7 +45,7 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
         parametersTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         parametersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane param_scrollpane = new JScrollPane(parametersTable);
-        param_scrollpane.setBorder(BorderFactory.createTitledBorder("Parameters"));
+        param_scrollpane.setBorder(BorderFactory.createEmptyBorder());
         param_scrollpane.setPreferredSize(new Dimension(300, 300));
 
         builder.add(param_scrollpane, cc.xy(1, 2));

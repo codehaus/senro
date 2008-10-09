@@ -51,7 +51,6 @@ public class TabDesignerView extends JETAPanel
         add(m_view, BorderLayout.CENTER);
         setController(new TabDesignerController(this));
 
-
         m_tabs_model = new TabsModel(props);
         JTable table = m_view.getTable(TabDesignerNames.ID_TABS_TABLE);
         table.setModel(m_tabs_model);
@@ -60,7 +59,6 @@ public class TabDesignerView extends JETAPanel
         TableColumnModel cmodel = table.getColumnModel();
         cmodel.getColumn(TabsModel.ICON_COLUMN).setPreferredWidth(col_width);
         cmodel.getColumn(TabsModel.TITLE_COLUMN).setPreferredWidth(col_width*5);
-
     }
 
     /**

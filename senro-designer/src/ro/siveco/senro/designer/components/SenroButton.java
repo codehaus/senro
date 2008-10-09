@@ -54,15 +54,4 @@ public class SenroButton extends JButton
         this.task = task;
     }
 
-//    public void setText(String text)
-//    {
-//        super.setText(text);
-//    }
-//
-//    public String getText()
-//    {
-//        String text = super.getText();
-//        return (text == null || text == "") ? SenroButtonBeanFactory.DEFAULT_TEXT : text;
-//    }
-
 }

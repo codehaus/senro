@@ -85,9 +85,6 @@ public class TemplateParametersProperty extends JETAProperty
         }
     }
 
-    /**
-     * Sets this property to the specified value. The associated Java bean is updated.
-     */
     public void setValue(Object new_param)
     {
     }
