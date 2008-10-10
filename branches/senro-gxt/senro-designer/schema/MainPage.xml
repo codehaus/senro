@@ -12,12 +12,12 @@
 			</Columns>
 			<Rows>
 				<Row>
-					<Alignment>Middle</Alignment>
+					<Alignment>Top</Alignment>
 				</Row>
 			</Rows>
 			<Components>
 				<Tree id="tree1" name="menu" row="0" col="0">
-					<Iterator id="iter1" name="menuIterator" list="@{allEntities}">
+					<Iterator id="iter1" name="menuIterator" list="@{metadata.allEntities.values()}">
 						<TreeNode>
 							<Text>@{menuIterator.currentItem.qualifiedName}</Text>
 						</TreeNode>
@@ -32,7 +32,6 @@
 	<Client/>
 
 	<Params>
-		<Parameter name="allEntities" type="java.util.List"/>
 	</Params>
 
 	<Associations/>

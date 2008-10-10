@@ -6,6 +6,32 @@
 				<Column>
 					<Alignment>Left</Alignment>
 				</Column>
+				<Column>
+					<Alignment>Left</Alignment>
+				</Column>
+			</Columns>
+
+			<Rows>
+				<Row>
+					<Alignment>Middle</Alignment>
+				</Row>
+			</Rows>
+
+			<Components>
+				<Iterator id="iter" name="iter" list="@{ukFields}">
+					<SwitchComponent property="@{iter.currentItem}" row="0" col="@{iter.currentIndex}" createLabel="false" />
+				</Iterator>
+				<Button id="btnSel" name="btnSel" row="0" col="@{iter.currentIndex}" type="icon">
+					<Icon>icons/fold_off.gif</Icon>
+					<HoverIcon>icons/fold_on.gif</HoverIcon>
+				</Button>
+			</Components>
+		</Grid>
+		<Popup>
+			<Columns>
+				<Column>
+					<Alignment>Center</Alignment>
+				</Column>
 			</Columns>
 
 			<Rows>
@@ -15,23 +41,17 @@
 				<Row>
 					<Alignment>Middle</Alignment>
 				</Row>
-				<Row>
-					<Alignment>Middle</Alignment>
-				</Row>
 			</Rows>
 
 			<Components>
-				<Label id="lblTitle" name="lblTitle" row="0" col="0" halign="Center">
-					<Text>@{entity.name}</Text>
-				</Label>
-				<List id="list" name="list" entity="@{entity}" row="1" col="0" />
-				<Button id="btnNew" name="btnNew" row="2" col="0" halign="Center">
-					<Label>New</Label>
+				<List id="list" name="list" entity="@{entity}" row="0" col="0" />
+				<Button id="btnSelect" name="btnSelect" row="1" col="0" halign="Center">
+					<Label>Select</Label>
 					<Entity>@{entity.qualifiedName}</Entity>
-					<Task>new</Task>
+					<Task>select</Task>
 				</Button>
 			</Components>
-		</Grid>
+		</Popup>
 	</Layout>
 
 	<Server>
@@ -42,6 +62,7 @@
 
 	<Params>
 		<Parameter name="entity" type="org.senro.metadata.MetadataClass" defaultValue="@{metadata.getMetadata(senroContext.get(senroContext.MAIN_ENTITY))}" />
+		<Parameter name="ukFields" type="java.util.List" defaultValue="" />
 	</Params>
 
 	<Associations/>
