@@ -13,33 +13,40 @@
 
 			<Rows>
 				<Row>
-					<Alignment>Middle</Alignment>
+					<Alignment>Top</Alignment>
 				</Row>
 				<Row>
 					<Alignment>Middle</Alignment>
 				</Row>
 				<Row>
 					<Alignment>Middle</Alignment>
+				</Row>
+				<Row>
+					<Alignment>Bottom</Alignment>
 				</Row>
 			</Rows>
 
 			<Components>
-				<GridAllocatorRenderer id="gridRenderer" name="gridRenderer" gridAllocator="@{gridAllocator}" row="0" col="0" colSpan="2" />
-				<Button id="btnBack" name="btnBack" row="1" col="0">
+				<Label id="lblTitle" name="lblTitle" row="0" col="0" colSpan="2" halign="Center">
+					<Text>@{entity.name}</Text>
+				</Label>
+				
+				<GridAllocatorRenderer id="gridRenderer" name="gridRenderer" gridAllocator="@{gridAllocator}" row="1" col="0" colSpan="2" />
+				<Button id="btnBack" name="btnBack" row="2" col="0" halign="Center">
 					<Label>Back</Label>
 					<Entity>@{entity.qualifiedName}</Entity>
 					<Task>list</Task>
 				</Button>
-				<Button id="btnSave" name="btnSave" row="1" col="1">
+				<Button id="btnSave" name="btnSave" row="2" col="1" halign="Center">
 					<Label>Save</Label>
 				</Button>
-				<TabPanel id="tabPanel" name="tabPanel" row="2" col="0" colSpan="2">
+				<TabPanel id="tabPanel" name="tabPanel" row="3" col="0" colSpan="2" halign="Left">
 					<Iterator id="tabIter" name="tabIter" list="@{entity.properties}">
 						<Conditional>
 							<If condition="@{tabIter.currentItem.isMany}">	
 								<TabPage title="@{tabIter.currentItem.type}">
 									<Template file="SimpleList.xml">
-										<Param name="entity" value="@{metadataManager.getMetadata(tabIter.currentItem.type)}" />
+										<Param name="entity" value="@{metadata.getMetadata(tabIter.currentItem.type)}" />
 									</Template>
 								</TabPage>
 							</If>
@@ -58,8 +65,7 @@
 	</Client>
 
 	<Params>
-		<Parameter name="entity" type="org.senro.metadata.MetadataClass"/>
-		<Parameter name="metadataManager" type="org.senro.metadata.MetadataManager"/>
+		<Parameter name="entity" type="org.senro.metadata.MetadataClass" defaultValue="@{metadata.getMetadata(senroContext.get(senroContext.MAIN_ENTITY))}" />
 	</Params>
 
 	<Associations/>

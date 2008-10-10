@@ -15,20 +15,14 @@
 				<Row>
 					<Alignment>Middle</Alignment>
 				</Row>
-				<Row>
-					<Alignment>Middle</Alignment>
-				</Row>
 			</Rows>
 
 			<Components>
-				<Label id="lblTitle" name="lblTitle" row="0" col="0" halign="Center">
-					<Text>@{entity.name}</Text>
-				</Label>
-				<List id="list" name="list" entity="@{entity}" row="1" col="0" />
-				<Button id="btnNew" name="btnNew" row="2" col="0" halign="Center">
-					<Label>New</Label>
+				<List id="list" name="list" entity="@{entity}" row="0" col="0" />
+				<Button id="btnSelect" name="btnSelect" row="1" col="0" halign="Center">
+					<Label>Select</Label>
 					<Entity>@{entity.qualifiedName}</Entity>
-					<Task>new</Task>
+					<Task>select</Task>
 				</Button>
 			</Components>
 		</Grid>

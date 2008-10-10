@@ -27,12 +27,12 @@
     <xs:complexType name="UIComponentType">
         <xs:complexContent>
             <xs:extension base="BasicComponentType">
-                <xs:attribute name="row" type="positiveInteger" default="0" use="optional"/>
-                <xs:attribute name="col" type="positiveInteger" default="0" use="optional"/>
-                <xs:attribute name="rowSpan" type="strictPositiveInteger" default="1" use="optional"/>
-                <xs:attribute name="colSpan" type="strictPositiveInteger" default="1" use="optional"/>
-				<xs:attribute name="halign" type="xs:string" default="Left" use="optional"/>
-				<xs:attribute name="valign" type="xs:string" default="Middle" use="optional"/>
+                <xs:attribute name="row" type="xs:string" default="0" use="optional"/>
+                <xs:attribute name="col" type="xs:string" default="0"/>
+                <xs:attribute name="rowSpan" type="strictPositiveInteger" default="1"/>
+                <xs:attribute name="colSpan" type="strictPositiveInteger" default="1"/>
+				<xs:attribute name="halign" type="xs:string"/>
+				<xs:attribute name="valign" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -55,6 +55,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Grid" type="GridType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="Popup" type="PopupType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -85,6 +86,7 @@
                                     <xs:element ref="GridAllocatorRenderer"/>
                                     <xs:element ref="List"/>
                                     <xs:element ref="TabPanel"/>
+                                    <xs:element ref="SwitchComponent"/>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
@@ -189,7 +191,10 @@
                     <xs:element name="Label" type="xs:string"/>
 					<xs:element name="Entity" type="xs:string" minOccurs="0"/>
                     <xs:element name="Task" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Icon" type="xs:string"/>
+                    <xs:element name="HoverIcon" type="xs:string"/>
                 </xs:sequence>
+                <xs:attribute name="type" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -363,10 +368,12 @@
 
                         <xs:element ref="TabPage"/>
 
+                        <xs:element ref="SwitchComponent"/>
+
                     </xs:choice>
 
                     <xs:element name="CurrentItem" minOccurs="0" maxOccurs="1"/>
-
+					<xs:element name="CurrentIndex" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
 
                 <xs:attribute name="list" type="xs:string" use="required"/>
@@ -497,6 +504,8 @@
 
             <xs:element ref="TabPage"/>
 
+            <xs:element ref="SwitchComponent"/>
+
         </xs:choice>
 
             </xs:extension>
@@ -590,5 +599,37 @@
     <xs:element name="TabPage" type="TabPageType"/>
 
     <xs:element name="TabPanel" type="TabPanelType"/>
+
+    <xs:complexType name="PopupType">
+
+        <xs:complexContent>
+
+            <xs:extension base="GridType">
+
+                <xs:attribute name="showOnLoad" type="xs:boolean"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="SwitchComponentType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:attribute name="property" type="xs:string"/>
+
+                <xs:attribute name="createLabel" type="xs:boolean" default="true"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="SwitchComponent" type="SwitchComponentType"/>
 
 </xs:schema>
