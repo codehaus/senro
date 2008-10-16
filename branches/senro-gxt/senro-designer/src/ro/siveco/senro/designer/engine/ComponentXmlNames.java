@@ -36,11 +36,14 @@ public interface ComponentXmlNames
 
     public static final String NAME_ATTRIBUTE = "name";
     public static final String VALUE_ATTRIBUTE = "value";
-    public static final String TEMPLATE_FILE_ATTRIBUTE = "file";    
+    public static final String TEMPLATE_FILE_ATTRIBUTE = "file";
     public static final String ID_ATTRIBUTE = "id";
     public static final String TYPE_ATTRIBUTE = "type";
     public static final String DEFAULT_VALUE_ATTRIBUTE = "defaultValue";
     public static final String LIST_ATTRIBUTE = "list";
+    public static final String ENTITY_ATTRIBUTE = "entity";
+    public static final String COLUMNS_ATTRIBUTE = "columns";
+
 
     public static final String ITERATOR_ELEMENT = "Iterator";
     public static final String CONDITIONAL_ELEMENT = "Conditional";

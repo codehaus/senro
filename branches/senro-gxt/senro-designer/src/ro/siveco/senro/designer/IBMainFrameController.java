@@ -51,14 +51,9 @@ import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.Rectangle;
 import java.io.*;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Logger;
-import ro.siveco.senro.designer.ui.OpenGridDialog;
-import ro.siveco.senro.designer.engine.DesignerProject;
 import ro.siveco.senro.designer.engine.DesignerManager;
 
 /**
@@ -94,11 +89,10 @@ public class IBMainFrameController extends IBFormEditorController
         super(frame, frame.m_form_popup);
         m_frame = frame;
         assignAction(MainFrameNames.ID_CREATE_FORM, new NewDesignerGridAction());
-        assignAction(MainFrameNames.ID_OPEN_FORM, new OpenFormAction());
+        assignAction(MainFrameNames.ID_DELETE_FORM, new DeleteDesignerGridAction());
         assignAction(MainFrameNames.ID_SHOW_FORM, new ShowFormAction());
         assignAction(MainFrameNames.ID_SAVE_FORM, new SaveFormAction());
         assignAction(MainFrameNames.ID_SAVE_FORM_AS, new SaveAsAction());
-        assignAction(MainFrameNames.ID_CLOSE_FORM, new CloseFormAction());
 
         assignAction(MainFrameNames.ID_CREATE_PROJECT, new NewDesignerProjectAction());
         assignAction(MainFrameNames.ID_OPEN_PROJECT, new OpenDesignerProjectAction());
@@ -588,17 +582,6 @@ public class IBMainFrameController extends IBFormEditorController
     }
 
     /**
-     * Closes the form
-     */
-    public class CloseFormAction implements ActionListener
-    {
-        public void actionPerformed(ActionEvent evt)
-        {
-            closeEditor(getCurrentEditor());
-        }
-    }
-
-    /**
      * Closes the current project.
      */
     public class CloseProjectAction implements ActionListener
@@ -769,36 +752,6 @@ public class IBMainFrameController extends IBFormEditorController
     }
 
     /**
-     * Opens a form from a previously saved file
-     */
-    public class OpenFormAction implements ActionListener
-    {
-        public void actionPerformed(ActionEvent evt)
-        {
-            try {
-                DesignerProject project = DesignerManager.getSharedDesignerManager().getProject();
-                if(project == null) {
-                    return;
-                }
-                List<String> gridFileNamesList = project.getGridFileNamesList();
-                List<String> selectedGridFileNames = OpenGridDialog.showOpenGridDialog(m_frame,gridFileNamesList);
-                for (String selectedGridFileName : selectedGridFileNames) {
-                    File f = new File(project.getProjectDir(), selectedGridFileName);
-                    if (f != null) {
-                        FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
-                        fmgr.deactivateForms(m_frame.getCurrentEditor());
-                        FormComponent fc = fmgr.openLinkedForm(f);
-                        fmgr.activateForm(fc.getId());
-                        fmgr.showForm(fc.getId());
-                    }                    
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
      * Opens a project from a previously saved file
      */
     public class OpenProjectAction implements ActionListener
@@ -842,6 +795,17 @@ public class IBMainFrameController extends IBFormEditorController
         public void actionPerformed(ActionEvent evt)
         {
             saveForm(false);
+        }
+    }
+
+    /**
+     * Deletes the form file and removes the form file name from the project list.
+     */
+    public class DeleteDesignerGridAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent evt)
+        {
+            DesignerManager.getSharedDesignerManager().deleteGrid();
         }
     }
 

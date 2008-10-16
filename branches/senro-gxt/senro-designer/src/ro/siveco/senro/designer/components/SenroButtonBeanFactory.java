@@ -17,7 +17,7 @@ import java.util.Collections;
 public class SenroButtonBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("text", "entity", "task")));
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("text", "entity", "task", "id")));
 
     public SenroButtonBeanFactory()
     {
@@ -36,6 +36,7 @@ public class SenroButtonBeanFactory extends JComponentBeanFactory
         beaninfo.removePropertyDescriptor("background");
         beaninfo.removePropertyDescriptor("border");
         beaninfo.removePropertyDescriptor("enabled");
+        beaninfo.removePropertyDescriptor("font");
         beaninfo.removePropertyDescriptor("foreground");
         beaninfo.removePropertyDescriptor("preferredSize");
         beaninfo.removePropertyDescriptor("toolTipText");

@@ -525,12 +525,11 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         JMenu menu = new JMenu(I18N.getLocalizedMessage("File"));
         menu.add(i18n_createMenuItem("New Grid", MainFrameNames.ID_CREATE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_N,
                 InputEvent.CTRL_MASK, false)));
-        menu.add(i18n_createMenuItem("Open Grid", MainFrameNames.ID_OPEN_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_O,
+        menu.add(i18n_createMenuItem("Delete Grid", MainFrameNames.ID_DELETE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,
                 InputEvent.CTRL_MASK, false)));
 //        menu.add(i18n_createMenuItem("Save", MainFrameNames.ID_SAVE_FORM, KeyStroke.getKeyStroke(KeyEvent.VK_S,
 //                InputEvent.CTRL_MASK, false)));
 //        menu.add(i18n_createMenuItem("Save As", MainFrameNames.ID_SAVE_FORM_AS, null));
-        menu.add(i18n_createMenuItem("Close Grid", MainFrameNames.ID_CLOSE_FORM, null));
 
         menu.addSeparator();
         menu.add(i18n_createMenuItem("New Project", MainFrameNames.ID_CREATE_PROJECT, null));
@@ -541,8 +540,6 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
 
         menu.add(i18n_createMenuItem("Exit", MainFrameNames.ID_EXIT, null));
         menuBar.add(menu);
-
-        assert (menu_finder.getComponentByName(MainFrameNames.ID_SAVE_FORM_AS) != null);
 
         menu = new JMenu(I18N.getLocalizedMessage("Edit"));
         menu.add(i18n_createMenuItem("Cut", TSComponentNames.ID_CUT, KeyStroke.getKeyStroke(KeyEvent.VK_X,
@@ -692,7 +689,6 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_PROJECT, Icons.NEW_PROJECT_24, "Create Project"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_PROJECT, Icons.OPEN_PROJECT_24, "Open Project"));
 
-        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_FORM, Icons.OPEN_24, "Open Grid"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_SAVE_PROJECT, Icons.SAVE_24, "Save Project"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_FORM, Icons.ADD_24, "Create Grid"));
 

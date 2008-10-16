@@ -1,10 +1,14 @@
 package ro.siveco.senro.designer.objects;
 
+import ro.siveco.senro.designer.basic.SenroDesignerObject;
+
 import java.util.Set;
 import java.util.HashSet;
 import java.io.Serializable;
 
-public abstract class ObjectDescription implements Serializable
+import org.apache.commons.lang.ObjectUtils;
+
+public abstract class ObjectDescription implements Serializable, SenroDesignerObject
 {
     private static final long serialVersionUID = 1;
 
@@ -13,27 +17,6 @@ public abstract class ObjectDescription implements Serializable
     protected transient Set<ObjectChangeListener> changeListeners = new HashSet<ObjectChangeListener>();
 
     public abstract String getObjectClassName();
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-        notifyListeners();
-    }
-
-    public String getId()
-    {
-        return id;
-    }
-
-    public void setId(String id)
-    {
-        this.id = id;
-    }
 
     public boolean canBeDeleted()
     {
@@ -60,6 +43,34 @@ public abstract class ObjectDescription implements Serializable
         for(ObjectChangeListener changeListener : changeListeners) {
             changeListener.objectDidChange(this);
         }
+    }
+
+    public String getName()
+    {
+        return name == null || name.length() == 0 ? id : name;
+    }
+
+    public void setName(String obj_name)
+    {
+        if(ObjectUtils.equals(name, obj_name)) {
+            return;
+        }
+        name = obj_name == null ? "" : obj_name;
+        notifyListeners();
+    }
+
+    public String getId()
+    {
+        return id == null || id.length() == 0 ? name : id;
+    }
+
+    public void setId(String obj_id)
+    {
+        if(ObjectUtils.equals(id, obj_id)) {
+            return;
+        }
+        id = obj_id == null ? "" : obj_id;
+        notifyListeners();
     }
 
 }

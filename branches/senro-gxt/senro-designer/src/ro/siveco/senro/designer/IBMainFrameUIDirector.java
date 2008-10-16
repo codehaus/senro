@@ -42,10 +42,11 @@ public class IBMainFrameUIDirector implements UIDirector
     public void updateComponents(java.util.EventObject evt)
     {
         boolean has_project = (m_frame.getDesignerManager().getProject() != null);
+        boolean has_form = has_project && (m_frame.getCurrentEditor() != null);
 
         m_frame.enableComponent(MainFrameNames.ID_PARAMETERS_MANAGER, has_project);
         m_frame.enableComponent(MainFrameNames.ID_CREATE_FORM, has_project);
-        m_frame.enableComponent(MainFrameNames.ID_OPEN_FORM, has_project);
+        m_frame.enableComponent(MainFrameNames.ID_DELETE_FORM, has_form);
         m_frame.enableComponent(MainFrameNames.ID_PROJECT_SETTINGS, has_project);
 //        m_frame.enableComponent(MainFrameNames.ID_CREATE_PROJECT, !has_project);
 //        m_frame.enableComponent(MainFrameNames.ID_CLOSE_PROJECT, has_project);
@@ -56,7 +57,6 @@ public class IBMainFrameUIDirector implements UIDirector
         m_frame.enableComponent(MainFrameNames.ID_SHOW_FORM, has_editor);
         m_frame.enableComponent(MainFrameNames.ID_SAVE_FORM, has_editor);
         m_frame.enableComponent(MainFrameNames.ID_SAVE_FORM_AS, has_editor);
-        m_frame.enableComponent(MainFrameNames.ID_CLOSE_FORM, has_editor);
         m_frame.enableComponent(TSComponentNames.ID_UNDO, has_editor);
         m_frame.enableComponent(TSComponentNames.ID_REDO, has_editor);
 

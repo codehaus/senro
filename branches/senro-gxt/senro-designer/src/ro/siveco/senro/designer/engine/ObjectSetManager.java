@@ -56,6 +56,18 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         setDefaultEmptyState();
     }
 
+    @SuppressWarnings({"unchecked"})
+    public <T extends ObjectDescription> List<T> getObjectsWithClass(Class<T> obj_class)
+    {
+        List<T> obj_with_T_class = new ArrayList<T>();
+        for (ObjectDescription dataObject : dataObjects) {
+            if(dataObject.getClass().isAssignableFrom(obj_class)) {
+                obj_with_T_class.add((T) dataObject);
+            }
+        }
+        return obj_with_T_class;
+    }
+
     public String getObjSetName()
     {
         return objSetName;

@@ -25,8 +25,6 @@ import java.io.File;
 import com.jeta.forms.gui.common.FormException;
 import com.jeta.forms.gui.components.ComponentSource;
 
-import com.jeta.forms.gui.beans.JETABeanFactory;
-import com.jeta.forms.gui.beans.JETABean;
 import com.jeta.forms.gui.form.GridComponent;
 import com.jeta.forms.gui.form.GridView;
 
@@ -37,6 +35,7 @@ import com.jeta.forms.gui.formmgr.FormManager;
 import com.jeta.open.registry.JETARegistry;
 
 import com.jeta.swingbuilder.gui.formmgr.FormManagerDesignUtils;
+import ro.siveco.senro.designer.components.TopGridView;
 
 
 /**
@@ -47,16 +46,10 @@ import com.jeta.swingbuilder.gui.formmgr.FormManagerDesignUtils;
 public class LinkedFormComponentFactory extends FormComponentFactoryBase
 {
 
-   /**
-    * ctor
-    */
    public LinkedFormComponentFactory()
    {
    }
 
-   /**
-    * ctor
-    */
    public LinkedFormComponentFactory( ComponentSource compsrc )
    {
       super( compsrc );
@@ -89,7 +82,7 @@ public class LinkedFormComponentFactory extends FormComponentFactoryBase
 
     public String getGridViewClassName()
     {
-        return GridView.class.getName();
+        return TopGridView.class.getName();
     }
 
 }

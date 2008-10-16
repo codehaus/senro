@@ -1,55 +1,49 @@
 /*
  * Copyright (c) 2004 JETA Software, Inc.  All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
- *  o Redistributions of source code must retain the above copyright notice, 
+ *  o Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
- *  o Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  o Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  o Neither the name of JETA Software nor the names of its contributors may 
- *    be used to endorse or promote products derived from this software without 
+ *  o Neither the name of JETA Software nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
  *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.jeta.forms.gui.form;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.StringTokenizer;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.JScrollPane;
 
-import com.jeta.forms.gui.beans.JETABean;
 import com.jeta.forms.gui.common.FormException;
 import com.jeta.forms.gui.common.FormSpecAdapter;
 import com.jeta.forms.gui.common.FormUtils;
@@ -64,22 +58,19 @@ import com.jeta.forms.gui.effects.Painter;
 import com.jeta.forms.store.memento.FormGroupSet;
 import com.jeta.forms.store.properties.effects.PaintProperty;
 
-import com.jeta.forms.gui.form.GridCellListener;
-
-import com.jeta.forms.gui.form.GridViewListener;
-import com.jeta.forms.gui.form.GridViewEvent;
-import com.jeta.forms.gui.form.GridCellEvent;
-
 import com.jeta.forms.logger.FormsLogger;
 import com.jeta.forms.store.support.Matrix;
 
 import com.jeta.open.gui.framework.JETAPanel;
+import com.jeta.open.gui.framework.SenroPanel;
 import com.jeta.open.registry.JETARegistry;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import ro.siveco.senro.designer.basic.SenroDesignerObject;
+import org.apache.commons.lang.ObjectUtils;
 
 
 /**
@@ -109,7 +100,7 @@ import com.jgoodies.forms.layout.RowSpec;
  *
  * @author Jeff Tassin
  */
-public class GridView extends JETAPanel implements Paintable, FormAccessor, GridCellListener
+public class GridView extends SenroPanel implements Paintable, FormAccessor, GridCellListener
 {
     /**
      * The JGoodies FormLayout for this view.
@@ -174,13 +165,11 @@ public class GridView extends JETAPanel implements Paintable, FormAccessor, Grid
 
     /**
      * Defines the the column groups for this form
-     * See: {@link com.jgoodies.forms.layout.FormLayout#.setColumnGroups}
      */
     private FormGroupSet m_col_groups = new FormGroupSet();
 
     /**
      * Defines the row groups for this form.
-     * See: {@link com.jgoodies.forms.layout.FormLayout#.setRowGroups}
      */
     private FormGroupSet m_row_groups = new FormGroupSet();
 
@@ -203,7 +192,6 @@ public class GridView extends JETAPanel implements Paintable, FormAccessor, Grid
      */
     private LinkedList m_listeners = new LinkedList();
 
-
     /**
      * The various layers in this view
      */
@@ -212,7 +200,6 @@ public class GridView extends JETAPanel implements Paintable, FormAccessor, Grid
     public static final Integer FORM_LAYER = new Integer(2);
     public static final Integer OVERLAY_LAYER = new Integer(9);
     public static final Integer FOCUS_LAYER = new Integer(10);
-
 
     /**
      * Creates a <code>GridView</code> with no rows and columns
@@ -239,7 +226,7 @@ public class GridView extends JETAPanel implements Paintable, FormAccessor, Grid
      * The default column and row specifications are applied.
      *
      * @param cols the number of columns to create
-     * @param row  the number of rows to create.
+     * @param rows  the number of rows to create.
      */
     public GridView(int cols, int rows)
     {

@@ -41,17 +41,9 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import ro.siveco.senro.designer.components.IteratorComponentFactory;
-import ro.siveco.senro.designer.components.ConditionalComponentFactory;
 
 public class DefaultContainedFormFactory implements ContainedFormFactory
 {
-    /**
-     * ctor
-     */
-    public DefaultContainedFormFactory()
-    {
-
-    }
 
     /**
      * Creates a form that is meant to be contained in a Swing container. This is
@@ -75,7 +67,7 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
                 break;
         }
 
-        FormComponent form = null;
+        FormComponent form;
 
         if(fm == null) {
             form = embedded_fac.create(compsrc, "", null, 3, 3, true);
@@ -103,7 +95,7 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
         throws FormException
     {
         EmbeddedFormComponentFactory factory = new EmbeddedFormComponentFactory(compsrc);
-        FormComponent parent = (FormComponent)factory.create(compsrc, "formeditor.top.parent", null, 1, 1, true);
+        FormComponent parent = factory.create(compsrc, "formeditor.top.parent", null, 1, 1, true);
         parent.setTopLevelForm(true);
         parent.setControlButtonsVisible(false);
         form.setControlButtonsVisible(true);

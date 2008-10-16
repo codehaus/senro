@@ -415,7 +415,7 @@ public class FormComponent extends GridComponent
 
       state.setId( getId() );
       state.setComponentClass( FormComponent.class.getName() );
-      state.setFocusPolicy( m_focus_policy );
+       state.setFocusPolicy( m_focus_policy );
 
       if ( getParentView() != null )
       {

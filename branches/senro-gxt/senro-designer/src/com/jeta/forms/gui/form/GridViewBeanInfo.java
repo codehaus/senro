@@ -29,6 +29,8 @@
 
 package com.jeta.forms.gui.form;
 
+import com.jeta.open.gui.framework.SenroPanel;
+
 import java.awt.Image;
 
 import java.util.ArrayList;
@@ -37,7 +39,6 @@ import java.beans.BeanInfo;
 import java.beans.BeanDescriptor;
 import java.beans.EventSetDescriptor;
 import java.beans.Introspector;
-import java.beans.IntrospectionException;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 
@@ -45,97 +46,96 @@ import javax.swing.JPanel;
 
 
 /**
- * Defines the BeanInfo for a GridView.  When the user selects a form 
- * in the designer, the properties pane shows several properties for that 
+ * Defines the BeanInfo for a GridView.  When the user selects a form
+ * in the designer, the properties pane shows several properties for that
  * form.  Forms use GridViews as their underlying Java bean component. So,
  * the designer is really updating properties for a GridView object.
- * The allows the user to set standard properties such as border and 
+ * The allows the user to set standard properties such as border and
  * background color for forms.
  * A custom BeanInfo is provided instead of the standard JPanel BeanInfo
  * because we don't want nor need all of the JPanel properties.
- * 
+ *
  * @author Jeff Tassin
  */
-public class GridViewBeanInfo implements BeanInfo 
+public class GridViewBeanInfo implements BeanInfo
 {
-   private PropertyDescriptor[]     m_props = new PropertyDescriptor[0];
+    private PropertyDescriptor[] m_props = new PropertyDescriptor[0];
 
-   /**
-    * ctor
-    */
-   public GridViewBeanInfo()
-   {
-      try
-      {
-	 ArrayList props = new ArrayList();
+    /**
+     * ctor
+     */
+    public GridViewBeanInfo()
+    {
+        try {
+            ArrayList<PropertyDescriptor> props = new ArrayList<PropertyDescriptor>();
 
-	 /** we don't need every property from JPanel, just name and opaque */
-	 BeanInfo info = Introspector.getBeanInfo( JPanel.class );
-	 PropertyDescriptor[] pds = info.getPropertyDescriptors();
-	 for( int index=0; index < pds.length; index++ )
-	 {
-	    PropertyDescriptor pd = pds[index];
-	    if ( "name".equals( pd.getName() ) )
-	       props.add( pd );
+            /** we don't need every property from JPanel, just name and opaque */
+            BeanInfo info = Introspector.getBeanInfo(SenroPanel.class);
+            PropertyDescriptor[] pds = info.getPropertyDescriptors();
+            for(int index = 0; index < pds.length; index++) {
+                PropertyDescriptor pd = pds[index];
+                if("name".equals(pd.getName()))
+                    props.add(pd);
 
-	    if ( "opaque".equals( pd.getName() ) )
-	    {
-	       props.add( pd );
-	    }
-	 }
-	 
-	 m_props = (PropertyDescriptor[])props.toArray( new PropertyDescriptor[0] );
-      }
-      catch( Exception e )
-      {
-	 e.printStackTrace();
-      }
-   }
+                if("opaque".equals(pd.getName())) {
+                    props.add(pd);
+                }
+                if("id".equals(pd.getName())) {
+                    props.add(pd);
+                }
+            }
 
-
-   public BeanInfo[] getAdditionalBeanInfo()
-   {
-      return new BeanInfo[0];
-   }
-
-   public BeanDescriptor getBeanDescriptor()
-   {
-      return null;
-   }
-
-   public  int getDefaultEventIndex()
-   {
-      return 0;
-   }
-
-   public int getDefaultPropertyIndex()
-   {
-      return 0;
-   }
-
-   public EventSetDescriptor[] getEventSetDescriptors()
-   {
-      return new EventSetDescriptor[0];
-   }
-
-   public Image getIcon(int i)
-   {
-      return null;
-   }
+            m_props = props.toArray(new PropertyDescriptor[0]);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
-   public MethodDescriptor[] getMethodDescriptors()
-   {
-      return new MethodDescriptor[0];
-   }
+    public BeanInfo[] getAdditionalBeanInfo()
+    {
+        return new BeanInfo[0];
+    }
 
-   /**
-    * @return a collection of JETAPropertyDescriptor objects
-    */
-   public PropertyDescriptor[] getPropertyDescriptors()
-   {
-      return m_props;
-   }
+    public BeanDescriptor getBeanDescriptor()
+    {
+        return null;
+    }
+
+    public int getDefaultEventIndex()
+    {
+        return 0;
+    }
+
+    public int getDefaultPropertyIndex()
+    {
+        return 0;
+    }
+
+    public EventSetDescriptor[] getEventSetDescriptors()
+    {
+        return new EventSetDescriptor[0];
+    }
+
+    public Image getIcon(int i)
+    {
+        return null;
+    }
+
+
+    public MethodDescriptor[] getMethodDescriptors()
+    {
+        return new MethodDescriptor[0];
+    }
+
+    /**
+     * @return a collection of JETAPropertyDescriptor objects
+     */
+    public PropertyDescriptor[] getPropertyDescriptors()
+    {
+        return m_props;
+    }
 
 }
    

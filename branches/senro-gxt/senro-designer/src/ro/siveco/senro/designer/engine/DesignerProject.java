@@ -18,8 +18,6 @@ import java.util.List;
 import java.awt.*;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -181,25 +179,13 @@ public class DesignerProject
         projectFilePath = path;
     }
 
-    public List<String> getGridFileNamesList()
+    public List<File> getGridFilesList()
     {
-        File prj_dir = getProjectDir();
-        File[] gridFiles = prj_dir.listFiles(new FileFilter() {
-
-            public boolean accept(File file)
-            {
-                String grid_file_name = file.getName();
-                if(grid_file_name.equals(DesignerManager.COMPONENT_FILE_NAME) || !grid_file_name.endsWith(".xml")) {
-                    return false;
-                }
-                return true;
-            }
-        });
-        List<String> gridFileNamesList = new ArrayList<String>();
-        for (File gridFile : gridFiles) {
-            gridFileNamesList.add(gridFile.getName());
+        List<File> gridFilesList = new ArrayList<File>();
+        for (String grid_name : gridNames) {
+            gridFilesList.add(getGridPath(grid_name));
         }
-        return gridFileNamesList;
+        return gridFilesList;
     }
 
     public void save() throws IOException

@@ -10,6 +10,7 @@ import ro.siveco.senro.designer.ui.DesignerCellFactory;
 import ro.siveco.senro.designer.inspector.InspectorManager;
 import ro.siveco.senro.designer.IBMainFrame;
 import ro.siveco.senro.designer.IBMainFrameController;
+import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.components.*;
 import ro.siveco.senro.designer.inspectors.DisplayGroupInspector;
 import ro.siveco.senro.designer.inspectors.EditingContextInspector;
@@ -29,6 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -52,6 +54,7 @@ import com.jeta.forms.gui.form.GridView;
 import com.jeta.forms.gui.form.GridComponent;
 import com.jeta.forms.gui.form.FormComponent;
 import com.jeta.forms.gui.formmgr.FormManager;
+import com.jeta.forms.gui.common.FormException;
 import com.jeta.forms.components.label.JETALabel;
 import com.jeta.forms.store.memento.FormPackage;
 import com.jeta.forms.store.memento.StateRequest;
@@ -59,6 +62,7 @@ import com.jeta.swingbuilder.gui.editor.FormEditor;
 import com.jeta.swingbuilder.gui.editor.DesignFormComponent;
 import com.jeta.swingbuilder.gui.utils.FormDesignerUtils;
 import com.jeta.swingbuilder.gui.components.TSErrorDialog2;
+import com.jeta.swingbuilder.gui.formmgr.FormSurrogate;
 import com.jeta.open.registry.JETARegistry;
 import com.jeta.open.i18n.I18N;
 
@@ -265,6 +269,8 @@ public class DesignerManager
         return layout_elem;
     }
 
+//    public List<SenroDesignerObject> getSenroComponents()
+    
     private void saveComponentTemplate()
             throws ParserConfigurationException, TransformerException, IOException
     {
@@ -426,6 +432,98 @@ public class DesignerManager
             JOptionPane.showMessageDialog(mainFrame, "Cannot open project. See log for details.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+        openAllGrids();
+    }
+
+    private void openAllGrids()
+    {
+        DesignerProject project = DesignerManager.getSharedDesignerManager().getProject();
+        if (project == null) {
+            return;
+        }
+        List<File> gridFilesList = project.getGridFilesList();
+        List<File> openFailedFiles = new ArrayList<File>();
+        FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
+        fmgr.deactivateForms(mainFrame.getCurrentEditor());
+        FormComponent last_opened_fc = null;
+        for (File f : gridFilesList) {
+            if (f != null) {
+                FormComponent fc = null;
+                try {
+                    fc = fmgr.openLinkedForm(f);
+                    fmgr.activateForm(fc.getId());
+                    fmgr.showForm(fc.getId());
+                    last_opened_fc = fc;
+                } catch (FormException ex) {
+                    logger.error("Cannot open grid:  " + f.getName(), ex);
+                    openFailedFiles.add(f);
+                    project.removeGrid(StringUtils.substringBefore(f.getName(), "."));
+                }
+            }
+        }
+        if (!openFailedFiles.isEmpty()) {
+            StringBuffer buff = new StringBuffer();
+            boolean needs_coma = false;
+            for (File openFailedFile : openFailedFiles) {
+                if (needs_coma) {
+                    buff.append(", ");
+                }
+                buff.append(StringUtils.substringBefore(openFailedFile.getName(), "."));
+                needs_coma = true;
+            }
+            JOptionPane.showMessageDialog(mainFrame, "The following grids couldn't be opened and were removed: " + buff.toString(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            if (last_opened_fc != null) {
+                fmgr.showForm(last_opened_fc.getId());
+            }
+            try {
+                project.save();
+            } catch (IOException io_ex) {
+                logger.error("Cannot save opened project!", io_ex);
+                JOptionPane.showMessageDialog(mainFrame, "Cannot save opened project!",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
+        }
+    }
+
+    public void deleteGrid()
+    {
+        if (project == null) {
+            return;
+        }
+        String title = I18N.getLocalizedMessage("Confirm grid file delete");
+        String msg = I18N.getLocalizedMessage("Are you sure you want to delete the current grid?");
+        int result = JOptionPane.showConfirmDialog(mainFrame, msg, title, JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            FormEditor fe = mainFrame.getCurrentEditor();
+            closeGrid(fe);
+            performDeleteGrid(fe);
+            saveProject();
+        }
+    }
+
+    private void performDeleteGrid(FormEditor fe)
+    {
+        String file_name = fe.getForm().getFileName();
+        if (file_name != null) {
+            String grid_name = StringUtils.substringBefore(file_name, ".");
+            project.removeGrid(grid_name);
+            if (!project.getGridPath(grid_name).delete()) {
+                logger.error("Cannot delete grid file: " + grid_name);
+                JOptionPane.showMessageDialog(mainFrame, "Cannot delete grid file: " + grid_name,
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void closeGrid(FormEditor fe)
+    {
+        DesignFormComponent fc = fe.getForm();
+        if (fe != null) {
+            FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
+            fmgr.closeForm(fc.getId());
+        }
     }
 
     public boolean areGridsClean()
@@ -447,10 +545,7 @@ public class DesignerManager
         Collection editors = mainFrame.getEditors();
         for (Object editor_obj : editors) {
             FormEditor editor = (FormEditor) editor_obj;
-            if(editor != null) {
-                FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
-                fmgr.closeForm(editor.getForm().getId());
-            }
+            closeGrid(editor);
         }
     }
 
@@ -513,8 +608,25 @@ public class DesignerManager
         mainFrame.addForm(editor);
         editor.getForm().setControlButtonsVisible(false);
         editor.getForm().setAbsolutePath(grid_path.getAbsolutePath());
+        TopGridView top_grid_view = (TopGridView) editor.getFormComponent().getChildView();
+        top_grid_view.setPopup(newGridIsPopup());
+        top_grid_view.setName(grid_name);
         controller.saveForm(false);
         project.addGrid(grid_name);
+        saveProject();
+    }
+
+    public boolean newGridIsPopup()
+    {
+        Collection editors = mainFrame.getEditors();
+        for (Object editor_obj : editors) {
+            FormEditor ed = (FormEditor) editor_obj;
+            TopGridView top_grid_view = (TopGridView) ed.getFormComponent().getChildView();
+            if(!top_grid_view.isPopup()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private File chooseDirectory(String crtDir, String title)
@@ -557,6 +669,9 @@ public class DesignerManager
         GridView top_grid = tab_page.getChildView();
         Iterator<GridComponent> comp_it = top_grid.gridIterator();
         GridComponent grid_comp = comp_it.next();
+        if (grid_comp instanceof FormSurrogate) {
+            grid_comp = ((FormSurrogate) grid_comp).getForm();
+        }
         return grid_comp.getBeanChildComponent();
     }
 
@@ -608,6 +723,13 @@ public class DesignerManager
         {
             return "GridAllocator";
         }
+
+        public void buildElementBody(Element e, ObjectDescription obj_desc)
+        {
+            GridAllocatorDescription ga_desc = (GridAllocatorDescription) obj_desc;
+            e.setAttribute(ComponentXmlNames.ENTITY_ATTRIBUTE, String.valueOf(ga_desc.getName()));
+            e.setAttribute(ComponentXmlNames.COLUMNS_ATTRIBUTE, String.valueOf(ga_desc.getColumnsCount()));
+        }
     }
 
     private class EditingContextXmlGenerator extends ObjectDescriptionXmlGenerator
@@ -646,6 +768,16 @@ public class DesignerManager
         return sharedDesignerManager;
     }
 
+    public ObjectSetManager getServerManager()
+    {
+        return serverObjSetManager;
+    }
+
+    public ObjectSetManager getClientManager()
+    {
+        return clientObjSetManager;
+    }
+
     private abstract class ComponentXmlGenerator extends XmlGenerator
     {
         public Element getXml(Document doc, Object o, Object context)
@@ -653,7 +785,7 @@ public class DesignerManager
             GridComponent g_comp = (GridComponent) context;
             Component comp = (Component) o;
             Element elem = doc.createElement(getTagName());
-            if(g_comp != null) {
+            if (g_comp != null) {
                 elem.setAttribute(ComponentXmlNames.ROW_ATTRIBUTE, String.valueOf(g_comp.getRow()));
                 elem.setAttribute(ComponentXmlNames.COL_ATTRIBUTE, String.valueOf(g_comp.getColumn()));
                 elem.setAttribute(ComponentXmlNames.ROW_SPAN_ATTRIBUTE, String.valueOf(g_comp.getRowSpan()));
@@ -928,12 +1060,13 @@ public class DesignerManager
         public void buildElementBody(Element tab_pane_elem, Component comp)
         {
             Document doc = tab_pane_elem.getOwnerDocument();
-            JTabbedPane tabbed_pane = (JTabbedPane)comp;
+            JTabbedPane tabbed_pane = (JTabbedPane) comp;
             int tab_count = tabbed_pane.getTabCount();
-            for(int tab_idx = 0; tab_idx < tab_count; tab_idx++) {
-                DesignFormComponent tab_page = (DesignFormComponent)tabbed_pane.getComponentAt(tab_idx);
+            for (int tab_idx = 0; tab_idx < tab_count; tab_idx++) {
+                DesignFormComponent tab_page = (DesignFormComponent) tabbed_pane.getComponentAt(tab_idx);
                 Component tab_comp = getTabPageComponent(tab_page);
-                if(tab_comp instanceof IteratorComponent) {
+                assert tab_comp != null;
+                if (tab_comp instanceof IteratorComponent) {
                     generateXmlForObject(tab_pane_elem, tab_comp, null);
                 } else {
                     Element page_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
@@ -958,7 +1091,7 @@ public class DesignerManager
         public void buildElementBody(Element e, Component comp)
         {
             Document doc = e.getOwnerDocument();
-            TreeComponent tree_comp = (TreeComponent)comp;
+            TreeComponent tree_comp = (TreeComponent) comp;
 
             Element iterator_elem = doc.createElement(ComponentXmlNames.ITERATOR_ELEMENT);
             e.appendChild(iterator_elem);
@@ -981,7 +1114,7 @@ public class DesignerManager
     {
         public Element getXml(Document doc, Object o, Object context)
         {
-            JScrollPane scroll_pane = (JScrollPane)o;
+            JScrollPane scroll_pane = (JScrollPane) o;
             Component c = scroll_pane.getViewport().getView();
             return DesignerManager.this.getXml(doc, c, context);
         }
@@ -998,9 +1131,9 @@ public class DesignerManager
 
         public void buildElementBody(Element e, Component comp)
         {
-            IteratorComponent itc = (IteratorComponent)comp;
+            IteratorComponent itc = (IteratorComponent) comp;
             String it_list = itc.getList();
-            if(it_list == null) {
+            if (it_list == null) {
                 it_list = "";
             }
             e.setAttribute("list", it_list);
@@ -1022,21 +1155,21 @@ public class DesignerManager
 
         public void buildElementBody(Element e, Component comp)
         {
-            ConditionalComponent cond_comp = (ConditionalComponent)comp;
+            ConditionalComponent cond_comp = (ConditionalComponent) comp;
             String cond = cond_comp.getCondition();
-            if(cond == null) {
+            if (cond == null) {
                 cond = "";
             }
             Document doc = e.getOwnerDocument();
             Element if_elem = doc.createElement(ComponentXmlNames.IF_ELEMENT);
             e.appendChild(if_elem);
             if_elem.setAttribute("condition", cond);
-            Component if_comp = getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(0));
+            Component if_comp = getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(0));
             generateXmlForObject(if_elem, if_comp, null);
-            if(cond_comp.getHasElseBranch()) {
+            if (cond_comp.getHasElseBranch()) {
                 Element else_elem = doc.createElement(ComponentXmlNames.ELSE_ELEMENT);
                 e.appendChild(else_elem);
-                Component else_comp = getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(1));
+                Component else_comp = getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(1));
                 generateXmlForObject(else_elem, else_comp, null);
             }
         }

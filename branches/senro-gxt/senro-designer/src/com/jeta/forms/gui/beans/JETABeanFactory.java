@@ -121,6 +121,7 @@ public class JETABeanFactory
        registerFactory(IteratorComponent.class.getName(), new IteratorBeanFactory());
        registerFactory(ConditionalComponent.class.getName(), new ConditionalComponentFactory());
        registerFactory(TemplateComponent.class.getName(), new TemplateBeanFactory());
+       registerFactory(TopGridView.class.getName(), new TopGridViewBeanFactory());
 
    }
 
