@@ -25,8 +25,6 @@ import java.util.LinkedList;
 import javax.swing.*;
 
 import com.jeta.forms.beanmgr.BeanManager;
-import com.jeta.forms.components.line.HorizontalLineComponent;
-import com.jeta.forms.components.line.VerticalLineComponent;
 import com.jeta.forms.gui.beans.JETABeanFactory;
 import com.jeta.forms.gui.common.FormException;
 
@@ -36,14 +34,8 @@ import com.jeta.swingbuilder.resources.Icons;
 import com.jeta.swingbuilder.store.ImportedBeanInfo;
 import com.jeta.swingbuilder.store.ImportedBeansModel;
 
-import com.jeta.forms.components.colors.JETAColorWell;
-
 import com.jeta.swingbuilder.interfaces.app.ObjectStore;
 import com.jeta.swingbuilder.common.ComponentNames;
-
-import com.jeta.forms.components.border.TitledBorderLabel;
-import com.jeta.forms.components.border.TitledBorderBottom;
-import com.jeta.forms.components.border.TitledBorderSide;
 
 import com.jeta.open.i18n.I18N;
 import com.jeta.open.registry.JETARegistry;
@@ -55,156 +47,172 @@ import ro.siveco.senro.designer.engine.DesignerManager;
  *
  * @author Jeff Tassin
  */
-public class DefaultBeanManager implements BeanManager {
-   /**
-    * The underyling data model
-    */
-   private ImportedBeansModel m_ibm;
+public class DefaultBeanManager implements BeanManager
+{
+    /**
+     * The underyling data model
+     */
+    private ImportedBeansModel m_ibm;
 
-   /**
-    * The class loader for the beans
-    */
-   private BeanLoader m_loader;
+    /**
+     * The class loader for the beans
+     */
+    private BeanLoader m_loader;
 
-   /**
-    * A collection of DefaultBean objects. These are the standard Swing
-    * components supported by the designer.
-    */
-   private LinkedList m_default_beans = new LinkedList();
+    /**
+     * A collection of DefaultBean objects. These are the standard Swing
+     * components supported by the designer.
+     */
+    private LinkedList m_default_beans = new LinkedList();
 
-   /**
-    * ctor
-    */
-   public DefaultBeanManager() {
-      try {
-         ObjectStore os = (ObjectStore) JETARegistry.lookup(ComponentNames.APPLICATION_STATE_STORE);
-         m_ibm = (ImportedBeansModel) os.load(ImportedBeansModel.COMPONENT_ID);
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-      if (m_ibm == null) {
-         m_ibm = new ImportedBeansModel();
-      }
+    /**
+     * ctor
+     */
+    public DefaultBeanManager()
+    {
+        try {
+            ObjectStore os = (ObjectStore) JETARegistry.lookup(ComponentNames.APPLICATION_STATE_STORE);
+            m_ibm = (ImportedBeansModel) os.load(ImportedBeansModel.COMPONENT_ID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (m_ibm == null) {
+            m_ibm = new ImportedBeansModel();
+        }
 
-      registerDefaultBeans();
-      registerBeans(m_ibm, getBeanLoader());
-   }
+        registerDefaultBeans();
+        registerBeans(m_ibm, getBeanLoader());
+    }
 
-   /**
-    * @return the underlying class loader for loading imported beans. This can
-    *         be null
-    */
-   public ClassLoader getClassLoader() throws FormException {
-      return getBeanLoader().getClassLoader();
-   }
+    /**
+     * @return the underlying class loader for loading imported beans. This can
+     *         be null
+     */
+    public ClassLoader getClassLoader() throws FormException
+    {
+        return getBeanLoader().getClassLoader();
+    }
 
-   public BeanLoader getBeanLoader() {
-      if (m_loader == null) {
-         m_loader = new BeanLoader(m_ibm.getUrls());
-      }
-      return m_loader;
-   }
+    public BeanLoader getBeanLoader()
+    {
+        if (m_loader == null) {
+            m_loader = new BeanLoader(m_ibm.getUrls());
+        }
+        return m_loader;
+    }
 
-   /**
-    * @return the class for the given bean class name
-    */
-   public Class getBeanClass(String beanClassName) throws FormException {
-      try {
-         return getBeanLoader().getClass(beanClassName);
-      } catch ( Throwable t ) {
-         if ( t instanceof FormException )
-            throw (FormException)t;
-         else {
-             t.printStackTrace();
-             throw new FormException( t.getMessage(), null );
-         }
-      }
-   }
-
-   /**
-    * @return the default beans supported by the application.
-    */
-   public Collection getDefaultBeans() {
-      return m_default_beans;
-   }
-
-   /**
-    * @return the imported beans in the model
-    */
-   public Collection getImportedBeans() {
-      return m_ibm.getImportedBeans();
-   }
-
-   /**
-    * @return the underlying data model
-    */
-   public ImportedBeansModel getModel() {
-      return m_ibm;
-   }
-
-   /**
-    * Registers all imported beans with the JETABeanFactory
-    */
-   private void registerBeans(ImportedBeansModel ibm, BeanLoader loader) {
-      try {
-         if (ibm != null) {
-            JETABeanFactory.clearCustomFactories();
-
-            Collection beans = ibm.getImportedBeans();
-            Iterator iter = beans.iterator();
-            while (iter.hasNext()) {
-               ImportedBeanInfo bi = (ImportedBeanInfo) iter.next();
-               try {
-                  JETABeanFactory.tryRegisterCustomFactory(loader.getClass(bi.getBeanName()), bi.isScrollable());
-               } catch (Throwable e) {
-                  e.printStackTrace();
-               }
+    /**
+     * @return the class for the given bean class name
+     */
+    public Class getBeanClass(String beanClassName) throws FormException
+    {
+        try {
+            return getBeanLoader().getClass(beanClassName);
+        } catch (Throwable t) {
+            if (t instanceof FormException) {
+                throw (FormException) t;
+            } else {
+                t.printStackTrace();
+                throw new FormException(t.getMessage(), null);
             }
-         }
-      } catch (Throwable e) {
-         e.printStackTrace();
-      }
-   }
+        }
+    }
 
-   /**
-    * Registers a default bean used by the designer.
-    */
-   private void registerDefaultBean(String description, String className, Icon icon) {
-      DefaultBean db = new DefaultBean(description, className, icon);
-      m_default_beans.add(db);
-   }
+    /**
+     * @return the default beans supported by the application.
+     */
+    public Collection getDefaultBeans()
+    {
+        return m_default_beans;
+    }
 
-   /**
-    * Loads the default Swing components supported by the application
-    */
-   private void registerDefaultBeans() {
-      registerDefaultBean(I18N.getLocalizedMessage("Label"),
-               com.jeta.forms.components.label.JETALabel.class.getName(), FormDesignerUtils.loadImage(Icons.LABEL_16));
+    /**
+     * @return the imported beans in the model
+     */
+    public Collection getImportedBeans()
+    {
+        return m_ibm.getImportedBeans();
+    }
 
+    /**
+     * @return the underlying data model
+     */
+    public ImportedBeansModel getModel()
+    {
+        return m_ibm;
+    }
+
+    /**
+     * Registers all imported beans with the JETABeanFactory
+     */
+    private void registerBeans(ImportedBeansModel ibm, BeanLoader loader)
+    {
+        try {
+            if (ibm != null) {
+                JETABeanFactory.clearCustomFactories();
+
+                Collection beans = ibm.getImportedBeans();
+                Iterator iter = beans.iterator();
+                while (iter.hasNext()) {
+                    ImportedBeanInfo bi = (ImportedBeanInfo) iter.next();
+                    try {
+                        JETABeanFactory.tryRegisterCustomFactory(loader.getClass(bi.getBeanName()), bi.isScrollable());
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Registers a default bean used by the designer.
+     */
+    private void registerDefaultBean(String description, String className, Icon icon)
+    {
+        DefaultBean db = new DefaultBean(description, className, icon);
+        m_default_beans.add(db);
+    }
+
+    /**
+     * Loads the default Swing components supported by the application
+     */
+    private void registerDefaultBeans()
+    {
 //      registerDefaultBean(I18N.getLocalizedMessage("JRadioButton"), "javax.swing.JRadioButton", FormDesignerUtils
 //               .loadImage(Icons.RADIO_16));
-
-      registerDefaultBean(I18N.getLocalizedMessage("CheckBox"), "javax.swing.JCheckBox", FormDesignerUtils
-               .loadImage(Icons.CHECK_16));
-
 //      registerDefaultBean(I18N.getLocalizedMessage("Button"), "javax.swing.JButton", FormDesignerUtils
 //               .loadImage(Icons.BUTTON_16));
 //      registerDefaultBean(I18N.getLocalizedMessage("Button"), "ro.siveco.senro.designer.components.SenroButton",
 //                          FormDesignerUtils.loadImage(Icons.BUTTON_16));
-      registerDefaultBean("Button", "ro.siveco.senro.designer.components.SenroButton",
-                          FormDesignerUtils.loadImage(Icons.BUTTON_16));
+        registerDefaultBean("Button", "ro.siveco.senro.designer.components.SenroButton",
+                FormDesignerUtils.loadImage(Icons.BUTTON_16));
+        registerDefaultBean("Label", "ro.siveco.senro.designer.components.SenroLabel",
+                FormDesignerUtils.loadImage(Icons.LABEL_16));
+        registerDefaultBean("CheckBox", "ro.siveco.senro.designer.components.SenroCheckBox",
+                FormDesignerUtils.loadImage(Icons.CHECK_16));
+        registerDefaultBean("ComboBox", "ro.siveco.senro.designer.components.SenroComboBox",
+                FormDesignerUtils.loadImage(Icons.COMBO_16));
+        registerDefaultBean("List", "ro.siveco.senro.designer.components.SenroList",
+                FormDesignerUtils.loadImage(Icons.TABLE_16));
+        registerDefaultBean("TextField", "ro.siveco.senro.designer.components.SenroTextField",
+                FormDesignerUtils.loadImage(Icons.TEXT_FIELD_16));
+        registerDefaultBean("DateField", "ro.siveco.senro.designer.components.SenroDateField",
+                FormDesignerUtils.loadImage(Icons.TEXT_FIELD_16));
+        registerDefaultBean("GridAllocatorRenderer", "ro.siveco.senro.designer.components.GridAllocatorRenderer",
+                new DesignerIcon(20, 12, "GAR"));
+        registerDefaultBean("TextArea", "ro.siveco.senro.designer.components.SenroTextArea",
+                FormDesignerUtils.loadImage(Icons.TEXT_16));
+        registerDefaultBean("TabPanel", "ro.siveco.senro.designer.components.SenroTabbedPane",
+                FormDesignerUtils.loadImage(Icons.TABPANE_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JToggleButton"), "javax.swing.JToggleButton", FormDesignerUtils
 //               .loadImage(Icons.TOGGLE_BUTTON_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("ComboBox"), "javax.swing.JComboBox", FormDesignerUtils
-               .loadImage(Icons.COMBO_16));
-
 //      registerDefaultBean(I18N.getLocalizedMessage("JList"), "javax.swing.JList", FormDesignerUtils
 //               .loadImage(Icons.LIST_16));
-
-      registerDefaultBean(I18N.getLocalizedMessage("List"), "javax.swing.JTable", FormDesignerUtils
-               .loadImage(Icons.TABLE_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JTree"), "javax.swing.JTree", FormDesignerUtils
 //               .loadImage(Icons.TREE_16));
@@ -218,26 +226,14 @@ public class DefaultBeanManager implements BeanManager {
 //      registerDefaultBean(I18N.getLocalizedMessage("JSpinner"), "javax.swing.JSpinner", FormDesignerUtils
 //               .loadImage(Icons.SPINNER_16));
 
-      registerDefaultBean(I18N.getLocalizedMessage("TextField"), "javax.swing.JTextField", FormDesignerUtils
-               .loadImage(Icons.TEXT_FIELD_16));
-
-      registerDefaultBean(I18N.getLocalizedMessage("DateField"), "ro.siveco.senro.designer.components.DateFieldComponent", FormDesignerUtils
-               .loadImage(Icons.TEXT_FIELD_16));
-
 //      registerDefaultBean(I18N.getLocalizedMessage("JPasswordField"), "javax.swing.JPasswordField", FormDesignerUtils
 //               .loadImage(Icons.PASSWORD_FIELD_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JFormattedTextField"), "javax.swing.JFormattedTextField",
 //               FormDesignerUtils.loadImage(Icons.FORMATTED_FIELD_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("JTextArea"), "javax.swing.JTextArea", FormDesignerUtils
-//               .loadImage(Icons.TEXT_16));
-
 //      registerDefaultBean(I18N.getLocalizedMessage("JEditorPane"), "javax.swing.JEditorPane", FormDesignerUtils
 //               .loadImage(Icons.RICH_TEXT_16));
-
-      registerDefaultBean(I18N.getLocalizedMessage("JTabbedPane"), "javax.swing.JTabbedPane", FormDesignerUtils
-               .loadImage(Icons.TABPANE_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("Horizontal Line"), HorizontalLineComponent.class.getName(),
 //               FormDesignerUtils.loadImage(Icons.HORIZONTAL_LINE_16));
@@ -266,32 +262,30 @@ public class DefaultBeanManager implements BeanManager {
 //      registerDefaultBean(I18N.getLocalizedMessage("SENRO Panel"),
 //               JPanel.class.getName(), FormDesignerUtils
 //                        .loadImage(Icons.PORTRAIT_16));
-      registerDefaultBean(I18N.getLocalizedMessage("GridAllocatorRenderer"),
-                         "ro.siveco.senro.designer.components.GridAllocatorRendererComponent",
-                          new DesignerIcon(20, 12, "GAR"));
-      registerDefaultBean(I18N.getLocalizedMessage("Template"),
-                         "ro.siveco.senro.designer.components.TemplateComponent",
-                          new DesignerIcon(20, 12, "T"));
-      registerDefaultBean(I18N.getLocalizedMessage("Conditional"),
-                         "ro.siveco.senro.designer.components.ConditionalComponent",
-                          DesignerManager.getIconForImage("cond_16x16.png"));
-      registerDefaultBean(I18N.getLocalizedMessage("Tree"),
-                         "ro.siveco.senro.designer.components.TreeComponent",
-                          new DesignerIcon(20, 12, "Tree"));
-   }
+        registerDefaultBean(I18N.getLocalizedMessage("Template"),
+                "ro.siveco.senro.designer.components.TemplateComponent",
+                new DesignerIcon(20, 12, "T"));
+        registerDefaultBean(I18N.getLocalizedMessage("Conditional"),
+                "ro.siveco.senro.designer.components.ConditionalComponent",
+                DesignerManager.getIconForImage("cond_16x16.png"));
+        registerDefaultBean(I18N.getLocalizedMessage("Tree"),
+                "ro.siveco.senro.designer.components.TreeComponent",
+                new DesignerIcon(20, 12, "Tree"));
+    }
 
-   public void setModel(ImportedBeansModel ibm) {
-      m_ibm = ibm;
-      m_loader = null;
-      try {
-         registerBeans(m_ibm, getBeanLoader());
+    public void setModel(ImportedBeansModel ibm)
+    {
+        m_ibm = ibm;
+        m_loader = null;
+        try {
+            registerBeans(m_ibm, getBeanLoader());
 
-         ObjectStore os = (ObjectStore) JETARegistry.lookup(ComponentNames.APPLICATION_STATE_STORE);
-         os.store(ImportedBeansModel.COMPONENT_ID, m_ibm);
-         os.flush(ImportedBeansModel.COMPONENT_ID);
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
+            ObjectStore os = (ObjectStore) JETARegistry.lookup(ComponentNames.APPLICATION_STATE_STORE);
+            os.store(ImportedBeansModel.COMPONENT_ID, m_ibm);
+            os.flush(ImportedBeansModel.COMPONENT_ID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

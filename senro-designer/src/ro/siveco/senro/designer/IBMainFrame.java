@@ -43,6 +43,7 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 
 import ro.siveco.senro.designer.engine.DesignerManager;
+import ro.siveco.senro.designer.components.TopGridView;
 
 /**
  * The main frame window for the application
@@ -257,13 +258,13 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         return forms;
     }
 
-    public java.util.List<GridView> getTopGrids()
+    public java.util.List<TopGridView> getTopGrids()
     {
-        java.util.List<GridView> grids = new ArrayList<GridView>();
+        java.util.List<TopGridView> grids = new ArrayList<TopGridView>();
         for(int i = 0; i < m_forms_tab.getTabCount(); i++) {
             FormEditor ed = (FormEditor)m_forms_tab.getComponentAt(i);
             ed.saveFocusPolicy();
-            grids.add(ed.getFormComponent().getChildView());
+            grids.add((TopGridView)ed.getFormComponent().getChildView());
         }
         return grids;
     }

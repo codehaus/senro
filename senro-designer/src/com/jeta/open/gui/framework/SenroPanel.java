@@ -1,7 +1,10 @@
 package com.jeta.open.gui.framework;
 
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
+import ro.siveco.senro.designer.basic.DesignerObjectListener;
 import org.apache.commons.lang.ObjectUtils;
+
+import java.util.Map;
 
 public class SenroPanel extends JETAPanel implements SenroDesignerObject
 {
@@ -36,5 +39,16 @@ public class SenroPanel extends JETAPanel implements SenroDesignerObject
         senroId = obj_id == null ? "" : obj_id;
     }
 
+    public void addListener(DesignerObjectListener listener)
+    {
+    }
+
+    public void removeListener(DesignerObjectListener listener)
+    {
+    }
+
+    public void updateLinks(Map<String, SenroDesignerObject> obj_map)
+    {
+    }
 
 }

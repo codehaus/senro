@@ -265,7 +265,7 @@ public class ComponentsToolBar extends JETAPanel implements ComponentSource
 
             boolean add_forms = true;
             Collection default_beans = bm.getDefaultBeans();
-            btns.add(registerBean(ID_EMBEDDED_FORM_COMPONENT, I18N.getLocalizedMessage("Embedded Form"),
+            btns.add(registerBean(ID_EMBEDDED_FORM_COMPONENT, I18N.getLocalizedMessage("Embedded Grid"),
                                   new EmbeddedFormComponentFactory(this),
                                   Icons.EMBEDDED_FORM_16));
             // senro components
@@ -290,9 +290,6 @@ public class ComponentsToolBar extends JETAPanel implements ComponentSource
 	       // insert the form beans just before the horizontal line component - legacy reasons
 //	       if ( HorizontalLineComponent.class.getName().equals( bname ) && add_forms )
 //	       {
-//		  btns.add( registerBean( ID_EMBEDDED_FORM_COMPONENT,  I18N.getLocalizedMessage("Embedded Form"),
-//					  new EmbeddedFormComponentFactory(this),
-//					  Icons.EMBEDDED_FORM_16 ) );
 //
 //		  btns.add( registerBean( ID_LINKED_FORM_COMPONENT, I18N.getLocalizedMessage("LinkedForm"),
 //					  new LinkedFormComponentFactory(this),

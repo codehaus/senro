@@ -9,81 +9,25 @@ import org.apache.commons.lang.ObjectUtils;
 
 import java.util.Map;
 
-public class SenroButton extends JButton implements SenroDesignerObject
+public class SenroList extends JTable implements SenroDesignerObject
 {
-    private String entity;
-    private String task;
-    private String buttonIcon;
-    private String hoverIcon;
-
     private String senroId = "";
     private String senroName = "";
+    private String entity;
 
-    public SenroButton()
+    public SenroList()
     {
-        setText("Button");
-    }
-
-    public SenroButton(Icon icon)
-    {
-        super(icon);
-        setText("Button");
-    }
-
-    public SenroButton(Action a)
-    {
-        super(a);
-        setText("Button");
-    }
-
-    public SenroButton(String text)
-    {
-        super(text);
-    }
-
-    public SenroButton(String text, Icon icon)
-    {
-        super(text, icon);
+        super();
     }
 
     public String getEntity()
     {
-        return (entity == null ? "" : entity);
+        return entity;
     }
 
     public void setEntity(String entity)
     {
         this.entity = entity;
-    }
-
-    public String getTask()
-    {
-        return (task == null ? "" : task);
-    }
-
-    public void setTask(String task)
-    {
-        this.task = task;
-    }
-
-    public String getButtonIcon()
-    {
-        return (buttonIcon == null ? "" : buttonIcon);
-    }
-
-    public void setButtonIcon(String buttonIcon)
-    {
-        this.buttonIcon = buttonIcon;
-    }
-
-    public String getHoverIcon()
-    {
-        return (hoverIcon == null ? "" : hoverIcon);
-    }
-
-    public void setHoverIcon(String hoverIcon)
-    {
-        this.hoverIcon = hoverIcon;
     }
 
     public String getName()
