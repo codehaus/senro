@@ -31,11 +31,17 @@
 package com.jeta.forms.gui.beans.factories;
 
 import java.awt.Component;
+import java.util.Collection;
+import java.util.Set;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Arrays;
 
 import javax.swing.JScrollPane;
 import com.jeta.forms.gui.beans.JETABean;
 import com.jeta.forms.gui.beans.BeanProperties;
 import com.jeta.forms.gui.beans.DynamicBeanInfo;
+import com.jeta.forms.gui.beans.StandardPropertyDescriptor;
 
 import com.jeta.forms.gui.common.FormException;
 
@@ -58,8 +64,10 @@ import com.jeta.forms.store.properties.ScrollBarsProperty;
 public class GridViewBeanFactory implements BeanFactory
 {
 
+    private static final Set<String> BASIC_PROPERTIES =
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("id")));
 
-   /**
+    /**
     * BeanFactory implementation.  Creates a JETABean and if specified, its GridView component.
     * @param compName the name to assign to this component by calling Component.setName  
     * @param instantiateBean set to true if the underlying Java Bean should be instantiated as well. During deserialization 
@@ -77,7 +85,17 @@ public class GridViewBeanFactory implements BeanFactory
       }
 
       DynamicBeanInfo beaninfo = JComponentBeanFactory.createBeanInfo( GridView.class );
-      /** now define the properties for a form */
+       beaninfo.removePropertyDescriptor("opaque");
+       Collection prop_desc = beaninfo.getPropertyDescriptors();
+       for(Object prop : prop_desc) {
+           StandardPropertyDescriptor sprop = (StandardPropertyDescriptor)prop;
+           if(BASIC_PROPERTIES.contains(sprop.getName())) {
+               sprop.setPreferred(true);
+           } else {
+               sprop.setPreferred(false);
+           }
+       }
+       /** now define the properties for a form */
       BeanProperties default_props = new BeanProperties( beaninfo );
       defineProperties( default_props );
       JETABean bean = new JETABean( comp, default_props );
@@ -90,9 +108,9 @@ public class GridViewBeanFactory implements BeanFactory
     */
    public void defineProperties( BeanProperties props )
    {
-      props.register( new CompoundBorderProperty() );
-      props.register( new PaintProperty() );
-      props.register( new ScrollBarsProperty( JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER ) );
+//      props.register( new CompoundBorderProperty() );
+//      props.register( new PaintProperty() );
+//      props.register( new ScrollBarsProperty( JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER ) );
    }
 
 }

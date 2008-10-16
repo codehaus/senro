@@ -29,7 +29,6 @@
 
 package com.jeta.forms.gui.form;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -50,6 +49,7 @@ import com.jeta.forms.gui.handler.CellKeyboardHandler;
 
 import com.jeta.forms.store.memento.ComponentMemento;
 import com.jeta.forms.store.memento.StateRequest;
+import ro.siveco.senro.designer.basic.SenroDesignerObject;
 
 
 /**
@@ -360,6 +360,8 @@ abstract public class GridComponent extends JPanel
 
     /**
      * Returns the column that contains this component.
+     *
+     * @return the column that contains this component
      */
     public int getColumn()
     {
@@ -372,6 +374,8 @@ abstract public class GridComponent extends JPanel
     /**
      * Returns the mouse handler for this component. This is only set and used by the
      * designer.
+     *
+     * @return the mouse handler for this component
      */
     public CellMouseHandler getMouseHandler()
     {
@@ -380,6 +384,8 @@ abstract public class GridComponent extends JPanel
 
     /**
      * Returns the total width in pixels of the cells occupied by this component
+     *
+     * @return the total width in pixels of the cells occupied by this component
      */
     public int getCellWidth()
     {
@@ -394,6 +400,8 @@ abstract public class GridComponent extends JPanel
 
     /**
      * Returns the total height in pixels of the cells occupied by this component
+     *
+     * @return the total height in pixels of the cells occupied by this component
      */
     public int getCellHeight()
     {
@@ -438,6 +446,8 @@ abstract public class GridComponent extends JPanel
 
     /**
      * Returns true if this component is currently selected.  This is used only in design mode.
+     *
+     * @return true if this component is currently selected
      */
     public boolean isSelected()
     {
@@ -446,6 +456,8 @@ abstract public class GridComponent extends JPanel
 
     /**
      * Removes the previously registered grid cell listener.
+     * 
+     * @param listener listener to be removed, if present
      */
     public void removeListener(GridCellListener listener)
     {
@@ -455,6 +467,8 @@ abstract public class GridComponent extends JPanel
 
     /**
      * Sets the mouse handler for this component
+     *
+     * @param handler the mouse handler to be set
      */
     public void setMouseHandler(CellMouseHandler handler)
     {

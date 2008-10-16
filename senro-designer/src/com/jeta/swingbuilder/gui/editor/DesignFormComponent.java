@@ -60,7 +60,6 @@ public class DesignFormComponent extends FormComponent implements GridViewListen
     private AbstractButton m_expand_btn;
     private AbstractButton m_edit_btn;
     private AbstractButton m_grid_btn;
-    private AbstractButton m_cond_btn;
     private AbstractButton m_iter_btn;
 
 

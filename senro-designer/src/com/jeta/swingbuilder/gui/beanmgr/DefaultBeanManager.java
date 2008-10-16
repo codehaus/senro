@@ -203,8 +203,8 @@ public class DefaultBeanManager implements BeanManager {
 //      registerDefaultBean(I18N.getLocalizedMessage("JList"), "javax.swing.JList", FormDesignerUtils
 //               .loadImage(Icons.LIST_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("JTable"), "javax.swing.JTable", FormDesignerUtils
-//               .loadImage(Icons.TABLE_16));
+      registerDefaultBean(I18N.getLocalizedMessage("List"), "javax.swing.JTable", FormDesignerUtils
+               .loadImage(Icons.TABLE_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JTree"), "javax.swing.JTree", FormDesignerUtils
 //               .loadImage(Icons.TREE_16));

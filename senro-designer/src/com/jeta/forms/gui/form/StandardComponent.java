@@ -30,10 +30,8 @@
 
 package com.jeta.forms.gui.form;
 
-import java.awt.Component;
 import java.awt.BorderLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
 import com.jeta.forms.components.panel.FormPanel;
@@ -44,14 +42,9 @@ import com.jeta.forms.gui.beans.JETABeanFactory;
 import com.jeta.forms.gui.common.FormException;
 import com.jeta.forms.gui.common.FormUtils;
 
-import com.jeta.forms.gui.components.ComponentSource;
-
-
 import com.jeta.forms.store.memento.BeanMemento;
 import com.jeta.forms.store.memento.ComponentMemento;
 import com.jeta.forms.store.memento.StateRequest;
-
-import com.jeta.forms.store.properties.ScrollBarsProperty;
 
 
 /**
@@ -174,7 +167,7 @@ public class StandardComponent extends GridComponent
    /**
     * Sets the state of this component to a previously saved state.  This includes
     * adding the underlying Java bean (i.e. Swing component) to this component.
-    * @param memento the state of a StandardComponent
+    * @param state the state of a StandardComponent
     */
    public void setState(ComponentMemento state) throws FormException
    {
