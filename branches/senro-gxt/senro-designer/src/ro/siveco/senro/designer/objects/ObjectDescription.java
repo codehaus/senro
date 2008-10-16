@@ -1,9 +1,11 @@
 package ro.siveco.senro.designer.objects;
 
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
+import ro.siveco.senro.designer.basic.DesignerObjectListener;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Map;
 import java.io.Serializable;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -71,6 +73,18 @@ public abstract class ObjectDescription implements Serializable, SenroDesignerOb
         }
         id = obj_id == null ? "" : obj_id;
         notifyListeners();
+    }
+
+    public void addListener(DesignerObjectListener listener)
+    {
+    }
+
+    public void removeListener(DesignerObjectListener listener)
+    {
+    }
+
+    public void updateLinks(Map<String, SenroDesignerObject> obj_map)
+    {
     }
 
 }

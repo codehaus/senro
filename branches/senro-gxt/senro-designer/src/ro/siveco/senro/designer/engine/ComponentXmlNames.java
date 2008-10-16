@@ -10,6 +10,8 @@ public interface ComponentXmlNames
     public static final String PARAM_ELEMENT = "Parameter";
     public static final String ASSOCIATIONS_ELEMENT = "Associations";
     public static final String GRID_ELEMENT = "Grid";
+    public static final String POPUP_ELEMENT = "Popup";
+    public static final String LIST_ELEMENT = "List";
 
     public static final String COLUMNS_ELEMENT = "Columns";
     public static final String ROWS_ELEMENT = "Rows";
@@ -43,6 +45,8 @@ public interface ComponentXmlNames
     public static final String LIST_ATTRIBUTE = "list";
     public static final String ENTITY_ATTRIBUTE = "entity";
     public static final String COLUMNS_ATTRIBUTE = "columns";
+    public static final String HALIGN_ATTRIBUTE = "halign";
+    public static final String VALIGN_ATTRIBUTE = "valign";
 
 
     public static final String ITERATOR_ELEMENT = "Iterator";
@@ -54,15 +58,17 @@ public interface ComponentXmlNames
     public static final String TAB_PAGE_ELEMENT = "TabPage";
 
     public static final String GRID_ALLOCATOR_RENDERER_ELEMENT = "GridAllocatorRenderer";
+    public static final String GRID_ALLOCATOR_ATTRIBUTE = "gridAllocator";
     public static final String DATE_FIELD_ELEMENT = "DateField";
     public static final String TEMPLATE_ELEMENT = "Template";
-    public static final String ROOT_PANEL_ELEMENT = "RootPanel";
     public static final String TREE_ELEMENT = "Tree";
     public static final String TREE_NODE_ELEMENT = "TreeNode";
     public static final String BUTTON_ELEMENT = "Button";
     public static final String LABEL_ELEMENT = "Label";
     public static final String ENTITY_ELEMENT = "Entity";
     public static final String TASK_ELEMENT = "Task";
+    public static final String ICON_ELEMENT = "Icon";
+    public static final String HOVER_ELEMENT = "HoverIcon";
     public static final String TEMPLATE_PARAM_ELEMENT = "Param";
 
 

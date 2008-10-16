@@ -117,6 +117,15 @@ public class JETABeanFactory
       registerFactory( TitledSeparator.class.getName(), new TitledSeparatorFactory() );
 
        /* custom senro components */
+       registerFactory(SenroTabbedPane.class.getName(), new SenroTabbedPaneBeanFactory());
+       registerFactory(SenroTextArea.class.getName(), new SenroTextAreaBeanFactory());
+       registerFactory(GridAllocatorRenderer.class.getName(), new GridAllocatorRendererBeanFactory());
+       registerFactory(SenroDateField.class.getName(), new SenroDateFieldBeanFactory());
+       registerFactory(SenroTextField.class.getName(), new SenroTextFieldBeanFactory());
+       registerFactory(SenroList.class.getName(), new SenroListBeanFactory());
+       registerFactory(SenroComboBox.class.getName(), new SenroComboBoxBeanFactory());
+       registerFactory(SenroLabel.class.getName(), new SenroLabelBeanFactory());
+       registerFactory(SenroCheckBox.class.getName(), new SenroCheckBoxBeanFactory());
        registerFactory(SenroButton.class.getName(), new SenroButtonBeanFactory());
        registerFactory(IteratorComponent.class.getName(), new IteratorBeanFactory());
        registerFactory(ConditionalComponent.class.getName(), new ConditionalComponentFactory());
