@@ -18,17 +18,22 @@ public class CommonInspector implements Inspector, ActionListener
     protected ObjectDescription objectDescription;
     protected String title;
     protected JTextField nameTF = new JTextField();
+    protected JTextField idTF = new JTextField();
 
     public CommonInspector()
     {
         title = "Object Description Inspector";
-        FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 120:grow, 1dlu", "1dlu:grow, fill:pref, 1dlu:grow");
+        FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 120:grow, 1dlu",
+                "1dlu:grow, fill:pref,  1dlu, fill:pref, 1dlu:grow");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
         builder.add(new JLabel("Name", JLabel.RIGHT), cc.xy(2, 2));
-        nameTF.addActionListener(this);        
+        nameTF.addActionListener(this);
         builder.add(nameTF, cc.xy(4, 2));
+        builder.add(new JLabel("Id", JLabel.RIGHT), cc.xy(2, 4));
+        idTF.addActionListener(this);
+        builder.add(idTF, cc.xy(4, 4));
         panel = builder.getPanel();
     }
 
@@ -51,6 +56,7 @@ public class CommonInspector implements Inspector, ActionListener
     public void updateUI()
     {
         nameTF.setText(objectDescription.getName());
+        idTF.setText(objectDescription.getId());
     }
 
     public void actionPerformed(ActionEvent e)
@@ -58,6 +64,8 @@ public class CommonInspector implements Inspector, ActionListener
         Object source = e.getSource();
         if(source == nameTF) {
             objectDescription.setName(nameTF.getText());
+        } else if(source == idTF) {
+           objectDescription.setId(idTF.getText());
         }
     }
 }

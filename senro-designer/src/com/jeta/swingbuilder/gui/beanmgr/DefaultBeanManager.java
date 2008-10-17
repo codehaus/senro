@@ -207,6 +207,10 @@ public class DefaultBeanManager implements BeanManager
                 FormDesignerUtils.loadImage(Icons.TEXT_16));
         registerDefaultBean("TabPanel", "ro.siveco.senro.designer.components.SenroTabbedPane",
                 FormDesignerUtils.loadImage(Icons.TABPANE_16));
+        registerDefaultBean("SwitchComponent", "ro.siveco.senro.designer.components.SwitchComponent",
+                new DesignerIcon(20, 12, "SC"));
+        registerDefaultBean("TreeNode", "ro.siveco.senro.designer.components.TreeNode",
+                new DesignerIcon(20, 12, "TN"));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JToggleButton"), "javax.swing.JToggleButton", FormDesignerUtils
 //               .loadImage(Icons.TOGGLE_BUTTON_16));
@@ -268,9 +272,6 @@ public class DefaultBeanManager implements BeanManager
         registerDefaultBean(I18N.getLocalizedMessage("Conditional"),
                 "ro.siveco.senro.designer.components.ConditionalComponent",
                 DesignerManager.getIconForImage("cond_16x16.png"));
-        registerDefaultBean(I18N.getLocalizedMessage("Tree"),
-                "ro.siveco.senro.designer.components.TreeComponent",
-                new DesignerIcon(20, 12, "Tree"));
     }
 
     public void setModel(ImportedBeansModel ibm)

@@ -28,7 +28,6 @@ import java.net.URL;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 
@@ -158,14 +157,17 @@ public class DesignerManager
         xml_generators.put(SenroDateField.class, new DateFieldXmlGenerator());
         xml_generators.put(SenroTextArea.class, new TextAreaXmlGenerator());
         xml_generators.put(TemplateComponent.class, new TemplateGenerator());
+        xml_generators.put(SwitchComponent.class, new SwitchXmlGenerator());
+        xml_generators.put(IteratorComponent.class, new IteratorXmlGenerator());
 
-        xml_generators.put(TreeComponent.class, new TreeGenerator());
+        xml_generators.put(SenroTree.class, new TreeGenerator());
+        xml_generators.put(TreeNode.class, new TreeNodeXmlGenerator());
         xml_generators.put(JScrollPane.class, new ScrollPaneXmlGenerator());
         xml_generators.put(SenroTabbedPane.class, new TabPanelXmlGenerator());
-        xml_generators.put(IteratorComponent.class, new IteratorXmlGenerator());
         xml_generators.put(ConditionalComponent.class, new ConditionalXmlGenerator());
 
         xmlGenerators = Collections.unmodifiableMap(xml_generators);
+
         // create Inspector Manager
         JPanel inspectorsPanel = new JPanel();
         inspectorManager = InspectorManager.getInspectorManager(inspectorsPanel);
@@ -291,15 +293,15 @@ public class DesignerManager
     }
 
     private Map<String, SenroDesignerObject> collectSenroComponents(GridView grid,
-                                                               Map<String, SenroDesignerObject> cl_map)
+                                                                    Map<String, SenroDesignerObject> cl_map)
     {
         putObject(cl_map, grid);
         Iterator<GridComponent> comp_it = grid.gridIterator();
-        while(comp_it.hasNext()) {
+        while (comp_it.hasNext()) {
             GridComponent crt_comp = comp_it.next();
             Component cmp = crt_comp.getBeanChildComponent();
-            if(cmp instanceof SenroDesignerObject) {
-                collectSenroComponents((SenroDesignerObject)cmp, cl_map);
+            if (cmp instanceof SenroDesignerObject) {
+                collectSenroComponents((SenroDesignerObject) cmp, cl_map);
             }
         }
         return cl_map;
@@ -309,12 +311,12 @@ public class DesignerManager
     public Map<String, SenroDesignerObject> collectSenroComponents(SenroDesignerObject senro_obj,
                                                                    Map<String, SenroDesignerObject> cl_map)
     {
-        if(cl_map == null) {
+        if (cl_map == null) {
             cl_map = new HashMap<String, SenroDesignerObject>();
         }
         putObject(cl_map, senro_obj);
-        if(senro_obj instanceof GridView) {
-            collectSenroComponents((GridView)senro_obj, cl_map);
+        if (senro_obj instanceof GridView) {
+            collectSenroComponents((GridView) senro_obj, cl_map);
         }
         // not complete implemented, other containers must be added
         return cl_map;
@@ -324,15 +326,15 @@ public class DesignerManager
     {
         Map<String, SenroDesignerObject> cl_map = new HashMap<String, SenroDesignerObject>();
         List<ObjectDescription> srv_objs = serverObjSetManager.getData();
-        for(ObjectDescription srv_obj : srv_objs) {
+        for (ObjectDescription srv_obj : srv_objs) {
             putObject(cl_map, srv_obj);
         }
         List<ObjectDescription> client_objs = clientObjSetManager.getData();
-        for(ObjectDescription client_obj : client_objs) {
+        for (ObjectDescription client_obj : client_objs) {
             putObject(cl_map, client_obj);
         }
         List<TopGridView> grid_list = mainFrame.getTopGrids();
-        for(TopGridView grid : grid_list) {
+        for (TopGridView grid : grid_list) {
             collectSenroComponents(grid, cl_map);
         }
         return cl_map;
@@ -501,7 +503,7 @@ public class DesignerManager
         }
         openAllGrids();
         Map<String, SenroDesignerObject> senro_objs = getAllSenroObjects();
-        for(SenroDesignerObject senro_obj : senro_objs.values()) {
+        for (SenroDesignerObject senro_obj : senro_objs.values()) {
             senro_obj.updateLinks(senro_objs);
         }
     }
@@ -691,7 +693,7 @@ public class DesignerManager
         for (Object editor_obj : editors) {
             FormEditor ed = (FormEditor) editor_obj;
             TopGridView top_grid_view = (TopGridView) ed.getFormComponent().getChildView();
-            if(!top_grid_view.isPopup()) {
+            if (!top_grid_view.isPopup()) {
                 return true;
             }
         }
@@ -762,10 +764,10 @@ public class DesignerManager
 
     private static void addAttributes(Element e, Map<String, Object> attr_map)
     {
-        if(attr_map == null) {
+        if (attr_map == null) {
             return;
         }
-        for(String attr_name : attr_map.keySet()) {
+        for (String attr_name : attr_map.keySet()) {
             String attr_val = attr_map.get(attr_name).toString();
             e.setAttribute(attr_name, attr_val);
         }
@@ -779,7 +781,7 @@ public class DesignerManager
 
     public void buildGridBody(Element grid_elem, Component comp)
     {
-        GridView grid = (GridView)comp;
+        GridView grid = (GridView) comp;
         Document doc = grid_elem.getOwnerDocument();
         Element cols_elem = doc.createElement(ComponentXmlNames.COLUMNS_ELEMENT);
         Element rows_elem = doc.createElement(ComponentXmlNames.ROWS_ELEMENT);
@@ -787,13 +789,13 @@ public class DesignerManager
         grid_elem.appendChild(rows_elem);
         int col_count = grid.getColumnCount();
         int row_count = grid.getRowCount();
-        for(int col_idx = 1; col_idx <= col_count; col_idx++) {
+        for (int col_idx = 1; col_idx <= col_count; col_idx++) {
             Element col_elem = doc.createElement(ComponentXmlNames.COLUMN_ELEMENT);
             cols_elem.appendChild(col_elem);
             ColumnSpec cs = grid.getColumnSpec(col_idx);
             populateGridSpec(col_elem, cs);
         }
-        for(int row_idx = 1; row_idx <= row_count; row_idx++) {
+        for (int row_idx = 1; row_idx <= row_count; row_idx++) {
             Element row_elem = doc.createElement(ComponentXmlNames.ROW_ELEMENT);
             rows_elem.appendChild(row_elem);
             RowSpec rs = grid.getRowSpec(row_idx);
@@ -802,11 +804,11 @@ public class DesignerManager
         Element comps_elem = doc.createElement(ComponentXmlNames.COMPONENTS_ELEMENT);
         grid_elem.appendChild(comps_elem);
         Iterator<GridComponent> comp_it = grid.gridIterator();
-        while(comp_it.hasNext()) {
+        while (comp_it.hasNext()) {
             GridComponent crt_comp = comp_it.next();
             Map<String, Object> attr_map = new HashMap<String, Object>();
-            attr_map.put(ComponentXmlNames.ROW_ATTRIBUTE, String.valueOf(crt_comp.getRow()-1));
-            attr_map.put(ComponentXmlNames.COL_ATTRIBUTE, String.valueOf(crt_comp.getColumn()-1));
+            attr_map.put(ComponentXmlNames.ROW_ATTRIBUTE, String.valueOf(crt_comp.getRow() - 1));
+            attr_map.put(ComponentXmlNames.COL_ATTRIBUTE, String.valueOf(crt_comp.getColumn() - 1));
             attr_map.put(ComponentXmlNames.ROW_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getRowSpan()));
             attr_map.put(ComponentXmlNames.COL_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getColumnSpan()));
             ComponentConstraints cnstr = crt_comp.getConstraints();
@@ -815,7 +817,7 @@ public class DesignerManager
             attr_map.put(ComponentXmlNames.HALIGN_ATTRIBUTE, componentAlignmentText.get(h_align));
             attr_map.put(ComponentXmlNames.VALIGN_ATTRIBUTE, componentAlignmentText.get(v_align));
             Component cmp = crt_comp.getBeanChildComponent();
-            if(cmp != null) {
+            if (cmp != null) {
                 generateXmlForObject(comps_elem, (SenroDesignerObject)cmp, attr_map);
             }
         }
@@ -829,7 +831,7 @@ public class DesignerManager
         grid_elem.appendChild(align_elem);
         FormSpec.DefaultAlignment alignment = form_spec.getDefaultAlignment();
         String alignment_name = alignmentText.get(alignment);
-        if(alignment_name == null) {
+        if (alignment_name == null) {
             throw new EngineRuntimeException("Invalid alignment specification: " + alignment);
         }
         align_elem.appendChild(doc.createTextNode(alignment_name));
@@ -843,24 +845,24 @@ public class DesignerManager
         Element size_elem = doc.createElement(ComponentXmlNames.SIZE_ELEMENT);
         grid_elem.appendChild(size_elem);
         Size sz = form_spec.getSize();
-        if(sz instanceof ConstantSize) {
-            ConstantSize csz = (ConstantSize)sz;
+        if (sz instanceof ConstantSize) {
+            ConstantSize csz = (ConstantSize) sz;
             Element const_elem = doc.createElement(ComponentXmlNames.CONSTANT_ELEMENT);
             size_elem.appendChild(const_elem);
             const_elem.appendChild(doc.createTextNode(String.valueOf(csz.intValue())));
-        } else if(sz instanceof Sizes.ComponentSize) {
-            Sizes.ComponentSize comp_sz = (Sizes.ComponentSize)sz;
+        } else if (sz instanceof Sizes.ComponentSize) {
+            Sizes.ComponentSize comp_sz = (Sizes.ComponentSize) sz;
             Element comp_elem = doc.createElement(ComponentXmlNames.COMPONENT_ELEMENT);
             size_elem.appendChild(comp_elem);
             String size_txt = componentSizes.get(comp_sz);
-            if(size_txt == null) {
+            if (size_txt == null) {
                 throw new EngineRuntimeException("Invalid component size specification: " + comp_sz);
             }
             comp_elem.appendChild(doc.createTextNode(size_txt));
-        } else if(sz instanceof BoundedSize) {
-            BoundedSize bsz = (BoundedSize)sz;
+        } else if (sz instanceof BoundedSize) {
+            BoundedSize bsz = (BoundedSize) sz;
             Element bndsz_elem;
-            if(bsz.hasMax()) {
+            if (bsz.hasMax()) {
                 bndsz_elem = doc.createElement(ComponentXmlNames.MAX_ELEMENT);
             } else {
                 bndsz_elem = doc.createElement(ComponentXmlNames.MIN_ELEMENT);
@@ -984,7 +986,7 @@ public class DesignerManager
 
         public Element getXml(Document doc, Object o, Map<String, Object> context)
         {
-            TopGridView top_grid = (TopGridView)o;
+            TopGridView top_grid = (TopGridView) o;
             String elem_name = top_grid.isPopup() ? ComponentXmlNames.POPUP_ELEMENT : ComponentXmlNames.GRID_ELEMENT;
             Element e = doc.createElement(elem_name);
             addDesignerObjectAttrs(e, top_grid);
@@ -1008,6 +1010,24 @@ public class DesignerManager
             Element txt_elem = doc.createElement("Text");
             e.appendChild(txt_elem);
             txt_elem.appendChild(doc.createTextNode(l.getText()));
+        }
+    }
+
+    private class TreeNodeXmlGenerator extends ComponentXmlGenerator
+    {
+
+        public String getTagName(Component comp)
+        {
+            return ComponentXmlNames.TREE_NODE_ELEMENT;
+        }
+
+        public void buildElementBody(Element e, Component comp)
+        {
+            TreeNode tn = (TreeNode) comp;
+            Document doc = e.getOwnerDocument();
+            Element txt_elem = doc.createElement("Text");
+            e.appendChild(txt_elem);
+            txt_elem.appendChild(doc.createTextNode(tn.getText()));
         }
     }
 
@@ -1135,7 +1155,7 @@ public class DesignerManager
 
         public void buildElementBody(Element e, Component comp)
         {
-            SenroButton button = (SenroButton)comp;
+            SenroButton button = (SenroButton) comp;
             Document doc = e.getOwnerDocument();
             Element label_elem = doc.createElement(ComponentXmlNames.LABEL_ELEMENT);
             e.appendChild(label_elem);
@@ -1213,24 +1233,26 @@ public class DesignerManager
             return ComponentXmlNames.TREE_ELEMENT;
         }
 
-        public void buildElementBody(Element e, Component comp)
+        public void buildElementBody(Element tree_elem, Component comp)
         {
-            Document doc = e.getOwnerDocument();
-            TreeComponent tree_comp = (TreeComponent) comp;
-
-            Element iterator_elem = doc.createElement(ComponentXmlNames.ITERATOR_ELEMENT);
-            e.appendChild(iterator_elem);
-            String name = (tree_comp.getName() == null ? "" : tree_comp.getName());
-            iterator_elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, name);
-            String list = (tree_comp.getList() == null ? "" : tree_comp.getList());
-            iterator_elem.setAttribute(ComponentXmlNames.LIST_ATTRIBUTE, list);
-
-            Element tree_node_elem = doc.createElement(ComponentXmlNames.TREE_NODE_ELEMENT);
-            iterator_elem.appendChild(tree_node_elem);
-
-            String text = (tree_comp.getText() == null ? "" : tree_comp.getText());
-            Text text_elem = doc.createTextNode(text);
-            tree_node_elem.appendChild(text_elem);
+            SenroTree tree = (SenroTree)comp;
+            Iterator<GridComponent> node_it = tree.gridIterator();
+            while(node_it.hasNext()) {
+                GridComponent crt_comp = node_it.next();
+                Component cmp = crt_comp.getBeanChildComponent();
+                if(cmp instanceof TreeNode) {
+                    TreeNode tn = (TreeNode)cmp;
+                    Document doc = tree_elem.getOwnerDocument();
+                    Element node_elem = doc.createElement(ComponentXmlNames.TREE_NODE_ELEMENT);
+                    tree_elem.appendChild(node_elem);
+                    Element txt_elem = doc.createElement(ComponentXmlNames.TEXT_ELEMENT);
+                    node_elem.appendChild(txt_elem);
+                    txt_elem.appendChild(doc.createTextNode(tn.getText()));
+                }
+                if(cmp instanceof IteratorComponent) {
+                    // not implemented
+                }
+            }
         }
 
     }
@@ -1262,10 +1284,9 @@ public class DesignerManager
                 it_list = "";
             }
             e.setAttribute("list", it_list);
-            Document doc = e.getOwnerDocument();
-            Element grid_elem = doc.createElement(ComponentXmlNames.GRID_ELEMENT);
+            GridXmlGenerator ggen = (GridXmlGenerator)xmlGenerators.get(GridView.class);
+            Element grid_elem = ggen.getXml(e.getOwnerDocument(), itc, null);
             e.appendChild(grid_elem);
-//            gridXmlGenerator.buildElementBody(grid_elem, comp);
         }
 
     }
@@ -1297,6 +1318,23 @@ public class DesignerManager
                 Component else_comp = getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(1));
                 generateXmlForObject(else_elem, (SenroDesignerObject)else_comp, null);
             }
+        }
+
+    }
+
+    private class SwitchXmlGenerator extends ComponentXmlGenerator
+    {
+
+        public String getTagName(Component comp)
+        {
+            return ComponentXmlNames.SWITCH_ELEMENT;
+        }
+
+        public void buildElementBody(Element e, Component comp)
+        {
+            SwitchComponent switch_comp = (SwitchComponent) comp;
+            e.setAttribute(ComponentXmlNames.PROPERTY_ATTRIBUTE, switch_comp.getProperty());
+            e.setAttribute(ComponentXmlNames.CREATE_LABEL_ATTRIBUTE, switch_comp.isCreateLabel() ? "true" : "false");
         }
 
     }

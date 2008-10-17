@@ -46,6 +46,7 @@ import com.jeta.open.registry.JETARegistry;
 import com.jeta.open.resources.AppResourceLoader;
 
 import ro.siveco.senro.designer.components.IteratorComponent;
+import ro.siveco.senro.designer.components.SenroTree;
 import ro.siveco.senro.designer.engine.DesignerManager;
 
 /**
@@ -61,6 +62,7 @@ public class DesignFormComponent extends FormComponent implements GridViewListen
     private AbstractButton m_edit_btn;
     private AbstractButton m_grid_btn;
     private AbstractButton m_iter_btn;
+    private AbstractButton m_tree_btn;
 
 
     /**
@@ -145,6 +147,19 @@ public class DesignFormComponent extends FormComponent implements GridViewListen
             btn.setFocusable(false);
 
             m_iter_btn = btn;
+            m_btnpanel.add(btn);
+        }
+        if (component instanceof SenroTree) {
+            m_btnpanel.add(javax.swing.Box.createHorizontalStrut(2));
+            btn = new JButton(DesignerManager.getIconForImage("text_tree.png"));
+            btn.setPreferredSize(d);
+            btn.setMinimumSize(d);
+            btn.setBorderPainted(false);
+            btn.setFocusPainted(false);
+            btn.setContentAreaFilled(false);
+            btn.setFocusable(false);
+
+            m_tree_btn = btn;
             m_btnpanel.add(btn);
         }
         return m_btnpanel;
