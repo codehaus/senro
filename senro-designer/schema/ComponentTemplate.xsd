@@ -378,6 +378,8 @@
 
                 <xs:attribute name="list" type="xs:string" use="required"/>
 
+                <xs:attribute name="filterCondition" type="xs:string"/>
+
             </xs:extension>
 
         </xs:complexContent>
