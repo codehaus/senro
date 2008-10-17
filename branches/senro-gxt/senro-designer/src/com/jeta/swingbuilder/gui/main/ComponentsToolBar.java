@@ -75,6 +75,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import ro.siveco.senro.designer.components.IteratorComponentFactory;
 import ro.siveco.senro.designer.components.ConditionalComponentFactory;
+import ro.siveco.senro.designer.components.SenroTreeComponentFactory;
 import ro.siveco.senro.designer.engine.DesignerManager;
 
 
@@ -85,7 +86,7 @@ import ro.siveco.senro.designer.engine.DesignerManager;
  */
 public class ComponentsToolBar extends JETAPanel implements ComponentSource
 {
-    public static final int MAX_TOOLBAR_ROWS = 20;
+    public static final int MAX_TOOLBAR_ROWS = 11;
 
 
     public static final String ID_SELECTION_TOOL = "selection.tool";
@@ -272,7 +273,11 @@ public class ComponentsToolBar extends JETAPanel implements ComponentSource
             btns.add(registerBean("Iterator", I18N.getLocalizedMessage("Iterator"),
                                   new IteratorComponentFactory(this),
                                   DesignerManager.getIconForImage("iter_2_16x16.png")));
-            
+            btns.add(registerBean("Tree", I18N.getLocalizedMessage("Tree"),
+                                  new SenroTreeComponentFactory(this),
+                                  FormDesignerUtils.loadImage(Icons.TREE_16)));
+
+
         Iterator iter = default_beans.iterator();
 	 while( iter.hasNext() )
 	 {

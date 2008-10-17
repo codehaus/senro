@@ -18,6 +18,8 @@ public interface ComponentXmlNames
     public static final String COLUMN_ELEMENT = "Column";
     public static final String ROW_ELEMENT = "Row";
 
+    public static final String TEXT_ELEMENT = "Text";
+    
     public static final String ALIGNMENT_ELEMENT = "Alignment";
     public static final String RESIZE_ELEMENT = "Resize";
     public static final String SIZE_ELEMENT = "Size";
@@ -47,6 +49,9 @@ public interface ComponentXmlNames
     public static final String COLUMNS_ATTRIBUTE = "columns";
     public static final String HALIGN_ATTRIBUTE = "halign";
     public static final String VALIGN_ATTRIBUTE = "valign";
+    
+    public static final String PROPERTY_ATTRIBUTE = "property";
+    public static final String CREATE_LABEL_ATTRIBUTE = "createLabel";
 
 
     public static final String ITERATOR_ELEMENT = "Iterator";
@@ -70,6 +75,7 @@ public interface ComponentXmlNames
     public static final String ICON_ELEMENT = "Icon";
     public static final String HOVER_ELEMENT = "HoverIcon";
     public static final String TEMPLATE_PARAM_ELEMENT = "Param";
+    public static final String SWITCH_ELEMENT = "SwitchComponent";
 
 
 }

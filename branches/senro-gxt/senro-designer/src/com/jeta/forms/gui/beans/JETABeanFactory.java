@@ -117,6 +117,9 @@ public class JETABeanFactory
       registerFactory( TitledSeparator.class.getName(), new TitledSeparatorFactory() );
 
        /* custom senro components */
+       registerFactory(SenroTree.class.getName(), new SenroTreeBeanFactory());
+       registerFactory(TreeNode.class.getName(), new TreeNodeBeanFactory());
+       registerFactory(SwitchComponent.class.getName(), new SwitchComponentBeanFactory());
        registerFactory(SenroTabbedPane.class.getName(), new SenroTabbedPaneBeanFactory());
        registerFactory(SenroTextArea.class.getName(), new SenroTextAreaBeanFactory());
        registerFactory(GridAllocatorRenderer.class.getName(), new GridAllocatorRendererBeanFactory());

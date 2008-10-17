@@ -25,15 +25,19 @@ public class DisplayGroupInspector extends CommonInspector implements ItemListen
     {
         title = DG_INSPECTOR_TITLE;
         FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 120:grow, 1dlu",
-                "1dlu:grow, fill:pref, 1dlu, fill:pref, 1dlu:grow");
+                "1dlu:grow, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu:grow");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
         builder.add(new JLabel("Name", JLabel.RIGHT), cc.xy(2, 2));
+        nameTF.addActionListener(this);
         builder.add(nameTF, cc.xy(4, 2));
-        builder.add(new JLabel("Entity Name", JLabel.RIGHT), cc.xy(2, 4));
+        builder.add(new JLabel("Id", JLabel.RIGHT), cc.xy(2, 4));
+        idTF.addActionListener(this);
+        builder.add(idTF, cc.xy(4, 4));
+        builder.add(new JLabel("Entity Name", JLabel.RIGHT), cc.xy(2, 6));
         entityCB.addItemListener(this);
-        builder.add(entityCB, cc.xy(4, 4));
+        builder.add(entityCB, cc.xy(4, 6));
         panel = builder.getPanel();
     }
 
