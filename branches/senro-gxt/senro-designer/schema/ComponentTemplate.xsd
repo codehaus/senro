@@ -55,7 +55,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Grid" type="GridType" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="Popup" type="PopupType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="Popup" type="PopupType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -82,6 +82,7 @@
                                     <xs:element ref="Iterator"/>
                                     <xs:element ref="Conditional"/>
                                     <xs:element ref="Tree"/>
+                                    <xs:element ref="RootPanel"/>
                                     <xs:element ref="GridAllocatorRenderer"/>
                                     <xs:element ref="List"/>
                                     <xs:element ref="TabPanel"/>
@@ -190,8 +191,8 @@
                     <xs:element name="Label" type="xs:string"/>
 					<xs:element name="Entity" type="xs:string" minOccurs="0"/>
                     <xs:element name="Task" type="xs:string" minOccurs="0"/>
-                    <xs:element name="Icon" type="xs:string" minOccurs="0"/>
-                    <xs:element name="HoverIcon" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Icon" type="xs:string"/>
+                    <xs:element name="HoverIcon" type="xs:string"/>
                 </xs:sequence>
                 <xs:attribute name="type" type="xs:string"/>
             </xs:extension>
@@ -512,6 +513,18 @@
         </xs:complexContent>
 
     </xs:complexType>
+
+    <xs:complexType name="RootPanelType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType"/>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="RootPanel" type="RootPanelType"/>
 
     <xs:element name="TreeNode" type="TreeNodeType"/>
 
