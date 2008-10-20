@@ -7,18 +7,14 @@ import com.jeta.forms.gui.beans.StandardPropertyDescriptor;
 import com.jeta.forms.gui.beans.factories.JComponentBeanFactory;
 import com.jeta.forms.gui.beans.factories.BeanFactory;
 import com.jeta.forms.gui.common.FormException;
-import com.jeta.forms.store.properties.CompoundBorderProperty;
-import com.jeta.forms.store.properties.ScrollBarsProperty;
-import com.jeta.forms.store.properties.effects.PaintProperty;
 
-import javax.swing.*;
 import java.awt.Component;
 import java.util.*;
 
 public class IteratorBeanFactory implements BeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("list", "id")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("list", "id", "filterCondition")));
 
     public JETABean createBean(String compName, boolean instantiateBean, boolean setDefaults)
             throws FormException

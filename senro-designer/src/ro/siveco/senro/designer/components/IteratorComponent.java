@@ -10,17 +10,28 @@ import java.util.Map;
 public class IteratorComponent extends GridView implements SenroDesignerObject
 {
     private String list;
+    private String filterCondition;
     private String senroId = "";
     private String senroName = "";
 
     public String getList()
     {
-        return list;
+        return list == null ? "" : list;
     }
 
     public void setList(String list)
     {
         this.list = list;
+    }
+
+    public String getFilterCondition()
+    {
+        return filterCondition == null ? "" : filterCondition;
+    }
+
+    public void setFilterCondition(String filterCondition)
+    {
+        this.filterCondition = filterCondition;
     }
 
     public String getName()
