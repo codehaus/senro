@@ -793,11 +793,6 @@ public class DesignerManager
             parent_elem.appendChild(elem);
             addAttributes(elem, context.attributes);
             buildGridBody(elem, context);
-//            return elem;
-//
-//            GridXmlGenerator ggen = (GridXmlGenerator)xmlGenerators.get(GridView.class);
-//            Element grid_elem = ggen.getXml(parent_elem.getOwnerDocument(), new XmlGenerationContext(grid, null));
-//            parent_elem.appendChild(grid_elem);
         }
     }
 
@@ -952,7 +947,7 @@ public class DesignerManager
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
             GridAllocatorDescription ga_desc = (GridAllocatorDescription)context.object;
-            e.setAttribute(ComponentXmlNames.ENTITY_ATTRIBUTE, String.valueOf(ga_desc.getName()));
+            e.setAttribute(ComponentXmlNames.ENTITY_ATTRIBUTE, String.valueOf(ga_desc.getEntityName()));
             e.setAttribute(ComponentXmlNames.COLUMNS_ATTRIBUTE, String.valueOf(ga_desc.getColumnsCount()));
         }
     }
@@ -1042,21 +1037,31 @@ public class DesignerManager
         }
     }
 
-    private class TreeNodeXmlGenerator extends ComponentXmlGenerator
+    private class TreeNodeXmlGenerator extends XmlGenerator
     {
 
-        public String getTagName(XmlGenerationContext context)
-        {
-            return ComponentXmlNames.TREE_NODE_ELEMENT;
-        }
+//        public String getTagName(XmlGenerationContext context)
+//        {
+//            return ComponentXmlNames.TREE_NODE_ELEMENT;
+//        }
+//
+//        public void buildElementBody(Element e, XmlGenerationContext context)
+//        {
+//            TreeNode tn = (TreeNode)context.object;
+//            Document doc = e.getOwnerDocument();
+//            Element txt_elem = doc.createElement("Text");
+//            e.appendChild(txt_elem);
+//            txt_elem.appendChild(doc.createTextNode(tn.getText()));
+//        }
 
-        public void buildElementBody(Element e, XmlGenerationContext context)
+        public Element getXml(Document doc, XmlGenerationContext context)
         {
             TreeNode tn = (TreeNode)context.object;
-            Document doc = e.getOwnerDocument();
+            Element tn_elem = doc.createElement(ComponentXmlNames.TREE_NODE_ELEMENT);
             Element txt_elem = doc.createElement("Text");
-            e.appendChild(txt_elem);
+            tn_elem.appendChild(txt_elem);
             txt_elem.appendChild(doc.createTextNode(tn.getText()));
+            return tn_elem;
         }
     }
 
@@ -1224,18 +1229,12 @@ public class DesignerManager
                 gen_ctx.tabPageOrderNo = context.tabPageOrderNo;
                 generateXmlForInnerGrid(tab_page_elem, gen_ctx);
                 return tab_page_elem;
-//                Element grid_elem = doc.createElement(getTagName(context));
-//                addAttributes(grid_elem, context.attributes);
-//                tab_page_elem.appendChild(grid_elem);
-//                top_elem = tab_page_elem;
             } else {
                 Element grid_elem = doc.createElement(getTagName(context));
                 addAttributes(grid_elem, context.attributes);
                 buildGridBody(grid_elem, context);
                 return grid_elem;
             }
-//            generateXmlForInnerGrid(grid_elem, new XmlGenerationContext(grid, context));
-//            return top_elem;
         }
 
         public String getTagName(XmlGenerationContext context)
@@ -1260,7 +1259,6 @@ public class DesignerManager
 
         public void buildElementBody(Element tab_pane_elem, XmlGenerationContext context)
         {
-            Document doc = tab_pane_elem.getOwnerDocument();
             SenroTabbedPane tabbed_pane = (SenroTabbedPane)context.object;
             int tab_count = tabbed_pane.getTabCount();
             for (int tab_idx = 0; tab_idx < tab_count; tab_idx++) {
@@ -1272,19 +1270,6 @@ public class DesignerManager
                 gen_ctx.tabPageName = tabbed_pane.getTitleAt(tab_idx);
                 gen_ctx.tabPageOrderNo = String.valueOf(tab_idx);
                 generateXmlForObject(tab_pane_elem, gen_ctx);
-//                if (tab_comp instanceof IteratorComponent || tab_comp instanceof ConditionalComponent) {
-//                    XmlGenerationContext gen_ctx = new XmlGenerationContext((SenroDesignerObject)tab_comp, context);
-//                    gen_ctx.generateTabPage = true;
-//                    gen_ctx.tabPageName = tabbed_pane.getTitleAt(tab_idx);
-//                    gen_ctx.tabPageOrderNo = String.valueOf(tab_idx);
-//                    generateXmlForObject(tab_pane_elem, gen_ctx);
-//                } else {
-//                    Element page_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
-//                    tab_pane_elem.appendChild(page_elem);
-//                    page_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, String.valueOf(tab_idx));
-//                    page_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, tabbed_pane.getTitleAt(tab_idx));
-//                    generateXmlForObject(page_elem, new XmlGenerationContext((SenroDesignerObject)tab_comp, context));
-//                }
             }
         }
 
@@ -1306,19 +1291,35 @@ public class DesignerManager
                 GridComponent crt_comp = node_it.next();
                 Component cmp = crt_comp.getBeanChildComponent();
                 if(cmp instanceof TreeNode) {
-                    TreeNode tn = (TreeNode)cmp;
-                    Document doc = tree_elem.getOwnerDocument();
-                    Element node_elem = doc.createElement(ComponentXmlNames.TREE_NODE_ELEMENT);
-                    tree_elem.appendChild(node_elem);
-                    Element txt_elem = doc.createElement(ComponentXmlNames.TEXT_ELEMENT);
-                    node_elem.appendChild(txt_elem);
-                    txt_elem.appendChild(doc.createTextNode(tn.getText()));
+                    getXml(tree_elem, (TreeNode)cmp);
                 } else if(cmp instanceof IteratorComponent) {
-                    generateXmlForObject(tree_elem, new XmlGenerationContext((IteratorComponent)cmp, context));
+                    Document doc = tree_elem.getOwnerDocument();
+                    IteratorComponent itc = (IteratorComponent)cmp;
+                    Element it_elem = doc.createElement(ComponentXmlNames.ITERATOR_ELEMENT);
+                    tree_elem.appendChild(it_elem);
+                    it_elem.setAttribute("list", itc.getList());
+                    it_elem.setAttribute("filterCondition", itc.getFilterCondition());
+
+                    Iterator<GridComponent> comp_it = itc.gridIterator();
+                    while(comp_it.hasNext()) {
+                        GridComponent it_comp = comp_it.next();
+                        Component it_cmp = it_comp.getBeanChildComponent();
+                        if(it_cmp != null) {
+                            getXml(it_elem, (TreeNode)it_cmp);
+                        }
+                    }
                 }
             }
         }
 
+        private void getXml(Element parent_elem, TreeNode tn) {
+            Document doc = parent_elem.getOwnerDocument();
+            Element node_elem = doc.createElement(ComponentXmlNames.TREE_NODE_ELEMENT);
+            parent_elem.appendChild(node_elem);
+            Element txt_elem = doc.createElement(ComponentXmlNames.TEXT_ELEMENT);
+            node_elem.appendChild(txt_elem);
+            txt_elem.appendChild(doc.createTextNode(tn.getText()));
+        }
     }
 
     private class ScrollPaneXmlGenerator extends XmlGenerator
@@ -1397,27 +1398,6 @@ public class DesignerManager
             }
             return cond_elem;
         }
-
-//        public void buildElementBody(Element e, XmlGenerationContext context)
-//        {
-//            ConditionalComponent cond_comp = (ConditionalComponent)context.object;
-//            String cond = cond_comp.getCondition();
-//            if (cond == null) {
-//                cond = "";
-//            }
-//            Document doc = e.getOwnerDocument();
-//            Element if_elem = doc.createElement(ComponentXmlNames.IF_ELEMENT);
-//            e.appendChild(if_elem);
-//            if_elem.setAttribute("condition", cond);
-//            GridView if_comp = (GridView)getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(0));
-//            generateXmlForInnerGrid(if_elem, new XmlGenerationContext(if_comp, context));
-//            if (cond_comp.getHasElseBranch()) {
-//                Element else_elem = doc.createElement(ComponentXmlNames.ELSE_ELEMENT);
-//                e.appendChild(else_elem);
-//                GridView else_comp = (GridView)getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(1));
-//                generateXmlForInnerGrid(else_elem, new XmlGenerationContext(else_comp, context));
-//            }
-//        }
 
         public String getTagName(XmlGenerationContext context)
         {
