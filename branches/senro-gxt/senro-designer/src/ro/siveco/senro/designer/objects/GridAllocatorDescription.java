@@ -2,9 +2,12 @@ package ro.siveco.senro.designer.objects;
 
 public class GridAllocatorDescription extends ObjectDescription
 {
+    private static final long serialVersionUID = 1;
+
     public static final String OBJECT_CLASS_NAME = "GridAllocatorDescription";
-    public String entityName = "";
-    public int columnsCount = 1;
+
+    private String entityName = "";
+    private int columnsCount = 1;
 
     public String getObjectClassName()
     {
