@@ -19,7 +19,7 @@ public class ConditionalComponent extends JTabbedPane implements SenroDesignerOb
 
     public String getCondition()
     {
-        return condition;
+        return condition == null ? "" : condition;
     }
 
     public void setCondition(String condition)
