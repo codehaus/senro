@@ -29,7 +29,6 @@
 
 package com.jeta.forms.gui.beans;
 
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -38,8 +37,6 @@ import javax.swing.*;
 
 import com.jeta.forms.gui.common.FormException;
 import com.jeta.forms.gui.form.GridView;
-
-import com.jeta.forms.store.properties.JETAProperty;
 
 import com.jeta.forms.gui.beans.factories.*;
 
@@ -131,7 +128,7 @@ public class JETABeanFactory
        registerFactory(SenroCheckBox.class.getName(), new SenroCheckBoxBeanFactory());
        registerFactory(SenroButton.class.getName(), new SenroButtonBeanFactory());
        registerFactory(IteratorComponent.class.getName(), new IteratorBeanFactory());
-       registerFactory(ConditionalComponent.class.getName(), new ConditionalComponentFactory());
+       registerFactory(ConditionalComponent.class.getName(), new ConditionalComponentBeanFactory());
        registerFactory(TemplateComponent.class.getName(), new TemplateBeanFactory());
        registerFactory(TopGridView.class.getName(), new TopGridViewBeanFactory());
 

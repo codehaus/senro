@@ -7,12 +7,19 @@ import java.util.Collections;
 public class Template
 {
     private String name;
-    private List<Parameter> parameters;
+    private final List<Parameter> parameters = new ArrayList<Parameter>();
 
     public Template(String name, List<Parameter> params)
     {
         this.name = name;
-        parameters = new ArrayList<Parameter>(params);
+        if(params != null) {
+            parameters.addAll(params);
+        }
+    }
+
+    public Template(String template_name)
+    {
+        this(template_name, null);
     }
 
     public String getName()
@@ -23,6 +30,12 @@ public class Template
     public List<Parameter> getParameters()
     {
         return Collections.unmodifiableList(parameters);
+    }
+
+    public void setParameters(List<Parameter> new_params)
+    {
+        parameters.clear();
+        parameters.addAll(new_params);
     }
 
 }

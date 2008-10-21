@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 JETA Software, Inc.  All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
- *  o Redistributions of source code must retain the above copyright notice, 
+ *  o Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
- *  o Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  o Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  o Neither the name of JETA Software nor the names of its contributors may 
- *    be used to endorse or promote products derived from this software without 
+ *  o Neither the name of JETA Software nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
  *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -72,7 +72,7 @@ import com.jeta.open.registry.JETARegistry;
 import com.jeta.open.support.EmptyCollection;
 
 /**
- * A <code>JETABean</code> is a container and a proxy for a regular JavaBean. However, a 
+ * A <code>JETABean</code> is a container and a proxy for a regular JavaBean. However, a
  * <code>JETABean</code> also supports the notion of dynamic properties.  These are properties
  * that can be added at design time to the delegate bean.  For example, components such as
  * JList, JTable, JTextArea, etc. are normally contained within a scroll pane.  Instead
@@ -84,24 +84,24 @@ import com.jeta.open.support.EmptyCollection;
  *
  * @author Jeff Tassin
  */
-public class JETABean extends JPanel 
+public class JETABean extends JPanel
 {
    /**
     * This is the Java Bean component.
     * @directed
-    * @supplierCardinality 1 
+    * @supplierCardinality 1
     */
    private Component             m_delegate;
 
    /**
     * The Bean Information for the component. This includes standard and custom properties.
-    * @undirected 
+    * @undirected
     */
    private DynamicBeanInfo       m_beaninfo;
 
    /**
     * A map of custom property *values* associated with this bean.
-    * m_custom_properties<String,Object>   
+    * m_custom_properties<String,Object>
     *   where String is the custom property name
     *         Object is the custom property value.
     */
@@ -110,7 +110,7 @@ public class JETABean extends JPanel
    /**
     * Creates a <code>JETABean</code> instance.
     */
-   public JETABean() 
+   public JETABean()
    {
       setOpaque( false );
    }
@@ -207,9 +207,9 @@ public class JETABean extends JPanel
    /**
     * Return the custom property associated with this bean.
     * @param propName the name of the property to get.
-    * @return the custom property associated with this bean.  Null is returned if  
-    * the property is not found 
-    */ 
+    * @return the custom property associated with this bean.  Null is returned if
+    * the property is not found
+    */
    public JETAProperty getCustomProperty( String propName )
    {
       return (JETAProperty)m_custom_properties.get( propName );
@@ -226,7 +226,7 @@ public class JETABean extends JPanel
    }
 
    /**
-    * This returns the child component of this bean. Normally, this is the same 
+    * This returns the child component of this bean. Normally, this is the same
     * object as the m_delegate. However, in some cases it can be different.  For example,
     * if the delegate is contained in a scrollpane.
     */
@@ -327,7 +327,7 @@ public class JETABean extends JPanel
    }
 
    /**
-    * Sets a custom property associated with this bean.  
+    * Sets a custom property associated with this bean.
     */
    public void setCustomProperty( String propName, JETAProperty prop )
    {
@@ -366,7 +366,7 @@ public class JETABean extends JPanel
 
    /**
     * Sets this bean's state using the given properties memento object.
-    * @param memento the bean state.  
+    * @param memento the bean state.
     */
    public void setState( PropertiesMemento props_memento ) throws FormException
    {
@@ -424,7 +424,7 @@ public class JETABean extends JPanel
 	 byte[] xml = memento.getBeanXML();
 	 if ( xml == null )
 	    return;
-	 
+
 	 XMLDecoder d = new XMLDecoder( new ByteArrayInputStream( xml ) );
 	 m_delegate = (Component)d.readObject();
 	 if ( m_delegate == null )
@@ -476,7 +476,7 @@ public class JETABean extends JPanel
    /**
     * PostInitialize is called once after all components in a form have been re-instantiated
     * at runtime (not design time).  This gives each property and component a chance to
-    * do some last minute initializations that might depend on the top level parent. 
+    * do some last minute initializations that might depend on the top level parent.
     * An example of this is using ButtonGroups.  Groups for JRadioButtons are global to a FormPanel
     * and not specific to each FormComponent instance.
     */
@@ -490,4 +490,5 @@ public class JETABean extends JPanel
 	 jprop.postInitialize( panel, this );
       }
    }
+
 }

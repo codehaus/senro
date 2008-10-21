@@ -680,20 +680,23 @@ public class DesignerManager
         editor.getForm().setControlButtonsVisible(false);
         editor.getForm().setAbsolutePath(grid_path.getAbsolutePath());
         TopGridView top_grid_view = (TopGridView) editor.getFormComponent().getChildView();
-        top_grid_view.setPopup(newGridIsPopup());
+        top_grid_view.setPopup(newGridIsPopup(top_grid_view));
         top_grid_view.setName(grid_name);
         controller.saveForm(false);
         project.addGrid(grid_name);
         saveProject();
     }
 
-    public boolean newGridIsPopup()
+    public boolean newGridIsPopup(TopGridView top_grid_view)
     {
         Collection editors = mainFrame.getEditors();
         for (Object editor_obj : editors) {
             FormEditor ed = (FormEditor) editor_obj;
-            TopGridView top_grid_view = (TopGridView) ed.getFormComponent().getChildView();
-            if (!top_grid_view.isPopup()) {
+            TopGridView other_top_grid_view = (TopGridView) ed.getFormComponent().getChildView();
+            if(other_top_grid_view == top_grid_view) {
+                continue;
+            }
+            if (!other_top_grid_view.isPopup()) {
                 return true;
             }
         }

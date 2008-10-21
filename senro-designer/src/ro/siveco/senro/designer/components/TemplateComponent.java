@@ -67,7 +67,7 @@ public class TemplateComponent extends PanelComponent implements SenroDesignerOb
         return template;
     }
 
-    private void refreshParameters()
+    public void refreshParameters()
     {
         Map<String, TemplateParameter> param_map = new HashMap<String, TemplateParameter>();
         for (TemplateParameter parameter : parameters) {

@@ -13,7 +13,7 @@ public class ConditionalComponent extends JTabbedPane implements SenroDesignerOb
 {
 
     private String condition;
-    private boolean hasElseBranch;
+    private boolean hasElseBranch = true;
     private String senroId = "";
     private String senroName = "";
 
