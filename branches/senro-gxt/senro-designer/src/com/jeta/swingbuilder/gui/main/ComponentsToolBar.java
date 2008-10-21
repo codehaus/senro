@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -35,11 +34,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -47,17 +42,11 @@ import com.jeta.forms.gui.components.ComponentSource;
 import com.jeta.forms.gui.components.ComponentFactory;
 
 
-import com.jeta.forms.components.line.HorizontalLineComponent;
-import com.jeta.forms.components.line.VerticalLineComponent;
-
 import com.jeta.forms.logger.FormsLogger;
 
 import com.jeta.swingbuilder.gui.beanmgr.DefaultBeanManager;
 import com.jeta.swingbuilder.gui.components.EmbeddedFormComponentFactory;
-import com.jeta.swingbuilder.gui.components.GenericComponentFactory;
-import com.jeta.swingbuilder.gui.components.LinkedFormComponentFactory;
 import com.jeta.swingbuilder.gui.components.SwingComponentFactory;
-import com.jeta.swingbuilder.gui.editor.FormEditor;
 import com.jeta.swingbuilder.gui.utils.FormDesignerUtils;
 
 import com.jeta.swingbuilder.resources.Icons;
@@ -74,7 +63,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 import ro.siveco.senro.designer.components.IteratorComponentFactory;
-import ro.siveco.senro.designer.components.ConditionalComponentFactory;
 import ro.siveco.senro.designer.components.SenroTreeComponentFactory;
 import ro.siveco.senro.designer.engine.DesignerManager;
 

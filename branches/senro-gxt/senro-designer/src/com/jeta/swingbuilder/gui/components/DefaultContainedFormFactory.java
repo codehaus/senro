@@ -32,8 +32,11 @@ import com.jeta.forms.gui.form.FormContainerComponent;
 import com.jeta.forms.gui.form.FormComponent;
 import com.jeta.forms.gui.form.GridComponent;
 import com.jeta.forms.gui.form.GridView;
+import com.jeta.forms.gui.beans.JETABean;
+import com.jeta.forms.gui.formmgr.FormManager;
 
 import com.jeta.forms.store.memento.FormMemento;
+import com.jeta.forms.store.memento.StateRequest;
 
 import com.jeta.open.registry.JETARegistry;
 
@@ -41,6 +44,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import ro.siveco.senro.designer.components.IteratorComponentFactory;
+import ro.siveco.senro.designer.components.ConditionalComponent;
 
 public class DefaultContainedFormFactory implements ContainedFormFactory
 {
@@ -51,13 +55,13 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
      */
     public FormComponent createContainedForm(Class swingClass, FormMemento fm, GridType grid_type) throws FormException
     {
-        FormUtils.safeAssert(swingClass == JTabbedPane.class);
+        FormUtils.safeAssert((swingClass == JTabbedPane.class));
 
-        ComponentSource compsrc = (ComponentSource)JETARegistry.lookup(ComponentSource.COMPONENT_ID);
+        ComponentSource compsrc = (ComponentSource) JETARegistry.lookup(ComponentSource.COMPONENT_ID);
         FormUtils.safeAssert(compsrc != null);
 
         EmbeddedFormComponentFactory embedded_fac;
-        switch(grid_type) {
+        switch (grid_type) {
             case ITERATOR:
                 embedded_fac = new IteratorComponentFactory(compsrc);
                 break;
@@ -69,7 +73,7 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
 
         FormComponent form;
 
-        if(fm == null) {
+        if (fm == null) {
             form = embedded_fac.create(compsrc, "", null, 3, 3, true);
             GridView.fillCells(form.getChildView(), compsrc);
         } else {
@@ -92,7 +96,7 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
      * @param form    the form that will be contained by the top-level parent
      */
     public FormComponent createTopParent(Container container, ComponentSource compsrc, FormComponent form)
-        throws FormException
+            throws FormException
     {
         EmbeddedFormComponentFactory factory = new EmbeddedFormComponentFactory(compsrc);
         FormComponent parent = factory.create(compsrc, "formeditor.top.parent", null, 1, 1, true);
@@ -114,13 +118,13 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
          * form hierarchy.
          */
         FormContainerComponent fcc = getFormContainerComponent(container);
-        if(fcc != null) {
+        if (fcc != null) {
             assert (fcc.getBeanDelegate() instanceof javax.swing.JTabbedPane);
             view.addListener(fcc);
         }
 
-        if((container instanceof javax.swing.JTabbedPane) && FormUtils.isDesignMode()) {
-            if(fcc == null) {
+        if ((container instanceof javax.swing.JTabbedPane) && FormUtils.isDesignMode()) {
+            if (fcc == null) {
                 System.err.println("DefaultContainedFormFactory encountered invalid container: " + container);
             }
             FormUtils.safeAssert(fcc != null);
@@ -135,9 +139,10 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
      */
     private FormContainerComponent getFormContainerComponent(Component parent)
     {
-        while(parent != null && !(parent instanceof java.awt.Window)) {
-            if(parent instanceof FormContainerComponent)
-                return (FormContainerComponent)parent;
+        while (parent != null && !(parent instanceof java.awt.Window)) {
+            if (parent instanceof FormContainerComponent) {
+                return (FormContainerComponent) parent;
+            }
 
             parent = parent.getParent();
         }

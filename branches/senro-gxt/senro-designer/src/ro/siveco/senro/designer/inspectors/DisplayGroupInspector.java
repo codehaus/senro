@@ -5,21 +5,15 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.builder.PanelBuilder;
 
 import javax.swing.*;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
+import java.awt.event.ActionEvent;
 
 import ro.siveco.senro.designer.objects.DisplayGroupDescription;
 
-public class DisplayGroupInspector extends CommonInspector implements ItemListener
+public class DisplayGroupInspector extends CommonInspector
 {
     public static final String DG_INSPECTOR_TITLE = "Display Group Inspector";
-    protected JComboBox entityCB = new JComboBox();
+    protected JTextField entityTF = new JTextField();
     protected DisplayGroupDescription displayGroupDescription = null;
-    protected boolean isUpdating = false;
-    protected List<String> entitiesNames;
 
     public DisplayGroupInspector()
     {
@@ -36,62 +30,35 @@ public class DisplayGroupInspector extends CommonInspector implements ItemListen
         idTF.addActionListener(this);
         builder.add(idTF, cc.xy(4, 4));
         builder.add(new JLabel("Entity Name", JLabel.RIGHT), cc.xy(2, 6));
-        entityCB.addItemListener(this);
-        builder.add(entityCB, cc.xy(4, 6));
+        entityTF.addActionListener(this);
+        builder.add(entityTF, cc.xy(4, 6));
         panel = builder.getPanel();
-    }
-
-    public void updateEntitiesNames()
-    {
-        entitiesNames = new ArrayList<String>();
-        String[] ent_names = {"Entity_1", "Entity_2", "Entity_3", "Entity_4"};
-        entitiesNames.addAll(Arrays.asList(ent_names));
     }
 
     public void setObject(Object o)
     {
-      if(o != null)
-        displayGroupDescription = (DisplayGroupDescription)o;
-      else {
-        displayGroupDescription = null;
-        entityCB.removeAllItems();
-      }
-      super.setObject(o);
-    }
-
-    public void setItemsToComboBox(List<String> entities_names)
-    {
-        entityCB.removeItemListener(this);
-        entityCB.removeAllItems();
-        if(entities_names != null && !entities_names.isEmpty()) {
-          for(Object object : entities_names) {
-              entityCB.addItem(object);
-          }
-        }
-        entityCB.addItemListener(this);
+        displayGroupDescription = (DisplayGroupDescription) o;
+        super.setObject(o);
     }
 
     public void updateUI()
     {
+        if (displayGroupDescription == null) {
+            return;
+        }
         super.updateUI();
-        if(displayGroupDescription == null)
-          return;
-        isUpdating = true;
-        updateEntitiesNames();
-        setItemsToComboBox(entitiesNames);
-        entityCB.setSelectedItem(displayGroupDescription.getEntityName());
-        isUpdating = false;
+        entityTF.setText(displayGroupDescription.getEntityName());
     }
 
-    public void itemStateChanged(ItemEvent e)
+    public void actionPerformed(ActionEvent e)
     {
-        if(isUpdating)
-          return;
         Object source = e.getSource();
-        if (source == entityCB) {
-            String entity_name = (String) entityCB.getSelectedItem();
-            displayGroupDescription.setEntityName(entity_name);
-            updateUI();
+        if (source == nameTF) {
+            displayGroupDescription.setName(nameTF.getText());
+        } else if (source == idTF) {
+            displayGroupDescription.setId(idTF.getText());
+        } else if (source == entityTF) {
+            displayGroupDescription.setEntityName(entityTF.getText());
         }
     }
 }

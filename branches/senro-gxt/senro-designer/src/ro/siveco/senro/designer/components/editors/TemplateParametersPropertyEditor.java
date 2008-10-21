@@ -21,6 +21,8 @@ import java.beans.PropertyDescriptor;
 import java.beans.IntrospectionException;
 
 import ro.siveco.senro.designer.components.TemplateComponent;
+import ro.siveco.senro.designer.engine.Template;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 public class TemplateParametersPropertyEditor extends JETAPropertyEditor
 {
@@ -43,6 +45,13 @@ public class TemplateParametersPropertyEditor extends JETAPropertyEditor
     public void invokePropertyDialog(Component comp)
     {
         TemplateParametersProperty tpp = (TemplateParametersProperty) getValue();
+        TemplateComponent tpc = (TemplateComponent)tpp.getBean().getDelegate();
+        Template tpl = tpc.getTemplate();
+        if(tpl == null) {
+            return;
+        }
+        DesignerManager.getSharedDesignerManager().getProject().updateTemplate(tpl);
+        tpc.refreshParameters();
         TemplateParametersPropertyModel model = new TemplateParametersPropertyModel(tpp);
         JETADialog dlg = JETAToolbox.invokeDialog(model.getParametersPanel(), comp, I18N.getLocalizedMessage("Template Parameters Designer"));
         if (dlg.isOk()) {

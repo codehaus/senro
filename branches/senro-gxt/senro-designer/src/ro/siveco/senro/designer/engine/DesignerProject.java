@@ -93,38 +93,12 @@ public class DesignerProject
             }
         });
         for(File proj_dir : f) {
-            if(proj_dir.getAbsolutePath().equals(getProjectDir().getAbsolutePath())) {
-                continue;
-            }
             String template_name = proj_dir.getName();
-            File comp_file = new File(proj_dir, DesignerManager.COMPONENT_FILE_NAME);
-            List<Parameter> parameter_list = new ArrayList<Parameter>();
-            try {
-                Document doc = XmlHelper.readDocument(comp_file);
-                Element params_elem = XmlHelper.getChild(doc.getDocumentElement(), ComponentXmlNames.PARAMS_ELEMENT);
-                Element param = XmlHelper.getFirstChildElement(params_elem);
-                while(param != null) {
-                    String param_name = param.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE);
-                    String param_type = param.getAttribute(ComponentXmlNames.TYPE_ATTRIBUTE);
-                    String param_default = param.getAttribute(ComponentXmlNames.DEFAULT_VALUE_ATTRIBUTE);
-                    parameter_list.add(new Parameter(param_name, param_type, param_default));
-                    param = XmlHelper.getNextSiblingElement(param);
-                }
-            }
-            catch(XmlException e) {
-                throw new EngineException("Cannot load template from dir: " + proj_dir.getAbsolutePath());
-            }
-            Template tpl = new Template(template_name, parameter_list);
+            Template tpl = new Template(template_name);
             templates.add(tpl);
             templatesByName.put(template_name, tpl);
+            updateTemplate(tpl);
         }
-        // create own template
-        String template_name = getProjectDir().getName();
-        List<Parameter> parameter_list = parametersManager.getParametersList();
-        Template tpl = new Template(template_name, parameter_list);
-        templates.add(tpl);
-        templatesByName.put(template_name, tpl);
-
         Collections.sort(templates, new Comparator<Template>()
         {
             public int compare(Template tpl_1, Template tpl_2)
@@ -132,6 +106,48 @@ public class DesignerProject
                 return tpl_1.getName().compareTo(tpl_2.getName());
             }
         });
+    }
+
+    private void updateImportedTemplate(Template tpl) throws EngineException
+    {
+        File proj_dir = new File(getProjectDir().getParentFile(), tpl.getName());
+        File comp_file = new File(proj_dir, DesignerManager.COMPONENT_FILE_NAME);
+        List<Parameter> parameter_list = new ArrayList<Parameter>();
+        try {
+            Document doc = XmlHelper.readDocument(comp_file);
+            Element params_elem = XmlHelper.getChild(doc.getDocumentElement(), ComponentXmlNames.PARAMS_ELEMENT);
+            Element param = XmlHelper.getFirstChildElement(params_elem);
+            while(param != null) {
+                String param_name = param.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE);
+                String param_type = param.getAttribute(ComponentXmlNames.TYPE_ATTRIBUTE);
+                String param_default = param.getAttribute(ComponentXmlNames.DEFAULT_VALUE_ATTRIBUTE);
+                parameter_list.add(new Parameter(param_name, param_type, param_default));
+                param = XmlHelper.getNextSiblingElement(param);
+            }
+        }
+        catch(XmlException e) {
+            throw new EngineException("Cannot load template from dir: " + proj_dir.getAbsolutePath());
+        }
+        tpl.setParameters(parameter_list);
+    }
+
+    public void updateTemplate(Template tpl)
+    {
+        if(tpl == null) {
+            return;
+        }
+        if(tpl.getName().equals(getProjectDir().getName())) {
+            List<Parameter> parameter_list = parametersManager.getParametersList();
+            tpl.setParameters(parameter_list);
+        } else {
+            try {
+                updateImportedTemplate(tpl);
+            }
+            catch(EngineException e) {
+                templates.remove(tpl);
+                templatesByName.remove(tpl.getName());
+            }
+        }
     }
 
     public Template getTemplate(String template_name)

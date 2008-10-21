@@ -9,19 +9,18 @@ import com.jeta.forms.gui.common.FormException;
 import com.jeta.forms.store.properties.TabbedPaneProperties;
 import com.jeta.forms.store.properties.TabProperty;
 import com.jeta.forms.store.properties.IconProperty;
-
 import java.util.*;
 import java.awt.*;
 
-public class ConditionalComponentFactory extends JComponentBeanFactory
+public class ConditionalComponentBeanFactory extends JComponentBeanFactory
 {
     public static final String TAB_PROP_NAME = "hasElseBranch";
     public static final String IF_TAB_TITLE = "If";
     public static final String ELSE_TAB_TITLE = "Else";
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("condition", TAB_PROP_NAME, "id")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("condition", TAB_PROP_NAME)));
 
-    public ConditionalComponentFactory()
+    public ConditionalComponentBeanFactory()
     {
         super(ConditionalComponent.class);
     }
@@ -34,6 +33,7 @@ public class ConditionalComponentFactory extends JComponentBeanFactory
             ConditionalComponent cond = (ConditionalComponent) comp;
             cond.setName(compName);
         }
+
         DynamicBeanInfo beaninfo = JComponentBeanFactory.createBeanInfo(ConditionalComponent.class);
         Collection prop_desc = beaninfo.getPropertyDescriptors();
         for (Object prop : prop_desc) {
