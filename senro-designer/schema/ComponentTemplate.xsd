@@ -55,7 +55,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Grid" type="GridType" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="Popup" type="PopupType"/>
+                <xs:element name="Popup" type="PopupType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -414,7 +414,51 @@
 
         <xs:complexContent>
 
-            <xs:extension base="ComponentChoiceType">
+            <xs:extension base="UIComponentType">
+
+                <xs:sequence>
+
+                    <xs:choice maxOccurs="unbounded">
+
+                        <xs:element ref="Label"/>
+
+                        <xs:element ref="TextField"/>
+
+                        <xs:element ref="TextArea"/>
+
+                        <xs:element ref="DateField"/>
+
+                        <xs:element ref="ComboBox"/>
+
+                        <xs:element ref="CheckBox"/>
+
+                        <xs:element ref="Button"/>
+
+                        <xs:element ref="Grid"/>
+
+                        <xs:element ref="Template"/>
+
+                        <xs:element ref="Iterator"/>
+
+                        <xs:element ref="Conditional"/>
+
+                        <xs:element ref="Tree"/>
+
+                        <xs:element ref="TreeNode"/>
+
+                        <xs:element ref="GridAllocatorRenderer"/>
+
+                        <xs:element ref="List"/>
+
+                        <xs:element ref="TabPanel"/>
+
+                        <xs:element ref="TabPage"/>
+
+                        <xs:element ref="SwitchComponent"/>
+
+                    </xs:choice>
+
+                </xs:sequence>
 
                 <xs:attribute name="condition" type="xs:string" use="required"/>
 
@@ -428,7 +472,53 @@
 
         <xs:complexContent>
 
-            <xs:extension base="ComponentChoiceType"/>
+            <xs:extension base="UIComponentType">
+
+                <xs:sequence>
+
+                    <xs:choice maxOccurs="unbounded">
+
+                        <xs:element ref="Label"/>
+
+                        <xs:element ref="TextField"/>
+
+                        <xs:element ref="TextArea"/>
+
+                        <xs:element ref="DateField"/>
+
+                        <xs:element ref="ComboBox"/>
+
+                        <xs:element ref="CheckBox"/>
+
+                        <xs:element ref="Button"/>
+
+                        <xs:element ref="Grid"/>
+
+                        <xs:element ref="Template"/>
+
+                        <xs:element ref="Iterator"/>
+
+                        <xs:element ref="Conditional"/>
+
+                        <xs:element ref="Tree"/>
+
+                        <xs:element ref="TreeNode"/>
+
+                        <xs:element ref="GridAllocatorRenderer"/>
+
+                        <xs:element ref="List"/>
+
+                        <xs:element ref="TabPanel"/>
+
+                        <xs:element ref="TabPage"/>
+
+                        <xs:element ref="SwitchComponent"/>
+
+                    </xs:choice>
+
+                </xs:sequence>
+
+            </xs:extension>
 
         </xs:complexContent>
 
@@ -445,6 +535,8 @@
                     <xs:element ref="TreeNode" minOccurs="0"/>
 
                     <xs:element ref="Iterator" minOccurs="0"/>
+
+                    <xs:element ref="Conditional" minOccurs="0"/>
 
                 </xs:sequence>
 

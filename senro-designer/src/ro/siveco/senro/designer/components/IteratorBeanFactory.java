@@ -14,7 +14,7 @@ import java.util.*;
 public class IteratorBeanFactory implements BeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("list", "id", "filterCondition")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("list", "id", "filterCondition", "row", "column")));
 
     public JETABean createBean(String compName, boolean instantiateBean, boolean setDefaults)
             throws FormException

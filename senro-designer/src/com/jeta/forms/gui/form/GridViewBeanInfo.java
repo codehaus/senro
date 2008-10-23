@@ -69,7 +69,6 @@ public class GridViewBeanInfo implements BeanInfo
         try {
             ArrayList<PropertyDescriptor> props = new ArrayList<PropertyDescriptor>();
 
-            /** we don't need every property from JPanel, just name and opaque */
             BeanInfo info = Introspector.getBeanInfo(SenroPanel.class);
             PropertyDescriptor[] pds = info.getPropertyDescriptors();
             for(int index = 0; index < pds.length; index++) {
@@ -81,6 +80,12 @@ public class GridViewBeanInfo implements BeanInfo
                     props.add(pd);
                 }
                 if("id".equals(pd.getName())) {
+                    props.add(pd);
+                }
+                if("row".equals(pd.getName())) {
+                    props.add(pd);
+                }
+                if("column".equals(pd.getName())) {
                     props.add(pd);
                 }
             }

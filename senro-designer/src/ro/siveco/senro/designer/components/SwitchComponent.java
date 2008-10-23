@@ -2,11 +2,12 @@ package ro.siveco.senro.designer.components;
 
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.DesignerObjectListener;
+import ro.siveco.senro.designer.basic.UIDesignerObject;
 import org.apache.commons.lang.ObjectUtils;
 
 import java.util.Map;
 
-public class SwitchComponent extends PanelComponent implements SenroDesignerObject
+public class SwitchComponent extends PanelComponent implements UIDesignerObject
 {
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
@@ -17,6 +18,8 @@ public class SwitchComponent extends PanelComponent implements SenroDesignerObje
 
     private String senroId = "";
     private String senroName = "";
+    private String row;
+    private String col;
 
     public SwitchComponent()
     {
@@ -80,6 +83,32 @@ public class SwitchComponent extends PanelComponent implements SenroDesignerObje
 
     public void updateLinks(Map<String, SenroDesignerObject> obj_map)
     {
+    }
+
+    public void setRow(String _row)
+    {
+        if (ObjectUtils.equals(row, _row)) {
+            return;
+        }
+        row = _row == null ? "" : _row;
+    }
+
+    public String getRow()
+    {
+        return row == null ? "" : row;
+    }
+
+    public void setColumn(String _col)
+    {
+        if (ObjectUtils.equals(col, _col)) {
+            return;
+        }
+        col = _col == null ? "" : _col;
+    }
+
+    public String getColumn()
+    {
+        return col == null ? "" : col;
     }
 
 }

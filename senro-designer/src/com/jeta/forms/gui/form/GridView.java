@@ -61,7 +61,6 @@ import com.jeta.forms.store.properties.effects.PaintProperty;
 import com.jeta.forms.logger.FormsLogger;
 import com.jeta.forms.store.support.Matrix;
 
-import com.jeta.open.gui.framework.JETAPanel;
 import com.jeta.open.gui.framework.SenroPanel;
 import com.jeta.open.registry.JETARegistry;
 
@@ -69,8 +68,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
-import ro.siveco.senro.designer.basic.SenroDesignerObject;
-import org.apache.commons.lang.ObjectUtils;
 
 
 /**
@@ -190,16 +187,16 @@ public class GridView extends SenroPanel implements Paintable, FormAccessor, Gri
      * A list of GridViewListener objects that are interested in GridViewEvents
      * from this object.
      */
-    private LinkedList m_listeners = new LinkedList();
+    private LinkedList<GridViewListener> m_listeners = new LinkedList<GridViewListener>();
 
     /**
      * The various layers in this view
      */
-    public static final Integer BACKGROUND_PAINTER_LAYER = new Integer(0);
-    public static final Integer CELL_PAINTER_LAYER = new Integer(1);
-    public static final Integer FORM_LAYER = new Integer(2);
-    public static final Integer OVERLAY_LAYER = new Integer(9);
-    public static final Integer FOCUS_LAYER = new Integer(10);
+    public static final Integer BACKGROUND_PAINTER_LAYER = 0;
+    public static final Integer CELL_PAINTER_LAYER = 1;
+    public static final Integer FORM_LAYER = 2;
+    public static final Integer OVERLAY_LAYER = 9;
+    public static final Integer FOCUS_LAYER = 10;
 
     /**
      * Creates a <code>GridView</code> with no rows and columns
@@ -293,7 +290,7 @@ public class GridView extends SenroPanel implements Paintable, FormAccessor, Gri
             fireGridEvent(new GridViewEvent(this, GridViewEvent.EDIT_COMPONENT, evt));
         } else if(evt.getId() == GridCellEvent.CELL_SELECTED) {
             fireGridEvent(new GridViewEvent(this, GridViewEvent.CELL_SELECTED, evt));
-            m_last_comp = (GridComponent)evt.getSource();
+            m_last_comp = evt.getSource();
         } else {
             fireGridEvent(new GridViewEvent(this, GridViewEvent.CELL_CHANGED, evt));
         }
@@ -344,11 +341,9 @@ public class GridView extends SenroPanel implements Paintable, FormAccessor, Gri
             }
 
             m_layoutinfo = null;
-            Iterator iter = m_listeners.iterator();
-            while(iter.hasNext()) {
+            for(GridViewListener m_listener : m_listeners) {
                 try {
-                    GridViewListener listener = (GridViewListener)iter.next();
-                    listener.gridChanged(evt);
+                    m_listener.gridChanged(evt);
                 }
                 catch(Exception e) {
                     FormsLogger.debug(e);
@@ -502,6 +497,8 @@ public class GridView extends SenroPanel implements Paintable, FormAccessor, Gri
     /**
      * Returns the FormAccessor associated with this view. A FormAccessor
      * is used to add/remove/iterate components on a form.
+     *
+     * @return this
      */
     public FormAccessor getFormAccessor()
     {
@@ -513,6 +510,7 @@ public class GridView extends SenroPanel implements Paintable, FormAccessor, Gri
      * if you need to list the components in the view.
      *
      * @deprecated
+     * @return m_form
      */
     public Container getFormContainer()
     {

@@ -13,7 +13,7 @@ import java.awt.*;
 public class SenroTextAreaBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("id")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("id", "row", "column")));
 
     public SenroTextAreaBeanFactory()
     {

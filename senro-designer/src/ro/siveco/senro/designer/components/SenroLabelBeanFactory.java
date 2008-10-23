@@ -13,7 +13,7 @@ import java.awt.*;
 public class SenroLabelBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("text", "id")));
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("text", "id", "row", "column")));
 
     public SenroLabelBeanFactory()
     {

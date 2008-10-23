@@ -2,6 +2,7 @@ package ro.siveco.senro.designer.components;
 
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.DesignerObjectListener;
+import ro.siveco.senro.designer.basic.UIDesignerObject;
 
 import javax.swing.*;
 
@@ -9,11 +10,13 @@ import org.apache.commons.lang.ObjectUtils;
 
 import java.util.Map;
 
-public class SenroList extends JTable implements SenroDesignerObject
+public class SenroList extends JTable implements UIDesignerObject
 {
     private String senroId = "";
     private String senroName = "";
     private String entity;
+    private String row;
+    private String col;
 
     public SenroList()
     {
@@ -67,6 +70,32 @@ public class SenroList extends JTable implements SenroDesignerObject
 
     public void updateLinks(Map<String, SenroDesignerObject> obj_map)
     {
+    }
+
+    public void setRow(String _row)
+    {
+        if (ObjectUtils.equals(row, _row)) {
+            return;
+        }
+        row = _row == null ? "" : _row;
+    }
+
+    public String getRow()
+    {
+        return row == null ? "" : row;
+    }
+
+    public void setColumn(String _col)
+    {
+        if (ObjectUtils.equals(col, _col)) {
+            return;
+        }
+        col = _col == null ? "" : _col;
+    }
+
+    public String getColumn()
+    {
+        return col == null ? "" : col;
     }
 
 }
