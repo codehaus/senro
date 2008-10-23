@@ -11,6 +11,7 @@ import ro.siveco.senro.designer.inspector.InspectorManager;
 import ro.siveco.senro.designer.IBMainFrame;
 import ro.siveco.senro.designer.IBMainFrameController;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
+import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.components.*;
 import ro.siveco.senro.designer.inspectors.DisplayGroupInspector;
 import ro.siveco.senro.designer.inspectors.EditingContextInspector;
@@ -826,18 +827,26 @@ public class DesignerManager
         Iterator<GridComponent> comp_it = grid.gridIterator();
         while (comp_it.hasNext()) {
             GridComponent crt_comp = comp_it.next();
-            Map<String, Object> attr_map = new HashMap<String, Object>();
-            attr_map.put(ComponentXmlNames.ROW_ATTRIBUTE, String.valueOf(crt_comp.getRow() - 1));
-            attr_map.put(ComponentXmlNames.COL_ATTRIBUTE, String.valueOf(crt_comp.getColumn() - 1));
-            attr_map.put(ComponentXmlNames.ROW_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getRowSpan()));
-            attr_map.put(ComponentXmlNames.COL_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getColumnSpan()));
-            ComponentConstraints cnstr = crt_comp.getConstraints();
-            CellConstraints.Alignment h_align = cnstr.getHorizontalAlignment();
-            CellConstraints.Alignment v_align = cnstr.getVerticalAlignment();
-            attr_map.put(ComponentXmlNames.HALIGN_ATTRIBUTE, componentAlignmentText.get(h_align));
-            attr_map.put(ComponentXmlNames.VALIGN_ATTRIBUTE, componentAlignmentText.get(v_align));
             Component cmp = crt_comp.getBeanChildComponent();
             if (cmp != null) {
+                Map<String, Object> attr_map = new HashMap<String, Object>();
+                String row_attr = ((UIDesignerObject)cmp).getRow();
+                if(row_attr == null || row_attr.trim().length() == 0) {
+                    row_attr = String.valueOf(crt_comp.getRow() - 1);
+                }
+                attr_map.put(ComponentXmlNames.ROW_ATTRIBUTE, row_attr);
+                String col_attr = ((UIDesignerObject)cmp).getColumn();
+                if(col_attr == null || col_attr.trim().length() == 0) {
+                    col_attr = String.valueOf(crt_comp.getColumn() - 1);
+                }
+                attr_map.put(ComponentXmlNames.COL_ATTRIBUTE, col_attr);
+                attr_map.put(ComponentXmlNames.ROW_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getRowSpan()));
+                attr_map.put(ComponentXmlNames.COL_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getColumnSpan()));
+                ComponentConstraints cnstr = crt_comp.getConstraints();
+                CellConstraints.Alignment h_align = cnstr.getHorizontalAlignment();
+                CellConstraints.Alignment v_align = cnstr.getVerticalAlignment();
+                attr_map.put(ComponentXmlNames.HALIGN_ATTRIBUTE, componentAlignmentText.get(h_align));
+                attr_map.put(ComponentXmlNames.VALIGN_ATTRIBUTE, componentAlignmentText.get(v_align));
                 XmlGenerationContext gen_ctx = new XmlGenerationContext((SenroDesignerObject)cmp, context);
                 gen_ctx.attributes.putAll(attr_map);
                 generateXmlForObject(comps_elem, gen_ctx);
@@ -1213,6 +1222,8 @@ public class DesignerManager
             Element hover_icon_elem = doc.createElement(ComponentXmlNames.HOVER_ELEMENT);
             e.appendChild(hover_icon_elem);
             hover_icon_elem.appendChild(doc.createTextNode(button.getHoverIcon()));
+
+            e.setAttribute(ComponentXmlNames.TYPE_ATTRIBUTE, button.getType());
         }
 
     }
@@ -1265,7 +1276,11 @@ public class DesignerManager
             SenroTabbedPane tabbed_pane = (SenroTabbedPane)context.object;
             int tab_count = tabbed_pane.getTabCount();
             for (int tab_idx = 0; tab_idx < tab_count; tab_idx++) {
-                DesignFormComponent tab_page = (DesignFormComponent) tabbed_pane.getComponentAt(tab_idx);
+                Component tab_cmp = tabbed_pane.getComponentAt(tab_idx);
+                if(!(tab_cmp instanceof DesignFormComponent)) {
+                    continue;
+                }
+                DesignFormComponent tab_page = (DesignFormComponent)tab_cmp;
                 Component tab_comp = getTabPageComponent(tab_page);
                 assert tab_comp != null;
                 XmlGenerationContext gen_ctx = new XmlGenerationContext((SenroDesignerObject)tab_comp, context);
@@ -1300,6 +1315,7 @@ public class DesignerManager
                     IteratorComponent itc = (IteratorComponent)cmp;
                     Element it_elem = doc.createElement(ComponentXmlNames.ITERATOR_ELEMENT);
                     tree_elem.appendChild(it_elem);
+                    addDesignerObjectAttrs(it_elem, itc);
                     it_elem.setAttribute("list", itc.getList());
                     it_elem.setAttribute("filterCondition", itc.getFilterCondition());
 
@@ -1307,8 +1323,42 @@ public class DesignerManager
                     while(comp_it.hasNext()) {
                         GridComponent it_comp = comp_it.next();
                         Component it_cmp = it_comp.getBeanChildComponent();
-                        if(it_cmp != null) {
+                        if(it_cmp instanceof TreeNode) {
                             getXml(it_elem, (TreeNode)it_cmp);
+                        }
+                    }
+                } else if(cmp instanceof ConditionalComponent) {
+                    Document doc = tree_elem.getOwnerDocument();
+                    ConditionalComponent cond_comp = (ConditionalComponent)cmp;
+                    Element cond_elem = doc.createElement(ComponentXmlNames.CONDITIONAL_ELEMENT);
+                    tree_elem.appendChild(cond_elem);
+                    addDesignerObjectAttrs(cond_elem, cond_comp);
+                    // create if branch
+                    Element if_elem = doc.createElement(ComponentXmlNames.IF_ELEMENT);
+                    cond_elem.appendChild(if_elem);
+                    if_elem.setAttribute("condition", cond_comp.getCondition());
+                    GridView if_comp = (GridView)getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(0));
+                    Iterator<GridComponent> if_comp_it = if_comp.gridIterator();
+                    while(if_comp_it.hasNext()) {
+                        GridComponent it_comp = if_comp_it.next();
+                        Component if_cmp = it_comp.getBeanChildComponent();
+                        if(if_cmp instanceof TreeNode) {
+                            getXml(if_elem, (TreeNode)if_cmp);
+                        }
+                    }
+                    // create else branch
+                    if(cond_comp.getHasElseBranch()) {
+                        Element else_elem = doc.createElement(ComponentXmlNames.ELSE_ELEMENT);
+                        cond_elem.appendChild(else_elem);
+                        GridView else_comp =
+                            (GridView)getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(1));
+                        Iterator<GridComponent> else_comp_it = else_comp.gridIterator();
+                        while(else_comp_it.hasNext()) {
+                            GridComponent it_comp = else_comp_it.next();
+                            Component else_cmp = it_comp.getBeanChildComponent();
+                            if(else_cmp instanceof TreeNode) {
+                                getXml(else_elem, (TreeNode)else_cmp);
+                            }
                         }
                     }
                 }

@@ -5,6 +5,7 @@ import ro.siveco.senro.designer.engine.Parameter;
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.DesignerObjectListener;
+import ro.siveco.senro.designer.basic.UIDesignerObject;
 
 import java.util.*;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +17,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.Logger;
 
-public class TemplateComponent extends PanelComponent implements SenroDesignerObject
+public class TemplateComponent extends PanelComponent implements UIDesignerObject
 {
     private static Logger logger = Logger.getLogger(TemplateComponent.class);
 
@@ -29,6 +30,8 @@ public class TemplateComponent extends PanelComponent implements SenroDesignerOb
     private transient Template template = null;
     private String templateName;
     private List<TemplateParameter> parameters = new ArrayList<TemplateParameter>();
+    private String row;
+    private String col;
 
     public TemplateComponent()
     {
@@ -176,6 +179,32 @@ public class TemplateComponent extends PanelComponent implements SenroDesignerOb
 
     public void updateLinks(Map<String, SenroDesignerObject> obj_map)
     {
+    }
+
+     public void setRow(String _row)
+    {
+        if (ObjectUtils.equals(row, _row)) {
+            return;
+        }
+        row = _row == null ? "" : _row;
+    }
+
+    public String getRow()
+    {
+        return row == null ? "" : row;
+    }
+
+    public void setColumn(String _col)
+    {
+        if (ObjectUtils.equals(col, _col)) {
+            return;
+        }
+        col = _col == null ? "" : _col;
+    }
+
+    public String getColumn()
+    {
+        return col == null ? "" : col;
     }
 
 }

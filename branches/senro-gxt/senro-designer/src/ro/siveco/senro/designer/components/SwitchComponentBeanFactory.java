@@ -13,7 +13,7 @@ import java.awt.*;
 public class SwitchComponentBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("property", "createLabel", "id")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("property", "createLabel", "id", "row", "column")));
 
     public SwitchComponentBeanFactory()
     {

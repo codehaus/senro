@@ -18,7 +18,7 @@ import ro.siveco.senro.designer.components.editors.TemplateParametersProperty;
 public class TemplateBeanFactory implements BeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("template", "parameters", "id")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("template", "parameters", "id", "row", "column")));
 
     public JETABean createBean(String compName, boolean instantiateBean, boolean setDefaults) throws FormException
     {
