@@ -1467,9 +1467,10 @@ public class DesignerManager
             return ComponentXmlNames.SWITCH_ELEMENT;
         }
 
-        public void buildElementBody(Element e, Component comp)
+        @Override
+        public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            SwitchComponent switch_comp = (SwitchComponent) comp;
+            SwitchComponent switch_comp = (SwitchComponent)context.object;
             e.setAttribute(ComponentXmlNames.PROPERTY_ATTRIBUTE, switch_comp.getProperty());
             e.setAttribute(ComponentXmlNames.CREATE_LABEL_ATTRIBUTE, switch_comp.isCreateLabel() ? "true" : "false");
         }
