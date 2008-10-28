@@ -24,7 +24,7 @@
     </at>
     <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
    </super>
-   <at name="id">D:\ij\senro\InterfaceDesigner\abeille\src\com\jeta\swingbuilder\gui\components\tabpane\NewTabView.jfrm</at>
+   <at name="id">D:\ij\senro\InterfaceDesigner\abeille\src\com\jeta\swingbuilder\gui\components\tabpane\NewTabView.xml</at>
    <at name="rowspecs">CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE</at>
    <at name="colspecs">FILL:DEFAULT:NONE,FILL:4DLU:NONE,FILL:DEFAULT:NONE,FILL:24PX:NONE</at>
    <at name="components">
@@ -46,7 +46,7 @@
          </at>
          <at name="componentclass">com.jeta.forms.gui.form.FormComponent</at>
         </super>
-        <at name="id">embedded.19142683</at>
+        <at name="id">embedded.8081111</at>
         <at name="rowspecs">CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:2DLU:NONE,CENTER:DEFAULT:NONE,FILL:PREF:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE,CENTER:DEFAULT:NONE</at>
         <at name="colspecs">FILL:DEFAULT:NONE,FILL:175DLU:NONE,FILL:24PX:NONE</at>
         <at name="components">
@@ -138,8 +138,8 @@
                    <at name="size">10</at>
                   </object>
                  </at>
+                 <at name="name"/>
                  <at name="width">259</at>
-                 <at name="name"></at>
                  <at name="fill">
                   <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
                    <at name="name">fill</at>
@@ -261,8 +261,8 @@
                 <object classname="com.jeta.forms.store.support.PropertyMap">
                  <at name="text">Text</at>
                  <at name="height">14</at>
+                 <at name="name"/>
                  <at name="width">259</at>
-                 <at name="name"></at>
                  <at name="fill">
                   <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
                    <at name="name">fill</at>
@@ -321,8 +321,8 @@
                 <object classname="com.jeta.forms.store.support.PropertyMap">
                  <at name="text">Icon</at>
                  <at name="height">14</at>
+                 <at name="name"/>
                  <at name="width">259</at>
-                 <at name="name"></at>
                  <at name="fill">
                   <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
                    <at name="name">fill</at>
@@ -435,8 +435,8 @@
                 <object classname="com.jeta.forms.store.support.PropertyMap">
                  <at name="text">Component Type</at>
                  <at name="height">14</at>
+                 <at name="name"/>
                  <at name="width">259</at>
-                 <at name="name"></at>
                  <at name="fill">
                   <object classname="com.jeta.forms.store.properties.effects.PaintProperty">
                    <at name="name">fill</at>
@@ -497,11 +497,10 @@
                  <at name="selectedItem">
                   <object classname="com.jeta.forms.store.properties.ListItemProperty">
                    <at name="name">listitem</at>
-                   <at name="label">Grid</at>
+                   <at name="label">TabPage</at>
                    <at name="icon">
                     <object classname="com.jeta.forms.store.properties.IconProperty">
                      <at name="embedded">false</at>
-                     <at name="description"></at>
                      <at name="width">0</at>
                      <at name="height">0</at>
                     </object>
@@ -517,11 +516,10 @@
                       <at name="value">
                        <object classname="com.jeta.forms.store.properties.ListItemProperty">
                         <at name="name">listitem</at>
-                        <at name="label">Grid</at>
+                        <at name="label">TabPage</at>
                         <at name="icon">
                          <object classname="com.jeta.forms.store.properties.IconProperty">
                           <at name="embedded">false</at>
-                          <at name="description"></at>
                           <at name="width">0</at>
                           <at name="height">0</at>
                          </object>
@@ -537,23 +535,6 @@
                         <at name="icon">
                          <object classname="com.jeta.forms.store.properties.IconProperty">
                           <at name="embedded">false</at>
-                          <at name="description"></at>
-                          <at name="width">0</at>
-                          <at name="height">0</at>
-                         </object>
-                        </at>
-                       </object>
-                      </at>
-                     </item>
-                     <item >
-                      <at name="value">
-                       <object classname="com.jeta.forms.store.properties.ListItemProperty">
-                        <at name="name">listitem</at>
-                        <at name="label">Conditional</at>
-                        <at name="icon">
-                         <object classname="com.jeta.forms.store.properties.IconProperty">
-                          <at name="embedded">false</at>
-                          <at name="description"></at>
                           <at name="width">0</at>
                           <at name="height">0</at>
                          </object>
@@ -567,7 +548,7 @@
                  </at>
                  <at name="width">259</at>
                  <at name="name">component.type.combo</at>
-                 <at name="itemCount">3</at>
+                 <at name="itemCount">2</at>
                  <at name="border">
                   <object classname="com.jeta.forms.store.properties.CompoundBorderProperty">
                    <super classname="com.jeta.forms.store.properties.BorderProperty">

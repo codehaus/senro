@@ -38,10 +38,8 @@ import com.jeta.forms.gui.beans.JETABean;
 import com.jeta.forms.gui.common.FormUtils;
 import com.jeta.forms.gui.common.FormException;
 import com.jeta.forms.gui.components.ContainedFormFactory;
-import com.jeta.forms.gui.components.ComponentSource;
 
 import com.jeta.forms.gui.form.FormComponent;
-import com.jeta.forms.gui.formmgr.FormManager;
 
 import com.jeta.forms.logger.FormsLogger;
 import com.jeta.forms.store.JETAObjectInput;
@@ -50,7 +48,6 @@ import com.jeta.forms.store.memento.FormMemento;
 import com.jeta.forms.store.memento.StateRequest;
 
 import com.jeta.open.registry.JETARegistry;
-import com.jeta.swingbuilder.gui.formmgr.FormManagerDesignUtils;
 import org.apache.commons.lang.ObjectUtils;
 
 /**
@@ -65,7 +62,7 @@ public class TabProperty extends JETAProperty
 {
     static final long serialVersionUID = 2375434406561274626L;
 
-    public static final String GRID_CONTENT = "Grid";
+    public static final String TAB_PAGE_CONTENT = "TabPage";
     public static final String ITERATOR_CONTENT = "Iterator";
 
     /**
@@ -78,7 +75,7 @@ public class TabProperty extends JETAProperty
      */
     private String m_title;
 
-    private String contentClass = GRID_CONTENT;
+    private String contentClass = TAB_PAGE_CONTENT;
 
     /**
      * The icon for the tab.
@@ -130,8 +127,8 @@ public class TabProperty extends JETAProperty
         if (m_form == null) {
             ContainedFormFactory factory = (ContainedFormFactory) JETARegistry.lookup(ContainedFormFactory.COMPONENT_ID);
             FormUtils.safeAssert(factory != null);
-            ContainedFormFactory.GridType grid_type = ContainedFormFactory.GridType.GRID_VIEW;
-            if (contentClass.equals(ITERATOR_CONTENT)) {
+            ContainedFormFactory.GridType grid_type = ContainedFormFactory.GridType.TAB_PAGE;
+            if (ITERATOR_CONTENT.equals(contentClass)) {
                 grid_type = ContainedFormFactory.GridType.ITERATOR;
             }
             m_form = factory.createContainedForm(JTabbedPane.class, m_memento, grid_type);

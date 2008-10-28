@@ -30,13 +30,9 @@ import com.jeta.forms.gui.components.ContainedFormFactory;
 
 import com.jeta.forms.gui.form.FormContainerComponent;
 import com.jeta.forms.gui.form.FormComponent;
-import com.jeta.forms.gui.form.GridComponent;
 import com.jeta.forms.gui.form.GridView;
-import com.jeta.forms.gui.beans.JETABean;
-import com.jeta.forms.gui.formmgr.FormManager;
 
 import com.jeta.forms.store.memento.FormMemento;
-import com.jeta.forms.store.memento.StateRequest;
 
 import com.jeta.open.registry.JETARegistry;
 
@@ -44,7 +40,7 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import ro.siveco.senro.designer.components.IteratorComponentFactory;
-import ro.siveco.senro.designer.components.ConditionalComponent;
+import ro.siveco.senro.designer.components.TabPageViewFactory;
 
 public class DefaultContainedFormFactory implements ContainedFormFactory
 {
@@ -64,6 +60,9 @@ public class DefaultContainedFormFactory implements ContainedFormFactory
         switch (grid_type) {
             case ITERATOR:
                 embedded_fac = new IteratorComponentFactory(compsrc);
+                break;
+            case TAB_PAGE:
+                embedded_fac = new TabPageViewFactory(compsrc);
                 break;
             case GRID_VIEW:
             default:

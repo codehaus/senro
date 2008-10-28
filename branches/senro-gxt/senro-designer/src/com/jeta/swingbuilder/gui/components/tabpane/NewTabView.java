@@ -34,7 +34,6 @@ public class NewTabView extends JETAPanel
         m_view.getButton(ListItemNames.ID_ICON_BTN).setPreferredSize(new Dimension(24, 16));
         setValues(label, iconprop);
         componentTypeCombo = (JComboBox)m_view.getComponentByName(COMPONENT_TYPE_COMBO);
-//        setController(new ListItemController(this));
     }
 
     public String getLabel()

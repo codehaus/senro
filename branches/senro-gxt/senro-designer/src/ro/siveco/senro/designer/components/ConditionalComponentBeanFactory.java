@@ -9,6 +9,7 @@ import com.jeta.forms.gui.common.FormException;
 import com.jeta.forms.store.properties.TabbedPaneProperties;
 import com.jeta.forms.store.properties.TabProperty;
 import com.jeta.forms.store.properties.IconProperty;
+
 import java.util.*;
 import java.awt.*;
 
@@ -19,11 +20,12 @@ public class ConditionalComponentBeanFactory extends JComponentBeanFactory
     public static final String ELSE_TAB_TITLE = "Else";
     private static final Set<String> BASIC_PROPERTIES =
             Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("condition", TAB_PROP_NAME,
-                                                                          "id", "row","column")));
+                    "id", "row", "column")));
 
     public ConditionalComponentBeanFactory()
     {
         super(ConditionalComponent.class);
+        setScrollable(true);
     }
 
     public JETABean createBean(String compName, boolean instantiateBean, boolean setDefaults) throws FormException
@@ -63,5 +65,6 @@ public class ConditionalComponentBeanFactory extends JComponentBeanFactory
 
         return new JETABean(comp, default_props);
     }
+    
 }
 

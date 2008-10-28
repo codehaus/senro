@@ -38,6 +38,10 @@ import com.jeta.swingbuilder.gui.editor.DesignFormComponent;
 
 import com.jeta.open.registry.JETARegistry;
 
+import java.awt.Component;
+
+import ro.siveco.senro.designer.components.ConditionalComponent;
+
 
 /**
  * ComponentFactory for creating forms.

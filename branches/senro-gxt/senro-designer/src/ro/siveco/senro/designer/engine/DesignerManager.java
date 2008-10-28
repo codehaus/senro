@@ -166,6 +166,7 @@ public class DesignerManager
         xml_generators.put(TreeNode.class, new TreeNodeXmlGenerator());
         xml_generators.put(SenroTabbedPane.class, new TabPanelXmlGenerator());
         xml_generators.put(ConditionalComponent.class, new ConditionalXmlGenerator());
+        xml_generators.put(TabPageView.class, new TabPageXmlGenerator());
 
         xmlGenerators = Collections.unmodifiableMap(xml_generators);
 
@@ -509,6 +510,11 @@ public class DesignerManager
         }
     }
 
+    public FormEditor getCurrentEditor()
+    {
+        return mainFrame.getCurrentEditor();
+    }
+
     private void openAllGrids()
     {
         DesignerProject project = DesignerManager.getSharedDesignerManager().getProject();
@@ -581,11 +587,13 @@ public class DesignerManager
         String file_name = fe.getForm().getFileName();
         if (file_name != null) {
             String grid_name = StringUtils.substringBefore(file_name, ".");
-            project.removeGrid(grid_name);
-            if (!project.getGridPath(grid_name).delete()) {
-                logger.error("Cannot delete grid file: " + grid_name);
+            File grid_path = project.getGridPath(grid_name);
+            if (grid_path.delete()) {
+                project.removeGrid(grid_name);
+            } else {
+                logger.error("Cannot delete grid file: " + grid_name + " at path: " + grid_path.getAbsolutePath());
                 JOptionPane.showMessageDialog(mainFrame, "Cannot delete grid file: " + grid_name,
-                        "Error", JOptionPane.ERROR_MESSAGE);
+                                              "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -719,6 +727,11 @@ public class DesignerManager
         return null;
     }
 
+    public IBMainFrame getMainFrame()
+    {
+        return mainFrame;
+    }
+
     private Element getXml(Document doc, XmlGenerationContext context)
     {
         XmlGenerator gen = xmlGenerators.get(context.object.getClass());
@@ -827,7 +840,8 @@ public class DesignerManager
         Iterator<GridComponent> comp_it = grid.gridIterator();
         while (comp_it.hasNext()) {
             GridComponent crt_comp = comp_it.next();
-            Component cmp = crt_comp.getBeanChildComponent();
+//            Component cmp = crt_comp.getBeanChildComponent();
+            Component cmp = crt_comp.getBeanDelegate();
             if (cmp != null) {
                 Map<String, Object> attr_map = new HashMap<String, Object>();
                 String row_attr = ((UIDesignerObject)cmp).getRow();
@@ -1051,20 +1065,6 @@ public class DesignerManager
 
     private class TreeNodeXmlGenerator extends XmlGenerator
     {
-
-//        public String getTagName(XmlGenerationContext context)
-//        {
-//            return ComponentXmlNames.TREE_NODE_ELEMENT;
-//        }
-//
-//        public void buildElementBody(Element e, XmlGenerationContext context)
-//        {
-//            TreeNode tn = (TreeNode)context.object;
-//            Document doc = e.getOwnerDocument();
-//            Element txt_elem = doc.createElement("Text");
-//            e.appendChild(txt_elem);
-//            txt_elem.appendChild(doc.createTextNode(tn.getText()));
-//        }
 
         public Element getXml(Document doc, XmlGenerationContext context)
         {
@@ -1291,6 +1291,44 @@ public class DesignerManager
             }
         }
 
+    }
+
+    private class TabPageXmlGenerator extends XmlGenerator
+    {
+
+        public Element getXml(Document doc, XmlGenerationContext context)
+        {
+            TabPageView tpv = (TabPageView)context.object;
+            String cond = tpv.getCondition().trim();
+            if(cond.length() == 0) {
+                Element tp_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
+                tp_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, context.tabPageOrderNo);
+                tp_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, context.tabPageName);
+                XmlGenerationContext gen_ctx = new XmlGenerationContext(tpv, context);
+                gen_ctx.generateTabPage = context.generateTabPage;
+                gen_ctx.tabPageOrderNo = context.tabPageOrderNo;
+                gen_ctx.tabPageOrderNo = context.tabPageOrderNo;
+                generateXmlForInnerGrid(tp_elem, gen_ctx);
+                return tp_elem;
+            } else {
+                Element cond_elem = doc.createElement(ComponentXmlNames.CONDITIONAL_ELEMENT);
+                addDesignerObjectAttrs(cond_elem, tpv);
+                Element if_elem = doc.createElement(ComponentXmlNames.IF_ELEMENT);
+                cond_elem.appendChild(if_elem);
+                Element tp_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
+                if_elem.appendChild(tp_elem);
+                if_elem.setAttribute("condition", cond);
+                tp_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, context.tabPageOrderNo);
+                tp_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, context.tabPageName);
+                XmlGenerationContext gen_ctx = new XmlGenerationContext(tpv, context);
+                gen_ctx.generateTabPage = context.generateTabPage;
+                gen_ctx.tabPageOrderNo = context.tabPageOrderNo;
+                gen_ctx.tabPageOrderNo = context.tabPageOrderNo;
+                generateXmlForInnerGrid(tp_elem, gen_ctx);
+                return cond_elem;
+            }
+            // not implemented
+        }
     }
 
     private class TreeGenerator extends ComponentXmlGenerator
