@@ -305,6 +305,10 @@ public class IBMainFrameController extends IBFormEditorController
      */
     void openLastProject()
     {
+        if(true) {
+            return;
+        }
+        // not implemented
         if (m_frame.getProject() != null) {
             return;
         }

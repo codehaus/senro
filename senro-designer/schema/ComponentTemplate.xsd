@@ -666,6 +666,8 @@
 
                     <xs:element ref="Iterator" minOccurs="0"/>
 
+                    <xs:element ref="Conditional" minOccurs="0"/>
+
                 </xs:sequence>
 
             </xs:extension>

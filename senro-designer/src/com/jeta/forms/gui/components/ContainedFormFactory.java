@@ -71,6 +71,8 @@ public interface ContainedFormFactory
     public static enum GridType
     {
         GRID_VIEW,
-        ITERATOR
+        ITERATOR,
+        TAB_PAGE
     }
+
 }

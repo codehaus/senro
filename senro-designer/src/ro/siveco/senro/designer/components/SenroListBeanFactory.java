@@ -6,9 +6,11 @@ import com.jeta.forms.gui.beans.StandardPropertyDescriptor;
 import com.jeta.forms.gui.beans.BeanProperties;
 import com.jeta.forms.gui.beans.factories.JComponentBeanFactory;
 import com.jeta.forms.gui.common.FormException;
+import com.jeta.forms.store.properties.TransformOptionsProperty;
+import com.jeta.forms.store.properties.effects.PaintProperty;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.*;
 import java.util.*;
 import java.awt.*;
 
@@ -20,16 +22,15 @@ public class SenroListBeanFactory extends JComponentBeanFactory
     public SenroListBeanFactory()
     {
         super(SenroList.class);
+        setScrollable(true);
     }
 
     public JETABean createBean(String compName, boolean instantiateBean, boolean setDefaults) throws FormException
     {
-        Component comp = null;
-        if (instantiateBean) {
-            comp = new SenroList();
-            SenroList table = (SenroList) comp;
-            table.setName(compName);
-//            JTableHeader header = table.getTableHeader();
+        JETABean jbean = super.createBean(compName, instantiateBean, setDefaults);
+        Component comp = jbean.getDelegate();
+        if (comp instanceof JTable) {
+            JTable table = (JTable) comp;
             Object model = table.getModel();
             /**
              * Add a few default columns and rows to give the table a little more identity on the form.
@@ -46,18 +47,19 @@ public class SenroListBeanFactory extends JComponentBeanFactory
                 }
             }
         }
-        DynamicBeanInfo beaninfo = JComponentBeanFactory.createBeanInfo(SenroList.class);
-        Collection prop_desc = beaninfo.getPropertyDescriptors();
-        for (Object prop : prop_desc) {
-            StandardPropertyDescriptor sprop = (StandardPropertyDescriptor) prop;
-            if (BASIC_PROPERTIES.contains(sprop.getName())) {
-                sprop.setPreferred(true);
-            } else {
-                sprop.setPreferred(false);
-            }
-        }
-        BeanProperties default_props = new BeanProperties(beaninfo);
-        return new JETABean(comp, default_props);
+        return jbean;
     }
+
+    public void defineProperties(BeanProperties props)
+    {
+        super.defineProperties(props);
+        for (String basicProperty : BASIC_PROPERTIES) {
+            props.setPreferred(basicProperty, true);
+        }
+        props.setPreferred("scollBars", false);
+        props.setPreferred("border", false);
+    }
+
+
 }
 

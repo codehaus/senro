@@ -52,17 +52,6 @@ public class TabDesignerController extends TableSupportHandler
 
     public class AddTabAction implements ActionListener
     {
-//        public void actionPerformed(ActionEvent evt)
-//        {
-//            ListItemView view = new ListItemView();
-//            JETADialog dlg = JETAToolbox.invokeDialog(view, m_view, I18N.getLocalizedMessage("Tab Properties"));
-//            if(dlg.isOk()) {
-//                TabProperty tp = new TabProperty();
-//                tp.setTitle(view.getLabel());
-//                tp.setIconProperty(view.getIconProperty());
-//                m_view.addTabProperty(tp);
-//            }
-//        }
         public void actionPerformed(ActionEvent evt)
         {
             NewTabView view = new NewTabView();

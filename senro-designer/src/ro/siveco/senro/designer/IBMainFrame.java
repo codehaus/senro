@@ -44,6 +44,7 @@ import java.util.ArrayList;
 
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.components.TopGridView;
+import ro.siveco.senro.designer.util.ComponentStructureInfo;
 
 /**
  * The main frame window for the application
@@ -54,6 +55,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
 {
 
     private static final long serialVersionUID = 1L;
+
+    private static final boolean STUDY = false;
 
     /**
      * The buttonbar that contains the property pane, FormSpec views, and
@@ -635,6 +638,21 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.add(i18n_createMenuItem("Preferences", MainFrameNames.ID_ENV_SETTINGS, null));
         menu.add(i18n_createMenuItem("System Properties", MainFrameNames.ID_SYSTEM_PROPERTIES, null));
         menu.add(i18n_createMenuItem("Parameters", MainFrameNames.ID_PARAMETERS_MANAGER, null));
+
+        if(STUDY) {
+            JMenuItem show_structure = new JMenuItem("Show form structure");
+            menu.add(show_structure);
+            show_structure.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    FormEditor fe = DesignerManager.getSharedDesignerManager().getMainFrame().getCurrentEditor();
+                    if(fe != null) {
+                        System.out.println(ComponentStructureInfo.getStructureInfo(fe.getFormComponent().getChildView()));
+                    }
+                }
+            });
+        }
 
         if (FormDesignerUtils.isDebug()) {
             menu.addSeparator();

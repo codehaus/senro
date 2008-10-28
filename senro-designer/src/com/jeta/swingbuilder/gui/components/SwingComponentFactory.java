@@ -37,6 +37,7 @@ import com.jeta.forms.gui.form.StandardComponent;
 
 
 import com.jeta.open.registry.JETARegistry;
+import ro.siveco.senro.designer.components.ConditionalComponent;
 
 
 /**
@@ -94,6 +95,9 @@ public class SwingComponentFactory extends StandardComponentFactory
             } else {
                 if (jetabean.getDelegate() instanceof javax.swing.JTabbedPane) {
                     FormContainerComponent gc = new FormContainerComponent(jetabean, view);
+                    if(jetabean.getDelegate() instanceof ConditionalComponent) {
+                        jetabean.getCustomProperty("tabs").updateBean(jetabean);
+                    }
                     installHandlers(gc);
                     return gc;
                 } else {

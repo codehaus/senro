@@ -131,6 +131,7 @@ public class JETABeanFactory
        registerFactory(ConditionalComponent.class.getName(), new ConditionalComponentBeanFactory());
        registerFactory(TemplateComponent.class.getName(), new TemplateBeanFactory());
        registerFactory(TopGridView.class.getName(), new TopGridViewBeanFactory());
+       registerFactory(TabPageView.class.getName(), new TabPageViewBeanFactory());
 
    }
 
@@ -203,7 +204,7 @@ public class JETABeanFactory
     * Looks up a BeanFactory from either the standard factories or one of the custom component
     * factories.  Null is returned if a factory is not found.
     */
-   private static BeanFactory lookupFactory( String compClass )
+   public static BeanFactory lookupFactory( String compClass )
    {
       BeanFactory factory = (BeanFactory)m_factories.get( compClass );
       if ( factory == null )
