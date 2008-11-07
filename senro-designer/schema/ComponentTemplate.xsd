@@ -655,6 +655,30 @@
 
                             </xs:element>
 
+                            <xs:element name="event">
+
+                                <xs:simpleType>
+
+                                    <xs:restriction base="xs:NMTOKEN">
+										<xs:enumeration value="OnClick"/>
+										<xs:enumeration value="OnDoubleClick"/>
+										<xs:enumeration value="OnMouseDown"/>
+										<xs:enumeration value="OnMouseUp"/>
+										<xs:enumeration value="OnMouseOver"/>
+										<xs:enumeration value="OnMouseOut"/>
+										<xs:enumeration value="OnMouseMove"/>
+										<xs:enumeration value="OnKeyUp"/>
+										<xs:enumeration value="OnKeyDown"/>
+										<xs:enumeration value="Blur"/>
+										<xs:enumeration value="Change"/>
+										<xs:enumeration value="Focus"/>
+										<xs:enumeration value="Valid"/>
+									</xs:restriction>
+
+                                </xs:simpleType>
+
+                            </xs:element>
+
                         </xs:sequence>
 
                         <xs:attribute name="name" type="xs:string"/>
