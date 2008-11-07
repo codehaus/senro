@@ -664,19 +664,19 @@
                                 <xs:simpleType>
 
                                     <xs:restriction base="xs:NMTOKEN">
-										<xs:enumeration value="OnClick"/>
-										<xs:enumeration value="OnDoubleClick"/>
-										<xs:enumeration value="OnMouseDown"/>
-										<xs:enumeration value="OnMouseUp"/>
-										<xs:enumeration value="OnMouseOver"/>
-										<xs:enumeration value="OnMouseOut"/>
-										<xs:enumeration value="OnMouseMove"/>
-										<xs:enumeration value="OnKeyUp"/>
-										<xs:enumeration value="OnKeyDown"/>
-										<xs:enumeration value="Blur"/>
-										<xs:enumeration value="Change"/>
-										<xs:enumeration value="Focus"/>
-										<xs:enumeration value="Valid"/>
+										<xs:enumeration value="1"/>
+										<xs:enumeration value="2"/>
+										<xs:enumeration value="4"/>
+										<xs:enumeration value="8"/>
+										<xs:enumeration value="16"/>
+										<xs:enumeration value="32"/>
+										<xs:enumeration value="64"/>
+										<xs:enumeration value="128"/>
+										<xs:enumeration value="512"/>
+										<xs:enumeration value="140"/>
+										<xs:enumeration value="170"/>
+										<xs:enumeration value="380"/>
+										<xs:enumeration value="710"/>
 									</xs:restriction>
 
                                 </xs:simpleType>
