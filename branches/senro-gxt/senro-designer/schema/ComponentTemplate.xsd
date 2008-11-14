@@ -55,7 +55,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Grid" type="GridType" minOccurs="0" maxOccurs="unbounded"/>
-                <xs:element name="Popup" type="PopupType" maxOccurs="unbounded"/>
+                <xs:element name="Popup" type="PopupType" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -305,7 +305,7 @@
 
     <xs:element name="Associations">
         <xs:complexType>
-            <xs:sequence maxOccurs="unbounded">
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="Assoc"/>
             </xs:sequence>
         </xs:complexType>
@@ -578,6 +578,8 @@
                     <xs:element ref="TabPage" minOccurs="0"/>
 
                     <xs:element ref="Iterator" minOccurs="0"/>
+
+                    <xs:element ref="Conditional" minOccurs="0"/>
 
                 </xs:sequence>
 
