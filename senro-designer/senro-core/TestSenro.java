@@ -9,6 +9,22 @@ import org.senro.ui.template.TemplateParser;
 import org.senro.ui.template.sid.SIDComponent;
 
 public class TestSenro {
+	private void testAssoc() {
+		Senro.init();
+		
+		SenroComponent tf = new SenroComponent();
+		tf.setRenderComponent(ComponentAssociation.TEXTFIELD);
+		
+		Set<SenroAssoc> assocs = AssociationRegistry.getAll();
+		List<Assoc> a = AssociationRegistry.associationClassesForObject(tf);
+		System.out.println(a);
+		
+		for(SenroAssoc assoc : assocs) {
+			System.out.println(assoc.getBindingSignatures());
+			System.out.println(assoc.getSupportedAspects());
+		}
+	}
+	
 	public static void main(String[] args) {
 		Senro.init();
 		
