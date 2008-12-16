@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns="http://www.siveco.ro/senro/DesignerComponent"
+           xmlns="http://www.siveco.ro/senro/ComponentTemplate"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           targetNamespace="http://www.siveco.ro/senro/DesignerComponent" elementFormDefault="qualified"
+           targetNamespace="http://www.siveco.ro/senro/ComponentTemplate" elementFormDefault="qualified"
         >
 
     <!-- Definition of the generic types used in this schema -->
@@ -27,10 +27,12 @@
     <xs:complexType name="UIComponentType">
         <xs:complexContent>
             <xs:extension base="BasicComponentType">
-                <xs:attribute name="row" type="positiveInteger" default="0" use="optional"/>
-                <xs:attribute name="col" type="positiveInteger" default="0"/>
-                <xs:attribute name="rowSpan" type="strictPositiveInteger" default="1"/>
-                <xs:attribute name="colSpan" type="strictPositiveInteger" default="1"/>
+                <xs:attribute name="row" type="xs:string" default="0"/>
+                <xs:attribute name="col" type="xs:string" default="0"/>
+                <xs:attribute name="rowSpan" type="xs:string" default="1" use="optional"/>
+                <xs:attribute name="colSpan" type="xs:string" default="1" use="optional"/>
+				<xs:attribute name="halign" type="xs:string"/>
+				<xs:attribute name="valign" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -53,6 +55,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Grid" type="GridType" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="Popup" type="PopupType" maxOccurs="unbounded"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -66,7 +69,7 @@
                     <xs:element name="Components">
                         <xs:complexType>
                             <xs:sequence>
-                                <xs:choice maxOccurs="unbounded">
+                                <xs:choice minOccurs="0" maxOccurs="unbounded">
                                     <xs:element ref="Label"/>
                                     <xs:element ref="TextField"/>
                                     <xs:element ref="TextArea"/>
@@ -82,6 +85,8 @@
                                     <xs:element ref="RootPanel"/>
                                     <xs:element ref="GridAllocatorRenderer"/>
                                     <xs:element ref="List"/>
+                                    <xs:element ref="TabPanel"/>
+                                    <xs:element ref="SwitchComponent"/>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
@@ -93,12 +98,14 @@
 
     <xs:complexType name="GridSpecificationElement">
         <xs:sequence>
-            <xs:element name="Alignment" minOccurs="0" maxOccurs="1">
+            <xs:element name="Alignment" minOccurs="1" maxOccurs="1">
                 <xs:simpleType>
                     <xs:restriction base="xs:NMTOKEN">
                         <xs:enumeration value="Left"/>
-                        <xs:enumeration value="Center"/>
                         <xs:enumeration value="Right"/>
+                        <xs:enumeration value="Top"/>
+                        <xs:enumeration value="Bottom"/>
+                        <xs:enumeration value="Center"/>
                         <xs:enumeration value="Fill"/>
                         <xs:enumeration value="Top"/>
                         <xs:enumeration value="Middle"/>
@@ -107,7 +114,7 @@
                 </xs:simpleType>
             </xs:element>
             <xs:element name="Resize" minOccurs="0" maxOccurs="1" type="xs:decimal"/>
-            <xs:element name="Size" minOccurs="0">
+            <xs:element name="Size" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:choice>
                         <xs:element name="Constant" type="xs:integer"/>
@@ -182,7 +189,12 @@
             <xs:extension base="UIComponentType">
                 <xs:sequence>
                     <xs:element name="Label" type="xs:string"/>
+					<xs:element name="Entity" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Task" type="xs:string" minOccurs="0"/>
+                    <xs:element name="Icon" type="xs:string"/>
+                    <xs:element name="HoverIcon" type="xs:string"/>
                 </xs:sequence>
+                <xs:attribute name="type" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -190,6 +202,9 @@
     <xs:complexType name="CheckBoxType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
+                <xs:sequence>
+                    <xs:element name="Label" type="xs:string"/>
+                </xs:sequence>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -204,7 +219,7 @@
 	<xs:complexType name="TemplateType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
-                <xs:sequence>
+                <xs:sequence maxOccurs="unbounded">
                     <xs:element name="Param">
                         <xs:complexType>
                             <xs:attribute name="name" type="xs:string"/>
@@ -212,6 +227,7 @@
                         </xs:complexType>
                     </xs:element>
                 </xs:sequence>
+                <xs:attribute name="file" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -288,6 +304,11 @@
     </xs:element>
 
     <xs:element name="Associations">
+        <xs:complexType>
+            <xs:sequence minOccurs="0"  maxOccurs="unbounded">
+                <xs:element ref="Assoc"/>
+            </xs:sequence>
+        </xs:complexType>
     </xs:element>
 
     <xs:element name="Label" type="LabelType"/>
@@ -348,13 +369,21 @@
 
                         <xs:element ref="List"/>
 
+                        <xs:element ref="TabPanel"/>
+
+                        <xs:element ref="TabPage"/>
+
+                        <xs:element ref="SwitchComponent"/>
+
                     </xs:choice>
 
                     <xs:element name="CurrentItem" minOccurs="0" maxOccurs="1"/>
-
+					<xs:element name="CurrentIndex" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
 
                 <xs:attribute name="list" type="xs:string" use="required"/>
+
+                <xs:attribute name="filterCondition" type="xs:string"/>
 
             </xs:extension>
 
@@ -372,9 +401,9 @@
 
                 <xs:sequence>
 
-                    <xs:element name="If" type="IfType"/>
+                    <xs:element name="If" type="IfType" minOccurs="1"/>
 
-                    <xs:element name="Else" type="ElseType"/>
+                    <xs:element name="Else" type="ElseType" minOccurs="0"/>
 
                 </xs:sequence>
 
@@ -444,7 +473,11 @@
 
     <xs:complexType name="ComponentChoiceType">
 
-        <xs:choice maxOccurs="unbounded">
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:choice maxOccurs="unbounded">
 
             <xs:element ref="Label"/>
 
@@ -474,7 +507,17 @@
 
             <xs:element ref="List"/>
 
+            <xs:element ref="TabPanel"/>
+
+            <xs:element ref="TabPage"/>
+
+            <xs:element ref="SwitchComponent"/>
+
         </xs:choice>
+
+            </xs:extension>
+
+        </xs:complexContent>
 
     </xs:complexType>
 
@@ -523,5 +566,143 @@
     </xs:complexType>
 
     <xs:element name="List" type="ListType"/>
+
+    <xs:complexType name="TabPanelType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:sequence maxOccurs="unbounded">
+
+                    <xs:element ref="TabPage" minOccurs="0"/>
+
+                    <xs:element ref="Iterator" minOccurs="0"/>
+
+                </xs:sequence>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="TabPageType">
+
+        <xs:complexContent>
+
+            <xs:extension base="ComponentChoiceType">
+
+                <xs:attribute name="orderNo"/>
+
+                <xs:attribute name="title"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="TabPage" type="TabPageType"/>
+
+    <xs:element name="TabPanel" type="TabPanelType"/>
+
+    <xs:complexType name="PopupType">
+
+        <xs:complexContent>
+
+            <xs:extension base="GridType">
+
+                <xs:attribute name="showOnLoad" type="xs:boolean"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="SwitchComponentType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:attribute name="property" type="xs:string"/>
+
+                <xs:attribute name="createLabel" type="xs:boolean" default="true"/>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:element name="SwitchComponent" type="SwitchComponentType"/>
+
+    <xs:element name="Assoc">
+
+        <xs:complexType>
+
+            <xs:complexContent>
+
+                <xs:extension base="BasicComponentType">
+
+                    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+
+                <xs:element name="binding">
+
+                    <xs:complexType>
+
+                        <xs:sequence>
+
+                            <xs:element name="aspect" type="xs:string">
+
+                            </xs:element>
+
+                            <xs:element name="event">
+
+                                <xs:simpleType>
+
+                                    <xs:restriction base="xs:NMTOKEN">
+										<xs:enumeration value="1"/>
+										<xs:enumeration value="2"/>
+										<xs:enumeration value="4"/>
+										<xs:enumeration value="8"/>
+										<xs:enumeration value="16"/>
+										<xs:enumeration value="32"/>
+										<xs:enumeration value="64"/>
+										<xs:enumeration value="128"/>
+										<xs:enumeration value="512"/>
+										<xs:enumeration value="140"/>
+										<xs:enumeration value="170"/>
+										<xs:enumeration value="380"/>
+										<xs:enumeration value="710"/>
+									</xs:restriction>
+
+                                </xs:simpleType>
+
+                            </xs:element>
+
+                        </xs:sequence>
+
+                        <xs:attribute name="name" type="xs:string"/>
+
+                        <xs:attribute name="value" type="xs:string"/>
+
+                    </xs:complexType>
+
+                </xs:element>
+
+            </xs:sequence>
+
+                    <xs:attribute name="type" type="xs:string"/>
+
+                </xs:extension>
+
+            </xs:complexContent>
+
+        </xs:complexType>
+
+    </xs:element>
 
 </xs:schema>

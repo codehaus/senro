@@ -6,7 +6,10 @@ import org.senro.metadata.MetadataFactory;
 import org.senro.metadata.MetadataProvider;
 
 /**
+ * Default implementation for {@link MetadataFactory}.
+ * 
  * @author Flavius Burca
+ * @author CristiS
  */
 public class DefaultMetadataFactory implements MetadataFactory {
     private MetadataProvider metadataProvider;

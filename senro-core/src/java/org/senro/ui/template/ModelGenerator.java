@@ -3,9 +3,10 @@ package org.senro.ui.template;
 import java.lang.reflect.Method;
 
 /**
+ * Utility class that generates JAXB Java model classes from an XSD input file.
  * 
  * @author FlaviusB
- *
+ * @author CristiS
  */
 public class ModelGenerator {
 	public static void main(String[] args) throws Throwable {

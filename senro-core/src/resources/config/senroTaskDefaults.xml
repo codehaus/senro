@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	
+	<util:map id="taskDefaults">
+		<entry>
+			<key><util:constant static-field="org.senro.gwt.client.model.ui.context.SenroTask.INIT" /></key>
+			<value>init</value>
+		</entry>
+		<entry>
+			<key><util:constant static-field="org.senro.gwt.client.model.ui.context.SenroTask.LIST" /></key>
+			<value>list</value>
+		</entry>
+		<entry>
+			<key><util:constant static-field="org.senro.gwt.client.model.ui.context.SenroTask.NEW" /></key>
+			<value>new</value>
+		</entry>
+		<entry>
+			<key><util:constant static-field="org.senro.gwt.client.model.ui.context.SenroTask.SELECTOR" /></key>
+			<value>selector</value>
+		</entry>
+	</util:map>
+	
+</beans>

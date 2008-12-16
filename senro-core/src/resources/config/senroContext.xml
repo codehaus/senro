@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+    
+	<bean id="umlProvider" class="org.senro.metadata.provider.uml.UMLMetadataProvider" />
+	<bean id="reflectionProvider" class="org.senro.metadata.provider.reflection.ReflectionMetadataProvider" />
+	
+	<bean id="metadataFactory" class="org.senro.metadata.impl.DefaultMetadataFactory">
+		<property name="metadataProvider">
+			<ref bean="umlProvider" />
+		</property>
+	</bean>
+
+	<bean id="metadataManager" class="org.senro.metadata.impl.DefaultMetadataManager">
+		<property name="metadataFactory">
+			<ref bean="metadataFactory" />
+		</property>
+		<property name="types">
+			<bean id="umlMetadataUtil" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+				<property name="targetClass">
+					<value>org.senro.metadata.provider.uml.UMLMetadataUtil</value>
+				</property>
+				<property name="targetMethod">
+					<value>loadTypes</value>
+				</property>
+				<property name="arguments">
+					<list>
+						<value>src/resources/model/svapntCommonModule.emx</value>
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<util:properties id="senroConfig" location="classpath:config/senro.properties" />	
+	<bean id="propertyConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="properties">
+			<ref bean="senroConfig"/>
+		</property>
+	</bean>
+	
+	<bean id="senro" class="org.senro.Senro" scope="singleton">
+		<property name="instance">
+			<ref bean="senro" />
+		</property>
+		<property name="metadataManager">
+			<ref bean="metadataManager" />
+		</property>
+		<property name="templateSearchPaths">
+			<value>${templateSearchPaths}</value>
+		</property>
+		<property name="taskDefaults">
+			<ref bean="taskDefaults" />
+		</property>
+		<property name="taskOverrides">
+			<ref bean="taskOverrides" />
+		</property>
+	</bean>
+	
+	<bean id="templateParser" class="org.senro.ui.template.TemplateParser" scope="prototype">
+	   <property name="templateRenderer">
+	       <bean class="org.senro.ui.template.TemplateRenderer" />
+	   </property>
+	</bean>
+</beans>

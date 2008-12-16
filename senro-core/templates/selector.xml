@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/ComponentTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Layout>
+        <Grid id="selector" name="selector">
+            <Columns>
+                <Column>
+                    <Alignment>Fill</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Column>
+                <Column>
+                    <Alignment>Left</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Constant>81</Constant>
+                    </Size>
+                </Column>
+            </Columns>
+            <Rows>
+                <Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Constant>84</Constant>
+                    </Size>
+                </Row>
+            </Rows>
+            <Components>
+                <Button col="1" colSpan="1" halign="Left" id="btnSel" name="btnSel" row="0" rowSpan="1" valign="Default" type="icon">
+                    <Label>Button</Label>
+                    <Entity>@{entity.qualifiedName}</Entity>
+                    <Task/>
+                    <Icon>icons/fold_off.gif</Icon>
+                    <HoverIcon>icons/fold_on.gif</HoverIcon>
+                </Button>
+                <Iterator col="0" colSpan="1" filterCondition="" halign="Left" id="iter" list="@{ukFields}" name="iter" row="0" rowSpan="1" valign="Default">
+                   <SwitchComponent property="@{iter.currentItem}" row="0" col="@{iter.currentIndex}" createLabel="false" />
+                </Iterator>
+            </Components>
+        </Grid>
+        <Popup id="@{entity.qualifiedName}" name="popop">
+            <Columns>
+                <Column>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Column>
+            </Columns>
+            <Rows>
+                <Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+            </Rows>
+            <Components>
+                <Template col="0" colSpan="1" file="list" halign="Default" id="" name="" row="0" rowSpan="1" valign="Default">
+                    <Param name="entity" value="@{metadata.getMetadata(entity.qualifiedName)}"/>
+                </Template>
+            </Components>
+        </Popup>
+    </Layout>
+    <Server/>
+    <Client/>
+    <Params>
+        <Parameter defaultValue="" name="entity" type="org.senro.metadata.MetadataClass"/>
+        <Parameter defaultValue="@metadata.getMetadata(entity.qualifiedName).getUKFields()}" name="ukFields" type="java.util.List"/>
+    </Params>
+    <Associations/>
+</ComponentTemplate>

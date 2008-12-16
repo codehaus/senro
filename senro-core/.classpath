@@ -2,41 +2,11 @@
 <classpath>
 	<classpathentry excluding="**/.svn/" kind="src" path="src/java"/>
 	<classpathentry excluding="**/.svn/" kind="src" path="src/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/hibernate-3.2.0.ga.jar"/>
-	<classpathentry kind="lib" path="lib/hibernate-annotations-3.2.0.ga.jar"/>
-	<classpathentry kind="lib" path="lib/persistence-api-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/commons-beanutils-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang-2.2.jar"/>
-	<classpathentry kind="lib" path="lib/junit-4.1.jar"/>
-	<classpathentry kind="lib" path="lib/servlet-api-2.3.jar"/>
-	<classpathentry kind="lib" path="lib/spring-2.0.2.jar" sourcepath="D:/INFO/spring-framework-2.0.2/dist/spring-src.zip"/>
-	<classpathentry kind="lib" path="lib/itext-1.4.8.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/drools-compiler-3.0.5.jar"/>
-	<classpathentry kind="lib" path="lib/drools-core-3.0.5.jar"/>
-	<classpathentry kind="lib" path="lib/jboss-ejb3x.jar"/>
-	<classpathentry kind="lib" path="lib/jta-1.0.1B.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/commons-digester-1.8.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/D:/INFO/commons-digester/apidocs/"/>
-		</attributes>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<accessrules>
+			<accessrule kind="accessible" pattern="**/**"/>
+		</accessrules>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
-	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.13.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.uml2.uml_2.0.2.v200610251409.jar"/>
-	<classpathentry kind="lib" path="lib/svapnt.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.2.0.v200606271057.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.2.0.v200606271057.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi_2.2.0.v200606271057.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.uml2.common_1.2.2.v200610251409.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.uml2.uml.resources_2.0.2.v200610251409.jar"/>
-	<classpathentry kind="lib" path="lib/jaxb-api.jar"/>
-	<classpathentry kind="lib" path="lib/mvel-2.0M1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/senro-client"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

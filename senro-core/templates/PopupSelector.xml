@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/ComponentTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.siveco.ro/senro/ComponentTemplate ComponentTemplate.xsd">
+	<Layout>
+		<Grid id="grid1" name="grid1">
+			<Columns>
+				<Column>
+					<Alignment>Left</Alignment>
+				</Column>
+				<Column>
+					<Alignment>Left</Alignment>
+				</Column>
+			</Columns>
+
+			<Rows>
+				<Row>
+					<Alignment>Middle</Alignment>
+				</Row>
+			</Rows>
+
+			<Components>
+				<Iterator id="iter" name="iter" list="@{ukFields}">
+					<SwitchComponent property="@{iter.currentItem}" row="0" col="@{iter.currentIndex}" createLabel="false" />
+				</Iterator>
+				<Button id="btnSel" name="btnSel" row="0" col="@{iter.currentIndex}" type="icon">
+					<Icon>icons/fold_off.gif</Icon>
+					<HoverIcon>icons/fold_on.gif</HoverIcon>
+					<Entity>@{entity.qualifiedName}</Entity>
+				</Button>
+			</Components>
+		</Grid>
+		<Popup id="@{entity.qualifiedName}" name="@{entity.qualifiedName}">
+			<Columns>
+				<Column>
+					<Alignment>Center</Alignment>
+				</Column>
+			</Columns>
+
+			<Rows>
+				<Row>
+					<Alignment>Middle</Alignment>
+				</Row>
+				<Row>
+					<Alignment>Middle</Alignment>
+				</Row>
+			</Rows>
+
+			<Components>
+				<List id="list" name="list" entity="@{entity}" row="0" col="0" />
+				<Button id="btnSelect" name="btnSelect" row="1" col="0" halign="Center">
+					<Label>Select</Label>
+					<Entity>@{entity.qualifiedName}</Entity>
+					<Task>select</Task>
+				</Button>
+			</Components>
+		</Popup>
+	</Layout>
+
+	<Server>
+	</Server>
+	
+	<Client>
+	</Client>
+
+	<Params>
+		<Parameter name="entity" type="org.senro.metadata.MetadataClass" defaultValue="@{metadata.getMetadata(senroContext.get(senroContext.MAIN_ENTITY))}" />
+		<Parameter name="ukFields" type="java.util.List" defaultValue="@{metadata.getMetadata(senroContext.get(senroContext.MAIN_ENTITY)).getUKFields()}" />
+	</Params>
+
+	<Associations/>
+</ComponentTemplate>
