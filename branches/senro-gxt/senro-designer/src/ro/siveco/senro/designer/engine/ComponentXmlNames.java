@@ -19,7 +19,7 @@ public interface ComponentXmlNames
     public static final String ROW_ELEMENT = "Row";
 
     public static final String TEXT_ELEMENT = "Text";
-    
+
     public static final String ALIGNMENT_ELEMENT = "Alignment";
     public static final String RESIZE_ELEMENT = "Resize";
     public static final String SIZE_ELEMENT = "Size";
@@ -49,7 +49,9 @@ public interface ComponentXmlNames
     public static final String COLUMNS_ATTRIBUTE = "columns";
     public static final String HALIGN_ATTRIBUTE = "halign";
     public static final String VALIGN_ATTRIBUTE = "valign";
-    
+    public static final String CONDITION_ATTRIBUTE = "condition";
+    public static final String FILTER_CONDITION_ATTRIBUTE = "filterCondition";
+
     public static final String PROPERTY_ATTRIBUTE = "property";
     public static final String CREATE_LABEL_ATTRIBUTE = "createLabel";
 
@@ -64,18 +66,22 @@ public interface ComponentXmlNames
 
     public static final String GRID_ALLOCATOR_RENDERER_ELEMENT = "GridAllocatorRenderer";
     public static final String GRID_ALLOCATOR_ATTRIBUTE = "gridAllocator";
+    public static final String TEXT_FIELD_ELEMENT = "TextField";
     public static final String DATE_FIELD_ELEMENT = "DateField";
     public static final String TEMPLATE_ELEMENT = "Template";
     public static final String TREE_ELEMENT = "Tree";
     public static final String TREE_NODE_ELEMENT = "TreeNode";
     public static final String BUTTON_ELEMENT = "Button";
     public static final String LABEL_ELEMENT = "Label";
+    public static final String CHECKBOX_ELEMENT = "CheckBox";
+    public static final String COMBOBOX_ELEMENT = "ComboBox";
     public static final String ENTITY_ELEMENT = "Entity";
     public static final String TASK_ELEMENT = "Task";
     public static final String ICON_ELEMENT = "Icon";
     public static final String HOVER_ELEMENT = "HoverIcon";
     public static final String TEMPLATE_PARAM_ELEMENT = "Param";
     public static final String SWITCH_ELEMENT = "SwitchComponent";
+    public static final String TEXT_AREA_ELEMENT = "TextArea";
 
 
 }

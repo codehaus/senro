@@ -1,35 +1,33 @@
 /*
  * Copyright (c) 2004 JETA Software, Inc.  All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
- *  o Redistributions of source code must retain the above copyright notice, 
+ *  o Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
- *  o Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  o Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  o Neither the name of JETA Software nor the names of its contributors may 
- *    be used to endorse or promote products derived from this software without 
+ *  o Neither the name of JETA Software nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
  *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.jeta.forms.gui.beans;
-
-import java.awt.Component;
 
 import java.lang.reflect.Method;
 
@@ -45,7 +43,7 @@ import com.jeta.forms.store.properties.JETAProperty;
  * For example, some Swing components such as JTables and JLists are almost always
  * contained within a JScrollPane.  So, instead of working with a JScrollPane, we add
  * a scrollable property to the Swing components instead. This scrollable property is
- * an example of a dynamic property since it is not defined by the Java Bean.  
+ * an example of a dynamic property since it is not defined by the Java Bean.
  * Dynamic properties are defined by a <code>DynamicPropertyDescriptor</code> and are
  * assigned to a bean using <code>BeanFactory</code> instances.
  *
@@ -177,7 +175,7 @@ public class DynamicPropertyDescriptor implements JETAPropertyDescriptor
    }
 
 
-   /** 
+   /**
     * Sets the value for the property associated with this descriptor.  This
     * is potentially a two step process.
     * First, the property value itself is updated. This may or may not have
@@ -203,7 +201,7 @@ public class DynamicPropertyDescriptor implements JETAPropertyDescriptor
 	    if ( !getName().equals( prop.getName() ) )
 	    {
 	       /** This should never happen */
-	       System.out.println("DynamicPropertyDescriptor.setPropertyValue  getName(): " + getName() + "  prop.getName(): " + prop.getName());
+	       System.out.println("DynamicPropertyDescriptor.setPropertyValue  toString(): " + getName() + "  prop.toString(): " + prop.getName());
 	       FormUtils.safeAssert( false );
 	    }
 

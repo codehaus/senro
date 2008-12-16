@@ -299,4 +299,8 @@ public class TabProperty extends JETAProperty
         }
     }
 
+    public void setFormMemento(FormMemento form_memento)
+    {
+        m_memento = form_memento;
+    }
 }

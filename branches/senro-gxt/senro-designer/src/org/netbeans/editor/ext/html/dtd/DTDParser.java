@@ -25,30 +25,30 @@ import org.netbeans.editor.ext.html.WeakHashSet;
  * @version 0.2
  */
 class DTDParser extends Object {
-    
+
     // The provider used to provide the Readers for this DTD.
     private ReaderProvider provider = null;
-    
+
     // Asks for Reader for given DTD.
     private Reader getReader( String identifier, String fileName ) {
         if( provider == null ) return null;
         return provider.getReaderForIdentifier( identifier, fileName );
     }
-        
+
     /** Weak set for holding already created strings, to not create more
      * instances of the same string */
     private WeakHashSet stringCache = new WeakHashSet( 131, 0.75f );
-    
+
     /** Weak set of attributes - helps sharing common attributes */
     private WeakHashSet attributes = new WeakHashSet( 23, 0.75f );
-    
+
     /** Weak set of models */
     private WeakHashSet models = new WeakHashSet( 131, 0.75f );
-    
-    /** Weak set of Contents */    
+
+    /** Weak set of Contents */
     private WeakHashSet contents = new WeakHashSet( 131, 0.75f );
-    
-    /** Temporal storage of all ContentLeafs that needs to get their 
+
+    /** Temporal storage of all ContentLeafs that needs to get their
      * elements filled in at the end of parsing
      */
     Set leafs = new HashSet( 131, 0.75f );
@@ -56,22 +56,22 @@ class DTDParser extends Object {
     /** Map of all character references.
      * Mapping is String name -> DTD.CharRef instance */
     private SortedMap charRefs = new TreeMap();
-    
+
     /** Map holding partially completed instances of Element.
      * Mapping is String name -> DTD.Element instance */
     private SortedMap elementMap = new TreeMap();
-    
+
     /** Map holding entities during creation of DTD.
      * Mapping is String name -> String content.
      * This map should not be used for direct put(..), because entities
      * are defined by first declaration and can not be overriden.
      */
     private Map entityMap = new HashMap();
-    
-    
+
+
     public DTD createDTD( ReaderProvider provider, String identifier, String fileName ) throws WrongDTDException {
         this.provider = provider;
-        
+
         Reader reader = getReader( identifier, fileName );
         if( reader == null ) throw new WrongDTDException( "Can't open Reader for public identifier " + identifier );
         try {
@@ -95,10 +95,10 @@ class DTDParser extends Object {
                 if( subElem == null ) {
                     throw new WrongDTDException( "'" + oldElem + "' element referenced from " + elem.getName() + " not found throughout the DTD." );
                 }
-                newIncs.add( subElem ); 
+                newIncs.add( subElem );
             }
             cm.included = newIncs;
-    
+
             Set newExcs = new HashSet();
             for( Iterator excIter = cm.excluded.iterator(); excIter.hasNext (); ) {
                 Object oldElem;
@@ -109,19 +109,19 @@ class DTDParser extends Object {
                 if( subElem == null ) {
                     throw new WrongDTDException( "'" + oldElem + "' element referenced from " + elem.getName() + " not found throughout the DTD." );
                 }
-                newExcs.add( subElem ); 
+                newExcs.add( subElem );
             }
             cm.excluded = newExcs;
             cm.hashcode = cm.content.hashCode() + 2*cm.included.hashCode() + 3*cm.excluded.hashCode();
         }
 
-        
+
         // fixup content leafs
         for( Iterator it = leafs.iterator(); it.hasNext (); ) {
             ContentLeafImpl leaf = (ContentLeafImpl)it.next();
             leaf.elem = (DTD.Element)elementMap.get( leaf.elemName );
         }
-        
+
         return new DTDImpl( identifier, elementMap, charRefs );
     }
 
@@ -131,7 +131,7 @@ class DTDParser extends Object {
     void addEntity( String name, String content ) {
         if( entityMap.get( name ) == null ) entityMap.put( name, content );
     }
-    
+
     /** Method for adding new entities to their map. Obeys the rule that
      * entity, once defined, can not be overriden */
     void addPublicEntity( String name, String identifier, String file ) throws WrongDTDException {
@@ -148,18 +148,18 @@ class DTDParser extends Object {
             } catch( IOException e ) {
                 throw new WrongDTDException( "Error reading included public entity " + name + " - " + e.getMessage() );
             }
-            
+
             entityMap.put( name, sb.toString() );
         }
     }
-    
+
     DTD.Value createValue( String name ) {
         return new ValueImpl( (String)stringCache.put( name ) );
     }
-    
+
     /** Creates new or lookups old ContentModel with given properites */
     DTD.ContentModel createContentModel( DTD.Content content, Set included, Set excluded ) {
-        
+
         DTD.ContentModel cm = new ContentModelImpl( content, included, excluded );
         return (DTD.ContentModel)models.put( cm );
     }
@@ -186,7 +186,7 @@ class DTDParser extends Object {
         DTD.Element retVal = new ElementImpl( name, cm, optStart, optEnd, new TreeMap() );
         return retVal;
     }
-    
+
     /** Creates new or lookups old attribute with given properites */
     DTD.Attribute createAttribute( String name, int type, String baseType, String typeHelper, String defaultMode, SortedMap values ) {
         DTD.Attribute attr = new AttributeImpl( name, type,
@@ -197,14 +197,14 @@ class DTDParser extends Object {
         );
         return (DTD.Attribute)attributes.put( attr );
     }
-    
+
     /** Adds given instance of DTD.Attribute to Element named elemName */
     void addAttrToElement( String elemName, DTD.Attribute attr) throws WrongDTDException {
         ElementImpl elem = (ElementImpl)elementMap.get( elemName.toUpperCase() );
         if( elem == null ) throw new WrongDTDException( "Attribute definition for unknown Element \"" + elemName +"\"." );
         elem.addAttribute( attr );
     }
-    
+
     void createAddCharRef( String name, char value ) {
         DTD.CharRef ref = new CharRefImpl( name, value );
         charRefs.put( name, ref );
@@ -213,8 +213,8 @@ class DTDParser extends Object {
     private boolean isNameChar( char c ) {
         return Character.isLetterOrDigit( c ) || c == '_' || c == '-' || c == '.' || c == ':';
     }
-    
-    
+
+
 /*----------------------------------------------------------------------------*/
 /*----------------------------- Parsing routines ---------------------------- */
 /*----------------------------------------------------------------------------*/
@@ -223,7 +223,7 @@ class DTDParser extends Object {
     private static final int DTD_EXC = 2;       // after "<!"
     private static final int DTD_MINUS = 3;     // after "<!-"
     private static final int DTD_ACOMMENT = 4;  // after comment was parsed, awaiting '>'
-    
+
     private void parseDTD( PushbackReader in ) throws IOException, WrongDTDException {
         int state = DTD_INIT;
         for( ;; ) {
@@ -242,12 +242,12 @@ class DTDParser extends Object {
                             break; // Stay in DTD_INIT
                     }
                     break;
-                    
+
                 case DTD_LT:
                     if( i != '!' ) throw new WrongDTDException( "Unexpected char '" + (char)i + "' after '<'" );
                     state = DTD_EXC;
                     break;
-                    
+
                 case DTD_EXC:
                     switch( i ) {
                         case '-':
@@ -264,23 +264,23 @@ class DTDParser extends Object {
                             break;
                     }
                     break;
-                    
+
                 case DTD_MINUS:
                     if( i != '-' ) throw new WrongDTDException( "Unexpected char '" + (char)i + "' after \"<!-\"" );
                     parseComment( in );
                     state = DTD_ACOMMENT;
                     break;
-                    
+
                 case DTD_ACOMMENT:
                     if( i != '>' ) throw new WrongDTDException( "Unexpected char '" + (char)i + "' after comment" );
                     state = DTD_INIT;
                     break;
-                    
+
             }
-        }        
+        }
         if( state != DTD_INIT ) throw new WrongDTDException( "Premature end of DTD" ); // NOI18N
     }
-    
+
     /** Parser that reads the markup type after <!. Recognizes ENTITY, ELEMENT
      * and ATTLIST markup and forwards their processing to proper parser.
      * It gets the control just after starting "<!" and releases after eating
@@ -293,9 +293,9 @@ class DTDParser extends Object {
             if( i == ' ' ) break;
             sb.append( (char)i );                 // next char of name
         }
-        
+
         String markup = sb.toString();
-        
+
         if( "ENTITY".equals( markup ) ) {
             parseEntityDefinition( in );
         } else if( "ELEMENT".equals( markup ) ) {
@@ -304,8 +304,8 @@ class DTDParser extends Object {
             parseAttlist( in );
         } else throw new WrongDTDException( "Wrong DTD markup <!" + markup );
     }
-    
-    
+
+
     private static final int PED_INIT = 0;
     private static final int PED_PERCENT = 1;
     private static final int PED_CHAR = 2;
@@ -325,8 +325,8 @@ class DTDParser extends Object {
     private static final int PED_CH_TYPE = 16;
     private static final int PED_CH_ATYPE = 17;
     private static final int PED_CH_QUOT = 18;
-    
-    
+
+
     /* TODO: Parsing fo character references */
     private void parseEntityDefinition( PushbackReader in ) throws IOException, WrongDTDException {
         int state = PED_INIT;
@@ -334,7 +334,7 @@ class DTDParser extends Object {
         StringBuffer value = new StringBuffer();
         StringBuffer type = new StringBuffer();
         StringBuffer identifier = new StringBuffer();
-        
+
         for( ;; ) {
             int i = in.read();
             if( i == -1 ) throw new WrongDTDException( "Premature end of DTD" ); // NOI18N EOF
@@ -347,13 +347,13 @@ class DTDParser extends Object {
                         state = PED_CHAR;
                     }
                     break;
-                    
+
                 case PED_PERCENT:
                     if( Character.isWhitespace( (char)i ) ) break;
                     name.append( (char)i );
                     state = PED_NAME;
                     break;
-                    
+
                 case PED_NAME:
                     if( Character.isWhitespace( (char)i ) ) {
                         state = PED_ANAME;
@@ -361,7 +361,7 @@ class DTDParser extends Object {
                         name.append( (char)i );
                     }
                     break;
-                    
+
                 case PED_ANAME:
                     if( Character.isWhitespace( (char)i ) ) break;
                     if( i == '"' ) state = PED_VAL;
@@ -370,7 +370,7 @@ class DTDParser extends Object {
                         state = PED_TYPE;
                     }
                     break;
-                    
+
                 case PED_VAL:
                     if( i == '"' ) {
                         addEntity( name.toString(), value.toString() );
@@ -379,19 +379,19 @@ class DTDParser extends Object {
                         value.append( (char)i );
                     }
                     break;
-                    
+
                 case PED_AVAL:
                     if( i == '>' ) {
                         return;
                     }
                     if( i == '-' ) state = PED_AVAL_M;
                     break;
-                    
+
                 case PED_AVAL_M:
                     if( i == '-' ) parseComment( in );
                     state = PED_AVAL;
                     break;
-                    
+
                 case PED_TYPE:
                     if( Character.isWhitespace( (char)i ) ) {
                         if( type.toString().equals( "PUBLIC" ) ) {
@@ -403,7 +403,7 @@ class DTDParser extends Object {
                         type.append( (char)i );
                     }
                     break;
-                    
+
                 case PED_ATYPE:
                     if( Character.isWhitespace( (char)i ) ) break;
                     if( i == '"' ) {
@@ -411,7 +411,7 @@ class DTDParser extends Object {
                         break;
                     }
                     throw new WrongDTDException( "Unexpected char '" + (char)i + "' in PUBLIC entity." );
-                    
+
                 case PED_ID:
                     if( i == '"' ) {
                         state = PED_AID;
@@ -419,7 +419,7 @@ class DTDParser extends Object {
                         identifier.append( (char)i );
                     }
                     break;
-                    
+
                 case PED_AID:
                     if( Character.isWhitespace( (char)i ) ) break;
                     if( i == '"' ) {
@@ -431,7 +431,7 @@ class DTDParser extends Object {
                         return;
                     }
                     throw new WrongDTDException( "Unexpected char '" + (char)i + "' in PUBLIC entity." );
-                    
+
                 case PED_FILE:
                     if( i == '"' ) {
                         state = PED_AFILE;
@@ -439,7 +439,7 @@ class DTDParser extends Object {
                         value.append( (char)i );
                     }
                     break;
-                    
+
                 case PED_AFILE:
                     if( Character.isWhitespace( (char)i ) ) break;
                     if( i == '-' ) {
@@ -451,7 +451,7 @@ class DTDParser extends Object {
                         return;
                     }
                     throw new WrongDTDException( "Unexpected char '" + (char)i + "' in PUBLIC entity." );
-                    
+
                 case PED_AFILE_M:
                     if( i == '-' ) {
                         parseComment( in );
@@ -459,7 +459,7 @@ class DTDParser extends Object {
                         break;
                     }
                     throw new WrongDTDException( "Unexpected sequence \"-" + (char)i + "\" in in PUBLIC entity." );
-                    
+
                 case PED_CHAR:
                     if( Character.isWhitespace( (char)i ) ) {
                         state = PED_ACHAR;
@@ -467,7 +467,7 @@ class DTDParser extends Object {
                         name.append( (char)i );
                     }
                     break;
-                    
+
                 case PED_ACHAR:
                     if( Character.isWhitespace( (char)i ) ) break;
                     else {
@@ -475,7 +475,7 @@ class DTDParser extends Object {
                         state = PED_CH_TYPE;
                     }
                     break;
-                    
+
                 case PED_CH_TYPE:
                     if( Character.isWhitespace( (char)i ) ) {
                         if( type.toString().equals( "CDATA" ) ) {
@@ -488,7 +488,7 @@ class DTDParser extends Object {
                         type.append( (char)i );
                     }
                     break;
-                    
+
                 case PED_CH_ATYPE:
                     if( Character.isWhitespace( (char)i ) ) break;
                     else if( i == '"' ) {
@@ -497,7 +497,7 @@ class DTDParser extends Object {
                         throw new WrongDTDException( "Unexpected char '" + (char)i + "' in entity." );
                     }
                     break;
-                    
+
                 case PED_CH_QUOT:
                     if( i == '"' ) {
                         value.delete( 0, 2 );
@@ -509,10 +509,10 @@ class DTDParser extends Object {
                         value.append( (char)i );
                     }
             }
-            
+
         }
     }
-    
+
     private static final int GR_INIT=0;
     private static final int GR_NAME=1;
     private static final int GR_ANAME=2;
@@ -522,7 +522,7 @@ class DTDParser extends Object {
         int state = GR_INIT;
         StringBuffer name = new StringBuffer();
         List list = new ArrayList();
-        
+
         for( ;; ) {
             int i = in.read();
             if( i == -1 ) throw new WrongDTDException( "Premature end of DTD" ); // NOI18N EOF
@@ -536,7 +536,7 @@ class DTDParser extends Object {
                         state = GR_NAME;
                     }
                     break;
-                    
+
                 case GR_NAME:
                     if( isNameChar( (char)i ) ) {
                         name.append( (char)i );
@@ -562,7 +562,7 @@ class DTDParser extends Object {
                             }
                     }
                     break;
-                    
+
                 case GR_ANAME:
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
@@ -577,9 +577,9 @@ class DTDParser extends Object {
                     break;
             }
         }
-                    
+
     }
-    
+
     private static final int EL_INIT = 0;
     private static final int EL_NAME = 1;
     private static final int EL_ANAME = 2;
@@ -587,7 +587,7 @@ class DTDParser extends Object {
     private static final int EL_ACONTENT = 4;
     private static final int EL_PLUS = 5;
     private static final int EL_MINUS = 6;
-    
+
     /** parse the whole element(s) definition including content model.
      * Create corresponding instances of DTD.Element filled with proper
      * informations. Make the same content models and their contents shared
@@ -601,7 +601,7 @@ class DTDParser extends Object {
         DTD.Content content = null;
         Set inSet = new HashSet();
         Set exSet = new HashSet();
-        
+
         for( ;; ) {
             int i = in.read();
             if( i == -1 ) break;
@@ -622,18 +622,18 @@ class DTDParser extends Object {
                             break;
                     }
                     break;
-                    
+
                 case EL_NAME:
                     if( Character.isWhitespace( (char)i ) ) {
                         state = EL_ANAME;
                         list = new ArrayList();
                         list.add( name.toString() );
                     } else {
-                            name.append( (char)i );                        
+                            name.append( (char)i );
                     }
                     break;
-                    
-                   
+
+
                 case EL_ANAME:
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
@@ -660,7 +660,7 @@ class DTDParser extends Object {
                             throw new WrongDTDException( "Unexpected char '" + (char)i + "' in ELEMENT optEnd definition." );
                     }
                     break;
-                    
+
                 case EL_ACONTENT:
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
@@ -681,7 +681,7 @@ class DTDParser extends Object {
                             throw new WrongDTDException( "Unexpected char '" + (char)i + "' in ELEMENT definition." );
                     }
                     break;
-                    
+
                 case EL_PLUS:
                     if( i == '(' ) {
                         state = EL_ACONTENT;
@@ -690,7 +690,7 @@ class DTDParser extends Object {
                         throw new WrongDTDException( "Unexpected char '" + (char)i + "' in ELEMENT definition." );
                     }
                     break;
-                    
+
                 case EL_MINUS:
                     switch( i ) {
                         case '(':
@@ -711,7 +711,7 @@ class DTDParser extends Object {
 
         //XXX
     }
-    
+
     private static final int CO_INIT = 0;
     private static final int CO_NAME = 1;
     private static final int CO_AMODEL = 2;
@@ -726,7 +726,7 @@ class DTDParser extends Object {
         StringBuffer name = new StringBuffer();
         ArrayList list = null;
         DTD.Content content = null;
-        
+
         for( ;; ) {
             int i = in.read();
             if( i == -1 ) break;
@@ -747,7 +747,7 @@ class DTDParser extends Object {
                             break;
                     }
                     break;
-                    
+
                 case CO_NAME:
                     if( isNameChar( (char)i ) ) {
                         name.append( (char)i );
@@ -764,7 +764,7 @@ class DTDParser extends Object {
                                 return createContentLeaf( name.toString() );
                         }
                     }
-                    break;                    
+                    break;
 
                 case CO_AMODEL:
                     if( Character.isWhitespace( (char)i ) ) break;
@@ -772,7 +772,7 @@ class DTDParser extends Object {
                         case '&':
                             list = new ArrayList();
                             list.add( content );
-                            list.add( parseContent( in ) );                            
+                            list.add( parseContent( in ) );
                             state = CO_AND;
                             break;
                         case '|':
@@ -794,12 +794,12 @@ class DTDParser extends Object {
                             throw new WrongDTDException( "Unexpected char '" + (char)i + "' in ELEMENT optEnd definition." );
                     }
                     break;
-                    
+
                 case CO_AND:
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
                         case '&':
-                            list.add( parseContent( in ) );                            
+                            list.add( parseContent( in ) );
                             break;
                         case ')':
                             content = createContentNode( '&', (DTD.Content[])list.toArray( new DTD.Content[0] ) );
@@ -814,7 +814,7 @@ class DTDParser extends Object {
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
                         case '|':
-                            list.add( parseContent( in ) );                            
+                            list.add( parseContent( in ) );
                             break;
                         case ')':
                             content = createContentNode( '|', (DTD.Content[])list.toArray( new DTD.Content[0] ) );
@@ -824,12 +824,12 @@ class DTDParser extends Object {
                             throw new WrongDTDException( "Unexpected char '" + (char)i + "' in ContentModel definition." );
                     }
                     break;
-                    
+
                 case CO_SEQ:
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
                         case ',':
-                            list.add( parseContent( in ) );                            
+                            list.add( parseContent( in ) );
                             break;
                         case ')':
                             content = createContentNode( ',', (DTD.Content[])list.toArray( new DTD.Content[0] ) );
@@ -850,10 +850,10 @@ class DTDParser extends Object {
                         default:
                             in.unread( i );
                             return content;
-                    }               
+                    }
             }
         }
-        
+
         throw new WrongDTDException( "Premature end of DTD" ); // NOI18N EOF
 
     }
@@ -895,7 +895,7 @@ class DTDParser extends Object {
                             break;
                     }
                     break;
-                    
+
                 case ATT_NAME:
                     if( Character.isWhitespace( (char)i ) ) {
                         list = new ArrayList();
@@ -905,7 +905,7 @@ class DTDParser extends Object {
                     }
                     name.append( (char)i );
                     break;
-                    
+
                 case ATT_ANAME:
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
@@ -923,7 +923,7 @@ class DTDParser extends Object {
                             break;
                     }
                     break;
-                    
+
                 case ATT_ANAME_M:
                     if( i == '-' ) {
                         parseComment( in ); // skip the comment
@@ -932,7 +932,7 @@ class DTDParser extends Object {
                         throw new WrongDTDException( "Unexpected char '" + (char)i + "' in ATTLIST definition." );
                     }
                     break;
-                    
+
                 case ATT_VAR:
                     if( Character.isWhitespace( (char)i ) ) {
                         state = ATT_AVAR;
@@ -940,7 +940,7 @@ class DTDParser extends Object {
                     }
                     attr.append( (char)i );
                     break;
-                    
+
                 case ATT_AVAR:
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
@@ -965,7 +965,7 @@ class DTDParser extends Object {
                     }
                     type.append( (char)i );
                     break;
-                    
+
                 case ATT_ATYPE:
                     if( Character.isWhitespace( (char)i ) ) break;
                     switch( i ) {
@@ -978,12 +978,12 @@ class DTDParser extends Object {
                             break;
                     }
                     break;
-                    
+
                 case ATT_MODE:
                     if( Character.isWhitespace( (char)i ) ) {
                         // Create attr and add it to all tags
                         DTD.Attribute a = null;
-                        
+
                         if( values == null ) { // HOTSPOT for internation of strings!!!
                             a = createAttribute( attr.toString(),
                                 DTD.Attribute.TYPE_BASE, type.toString(),
@@ -1005,23 +1005,23 @@ class DTDParser extends Object {
                         for( Iterator iter = list.iterator(); iter.hasNext(); ) {
                             addAttrToElement( (String)iter.next(), a );
                         }
-                        
+
                         typeHelper = null;
                         attr.setLength(0);
                         type.setLength(0);
                         mode.setLength(0);
                         values = null;
-                        
+
                         state = ATT_ANAME;
                         break;
                     }
                     mode.append( (char)i );
                     break;
             }
-        }           
+        }
     }
-    
-    
+
+
     private static final int OPT_INIT = 0;
     private static final int OPT_PROCESS = 1;
     private static final int OPT_APROCESS = 2;
@@ -1035,7 +1035,7 @@ class DTDParser extends Object {
         StringBuffer process = new StringBuffer();
         StringBuffer content = new StringBuffer();
         boolean ignore = false;
-        
+
         for( ;; ) {
             int i = in.read();
             if( i == -1 ) break; // EOF
@@ -1049,7 +1049,7 @@ class DTDParser extends Object {
                     process.append( (char)i );
                     state = OPT_PROCESS;
                     break;
-                    
+
                 case OPT_PROCESS:
                     if( Character.isWhitespace( (char)i ) ) {
                         String s = process.toString();
@@ -1060,18 +1060,18 @@ class DTDParser extends Object {
                         process.append( (char)i );
                     }
                     break;
-                    
+
                 case OPT_APROCESS:
                     if( Character.isWhitespace( (char)i ) ) break;
                     if( i == '[' ) state = OPT_CONTENT;
                     else throw new WrongDTDException( "Unexpected char '" + (char)i + "' in processing instruction." );
                     break;
-                    
+
                 case OPT_CONTENT:
                     if( i == ']' ) state = OPT_BRAC1;
                     else content.append( (char)i );
                     break;
-                    
+
                 case OPT_BRAC1:
                     if( i == ']' ) state = OPT_BRAC2;
                     else {
@@ -1079,7 +1079,7 @@ class DTDParser extends Object {
                         state = OPT_CONTENT;
                     }
                     break;
-                    
+
                 case OPT_BRAC2:
                     if( Character.isWhitespace( (char)i ) ) break;
                     if( i == '>' ) {
@@ -1089,9 +1089,9 @@ class DTDParser extends Object {
                     throw new WrongDTDException( "Unexpected char '" + (char)i + "' in processing instruction." );
             }
         }
-        
+
     }
-    
+
     private static final int COMM_TEXT = 0;     // anywhere in text
     private static final int COMM_DASH = 1;     // after '-'
     /** Parser that eats everything until two consecutive dashes (inclusive) */
@@ -1112,7 +1112,7 @@ class DTDParser extends Object {
         }
         throw new WrongDTDException( "Premature end of DTD" ); // NOI18N
     }
-    
+
     /** Parser that reads the name of entity reference and replace it with
      * the content of that entity (using the pushback capability of input).
      * It gets the control just after starting '%'
@@ -1128,7 +1128,7 @@ class DTDParser extends Object {
                 String entValue = (String)entityMap.get( sb.toString() ); //get the entity content
                 if( entValue == null )
                     throw new WrongDTDException( "No such entity: \"" + sb + "\"" );
-                
+
                 if( i != ';' ) in.unread( i );
                 in.unread( entValue.toCharArray() );  // push it back to stream
                 return sb.toString();
@@ -1136,41 +1136,41 @@ class DTDParser extends Object {
         }
         throw new WrongDTDException( "Premature end of DTD" ); // NOI18N
     }
-    
-    
+
+
     public static class WrongDTDException extends Exception {
         public WrongDTDException( String reason ) {
             super( reason );
         }
     }
-    
+
 /*----------------------------------------------------------------------------*/
 /*---------- Implementation of classes this factory uses as results ----------*/
 /*----------------------------------------------------------------------------*/
-    
+
     /** Implementation of the DTD which this DTDcreator works as factory for. */
     private static class DTDImpl implements DTD {
         private String id;
         private SortedMap elements;
         private SortedMap charRefs;
-        
+
         DTDImpl( String identifier, SortedMap elements, SortedMap charRefs ) {
-            this.id = identifier;            
+            this.id = identifier;
             this.elements = elements;
             this.charRefs = charRefs;
         }
-        
+
         /** Identify this instance of DTD */
         public String getIdentifier() {
             return id;
         }
-        
+
         /** Get List of all Elements whose names starts with given prefix  */
         public List getElementList( String prefix ) {
             List l = new ArrayList();
             prefix = prefix == null ? "" : prefix.toUpperCase();
             Iterator i = elements.tailMap( prefix ).entrySet().iterator();
-            
+
             while( i.hasNext() ) {
                 Map.Entry entry = (Map.Entry)i.next();
                 if( ((String)entry.getKey()).startsWith( prefix ) ) {
@@ -1179,20 +1179,20 @@ class DTDParser extends Object {
                     break;  // entry fails, all remaining entry would fail.
                 }
             }
-            
+
             return l;
         }
-        
+
         /** Get the Element of given name. */
         public DTD.Element getElement( String name ) {
             return (DTD.Element)elements.get( name );
         }
-        
+
         /** Get List of all CharRefs whose aliases starts with given prefix. */
         public List getCharRefList( String prefix ) {
             List l = new ArrayList();
             Iterator i = charRefs.tailMap(prefix).entrySet().iterator();
-            
+
             while( i.hasNext() ) {
                 Map.Entry entry = (Map.Entry)i.next();
                 if( ((String)entry.getKey()).startsWith( prefix ) ) {
@@ -1201,31 +1201,31 @@ class DTDParser extends Object {
                     break;  // entry fails, all remaining entry would fail.
                 }
             }
-            
+
             return l;
         }
-        
+
        /** Get the CharRef of given name */
         public DTD.CharRef getCharRef( String name ) {
             return (DTD.CharRef)charRefs.get( name );
         }
-        
+
         public String toString() {
             return super.toString() + "[id=" + id + ", elements=" + elements + ",charRefs=" + charRefs + "]";  // NOI18N
         }
     }
-    
+
     /** Implementation of Element used by this DTDcreator. */
     private static class ElementImpl implements DTD.Element {
-        
+
         private String name;
         private DTD.ContentModel model;
         private boolean optStart;
         private boolean optEnd;
         private SortedMap attributes;  //these are sorted just by name
         private DTD dtd;
-        
-        
+
+
         ElementImpl( String name, DTD.ContentModel model, boolean optStart, boolean optEnd, SortedMap attributes ) {
             this.name = name;
             this.model = model;
@@ -1238,24 +1238,24 @@ class DTDParser extends Object {
         public String getName() {
             return name;
         }
-        
+
         /** Shorthand to resolving if content model of this Element is EMPTY */
         public boolean isEmpty() {
             if( optEnd && model.getContent() instanceof DTD.ContentLeaf ) return true;
-            //&& ((DTD.ContentLeaf)model.getContent()).getName().equals( "EMPTY" ) ) return true; 
+            //&& ((DTD.ContentLeaf)model.getContent()).toString().equals( "EMPTY" ) ) return true;
             return false;
         }
-        
+
         /** Tells if this Element has optional Start Tag. */
         public boolean hasOptionalStart() {
             return optStart;
         }
-        
+
         /** Tells if this Element has optional End Tag. */
         public boolean hasOptionalEnd() {
             return optEnd;
         }
-        
+
         /** Get the List of Attributes of this Element, which starts with
          * given <CODE>prefix</CODE>. */
         public List getAttributeList( String prefix ) {
@@ -1265,14 +1265,14 @@ class DTDParser extends Object {
                     if( ! isRequired( o1 ) && isRequired( o2 ) ) return 1;
                     return ((DTD.Attribute)o1).getName().compareTo( ((DTD.Attribute)o2).getName() );
                 }
-                
+
                 private final boolean isRequired( Object o ) {
                     return ((DTD.Attribute)o).getDefaultMode().equals( DTD.Attribute.MODE_REQUIRED );
                 }
             });
             prefix = prefix.toLowerCase();
             Iterator i = attributes.tailMap(prefix).entrySet().iterator();
-            
+
             while( i.hasNext() ) {
                 Map.Entry entry = (Map.Entry)i.next();
                 if( ((String)entry.getKey()).startsWith( prefix ) ) {
@@ -1283,29 +1283,29 @@ class DTDParser extends Object {
             }
             return new ArrayList( set );
         }
-        
+
         /** Get the Attribute of given name. */
         public DTD.Attribute getAttribute( String name ) {
             return (DTD.Attribute)attributes.get( name );
         }
-        
+
         void addAttribute( DTD.Attribute attr ) {
             attributes.put( attr.getName(), attr );
         }
-        
+
         /** Get the content model of this Element */
         public DTD.ContentModel getContentModel() {
             return model;
         }
-        
+
         public String toString() {
             return super.toString() + "[" + name + (optStart ? " O" : " -") + (optEnd ? " O " : " - ") + model + " attribs=" + attributes + "]";  // NOI18
         }
     }
-    
+
     /** */
     public static class AttributeImpl implements DTD.Attribute {
-        
+
         private String name;
         private int type;
         private String baseType;
@@ -1313,7 +1313,7 @@ class DTDParser extends Object {
         private String defaultMode;
         private SortedMap values;
         private int hashcode;
-        
+
         public AttributeImpl( String name, int type, String baseType, String typeHelper, String defaultMode, SortedMap values ) {
             this.name = name;
             this.type = type;
@@ -1321,18 +1321,18 @@ class DTDParser extends Object {
             this.typeHelper = typeHelper;
             this.defaultMode = defaultMode;
             this.values = values;
-            hashcode = name.hashCode() * (type + 1) * 
+            hashcode = name.hashCode() * (type + 1) *
                 (baseType == null ? 1 : baseType.hashCode()) +
                 (typeHelper == null ? 1 : typeHelper.hashCode()) +
                 defaultMode.hashCode() +
                 (values == null ? 1 : values.hashCode() );
         }
-        
+
         /** @return name of this attribute */
         public String getName() {
             return name;
         }
-        
+
         /** @return type of this attribute */
         public int getType() {
             return type;
@@ -1341,22 +1341,22 @@ class DTDParser extends Object {
         public String getBaseType() {
             return baseType;
         }
-        
+
         /** The last entity name through which was this Attribute's type defined. */
         public String getTypeHelper() {
             return typeHelper;
         }
-        
+
         /** This method is used to obtain default value information. */
         public String getDefaultMode() {
             return defaultMode;
         }
-        
+
         /** Shorthand for determining if defaultMode is "#REQUIRED" */
         public boolean isRequired() {
             return defaultMode.equals( MODE_REQUIRED );
         }
-        
+
         /** The way how to obtain possible values for TYPE_SET Attributes
          * @param prefix required prefix, or <CODE>null</CODE>, if all
          *   possible values are required.
@@ -1371,7 +1371,7 @@ class DTDParser extends Object {
 
             List retVal = new ArrayList();
             Iterator i = values.tailMap(prefix).entrySet().iterator();
-            
+
             while( i.hasNext() ) {
                 Map.Entry entry = (Map.Entry)i.next();
                 if( ((String)entry.getKey()).startsWith( prefix ) ) {
@@ -1382,12 +1382,12 @@ class DTDParser extends Object {
             }
             return retVal;
         }
-        
+
         /** Get the value of given name. */
         public DTD.Value getValue( String name ) {
             return (DTD.Value)values.get( name );
         }
-        
+
         public String toString() {
             if( type == TYPE_SET ) {
                 return name + " " + values + "[" + typeHelper + "] " + defaultMode; // NOI18
@@ -1395,13 +1395,13 @@ class DTDParser extends Object {
                 return name + " (" + name + ")[" + typeHelper + "] " + defaultMode; // NOI18
             } else {
                 return name + " " + baseType + "[" + typeHelper + "] " + defaultMode; // NOI18
-            }                
+            }
         }
-        
+
         public int hashCode() {
             return hashcode;
         }
-        
+
         public boolean equals( Object obj ) {
             if( !(obj instanceof AttributeImpl) ) return false;
             AttributeImpl a = (AttributeImpl)obj;
@@ -1416,99 +1416,99 @@ class DTDParser extends Object {
             );
         }
     }
-    
-    
+
+
     private static class ValueImpl implements DTD.Value {
         String name;
-        
+
         ValueImpl( String name ) {
             this.name = name;
         }
-        
+
         public String getName() {
             return name;
         }
-        
+
         public boolean equals( Object obj ) {
             if( ! (obj instanceof ValueImpl) ) return false;
             return name.equals( ((ValueImpl)obj).name );
         }
-        
+
         public int hashCode() {
             return name.hashCode();
         }
-        
+
         public String toString() {
             return name;
         }
     }
-    
+
     private static class CharRefImpl implements DTD.CharRef {
         private String name;
         private char value;
-        
+
         CharRefImpl( String name, char value ) {
             this.name = name;
             this.value = value;
         }
-        
+
         /** @return alias to this CharRef */
         public String getName() {
             return name;
         }
-        
+
         /** @return the character this alias is for */
         public char getValue() {
             return value;
         }
-        
+
         public String toString() {
             return name + "->'" + value + "'(&#" + (int)value +";)";
         }
-        
+
         public boolean equals( Object obj ) {
             if( ! (obj instanceof CharRefImpl) ) return false;
             return name.equals( ((CharRefImpl)obj).name ) &&
             value == ((CharRefImpl)obj).value;
         }
-        
+
         public int hashCode() {
             return name.hashCode() * value;
         }
     }
-    
+
     /** The implementation of ContentModel. It is immutable */
     private  static class ContentModelImpl implements DTD.ContentModel {
         int hashcode;
         DTD.Content content;
         Set included;
         Set excluded;
-        
+
         public ContentModelImpl( DTD.Content content, Set included, Set excluded ) {
             this.content = content;
             this.included = included;
             this.excluded = excluded;
             hashcode = content.hashCode() + 2*included.hashCode() + 3*excluded.hashCode();
         }
-        
+
         /** @return the Content tree part of this model */
         public DTD.Content getContent() {
             return content;
         }
-        
+
         /** @return Set of Element names which are recursively included. */
         public Set getIncludes() {
             return included;
         }
-        
+
         /** @return Set of Element names which are recursively excluded. */
         public Set getExcludes() {
             return excluded;
         }
-        
+
         public String toString() {
             StringBuffer sb = new StringBuffer( content.toString() );
-            
+
             if( ! included.isEmpty() ) {
                 sb.append( " +(" );
                 Iterator i = included.iterator();
@@ -1519,7 +1519,7 @@ class DTDParser extends Object {
                 }
                 sb.append( ")" );
             }
-            
+
             if( ! excluded.isEmpty() ) {
                 sb.append( " -(" );
                 Iterator i = excluded.iterator();
@@ -1530,10 +1530,10 @@ class DTDParser extends Object {
                 }
                 sb.append( ")" );
             }
-            
+
             return sb.toString();
         }
-        
+
         public boolean equals( Object obj ) {
             if( ! (obj instanceof ContentModelImpl) ) return false;
             ContentModelImpl cmi = (ContentModelImpl)obj;
@@ -1541,50 +1541,50 @@ class DTDParser extends Object {
             included.equals( cmi.included ) &&
             excluded.equals( cmi.excluded );
         }
-        
+
         public int hashCode() {
             return hashcode;
         }
-        
+
     }
-    
+
     /** ContentLeaf is leaf of content tree, matches just one Element name (String)*/
     static class ContentLeafImpl implements DTD.ContentLeaf {
         String elemName;
         DTD.Element elem;
-        
+
         public ContentLeafImpl( String name ) {
             this.elemName = name;
         }
-        
-        
+
+
         /** get the name of leaf Element */
         public String getName() {
             return elemName;
         }
-        
+
         public DTD.Element getElement() {
             return elem;
         }
-        
+
         public boolean equals( Object obj ) {
             if( ! (obj instanceof ContentLeafImpl) ) return false;
             return elemName.equals( ((ContentLeafImpl)obj).elemName );
         }
-        
+
         public int hashCode() {
             return elemName.hashCode();
         }
-        
+
         public String toString() {
             return elemName;
         }
-        
+
         /** ContentLeaf can't be discarded as it hac no operation associated */
         public boolean isDiscardable() {
             return false;
         }
-        
+
         /** ContentLeaf is either reduced to EMPTY_CONTENT or doesn't
          * match at all */
         public DTD.Content reduce(String elementName) {
@@ -1598,48 +1598,48 @@ class DTDParser extends Object {
             return s;
         }
     }
-    
+
     /** ContentNode is node of content tree */
     private static class UnaryContentNodeImpl implements DTD.ContentNode {
         int hashcode;
         char type;
         DTD.Content content;
-        
+
         /* Constructor for unary ContentNodes */
         public UnaryContentNodeImpl( char type, DTD.Content content ) {
             // sanity check:
             if( type != '*' && type != '?' && type != '+' ) {
                 throw new IllegalArgumentException( "Unknown unary content type '" + type + "'" );
             }
-            
+
             this.type = type;
             this.content = content;
             hashcode = type + content.hashCode();
         }
-        
+
         /** This is node, always return false */
         public boolean isLeaf() { return false; }
-        
+
         /** Get the operator for this node */
         public char getType() { return type; }
-        
+
         /** Get the content of this node */
         public DTD.Content[] getContent() {
             return new DTD.Content[] { content };
         }
-        
+
         public boolean equals( Object obj ) {
             if( !(obj instanceof UnaryContentNodeImpl) ) return false;
             return type == ((UnaryContentNodeImpl)obj).type &&
                 content.equals( ((UnaryContentNodeImpl)obj).content );
         }
-        
+
         public int hashCode() { return hashcode; }
 
         public String toString() {
             return content.toString() + type;
         }
-                
+
         public boolean isDiscardable() {
             if( type == '*' || type == '?' ) return true;
             // The only remaining type, don't check: if( type == '+' )
@@ -1664,16 +1664,16 @@ class DTDParser extends Object {
         public Set getPossibleElements() {
             return content.getPossibleElements();
         }
-        
+
     }
 
-    
+
     /** ContentNodeImpl is n-ary node of content tree */
     private static class MultiContentNodeImpl implements DTD.ContentNode {
         int hashcode;
         char type;
         DTD.Content[] content;
-        
+
         /* Constructor for n-ary ContentNodes */
         public MultiContentNodeImpl( char type, DTD.Content[] content ) {
             // sanity check:
@@ -1688,22 +1688,22 @@ class DTDParser extends Object {
                 hashcode += content[i].hashCode();
             }
         }
-        
+
         /** This is node, always return false */
         public boolean isLeaf() { return false; }
-        
+
         /** Get the operator for this node */
         public char getType() { return type;  }
-        
+
         /** Get the content of this node */
         public DTD.Content[] getContent() { return content; }
-        
+
         public boolean equals( Object obj ) {
             if( ! (obj instanceof MultiContentNodeImpl) ) return false;
             return type == ((MultiContentNodeImpl)obj).type &&
             Arrays.equals( content, ((MultiContentNodeImpl)obj).content );
         }
-        
+
         public String toString() {
             StringBuffer sb = new StringBuffer( "(" );
             for( int i=0; i<content.length; i++ ) {
@@ -1715,7 +1715,7 @@ class DTDParser extends Object {
         }
 
         public int hashCode() { return hashcode; }
-                
+
         public boolean isDiscardable() {
             if( type == '&' || type == ',' ) {
                 for( int i = 0; i < content.length; i++ ) {
@@ -1731,7 +1731,7 @@ class DTDParser extends Object {
         }
 
         public DTD.Content reduce(String elementName) {
-            
+
             if( type == '|' ) {
                 for( int index = 0; index < content.length; index++ ) {
                     DTD.Content sub = content[index].reduce( elementName );
@@ -1741,12 +1741,12 @@ class DTDParser extends Object {
             } else if( type == ',' ) {
                  // everything before index doesn't match and is discardable
                 int index = 0;
-                
+
                 while( index < content.length) {
                     DTD.Content sub = content[index].reduce( elementName );
                     // element of sequence still don't match and isn't discardable:
                     if( sub == null && !content[index].isDiscardable() ) return null;
-                    
+
                     // Element matches fully:
                     if( sub == EMPTY_CONTENT ) {
                         int newLen = content.length - index - 1;
@@ -1758,7 +1758,7 @@ class DTDParser extends Object {
                             return content[index+1];
                         }
                     }
-                    
+
                     // Element matches and is modified
                     if( sub != null ) {
                         int newLen = content.length - index;
@@ -1773,8 +1773,8 @@ class DTDParser extends Object {
                     }
                     index++;   //discard the first element and try again
                 }
-                
-                return null; // Doesn't match at all                
+
+                return null; // Doesn't match at all
             } else { // only '&' remains: if( type == '&' ) {
                 for( int index = 0; index < content.length; index++ ) {
                     DTD.Content sub = content[index].reduce( elementName );
@@ -1808,19 +1808,19 @@ class DTDParser extends Object {
                     }
                 }
                 return null;
-                
+
             }
         }
 
         public Set getPossibleElements() {
             Set retVal = new HashSet( 11 );
-            
+
             if( type == '|' || type == '&' ) {
                 for( int index = 0; index < content.length; index++ )
                     retVal.addAll( content[index].getPossibleElements() );
 
             } else { // only ',' remains if( type == ',' ) {}
-                int index = 0;                
+                int index = 0;
                 while( index < content.length) {
                     retVal.addAll( content[index].getPossibleElements() );
                     if( !content[index].isDiscardable() ) break;

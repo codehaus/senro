@@ -146,7 +146,7 @@ public class PropertyTableModel extends AbstractTableModel
                         iterator.remove();
                     }
                     // System.out.println( "PropertyTableModel.filterProps: desc: " +
-                    // desc.getName() + " pref: " + desc.isPreferred() );
+                    // desc.toString() + " pref: " + desc.isPreferred() );
                     break;
             }
         }

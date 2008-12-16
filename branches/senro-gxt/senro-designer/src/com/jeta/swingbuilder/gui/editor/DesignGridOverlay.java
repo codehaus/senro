@@ -126,7 +126,7 @@ public class DesignGridOverlay extends JPanel implements GridCellListener, GridO
       // @todo change to faster algorigthm if possible
       for (int index = 0; index < m_view.getGridComponentCount(); index++)
       {
-         GridComponent gc = (GridComponent)m_view.getGridComponent(index);
+         GridComponent gc = m_view.getGridComponent(index);
          if (mousePt.x >= gc.getCellX() && (mousePt.x < gc.getCellX() + gc.getCellWidth()) && mousePt.y >= gc.getCellY() &&
              (mousePt.y < gc.getCellY() + gc.getCellHeight()))
              {

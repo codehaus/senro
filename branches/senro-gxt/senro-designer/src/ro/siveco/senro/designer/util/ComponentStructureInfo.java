@@ -25,7 +25,7 @@ public class ComponentStructureInfo
             for(Component crt_comp : comps) {
                 printStructureInfo(crt_comp, b, ident + 1);
             }
-            printLine(b, ident, "</" + getSimpleClassName(comp) + ">");
+            printLine(b, ident, "</" + ClassHelper.getShortClassName(comp) + ">");
         } else {
             printLine(b, ident, "<" + getStartTagText(comp) + "/>");
         }
@@ -59,7 +59,7 @@ public class ComponentStructureInfo
         if(comp == null) {
             txt = "<null>";
         } else {
-            txt = getSimpleClassName(comp);
+            txt = ClassHelper.getShortClassName(comp);
             String name = comp.getName();
             if(name != null && name.length() != 0) {
                 txt += "[" + name + "]";
@@ -72,17 +72,11 @@ public class ComponentStructureInfo
     {
         String cmp_name = cmp.getName();
         StringBuilder b = new StringBuilder();
-        b.append(getSimpleClassName(cmp));
+        b.append(ClassHelper.getShortClassName(cmp));
         if(cmp_name != null && cmp_name.length() != 0) {
             b.append(" name = \"").append(cmp_name).append("\"");
         }
         return b.toString();
-    }
-
-    private static String getSimpleClassName(Component cmp)
-    {
-        String[] name_comp = cmp.getClass().getName().split("\\.");
-        return name_comp[name_comp.length - 1].replaceAll("\\$", ".");
     }
 
 }

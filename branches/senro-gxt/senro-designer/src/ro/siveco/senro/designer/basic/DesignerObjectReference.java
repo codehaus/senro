@@ -39,4 +39,8 @@ public class DesignerObjectReference<T extends SenroDesignerObject> implements D
         }
     }
 
+    public void objectDidChange(SenroDesignerObject obj)
+    {
+    }
+
 }

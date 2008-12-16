@@ -19,7 +19,7 @@ public class JMLBeanSerializer implements JMLSerializer {
 	public JMLNode serialize( JMLDocument document, Object obj) throws JMLException {
 
 		try {
-			//XMLNode objnode = XMLUtils.createObjectNode2(document, obj.getClass().getName() );
+			//XMLNode objnode = XMLUtils.createObjectNode2(document, obj.getClass().toString() );
 			JMLNode objnode = JMLUtils.createObjectNode(document, obj.getClass().getName() );
 			if ( obj != null ) {
 				JMLNode propsnode = JMLUtils.createPropertiesNode(document);

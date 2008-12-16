@@ -10,6 +10,10 @@ import ro.siveco.senro.designer.ui.DesignerCellFactory;
 import ro.siveco.senro.designer.inspector.InspectorManager;
 import ro.siveco.senro.designer.IBMainFrame;
 import ro.siveco.senro.designer.IBMainFrameController;
+import ro.siveco.senro.designer.IBMainFormManager;
+import ro.siveco.senro.designer.association.AssociationDescription;
+import ro.siveco.senro.designer.util.XmlHelper;
+import ro.siveco.senro.designer.util.XmlException;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.components.*;
@@ -17,6 +21,7 @@ import ro.siveco.senro.designer.inspectors.DisplayGroupInspector;
 import ro.siveco.senro.designer.inspectors.EditingContextInspector;
 import ro.siveco.senro.designer.inspectors.GridAllocatorInspector;
 import ro.siveco.senro.designer.inspectors.SenroContextInspector;
+import ro.siveco.senro.designer.inspectors.association.AssociationInspector;
 
 import javax.swing.*;
 import java.util.*;
@@ -25,6 +30,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.net.URL;
 
 import org.w3c.dom.Document;
@@ -50,14 +56,19 @@ import com.jgoodies.forms.layout.Size;
 import com.jgoodies.forms.layout.ConstantSize;
 import com.jgoodies.forms.layout.Sizes;
 import com.jgoodies.forms.layout.BoundedSize;
-import com.jeta.forms.gui.form.GridView;
-import com.jeta.forms.gui.form.GridComponent;
-import com.jeta.forms.gui.form.FormComponent;
-import com.jeta.forms.gui.form.ComponentConstraints;
+import com.jeta.forms.gui.form.*;
 import com.jeta.forms.gui.formmgr.FormManager;
 import com.jeta.forms.gui.common.FormException;
-import com.jeta.forms.store.memento.FormPackage;
-import com.jeta.forms.store.memento.StateRequest;
+import com.jeta.forms.gui.common.FormSpecAdapter;
+import com.jeta.forms.gui.beans.JETABean;
+import com.jeta.forms.gui.beans.JETAPropertyDescriptor;
+import com.jeta.forms.store.memento.*;
+import com.jeta.forms.store.bean.BeanSerializerFactory;
+import com.jeta.forms.store.bean.BeanSerializer;
+import com.jeta.forms.store.bean.DefaultBeanSerializer;
+import com.jeta.forms.store.properties.TabbedPaneProperties;
+import com.jeta.forms.store.properties.TabProperty;
+import com.jeta.forms.store.properties.ScrollBarsProperty;
 import com.jeta.swingbuilder.gui.editor.FormEditor;
 import com.jeta.swingbuilder.gui.editor.DesignFormComponent;
 import com.jeta.swingbuilder.gui.utils.FormDesignerUtils;
@@ -85,9 +96,13 @@ public class DesignerManager
     public static final Object[] options = {"Save", "Don't save", "Cancel"};
 
     private final Map<FormSpec.DefaultAlignment, String> alignmentText;
+    private final Map<String, FormSpec.DefaultAlignment> alignmentSpec;
     private final Map<CellConstraints.Alignment, String> componentAlignmentText;
+    private final Map<String, CellConstraints.Alignment> componentAlignment;
     private final Map<Sizes.ComponentSize, String> componentSizes;
+    private final Map<String, Sizes.ComponentSize> toComponentSizes;
     private final Map<Class, XmlGenerator> xmlGenerators;
+    private final Map<String, ComponentMementoGenerator> compMementoGenerators;
 
     protected IBMainFrame mainFrame;
     protected ObjectSetManager serverObjSetManager;
@@ -96,6 +111,7 @@ public class DesignerManager
     protected JPanel designerPanel = new JPanel();
 
     private DesignerProject project = null;
+    private final AssociationManager associationManager;
 
     private static DesignerManager sharedDesignerManager = null;
 
@@ -108,6 +124,8 @@ public class DesignerManager
     {
         sharedDesignerManager = this;
         this.mainFrame = main_frame;
+        AssociationDescription.init();
+        associationManager = new AssociationManager(this);
         // init alignmentText map
         Map<FormSpec.DefaultAlignment, String> alignment_text = new HashMap<FormSpec.DefaultAlignment, String>();
         alignment_text.put(ColumnSpec.LEFT, "Left");
@@ -120,6 +138,18 @@ public class DesignerManager
         alignment_text.put(RowSpec.CENTER, "Center");
         alignmentText = Collections.unmodifiableMap(alignment_text);
 
+        // init alignmentSpec map
+        Map<String, FormSpec.DefaultAlignment> alignment_spec = new HashMap<String, FormSpec.DefaultAlignment>();
+        alignment_spec.put("Left", ColumnSpec.LEFT);
+        alignment_spec.put("Right", ColumnSpec.RIGHT);
+        alignment_spec.put("Fill", ColumnSpec.FILL);
+        alignment_spec.put("Center", ColumnSpec.CENTER);
+        alignment_spec.put("Top", RowSpec.TOP);
+        alignment_spec.put("Bottom", RowSpec.BOTTOM);
+        alignment_spec.put("Fill", RowSpec.FILL);
+        alignment_spec.put("Center", RowSpec.CENTER);
+        alignmentSpec = Collections.unmodifiableMap(alignment_spec);
+
         // init componentAlignmentText map
         Map<CellConstraints.Alignment, String> comp_alignment_text = new HashMap<CellConstraints.Alignment, String>();
         comp_alignment_text.put(CellConstraints.DEFAULT, "Default");
@@ -131,12 +161,30 @@ public class DesignerManager
         comp_alignment_text.put(CellConstraints.BOTTOM, "Bottom");
         componentAlignmentText = Collections.unmodifiableMap(comp_alignment_text);
 
+        // init componentAlignment map
+        Map<String, CellConstraints.Alignment> comp_alignment = new HashMap<String, CellConstraints.Alignment>();
+        comp_alignment.put("Default", CellConstraints.DEFAULT);
+        comp_alignment.put("Fill", CellConstraints.FILL);
+        comp_alignment.put("Left", CellConstraints.LEFT);
+        comp_alignment.put("Right", CellConstraints.RIGHT);
+        comp_alignment.put("Center", CellConstraints.CENTER);
+        comp_alignment.put("Top", CellConstraints.TOP);
+        comp_alignment.put("Bottom", CellConstraints.BOTTOM);
+        componentAlignment = Collections.unmodifiableMap(comp_alignment);
+
         // init componentSizes map
         Map<Sizes.ComponentSize, String> component_sizes = new HashMap<Sizes.ComponentSize, String>();
         component_sizes.put(Sizes.DEFAULT, "Default");
         component_sizes.put(Sizes.PREFERRED, "Pref");
         component_sizes.put(Sizes.MINIMUM, "Min");
         componentSizes = Collections.unmodifiableMap(component_sizes);
+
+        // init toComponentSizes map
+        Map<String, Sizes.ComponentSize> to_component_sizes = new HashMap<String, Sizes.ComponentSize>();
+        to_component_sizes.put("Default", Sizes.DEFAULT);
+        to_component_sizes.put("Pref", Sizes.PREFERRED);
+        to_component_sizes.put("Min", Sizes.MINIMUM);
+        toComponentSizes = Collections.unmodifiableMap(to_component_sizes);
 
         // init xml generators
         Map<Class, XmlGenerator> xml_generators = new HashMap<Class, XmlGenerator>();
@@ -169,6 +217,28 @@ public class DesignerManager
         xml_generators.put(TabPageView.class, new TabPageXmlGenerator());
 
         xmlGenerators = Collections.unmodifiableMap(xml_generators);
+
+        // init component memento generators
+        Map<String, ComponentMementoGenerator> comp_memento_generators = new HashMap<String, ComponentMementoGenerator>();
+
+        comp_memento_generators.put(ComponentXmlNames.LABEL_ELEMENT, new LabelMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.CHECKBOX_ELEMENT, new CheckBoxMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.COMBOBOX_ELEMENT, new ComboBoxMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.LIST_ELEMENT, new ListMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.TEXT_FIELD_ELEMENT, new TextFieldMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.DATE_FIELD_ELEMENT, new DateFieldMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.TEXT_AREA_ELEMENT, new TextAreaMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.BUTTON_ELEMENT, new ButtonMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.TEMPLATE_ELEMENT, new TemplateMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.SWITCH_ELEMENT, new SwitchComponentMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.TAB_PANEL_ELEMENT, new TabbedPaneMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.CONDITIONAL_ELEMENT, new ConditionalMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.ITERATOR_ELEMENT, new IteratorMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.GRID_ELEMENT, new EmbeddedGridMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.TREE_ELEMENT, new TreeMementoGenerator());
+        comp_memento_generators.put(ComponentXmlNames.GRID_ALLOCATOR_RENDERER_ELEMENT, new GridAllocatorRendererMementoGenerator());
+
+        compMementoGenerators = Collections.unmodifiableMap(comp_memento_generators);
 
         // create Inspector Manager
         JPanel inspectorsPanel = new JPanel();
@@ -229,6 +299,11 @@ public class DesignerManager
         inspectorManager.addInspectorForClass(new EditingContextInspector(), EditingContextDescription.class);
         inspectorManager.addInspectorForClass(new GridAllocatorInspector(), GridAllocatorDescription.class);
         inspectorManager.addInspectorForClass(new SenroContextInspector(), SenroContextDescription.class);
+        AssociationInspector ai = new AssociationInspector();
+        inspectorManager.addInspectorForClass(ai, DisplayGroupDescription.class);
+        inspectorManager.addInspectorForClass(ai, EditingContextDescription.class);
+        inspectorManager.addInspectorForClass(ai, GridAllocatorDescription.class);
+        inspectorManager.addInspectorForClass(ai, SenroContextDescription.class);
     }
 
     private void updateDesignerPanel(JPanel palettes_panel, ObjectSetManager server_obj_set_manager,
@@ -421,9 +496,8 @@ public class DesignerManager
     private void saveDirtyGrids()
     {
         mainFrame.getPropertyContainer().stopEditing();
-        Collection editors = mainFrame.getEditors();
-        for (Object editor_obj : editors) {
-            FormEditor editor = (FormEditor) editor_obj;
+        Collection<FormEditor> editors = mainFrame.getEditors();
+        for (FormEditor editor : editors) {
             if (editor.isModified()) {
                 saveGrid(editor);
             }
@@ -510,6 +584,37 @@ public class DesignerManager
         }
     }
 
+    public void openProjectFromComponentXml()
+    {
+        closeProject();
+        if (project != null) {
+            return;
+        }
+        File proj_dir = chooseDirectory(null, "Open project");
+        if (proj_dir == null) {
+            return;
+        }
+        try {
+            project = new DesignerProject(proj_dir, false);
+            serverObjSetManager.loadFromFile(project.getServerObjectsPath());
+            clientObjSetManager.loadFromFile(project.getClientObjectsPath());
+            serverObjSetManager.setEnabled(true);
+            clientObjSetManager.setEnabled(true);
+            inspectorManager.setEnabled(true);
+            mainFrame.setProject(project.getProjectModel());
+            openAllGridsFromComponentXml();
+        }
+        catch (Exception ex) {
+            logger.error("Cannot open project. ", ex);
+            JOptionPane.showMessageDialog(mainFrame, "Cannot open project. See log for details.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        Map<String, SenroDesignerObject> senro_objs = getAllSenroObjects();
+        for (SenroDesignerObject senro_obj : senro_objs.values()) {
+            senro_obj.updateLinks(senro_objs);
+        }
+    }
+
     public FormEditor getCurrentEditor()
     {
         return mainFrame.getCurrentEditor();
@@ -517,7 +622,6 @@ public class DesignerManager
 
     private void openAllGrids()
     {
-        DesignerProject project = DesignerManager.getSharedDesignerManager().getProject();
         if (project == null) {
             return;
         }
@@ -530,9 +634,11 @@ public class DesignerManager
             if (f != null) {
                 try {
                     FormComponent fc = fmgr.openLinkedForm(f);
-                    fmgr.activateForm(fc.getId());
-                    fmgr.showForm(fc.getId());
-                    last_opened_fc = fc;
+                    if (fc != null) {
+                        fmgr.activateForm(fc.getId());
+                        fmgr.showForm(fc.getId());
+                        last_opened_fc = fc;
+                    }
                 } catch (FormException ex) {
                     logger.error("Cannot open grid:  " + f.getName(), ex);
                     openFailedFiles.add(f);
@@ -566,6 +672,160 @@ public class DesignerManager
         }
     }
 
+    private void openAllGridsFromComponentXml() throws XmlException, FormException
+    {
+        if (project == null) {
+            return;
+        }
+        FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
+        fmgr.deactivateForms(mainFrame.getCurrentEditor());
+        File comp_xml_file = new File(project.getProjectDir(), COMPONENT_FILE_NAME);
+        Document doc = XmlHelper.readDocument(comp_xml_file);
+        Element root_elem = doc.getDocumentElement();
+        Element layout_elem = XmlHelper.getChild(root_elem, ComponentXmlNames.LAYOUT_ELEMENT);
+        Element grid_elem = XmlHelper.getFirstChildElement(layout_elem);
+        while (grid_elem != null) {
+            FormComponent fc = ((IBMainFormManager) fmgr).openSenroForm(getFormMementoForGrid(grid_elem));
+            if (fc != null) {
+                fmgr.activateForm(fc.getId());
+                fmgr.showForm(fc.getId());
+            }
+            grid_elem = XmlHelper.getNextSiblingElement(grid_elem);
+        }
+    }
+
+    private FormMemento getFormMementoForGrid(Element grid_elem) throws FormException
+    {
+        FormMemento state = new FormMemento();
+        String abspath = new File(project.getProjectDir(), grid_elem.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE) + ".xml").getAbsolutePath();
+        state.setId(abspath);
+        state.setComponentClass(FormComponent.class.getName());
+        String rel_path = grid_elem.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE);
+        state.setRelativePath(rel_path);
+        Element rows_elem = XmlHelper.getChild(grid_elem, ComponentXmlNames.ROWS_ELEMENT);
+        state.setRowSpecs(getRowSpecs(rows_elem));
+        Element columns_elem = XmlHelper.getChild(grid_elem, ComponentXmlNames.COLUMNS_ELEMENT);
+        state.setColumnSpecs(getColumnSpecs(columns_elem));
+        PropertiesMemento ppm = new PropertiesMemento();
+        ppm.setBeanClassName(TopGridView.class.getName());
+        BeanSerializerFactory fac = (BeanSerializerFactory) JETARegistry.lookup(BeanSerializerFactory.COMPONENT_ID);
+        BeanSerializer bs = fac.createSerializer();
+        JETABean default_bean = ((DefaultBeanSerializer) bs).getDefaultBean(TopGridView.class);
+        if (default_bean != null) {
+            Collection prop_descriptors = default_bean.getPropertyDescriptors();
+            for (Object prop_descriptor : prop_descriptors) {
+                JETAPropertyDescriptor jpd = (JETAPropertyDescriptor) prop_descriptor;
+                Object def_value = jpd.getPropertyValue(default_bean);
+                if (def_value instanceof Serializable) {
+                    ppm.addProperty(jpd.getName(), (Serializable) def_value);
+                }
+            }
+        }
+        ppm.addProperty("name", grid_elem.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE));
+        ppm.addProperty("id", grid_elem.getAttribute(ComponentXmlNames.ID_ATTRIBUTE));
+        if (grid_elem.getTagName().equals(ComponentXmlNames.GRID_ELEMENT)) {
+            ppm.addProperty("popup", "false");
+            ppm.addProperty("showOnLoad", "true");
+        } else {
+            ppm.addProperty("popup", "true");
+            ppm.addProperty("showOnLoad", grid_elem.getAttribute("showOnLoad"));
+        }
+        state.setPropertiesMemento(ppm);
+        Element components_elem = XmlHelper.getChild(grid_elem, ComponentXmlNames.COMPONENTS_ELEMENT);
+        Element comp_elem = XmlHelper.getFirstChildElement(components_elem);
+        while (comp_elem != null) {
+            String comp_elem_tag_name = comp_elem.getTagName();
+            ComponentMemento comp_memento = compMementoGenerators.get(comp_elem_tag_name).getCompMemento(comp_elem);
+            state.addComponent(comp_memento);
+            comp_elem = XmlHelper.getNextSiblingElement(comp_elem);
+        }
+        return state;
+    }
+
+    public String getRowSpecs(Element rows_elem)
+    {
+        StringBuffer sbuff = new StringBuffer();
+        Element row_elem = XmlHelper.getFirstChildElement(rows_elem);
+        int row = 1;
+        while (row_elem != null) {
+            String alignment_name = XmlHelper.getTextFromChild(row_elem, ComponentXmlNames.ALIGNMENT_ELEMENT);
+            FormSpec.DefaultAlignment alignment = alignmentSpec.get(alignment_name);
+            Element size_elem = XmlHelper.getChild(row_elem, ComponentXmlNames.SIZE_ELEMENT);
+            Size sz = null;
+            String size_text;
+            if ((size_text = XmlHelper.getTextFromChild(size_elem, ComponentXmlNames.CONSTANT_ELEMENT)) != null) {
+                int csz_val = Integer.parseInt(size_text);
+                sz = new ConstantSize(csz_val, ConstantSize.VALUES[0]);
+            } else
+            if ((size_text = XmlHelper.getTextFromChild(size_elem, ComponentXmlNames.COMPONENT_ELEMENT)) != null) {
+                sz = toComponentSizes.get(size_text);
+            } else
+            if ((size_text = XmlHelper.getTextFromChild(size_elem, ComponentXmlNames.MAX_ELEMENT)) != null) {
+                int csz_val = Integer.parseInt(size_text);
+                sz = new BoundedSize(toComponentSizes.get("pref"), new ConstantSize(csz_val, ConstantSize.VALUES[0]), null);
+            } else
+            if ((size_text = XmlHelper.getTextFromChild(size_elem, ComponentXmlNames.MIN_ELEMENT)) != null) {
+                int csz_val = Integer.parseInt(size_text);
+                sz = new BoundedSize(toComponentSizes.get("pref"), null, new ConstantSize(csz_val, ConstantSize.VALUES[0]));
+            }
+            String rezise_text = XmlHelper.getTextFromChild(row_elem, ComponentXmlNames.RESIZE_ELEMENT);
+            double resizeWeight = Double.parseDouble(rezise_text);
+
+            RowSpec rs = new RowSpec(alignment, sz, resizeWeight);
+            if (row > 1) {
+                sbuff.append(",");
+            }
+            String rowspec = rs.toString();
+            sbuff.append(FormSpecAdapter.fixup(rowspec));
+
+            row++;
+            row_elem = XmlHelper.getNextSiblingElement(row_elem);
+        }
+        return sbuff.toString();
+    }
+
+    public String getColumnSpecs(Element columns_elem)
+    {
+        StringBuffer sbuff = new StringBuffer();
+        Element col_elem = XmlHelper.getFirstChildElement(columns_elem);
+        int col = 1;
+        while (col_elem != null) {
+            String alignment_name = XmlHelper.getTextFromChild(col_elem, ComponentXmlNames.ALIGNMENT_ELEMENT);
+            FormSpec.DefaultAlignment alignment = alignmentSpec.get(alignment_name);
+            Element size_elem = XmlHelper.getChild(col_elem, ComponentXmlNames.SIZE_ELEMENT);
+            Size sz = null;
+            String size_text;
+            if ((size_text = XmlHelper.getTextFromChild(size_elem, ComponentXmlNames.CONSTANT_ELEMENT)) != null) {
+                int csz_val = Integer.parseInt(size_text);
+                sz = new ConstantSize(csz_val, ConstantSize.VALUES[0]);
+            } else
+            if ((size_text = XmlHelper.getTextFromChild(size_elem, ComponentXmlNames.COMPONENT_ELEMENT)) != null) {
+                sz = toComponentSizes.get(size_text);
+            } else
+            if ((size_text = XmlHelper.getTextFromChild(size_elem, ComponentXmlNames.MAX_ELEMENT)) != null) {
+                int csz_val = Integer.parseInt(size_text);
+                sz = new BoundedSize(toComponentSizes.get("pref"), new ConstantSize(csz_val, ConstantSize.VALUES[0]), null);
+            } else
+            if ((size_text = XmlHelper.getTextFromChild(size_elem, ComponentXmlNames.MIN_ELEMENT)) != null) {
+                int csz_val = Integer.parseInt(size_text);
+                sz = new BoundedSize(toComponentSizes.get("pref"), null, new ConstantSize(csz_val, ConstantSize.VALUES[0]));
+            }
+            String rezise_text = XmlHelper.getTextFromChild(col_elem, ComponentXmlNames.RESIZE_ELEMENT);
+            double resizeWeight = Double.parseDouble(rezise_text);
+
+            ColumnSpec rs = new ColumnSpec(alignment, sz, resizeWeight);
+            if (col > 1) {
+                sbuff.append(",");
+            }
+            String rowspec = rs.toString();
+            sbuff.append(FormSpecAdapter.fixup(rowspec));
+
+            col++;
+            col_elem = XmlHelper.getNextSiblingElement(col_elem);
+        }
+        return sbuff.toString();
+    }
+
     public void deleteGrid()
     {
         if (project == null) {
@@ -593,7 +853,7 @@ public class DesignerManager
             } else {
                 logger.error("Cannot delete grid file: " + grid_name + " at path: " + grid_path.getAbsolutePath());
                 JOptionPane.showMessageDialog(mainFrame, "Cannot delete grid file: " + grid_name,
-                                              "Error", JOptionPane.ERROR_MESSAGE);
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -696,13 +956,13 @@ public class DesignerManager
         saveProject();
     }
 
-    public boolean newGridIsPopup(TopGridView top_grid_view)
+    private boolean newGridIsPopup(TopGridView top_grid_view)
     {
         Collection editors = mainFrame.getEditors();
         for (Object editor_obj : editors) {
             FormEditor ed = (FormEditor) editor_obj;
             TopGridView other_top_grid_view = (TopGridView) ed.getFormComponent().getChildView();
-            if(other_top_grid_view == top_grid_view) {
+            if (other_top_grid_view == top_grid_view) {
                 continue;
             }
             if (!other_top_grid_view.isPopup()) {
@@ -779,6 +1039,11 @@ public class DesignerManager
         return clientObjSetManager;
     }
 
+    public AssociationManager getAssociationManager()
+    {
+        return associationManager;
+    }
+
     private static void addAttributes(Element e, Map<String, Object> attr_map)
     {
         if (attr_map == null) {
@@ -798,12 +1063,12 @@ public class DesignerManager
 
     private void generateXmlForInnerGrid(Element parent_elem, XmlGenerationContext context)
     {
-        GridView grid = (GridView)context.object;
-        if(grid.getRowCount() == 1 && grid.getColumnCount() == 1) {
+        GridView grid = (GridView) context.object;
+        if (grid.getRowCount() == 1 && grid.getColumnCount() == 1) {
             GridComponent gc = grid.getGridComponent(1, 1);
             Component cmp = gc.getBeanChildComponent();
-            if(cmp != null) {
-                generateXmlForObject(parent_elem, new XmlGenerationContext((SenroDesignerObject)cmp, context));
+            if (cmp != null) {
+                generateXmlForObject(parent_elem, new XmlGenerationContext((SenroDesignerObject) cmp, context));
             }
         } else {
             Element elem = parent_elem.getOwnerDocument().createElement(ComponentXmlNames.GRID_ELEMENT);
@@ -815,7 +1080,7 @@ public class DesignerManager
 
     public void buildGridBody(Element grid_elem, XmlGenerationContext context)
     {
-        GridView grid = (GridView)context.object;
+        GridView grid = (GridView) context.object;
         Document doc = grid_elem.getOwnerDocument();
         Element cols_elem = doc.createElement(ComponentXmlNames.COLUMNS_ELEMENT);
         Element rows_elem = doc.createElement(ComponentXmlNames.ROWS_ELEMENT);
@@ -844,13 +1109,13 @@ public class DesignerManager
             Component cmp = crt_comp.getBeanDelegate();
             if (cmp != null) {
                 Map<String, Object> attr_map = new HashMap<String, Object>();
-                String row_attr = ((UIDesignerObject)cmp).getRow();
-                if(row_attr == null || row_attr.trim().length() == 0) {
+                String row_attr = ((UIDesignerObject) cmp).getRow();
+                if (row_attr == null || row_attr.trim().length() == 0) {
                     row_attr = String.valueOf(crt_comp.getRow() - 1);
                 }
                 attr_map.put(ComponentXmlNames.ROW_ATTRIBUTE, row_attr);
-                String col_attr = ((UIDesignerObject)cmp).getColumn();
-                if(col_attr == null || col_attr.trim().length() == 0) {
+                String col_attr = ((UIDesignerObject) cmp).getColumn();
+                if (col_attr == null || col_attr.trim().length() == 0) {
                     col_attr = String.valueOf(crt_comp.getColumn() - 1);
                 }
                 attr_map.put(ComponentXmlNames.COL_ATTRIBUTE, col_attr);
@@ -861,7 +1126,7 @@ public class DesignerManager
                 CellConstraints.Alignment v_align = cnstr.getVerticalAlignment();
                 attr_map.put(ComponentXmlNames.HALIGN_ATTRIBUTE, componentAlignmentText.get(h_align));
                 attr_map.put(ComponentXmlNames.VALIGN_ATTRIBUTE, componentAlignmentText.get(v_align));
-                XmlGenerationContext gen_ctx = new XmlGenerationContext((SenroDesignerObject)cmp, context);
+                XmlGenerationContext gen_ctx = new XmlGenerationContext((SenroDesignerObject) cmp, context);
                 gen_ctx.attributes.putAll(attr_map);
                 generateXmlForObject(comps_elem, gen_ctx);
             }
@@ -930,7 +1195,7 @@ public class DesignerManager
     {
         public Element getXml(Document doc, XmlGenerationContext context)
         {
-            ObjectDescription obj_desc = (ObjectDescription)context.object;
+            ObjectDescription obj_desc = (ObjectDescription) context.object;
             Element elem = doc.createElement(getTagName(context));
             elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, String.valueOf(obj_desc.getName()));
             elem.setAttribute(ComponentXmlNames.ID_ATTRIBUTE, String.valueOf(obj_desc.getId()));
@@ -972,7 +1237,7 @@ public class DesignerManager
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            GridAllocatorDescription ga_desc = (GridAllocatorDescription)context.object;
+            GridAllocatorDescription ga_desc = (GridAllocatorDescription) context.object;
             e.setAttribute(ComponentXmlNames.ENTITY_ATTRIBUTE, String.valueOf(ga_desc.getEntityName()));
             e.setAttribute(ComponentXmlNames.COLUMNS_ATTRIBUTE, String.valueOf(ga_desc.getColumnsCount()));
         }
@@ -1001,7 +1266,7 @@ public class DesignerManager
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            DisplayGroupDescription dg_desc = (DisplayGroupDescription)context.object;
+            DisplayGroupDescription dg_desc = (DisplayGroupDescription) context.object;
             Document doc = e.getOwnerDocument();
             Element ent_elem = doc.createElement("Entity");
             e.appendChild(ent_elem);
@@ -1036,7 +1301,7 @@ public class DesignerManager
 
         public Element getXml(Document doc, XmlGenerationContext context)
         {
-            TopGridView top_grid = (TopGridView)context.object;
+            TopGridView top_grid = (TopGridView) context.object;
             String elem_name = top_grid.isPopup() ? ComponentXmlNames.POPUP_ELEMENT : ComponentXmlNames.GRID_ELEMENT;
             Element e = doc.createElement(elem_name);
             addDesignerObjectAttrs(e, top_grid);
@@ -1055,7 +1320,7 @@ public class DesignerManager
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            SenroLabel l = (SenroLabel)context.object;
+            SenroLabel l = (SenroLabel) context.object;
             Document doc = e.getOwnerDocument();
             Element txt_elem = doc.createElement("Text");
             e.appendChild(txt_elem);
@@ -1068,7 +1333,7 @@ public class DesignerManager
 
         public Element getXml(Document doc, XmlGenerationContext context)
         {
-            TreeNode tn = (TreeNode)context.object;
+            TreeNode tn = (TreeNode) context.object;
             Element tn_elem = doc.createElement(ComponentXmlNames.TREE_NODE_ELEMENT);
             Element txt_elem = doc.createElement("Text");
             tn_elem.appendChild(txt_elem);
@@ -1082,7 +1347,7 @@ public class DesignerManager
 
         public String getTagName(XmlGenerationContext context)
         {
-            return "TextField";
+            return ComponentXmlNames.TEXT_FIELD_ELEMENT;
         }
 
     }
@@ -1106,7 +1371,7 @@ public class DesignerManager
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            GridAllocatorRenderer gar = (GridAllocatorRenderer)context.object;
+            GridAllocatorRenderer gar = (GridAllocatorRenderer) context.object;
             e.setAttribute(ComponentXmlNames.GRID_ALLOCATOR_ATTRIBUTE, gar.getGridAllocator());
         }
     }
@@ -1120,7 +1385,7 @@ public class DesignerManager
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            TemplateComponent tc = (TemplateComponent)context.object;
+            TemplateComponent tc = (TemplateComponent) context.object;
             String templateName = tc.getTemplate() == null ? "" : tc.getTemplate().getName();
             e.setAttribute(ComponentXmlNames.TEMPLATE_FILE_ATTRIBUTE, templateName);
 
@@ -1141,7 +1406,7 @@ public class DesignerManager
 
         public String getTagName(XmlGenerationContext context)
         {
-            return "TextArea";
+            return ComponentXmlNames.TEXT_AREA_ELEMENT;
         }
 
     }
@@ -1156,7 +1421,7 @@ public class DesignerManager
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            SenroList list = (SenroList)context.object;
+            SenroList list = (SenroList) context.object;
             e.setAttribute(ComponentXmlNames.ENTITY_ATTRIBUTE, list.getEntity());
         }
 
@@ -1167,7 +1432,7 @@ public class DesignerManager
 
         public String getTagName(XmlGenerationContext context)
         {
-            return "ComboBox";
+            return ComponentXmlNames.COMBOBOX_ELEMENT;
         }
 
     }
@@ -1177,12 +1442,12 @@ public class DesignerManager
 
         public String getTagName(XmlGenerationContext context)
         {
-            return "CheckBox";
+            return ComponentXmlNames.CHECKBOX_ELEMENT;
         }
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            SenroCheckBox check_box = (SenroCheckBox)context.object;
+            SenroCheckBox check_box = (SenroCheckBox) context.object;
             Document doc = e.getOwnerDocument();
             Element txt_elem = doc.createElement(ComponentXmlNames.LABEL_ELEMENT);
             e.appendChild(txt_elem);
@@ -1201,7 +1466,7 @@ public class DesignerManager
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            SenroButton button = (SenroButton)context.object;
+            SenroButton button = (SenroButton) context.object;
             Document doc = e.getOwnerDocument();
             Element label_elem = doc.createElement(ComponentXmlNames.LABEL_ELEMENT);
             e.appendChild(label_elem);
@@ -1232,8 +1497,8 @@ public class DesignerManager
     {
         public Element getXml(Document doc, XmlGenerationContext context)
         {
-            GridView grid = (GridView)context.object;
-            if(context.generateTabPage) {
+            GridView grid = (GridView) context.object;
+            if (context.generateTabPage) {
                 Element tab_page_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
                 tab_page_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, context.tabPageOrderNo);
                 tab_page_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, context.tabPageName);
@@ -1273,17 +1538,17 @@ public class DesignerManager
 
         public void buildElementBody(Element tab_pane_elem, XmlGenerationContext context)
         {
-            SenroTabbedPane tabbed_pane = (SenroTabbedPane)context.object;
+            SenroTabbedPane tabbed_pane = (SenroTabbedPane) context.object;
             int tab_count = tabbed_pane.getTabCount();
             for (int tab_idx = 0; tab_idx < tab_count; tab_idx++) {
                 Component tab_cmp = tabbed_pane.getComponentAt(tab_idx);
-                if(!(tab_cmp instanceof DesignFormComponent)) {
+                if (!(tab_cmp instanceof DesignFormComponent)) {
                     continue;
                 }
-                DesignFormComponent tab_page = (DesignFormComponent)tab_cmp;
+                DesignFormComponent tab_page = (DesignFormComponent) tab_cmp;
                 Component tab_comp = getTabPageComponent(tab_page);
                 assert tab_comp != null;
-                XmlGenerationContext gen_ctx = new XmlGenerationContext((SenroDesignerObject)tab_comp, context);
+                XmlGenerationContext gen_ctx = new XmlGenerationContext((SenroDesignerObject) tab_comp, context);
                 gen_ctx.generateTabPage = true;
                 gen_ctx.tabPageName = tabbed_pane.getTitleAt(tab_idx);
                 gen_ctx.tabPageOrderNo = String.valueOf(tab_idx);
@@ -1298,15 +1563,15 @@ public class DesignerManager
 
         public Element getXml(Document doc, XmlGenerationContext context)
         {
-            TabPageView tpv = (TabPageView)context.object;
+            TabPageView tpv = (TabPageView) context.object;
             String cond = tpv.getCondition().trim();
-            if(cond.length() == 0) {
+            if (cond.length() == 0) {
                 Element tp_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
                 tp_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, context.tabPageOrderNo);
                 tp_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, context.tabPageName);
                 XmlGenerationContext gen_ctx = new XmlGenerationContext(tpv, context);
                 gen_ctx.generateTabPage = context.generateTabPage;
-                gen_ctx.tabPageOrderNo = context.tabPageOrderNo;
+                gen_ctx.tabPageName = context.tabPageName;
                 gen_ctx.tabPageOrderNo = context.tabPageOrderNo;
                 generateXmlForInnerGrid(tp_elem, gen_ctx);
                 return tp_elem;
@@ -1317,7 +1582,7 @@ public class DesignerManager
                 cond_elem.appendChild(if_elem);
                 Element tp_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
                 if_elem.appendChild(tp_elem);
-                if_elem.setAttribute("condition", cond);
+                if_elem.setAttribute(ComponentXmlNames.CONDITION_ATTRIBUTE, cond);
                 tp_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, context.tabPageOrderNo);
                 tp_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, context.tabPageName);
                 XmlGenerationContext gen_ctx = new XmlGenerationContext(tpv, context);
@@ -1341,61 +1606,61 @@ public class DesignerManager
 
         public void buildElementBody(Element tree_elem, XmlGenerationContext context)
         {
-            SenroTree tree = (SenroTree)context.object;
+            SenroTree tree = (SenroTree) context.object;
             Iterator<GridComponent> node_it = tree.gridIterator();
-            while(node_it.hasNext()) {
+            while (node_it.hasNext()) {
                 GridComponent crt_comp = node_it.next();
                 Component cmp = crt_comp.getBeanChildComponent();
-                if(cmp instanceof TreeNode) {
-                    getXml(tree_elem, (TreeNode)cmp);
-                } else if(cmp instanceof IteratorComponent) {
+                if (cmp instanceof TreeNode) {
+                    getXml(tree_elem, (TreeNode) cmp);
+                } else if (cmp instanceof IteratorComponent) {
                     Document doc = tree_elem.getOwnerDocument();
-                    IteratorComponent itc = (IteratorComponent)cmp;
+                    IteratorComponent itc = (IteratorComponent) cmp;
                     Element it_elem = doc.createElement(ComponentXmlNames.ITERATOR_ELEMENT);
                     tree_elem.appendChild(it_elem);
                     addDesignerObjectAttrs(it_elem, itc);
-                    it_elem.setAttribute("list", itc.getList());
-                    it_elem.setAttribute("filterCondition", itc.getFilterCondition());
+                    it_elem.setAttribute(ComponentXmlNames.LIST_ATTRIBUTE, itc.getList());
+                    it_elem.setAttribute(ComponentXmlNames.FILTER_CONDITION_ATTRIBUTE, itc.getFilterCondition());
 
                     Iterator<GridComponent> comp_it = itc.gridIterator();
-                    while(comp_it.hasNext()) {
+                    while (comp_it.hasNext()) {
                         GridComponent it_comp = comp_it.next();
                         Component it_cmp = it_comp.getBeanChildComponent();
-                        if(it_cmp instanceof TreeNode) {
-                            getXml(it_elem, (TreeNode)it_cmp);
+                        if (it_cmp instanceof TreeNode) {
+                            getXml(it_elem, (TreeNode) it_cmp);
                         }
                     }
-                } else if(cmp instanceof ConditionalComponent) {
+                } else if (cmp instanceof ConditionalComponent) {
                     Document doc = tree_elem.getOwnerDocument();
-                    ConditionalComponent cond_comp = (ConditionalComponent)cmp;
+                    ConditionalComponent cond_comp = (ConditionalComponent) cmp;
                     Element cond_elem = doc.createElement(ComponentXmlNames.CONDITIONAL_ELEMENT);
                     tree_elem.appendChild(cond_elem);
                     addDesignerObjectAttrs(cond_elem, cond_comp);
                     // create if branch
                     Element if_elem = doc.createElement(ComponentXmlNames.IF_ELEMENT);
                     cond_elem.appendChild(if_elem);
-                    if_elem.setAttribute("condition", cond_comp.getCondition());
-                    GridView if_comp = (GridView)getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(0));
+                    if_elem.setAttribute(ComponentXmlNames.CONDITION_ATTRIBUTE, cond_comp.getCondition());
+                    GridView if_comp = (GridView) getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(0));
                     Iterator<GridComponent> if_comp_it = if_comp.gridIterator();
-                    while(if_comp_it.hasNext()) {
+                    while (if_comp_it.hasNext()) {
                         GridComponent it_comp = if_comp_it.next();
                         Component if_cmp = it_comp.getBeanChildComponent();
-                        if(if_cmp instanceof TreeNode) {
-                            getXml(if_elem, (TreeNode)if_cmp);
+                        if (if_cmp instanceof TreeNode) {
+                            getXml(if_elem, (TreeNode) if_cmp);
                         }
                     }
                     // create else branch
-                    if(cond_comp.getHasElseBranch()) {
+                    if (cond_comp.getHasElseBranch()) {
                         Element else_elem = doc.createElement(ComponentXmlNames.ELSE_ELEMENT);
                         cond_elem.appendChild(else_elem);
                         GridView else_comp =
-                            (GridView)getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(1));
+                                (GridView) getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(1));
                         Iterator<GridComponent> else_comp_it = else_comp.gridIterator();
-                        while(else_comp_it.hasNext()) {
+                        while (else_comp_it.hasNext()) {
                             GridComponent it_comp = else_comp_it.next();
                             Component else_cmp = it_comp.getBeanChildComponent();
-                            if(else_cmp instanceof TreeNode) {
-                                getXml(else_elem, (TreeNode)else_cmp);
+                            if (else_cmp instanceof TreeNode) {
+                                getXml(else_elem, (TreeNode) else_cmp);
                             }
                         }
                     }
@@ -1403,7 +1668,8 @@ public class DesignerManager
             }
         }
 
-        private void getXml(Element parent_elem, TreeNode tn) {
+        private void getXml(Element parent_elem, TreeNode tn)
+        {
             Document doc = parent_elem.getOwnerDocument();
             Element node_elem = doc.createElement(ComponentXmlNames.TREE_NODE_ELEMENT);
             parent_elem.appendChild(node_elem);
@@ -1417,9 +1683,9 @@ public class DesignerManager
     {
         public Element getXml(Document doc, XmlGenerationContext context)
         {
-            JScrollPane scroll_pane = (JScrollPane)context.object;
+            JScrollPane scroll_pane = (JScrollPane) context.object;
             Component c = scroll_pane.getViewport().getView();
-            return DesignerManager.this.getXml(doc, new XmlGenerationContext((SenroDesignerObject)c, context));
+            return DesignerManager.this.getXml(doc, new XmlGenerationContext((SenroDesignerObject) c, context));
         }
 
     }
@@ -1429,13 +1695,13 @@ public class DesignerManager
 
         public Element getXml(Document doc, XmlGenerationContext context)
         {
-            IteratorComponent itc = (IteratorComponent)context.object;
+            IteratorComponent itc = (IteratorComponent) context.object;
             Element it_elem = doc.createElement(getTagName(context));
-            it_elem.setAttribute("list", itc.getList());
-            it_elem.setAttribute("filterCondition", itc.getFilterCondition());
+            it_elem.setAttribute(ComponentXmlNames.LIST_ATTRIBUTE, itc.getList());
+            it_elem.setAttribute(ComponentXmlNames.FILTER_CONDITION_ATTRIBUTE, itc.getFilterCondition());
             addAttributes(it_elem, context.attributes);
             Element top_elem;
-            if(context.generateTabPage) {
+            if (context.generateTabPage) {
                 top_elem = doc.createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
                 top_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, context.tabPageOrderNo);
                 top_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, context.tabPageName);
@@ -1460,7 +1726,7 @@ public class DesignerManager
         private void generateBranchXml(Element branch_elem, GridView branch_comp, XmlGenerationContext context)
         {
             Element top_elem;
-            if(context.generateTabPage) {
+            if (context.generateTabPage) {
                 top_elem = branch_elem.getOwnerDocument().createElement(ComponentXmlNames.TAB_PAGE_ELEMENT);
                 top_elem.setAttribute(ComponentXmlNames.ORDER_NO_ATTRIBUTE, context.tabPageOrderNo);
                 top_elem.setAttribute(ComponentXmlNames.TITLE_ATTRIBUTE, context.tabPageName);
@@ -1473,18 +1739,18 @@ public class DesignerManager
 
         public Element getXml(Document doc, XmlGenerationContext context)
         {
-            ConditionalComponent cond_comp = (ConditionalComponent)context.object;
+            ConditionalComponent cond_comp = (ConditionalComponent) context.object;
             Element cond_elem = doc.createElement(getTagName(context));
             Element if_elem = doc.createElement(ComponentXmlNames.IF_ELEMENT);
             cond_elem.appendChild(if_elem);
-            if_elem.setAttribute("condition", cond_comp.getCondition());
+            if_elem.setAttribute(ComponentXmlNames.CONDITION_ATTRIBUTE, cond_comp.getCondition());
             addAttributes(cond_elem, context.attributes);
-            GridView if_comp = (GridView)getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(0));
+            GridView if_comp = (GridView) getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(0));
             generateBranchXml(if_elem, if_comp, context);
-            if(cond_comp.getHasElseBranch()) {
+            if (cond_comp.getHasElseBranch()) {
                 Element else_elem = doc.createElement(ComponentXmlNames.ELSE_ELEMENT);
                 cond_elem.appendChild(else_elem);
-                GridView else_comp = (GridView)getTabPageComponent((DesignFormComponent)cond_comp.getComponentAt(1));
+                GridView else_comp = (GridView) getTabPageComponent((DesignFormComponent) cond_comp.getComponentAt(1));
                 generateBranchXml(else_elem, else_comp, context);
             }
             return cond_elem;
@@ -1508,7 +1774,7 @@ public class DesignerManager
         @Override
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            SwitchComponent switch_comp = (SwitchComponent)context.object;
+            SwitchComponent switch_comp = (SwitchComponent) context.object;
             e.setAttribute(ComponentXmlNames.PROPERTY_ATTRIBUTE, switch_comp.getProperty());
             e.setAttribute(ComponentXmlNames.CREATE_LABEL_ATTRIBUTE, switch_comp.isCreateLabel() ? "true" : "false");
         }
@@ -1531,6 +1797,523 @@ public class DesignerManager
             this.prevContext = prevContext;
         }
 
+    }
+
+    public PropertiesMemento getDefaultPropertiesMementoForComponent(Element comp_elem, Class comp_class) throws FormException
+    {
+        PropertiesMemento ppm = new PropertiesMemento();
+        ppm.setBeanClassName(comp_class.getName());
+        ppm.addProperty("name", comp_elem.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE));
+        ppm.addProperty("id", comp_elem.getAttribute(ComponentXmlNames.ID_ATTRIBUTE));
+        ppm.addProperty("row", "");
+        ppm.addProperty("column", "");
+
+        return ppm;
+    }
+
+    public void setRowAndColumnSpecsToStateFromGrid(FormMemento state, Element grid_elem)
+    {
+        Element rows_elem = XmlHelper.getChild(grid_elem, ComponentXmlNames.ROWS_ELEMENT);
+        state.setRowSpecs(getRowSpecs(rows_elem));
+        Element columns_elem = XmlHelper.getChild(grid_elem, ComponentXmlNames.COLUMNS_ELEMENT);
+        state.setColumnSpecs(getColumnSpecs(columns_elem));
+    }
+
+    public void addComponentsToStateFromGrid(FormMemento state, Element grid_elem) throws FormException
+    {
+        Element components_elem = XmlHelper.getChild(grid_elem, ComponentXmlNames.COMPONENTS_ELEMENT);
+        Element comp_elem = XmlHelper.getFirstChildElement(components_elem);
+        while (comp_elem != null) {
+            String comp_elem_tag_name = comp_elem.getTagName();
+            ComponentMemento comp_memento = compMementoGenerators.get(comp_elem_tag_name).getCompMemento(comp_elem);
+            state.addComponent(comp_memento);
+            comp_elem = XmlHelper.getNextSiblingElement(comp_elem);
+        }
+    }
+
+    private abstract class ComponentMementoGenerator
+    {
+        private int embeddedId = 1;
+
+        public abstract ComponentMemento getCompMemento(Element comp_elem) throws FormException;
+
+        public CellConstraints getSingleCellDefaultConstraints()
+        {
+            return new CellConstraints(1, 1, 1, 1, CellConstraints.DEFAULT, CellConstraints.DEFAULT,
+                    new Insets(0, 0, 0, 0));
+        }
+
+        public String getSingleCellDefaultRowSpecs()
+        {
+            return "CENTER:DEFAULT:NONE";
+        }
+
+        public String getSingleCellDefaultColumnSpecs()
+        {
+            return "FILL:DEFAULT:NONE";
+        }
+
+        public CellConstraints getComponentCellConstraints(Element comp_elem)
+        {
+            String col_attr = comp_elem.getAttribute(ComponentXmlNames.COL_ATTRIBUTE);
+            String row_attr = comp_elem.getAttribute(ComponentXmlNames.ROW_ATTRIBUTE);
+            String col_span_attr = comp_elem.getAttribute(ComponentXmlNames.COL_SPAN_ATTRIBUTE);
+            String row_span_attr = comp_elem.getAttribute(ComponentXmlNames.ROW_SPAN_ATTRIBUTE);
+            String halign = comp_elem.getAttribute(ComponentXmlNames.HALIGN_ATTRIBUTE);
+            String valign = comp_elem.getAttribute(ComponentXmlNames.VALIGN_ATTRIBUTE);
+            if (col_attr.equals("") || row_attr.equals("") || col_span_attr.equals("") ||
+                    row_span_attr.equals("") || halign.equals("") || valign.equals("")) {
+                return getSingleCellDefaultConstraints();
+            }
+            int col = Integer.parseInt(col_attr) + 1;
+            int row = Integer.parseInt(row_attr) + 1;
+            int colspan = Integer.parseInt(col_span_attr);
+            int rowspan = Integer.parseInt(row_span_attr);
+            return new CellConstraints(col, row, colspan, rowspan,
+                    componentAlignment.get(halign), componentAlignment.get(valign),
+                    new Insets(0, 0, 0, 0));
+
+        }
+
+        public BeanMemento getBeanMementoForStandardComponent(Element comp_elem, Class comp_class)
+        {
+            BeanMemento bm = new BeanMemento();
+            bm.setCellConstraints(getComponentCellConstraints(comp_elem));
+            bm.setComponentClass(StandardComponent.class.getName());
+            bm.setJETABeanClass(JETABean.class.getName());
+            bm.setBeanClass(comp_class.getName());
+            return bm;
+        }
+
+        public BeanMemento getBeanMementoForContainerComponent(Element comp_elem, Class comp_class)
+        {
+            BeanMemento bm = new BeanMemento();
+            bm.setCellConstraints(getComponentCellConstraints(comp_elem));
+            bm.setComponentClass(FormContainerComponent.class.getName());
+            bm.setJETABeanClass(JETABean.class.getName());
+            bm.setBeanClass(comp_class.getName());
+            return bm;
+        }
+
+        public String getNextEmbeddedId()
+        {
+            String next_id = "embedded." + embeddedId;
+            embeddedId++;
+            return next_id;
+        }
+
+    }
+
+    private class LabelMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SenroLabel.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroLabel.class);
+            ppm.addProperty("text", XmlHelper.getTextFromChild(comp_elem, ComponentXmlNames.TEXT_ELEMENT));
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class CheckBoxMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SenroCheckBox.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroCheckBox.class);
+            ppm.addProperty("label", XmlHelper.getTextFromChild(comp_elem, ComponentXmlNames.LABEL_ELEMENT));
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class ComboBoxMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SenroComboBox.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroComboBox.class);
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class ListMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SenroList.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroList.class);
+            ppm.addProperty("entity", comp_elem.getAttribute(ComponentXmlNames.ENTITY_ATTRIBUTE));
+            ScrollBarsProperty sbp = new ScrollBarsProperty();
+            sbp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            sbp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            ppm.addProperty("scollBars", sbp);
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class GridAllocatorRendererMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, GridAllocatorRenderer.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, GridAllocatorRenderer.class);
+            ppm.addProperty("gridAllocator", comp_elem.getAttribute(ComponentXmlNames.GRID_ALLOCATOR_ATTRIBUTE));
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class TextFieldMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SenroTextField.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroTextField.class);
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class DateFieldMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SenroDateField.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroDateField.class);
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class TextAreaMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SenroTextArea.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroTextArea.class);
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class ButtonMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SenroButton.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroButton.class);
+
+            ppm.addProperty("text", XmlHelper.getTextFromChild(comp_elem, ComponentXmlNames.LABEL_ELEMENT));
+            ppm.addProperty("entity", XmlHelper.getTextFromChild(comp_elem, ComponentXmlNames.ENTITY_ELEMENT));
+            ppm.addProperty("task", XmlHelper.getTextFromChild(comp_elem, ComponentXmlNames.TASK_ELEMENT));
+            ppm.addProperty("buttonIcon", XmlHelper.getTextFromChild(comp_elem, ComponentXmlNames.ICON_ELEMENT));
+            ppm.addProperty("hoverIcon", XmlHelper.getTextFromChild(comp_elem, ComponentXmlNames.HOVER_ELEMENT));
+            ppm.addProperty("type", comp_elem.getAttribute(ComponentXmlNames.TYPE_ATTRIBUTE));
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class TemplateMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, TemplateComponent.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, TemplateComponent.class);
+            String template_name = comp_elem.getAttribute(ComponentXmlNames.TEMPLATE_FILE_ATTRIBUTE);
+            ppm.addProperty("templateName", template_name);
+
+            List<TemplateParameter> parameters = new ArrayList<TemplateParameter>();
+            Template template = getProject().getTemplate(template_name);
+            if (template != null) {
+                List<Parameter> params = template.getParameters();
+                Map<String, Parameter> param_map = new HashMap<String, Parameter>();
+                for (Parameter parameter : params) {
+                    param_map.put(parameter.getName(), parameter);
+                }
+                Element param_elem = XmlHelper.getFirstChildElement(comp_elem);
+                while (param_elem != null) {
+                    String param_name = param_elem.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE);
+                    String param_value = param_elem.getAttribute(ComponentXmlNames.VALUE_ATTRIBUTE);
+                    TemplateParameter tp = new TemplateParameter(param_map.get(param_name));
+                    tp.setValue(param_value);
+                    parameters.add(tp);
+                    param_elem = XmlHelper.getNextSiblingElement(param_elem);
+                }
+            }
+            ppm.addProperty("parameters", (Serializable) parameters);
+
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class SwitchComponentMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForStandardComponent(comp_elem, SwitchComponent.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SwitchComponent.class);
+
+            ppm.addProperty("property", comp_elem.getAttribute(ComponentXmlNames.PROPERTY_ATTRIBUTE));
+            ppm.addProperty("createLabel", comp_elem.getAttribute(ComponentXmlNames.CREATE_LABEL_ATTRIBUTE));
+            bm.setProperties(ppm);
+            return bm;
+        }
+    }
+
+    private class IteratorMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            FormMemento state = new FormMemento();
+            state.setCellConstraints(getComponentCellConstraints(comp_elem));
+            state.setComponentClass(FormComponent.class.getName());
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, IteratorComponent.class);
+
+            ppm.addProperty("list", comp_elem.getAttribute(ComponentXmlNames.LIST_ATTRIBUTE));
+            ppm.addProperty("filterCondition", comp_elem.getAttribute(ComponentXmlNames.FILTER_CONDITION_ATTRIBUTE));
+            state.setPropertiesMemento(ppm);
+
+            state.setId(getNextEmbeddedId());
+            Element first_child = XmlHelper.getFirstChildElement(comp_elem);
+            String first_child_tag_name = first_child.getTagName();
+            if (first_child_tag_name.equals(ComponentXmlNames.TAB_PAGE_ELEMENT)) {
+                Element grid_elem = XmlHelper.getChild(first_child, ComponentXmlNames.GRID_ELEMENT);
+                setRowAndColumnSpecsToStateFromGrid(state, grid_elem);
+                addComponentsToStateFromGrid(state, grid_elem);
+            } else if (first_child_tag_name.equals(ComponentXmlNames.GRID_ELEMENT)) {
+                setRowAndColumnSpecsToStateFromGrid(state, first_child);
+                addComponentsToStateFromGrid(state, first_child);
+            } else {
+                state.setRowSpecs(getSingleCellDefaultRowSpecs());
+                state.setColumnSpecs(getSingleCellDefaultColumnSpecs());
+                ComponentMemento comp_memento = compMementoGenerators.get(first_child_tag_name).getCompMemento(first_child);
+                state.addComponent(comp_memento);
+            }
+            return state;
+        }
+    }
+
+    private class EmbeddedGridMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            FormMemento state = new FormMemento();
+            state.setCellConstraints(getComponentCellConstraints(comp_elem));
+            state.setComponentClass(FormComponent.class.getName());
+            state.setId(getNextEmbeddedId());
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, GridView.class);
+            state.setPropertiesMemento(ppm);
+            setRowAndColumnSpecsToStateFromGrid(state, comp_elem);
+            addComponentsToStateFromGrid(state, comp_elem);
+
+            return state;
+        }
+    }
+
+    private class TreeMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            FormMemento state = new FormMemento();
+            state.setCellConstraints(getComponentCellConstraints(comp_elem));
+            state.setComponentClass(FormComponent.class.getName());
+            state.setId(getNextEmbeddedId());
+            state.setColumnSpecs(getSingleCellDefaultColumnSpecs());
+
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroTree.class);
+            state.setPropertiesMemento(ppm);
+
+            Element tree_node_elem = XmlHelper.getFirstChildElement(comp_elem);
+            int grid_y = 0;
+            StringBuffer buff = new StringBuffer();
+            while (tree_node_elem != null) {
+                if (grid_y > 0) {
+                    buff.append(",");
+                }
+                buff.append(getSingleCellDefaultRowSpecs());
+                BeanMemento bm = new BeanMemento();
+                grid_y++;
+                bm.setCellConstraints(getCellDefaultConstraints(grid_y));
+                bm.setComponentClass(StandardComponent.class.getName());
+                bm.setJETABeanClass(JETABean.class.getName());
+                bm.setBeanClass(TreeNode.class.getName());
+                PropertiesMemento b_ppm = getDefaultPropertiesMementoForComponent(comp_elem, TreeNode.class);
+                b_ppm.addProperty("text", XmlHelper.getTextFromChild(tree_node_elem, ComponentXmlNames.TEXT_ELEMENT));
+                bm.setProperties(b_ppm);
+                state.addComponent(bm);
+
+                tree_node_elem = XmlHelper.getNextSiblingElement(tree_node_elem);
+            }
+            state.setRowSpecs(buff.toString());
+
+            return state;
+        }
+
+        private CellConstraints getCellDefaultConstraints(int grid_y)
+        {
+            return new CellConstraints(1, grid_y, 1, 1, CellConstraints.DEFAULT, CellConstraints.DEFAULT,
+                    new Insets(0, 0, 0, 0));
+        }
+    }
+
+    private class TabbedPaneMementoGenerator extends ComponentMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForContainerComponent(comp_elem, SenroTabbedPane.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, SenroTabbedPane.class);
+
+            TabbedPaneProperties tpp = new TabbedPaneProperties();
+            Element tab_page_elem = XmlHelper.getFirstChildElement(comp_elem);
+            while (tab_page_elem != null) {
+                String tab_page_tag_name = tab_page_elem.getTagName();
+                Map<String, Object> tab_parameters = new HashMap<String, Object>();
+                if (tab_page_tag_name.equals(ComponentXmlNames.TAB_PAGE_ELEMENT)) {
+                    tab_parameters.put(ComponentXmlNames.TITLE_ATTRIBUTE, tab_page_elem.getAttribute(ComponentXmlNames.TITLE_ATTRIBUTE));
+                    // Add TabPageView basic properties
+                    tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, tab_page_elem.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE));
+                    tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, tab_page_elem.getAttribute(ComponentXmlNames.ID_ATTRIBUTE));
+                    tab_parameters.put(ComponentXmlNames.CONDITION_ATTRIBUTE, "");
+
+                    Element first_child = XmlHelper.getFirstChildElement(tab_page_elem);
+                    if (first_child.getTagName().equals(ComponentXmlNames.GRID_ELEMENT)) {
+                        tab_parameters.put(ComponentXmlNames.GRID_ELEMENT, first_child);
+                        tpp.addTab(getTabProperty(tab_parameters));
+                    } else {
+                        tab_parameters.put(ComponentXmlNames.COMPONENT_ELEMENT, first_child);
+                        tpp.addTab(getComponentTabProperty(tab_parameters));
+                    }
+                } else if (tab_page_tag_name.equals(ComponentXmlNames.CONDITIONAL_ELEMENT)) {
+                    Element if_elem = XmlHelper.getChild(tab_page_elem, ComponentXmlNames.IF_ELEMENT);
+                    Element inner_tab_page_elem = XmlHelper.getChild(if_elem, ComponentXmlNames.TAB_PAGE_ELEMENT);
+                    tab_parameters.put(ComponentXmlNames.TITLE_ATTRIBUTE, inner_tab_page_elem.getAttribute(ComponentXmlNames.TITLE_ATTRIBUTE));
+                    tab_parameters.put(ComponentXmlNames.GRID_ELEMENT, XmlHelper.getChild(inner_tab_page_elem, ComponentXmlNames.GRID_ELEMENT));
+                    // Add TabPageView basic properties
+                    tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, tab_page_elem.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE));
+                    tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, tab_page_elem.getAttribute(ComponentXmlNames.ID_ATTRIBUTE));
+                    tab_parameters.put(ComponentXmlNames.CONDITION_ATTRIBUTE, if_elem.getAttribute(ComponentXmlNames.CONDITION_ATTRIBUTE));
+                    tpp.addTab(getTabProperty(tab_parameters));
+                } else if (tab_page_tag_name.equals(ComponentXmlNames.ITERATOR_ELEMENT)) {
+                    Element inner_tab_page_elem = XmlHelper.getChild(tab_page_elem, ComponentXmlNames.TAB_PAGE_ELEMENT);
+                    TabProperty tp = new TabProperty(inner_tab_page_elem.getAttribute(ComponentXmlNames.TITLE_ATTRIBUTE));
+                    tp.setContentClass(TabProperty.ITERATOR_CONTENT);
+                    FormMemento state = (FormMemento) compMementoGenerators.get(ComponentXmlNames.ITERATOR_ELEMENT).getCompMemento(tab_page_elem);
+                    tp.setFormMemento(state);
+                    tpp.addTab(tp);
+                }
+                tab_page_elem = XmlHelper.getNextSiblingElement(tab_page_elem);
+            }
+            ppm.addProperty("tabs", tpp);
+            bm.setProperties(ppm);
+            return bm;
+        }
+
+        protected TabProperty getTabProperty(Map tab_parameters) throws FormException
+        {
+            TabProperty tp = new TabProperty((String) tab_parameters.get(ComponentXmlNames.TITLE_ATTRIBUTE));
+            FormMemento state = new FormMemento();
+            tp.setContentClass(TabProperty.TAB_PAGE_CONTENT);
+            state.setId(getNextEmbeddedId());
+            state.setComponentClass(FormComponent.class.getName());
+            Element grid_elem = (Element) tab_parameters.get(ComponentXmlNames.GRID_ELEMENT);
+            setRowAndColumnSpecsToStateFromGrid(state, grid_elem);
+            PropertiesMemento tp_ppm = new PropertiesMemento();
+            tp_ppm.setBeanClassName(TabPageView.class.getName());
+            tp_ppm.addProperty("name", (Serializable) tab_parameters.get(ComponentXmlNames.NAME_ATTRIBUTE));
+            tp_ppm.addProperty("id", (Serializable) tab_parameters.get(ComponentXmlNames.ID_ATTRIBUTE));
+            tp_ppm.addProperty("condition", (Serializable) tab_parameters.get(ComponentXmlNames.CONDITION_ATTRIBUTE));
+            state.setPropertiesMemento(tp_ppm);
+            addComponentsToStateFromGrid(state, grid_elem);
+            tp.setFormMemento(state);
+            return tp;
+        }
+
+        protected TabProperty getComponentTabProperty(Map tab_parameters) throws FormException
+        {
+            TabProperty tp = new TabProperty((String) tab_parameters.get(ComponentXmlNames.TITLE_ATTRIBUTE));
+            FormMemento state = new FormMemento();
+            tp.setContentClass(TabProperty.TAB_PAGE_CONTENT);
+            state.setId(getNextEmbeddedId());
+            state.setComponentClass(FormComponent.class.getName());
+            state.setRowSpecs(getSingleCellDefaultRowSpecs());
+            state.setColumnSpecs(getSingleCellDefaultColumnSpecs());
+            PropertiesMemento tp_ppm = new PropertiesMemento();
+            tp_ppm.setBeanClassName(TabPageView.class.getName());
+            tp_ppm.addProperty("name", (Serializable) tab_parameters.get(ComponentXmlNames.NAME_ATTRIBUTE));
+            tp_ppm.addProperty("id", (Serializable) tab_parameters.get(ComponentXmlNames.ID_ATTRIBUTE));
+            tp_ppm.addProperty("condition", (Serializable) tab_parameters.get(ComponentXmlNames.CONDITION_ATTRIBUTE));
+            state.setPropertiesMemento(tp_ppm);
+            Element comp_elem = (Element) tab_parameters.get(ComponentXmlNames.COMPONENT_ELEMENT);
+            String comp_elem_tag_name = comp_elem.getTagName();
+            ComponentMemento comp_memento = compMementoGenerators.get(comp_elem_tag_name).getCompMemento(comp_elem);
+            state.addComponent(comp_memento);
+            tp.setFormMemento(state);
+            return tp;
+        }
+    }
+
+    private class ConditionalMementoGenerator extends TabbedPaneMementoGenerator
+    {
+        @Override
+        public ComponentMemento getCompMemento(Element comp_elem) throws FormException
+        {
+            BeanMemento bm = getBeanMementoForContainerComponent(comp_elem, ConditionalComponent.class);
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp_elem, ConditionalComponent.class);
+
+            TabbedPaneProperties tpp = new TabbedPaneProperties();
+            Element tab_page_elem = XmlHelper.getFirstChildElement(comp_elem);
+            while (tab_page_elem != null) {
+                String tab_page_tag_name = tab_page_elem.getTagName();
+                Map<String, Object> tab_parameters = new HashMap<String, Object>();
+                if (tab_page_tag_name.equals(ComponentXmlNames.IF_ELEMENT)) {
+                    ppm.addProperty("condition", tab_page_elem.getAttribute(ComponentXmlNames.CONDITION_ATTRIBUTE));
+                    ppm.addProperty(ConditionalComponentBeanFactory.TAB_PROP_NAME, false);
+                    tab_parameters.put(ComponentXmlNames.TITLE_ATTRIBUTE, ConditionalComponentBeanFactory.IF_TAB_TITLE);
+                } else if (tab_page_tag_name.equals(ComponentXmlNames.ELSE_ELEMENT)) {
+                    ppm.addProperty(ConditionalComponentBeanFactory.TAB_PROP_NAME, true);
+                    tab_parameters.put(ComponentXmlNames.TITLE_ATTRIBUTE, ConditionalComponentBeanFactory.ELSE_TAB_TITLE);
+                }
+                // Add TabPageView basic properties
+                tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, "");
+                tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, "");
+                tab_parameters.put(ComponentXmlNames.CONDITION_ATTRIBUTE, "");
+
+                Element first_child = XmlHelper.getFirstChildElement(tab_page_elem);
+                if (first_child.getTagName().equals(ComponentXmlNames.GRID_ELEMENT)) {
+                    tab_parameters.put(ComponentXmlNames.GRID_ELEMENT, first_child);
+                    tpp.addTab(getTabProperty(tab_parameters));
+                } else {
+                    tab_parameters.put(ComponentXmlNames.COMPONENT_ELEMENT, first_child);
+                    tpp.addTab(getComponentTabProperty(tab_parameters));
+                }
+
+                tab_page_elem = XmlHelper.getNextSiblingElement(tab_page_elem);
+            }
+            ppm.addProperty("tabs", tpp);
+            bm.setProperties(ppm);
+            return bm;
+        }
     }
 
 }

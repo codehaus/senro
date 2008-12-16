@@ -45,6 +45,8 @@ import java.util.ArrayList;
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.components.TopGridView;
 import ro.siveco.senro.designer.util.ComponentStructureInfo;
+import ro.siveco.senro.designer.inspectors.association.AssociationInspectorPanel;
+import ro.siveco.senro.designer.inspectors.SenroUiInspector;
 
 /**
  * The main frame window for the application
@@ -299,6 +301,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
                 m_row_spec_panel.update(gc);
             } else if (view == m_cc_view) {
                 m_cc_view.update(gc);
+            } else if(view instanceof SenroUiInspector) {
+                ((AssociationInspectorPanel)view).update(gc);
             }
         }
     }
@@ -388,6 +392,11 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
             }
         };
         m_buttonbar.addView(I18N.getLocalizedMessage("Cell"), scroll, FormDesignerUtils.loadImage(Icons.CELL_16));
+
+        // Add the association inspector
+        AssociationInspectorPanel assoc_insp = new AssociationInspectorPanel();
+        m_buttonbar.addView(I18N.getLocalizedMessage("Association"), assoc_insp, FormDesignerUtils.loadImage(Icons.CELL_16));
+
         m_buttonbar.updateView();
 
         m_properties_view = new FormPanel("com/jeta/swingbuilder/gui/main/formProperties.jfrm");
@@ -539,6 +548,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.add(i18n_createMenuItem("New Project", MainFrameNames.ID_CREATE_PROJECT, null));
         menu.add(i18n_createMenuItem("Save Project", MainFrameNames.ID_SAVE_PROJECT, null));
         menu.add(i18n_createMenuItem("Open Project", MainFrameNames.ID_OPEN_PROJECT, null));
+        menu.add(i18n_createMenuItem("Open Senro Project", MainFrameNames.ID_OPEN_SENRO_PROJECT, null));
         menu.add(i18n_createMenuItem("Close Project", MainFrameNames.ID_CLOSE_PROJECT, null));
         menu.addSeparator();
 
@@ -638,6 +648,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.add(i18n_createMenuItem("Preferences", MainFrameNames.ID_ENV_SETTINGS, null));
         menu.add(i18n_createMenuItem("System Properties", MainFrameNames.ID_SYSTEM_PROPERTIES, null));
         menu.add(i18n_createMenuItem("Parameters", MainFrameNames.ID_PARAMETERS_MANAGER, null));
+        menu.add(i18n_createMenuItem("Senro Context", MainFrameNames.ID_SENRO_CONTEXT, null));
 
         if(STUDY) {
             JMenuItem show_structure = new JMenuItem("Show form structure");
@@ -707,6 +718,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
 
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_PROJECT, Icons.NEW_PROJECT_24, "Create Project"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_PROJECT, Icons.OPEN_PROJECT_24, "Open Project"));
+        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_SENRO_PROJECT, Icons.OPEN_PROJECT_24, "Open Senro Project"));
 
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_SAVE_PROJECT, Icons.SAVE_24, "Save Project"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_FORM, Icons.ADD_24, "Create Grid"));
@@ -900,9 +912,9 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
     /**
      * @return a collection of currently opened FormEditors
      */
-    public Collection getEditors()
+    public Collection<FormEditor> getEditors()
     {
-        LinkedList editors = new LinkedList();
+        LinkedList<FormEditor> editors = new LinkedList<FormEditor>();
         for (int index = 0; index < m_forms_tab.getTabCount(); index++) {
             FormEditor editor = (FormEditor) m_forms_tab.getComponentAt(index);
             editors.add(editor);

@@ -2,10 +2,13 @@ package ro.siveco.senro.designer.objects;
 
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.DesignerObjectListener;
+import ro.siveco.senro.designer.basic.SenroDesignerObjectDelegate;
+import ro.siveco.senro.designer.association.AssociationInstance;
 
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.List;
 import java.io.Serializable;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -14,9 +17,12 @@ public abstract class ObjectDescription implements Serializable, SenroDesignerOb
 {
     private static final long serialVersionUID = 1;
 
-    protected String name = "";
-    protected String id = "";
-    protected transient Set<ObjectChangeListener> changeListeners = new HashSet<ObjectChangeListener>();
+    private final SenroDesignerObjectDelegate sdoDelegate;
+
+    protected ObjectDescription()
+    {
+        sdoDelegate = new SenroDesignerObjectDelegate(this);
+    }
 
     public abstract String getObjectClassName();
 
@@ -25,66 +31,70 @@ public abstract class ObjectDescription implements Serializable, SenroDesignerOb
         return true;
     }
 
-    public void addChangeListener(ObjectChangeListener changeListener)
-    {
-        if(changeListeners == null) {
-            changeListeners = new HashSet<ObjectChangeListener>();
-        }
-        if(changeListener != null) {
-            changeListeners.add(changeListener);
-        }
-    }
-
-    public void removeChangeListener(ObjectChangeListener changeListener)
-    {
-        changeListeners.remove(changeListener);
-    }
-
-    public void notifyListeners()
-    {
-        for(ObjectChangeListener changeListener : changeListeners) {
-            changeListener.objectDidChange(this);
-        }
-    }
-
+    @Override
     public String getName()
     {
-        return name == null || name.length() == 0 ? id : name;
+        return sdoDelegate.getName();
     }
 
+    @Override
     public void setName(String obj_name)
     {
-        if(ObjectUtils.equals(name, obj_name)) {
+        if(ObjectUtils.equals(sdoDelegate.getName(), obj_name)) {
             return;
         }
-        name = obj_name == null ? "" : obj_name;
-        notifyListeners();
+        sdoDelegate.setName(obj_name);
     }
 
+    @Override
     public String getId()
     {
-        return id == null || id.length() == 0 ? name : id;
+        return sdoDelegate.getId();
     }
 
+    @Override
     public void setId(String obj_id)
     {
-        if(ObjectUtils.equals(id, obj_id)) {
+        if(ObjectUtils.equals(sdoDelegate.getId(), obj_id)) {
             return;
         }
-        id = obj_id == null ? "" : obj_id;
-        notifyListeners();
+        sdoDelegate.setId(obj_id);
     }
 
+    @Override
     public void addListener(DesignerObjectListener listener)
     {
+        sdoDelegate.addListener(listener);
     }
 
+    @Override
     public void removeListener(DesignerObjectListener listener)
     {
+        sdoDelegate.removeListener(listener);
     }
 
+    @Override
     public void updateLinks(Map<String, SenroDesignerObject> obj_map)
     {
+        sdoDelegate.updateLinks(obj_map);
+    }
+
+    @Override
+    public void addAssociation(AssociationInstance assoc)
+    {
+        sdoDelegate.addAssociation(assoc);
+    }
+
+    @Override
+    public void removeAssociation(AssociationInstance assoc)
+    {
+        sdoDelegate.removeAssociation(assoc);
+    }
+
+    @Override
+    public List<AssociationInstance> getAssociations()
+    {
+        return sdoDelegate.getAssociations();
     }
 
 }

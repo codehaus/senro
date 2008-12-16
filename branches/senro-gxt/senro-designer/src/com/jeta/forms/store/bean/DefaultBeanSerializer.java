@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 JETA Software, Inc.  All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
- *  o Redistributions of source code must retain the above copyright notice, 
+ *  o Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
- *  o Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  o Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  o Neither the name of JETA Software nor the names of its contributors may 
- *    be used to endorse or promote products derived from this software without 
+ *  o Neither the name of JETA Software nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
  *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
@@ -71,13 +71,13 @@ import com.jeta.forms.store.properties.TransformOptionsProperty;
  * This interface defines how a bean is instantiated and intialized
  * from a stored state (i.e. a properties memento).
  * See {@link com.jeta.forms.store.memento.PropertiesMemento}
- * 
+ *
  * @author Jeff Tassin
  */
 public class DefaultBeanSerializer implements BeanSerializer
 {
    /**
-    * A map of default beans classes to a instance of each class.  
+    * A map of default beans classes to a instance of each class.
     * m_default_beans<Class,Component>
     */
    private static HashMap         m_default_beans = new HashMap();
@@ -95,7 +95,7 @@ public class DefaultBeanSerializer implements BeanSerializer
 
    static
    {
-      /** load the supported properties map with the types of properties that can be stored 
+      /** load the supported properties map with the types of properties that can be stored
        * (these are in addition to JETAProperty types) */
       m_supported_properties.add( java.awt.Color.class );
       m_supported_properties.add( java.awt.Font.class );
@@ -116,7 +116,7 @@ public class DefaultBeanSerializer implements BeanSerializer
    /**
     * Return true if the given two values are different.
     */
-   private boolean areDifferent( Object def_value, Object prop_value ) 
+   private boolean areDifferent( Object def_value, Object prop_value )
    {
       boolean bresult = true;
       if ( def_value != null )
@@ -138,13 +138,13 @@ public class DefaultBeanSerializer implements BeanSerializer
       return bresult;
    }
 
-   
+
    /**
     * Returns a Java Bean instance that has only default properties.
     * We use this to test which properties to save when serializing a JETABean.
     * Null is returned if the component cannot be instantiated.
-    */ 
-   private JETABean getDefaultBean( Class compClass )
+    */
+   public JETABean getDefaultBean( Class compClass )
    {
       if ( isLookAndFeelChanged() )
       {
@@ -187,8 +187,8 @@ public class DefaultBeanSerializer implements BeanSerializer
    }
 
    /**
-    * Returns true if the given value can be serialized. We don't allow storing some properties even though 
-    * they implement Serializable.  For example, we don't store properties that are instances of Containers 
+    * Returns true if the given value can be serialized. We don't allow storing some properties even though
+    * they implement Serializable.  For example, we don't store properties that are instances of Containers
     * and/or Components because those objects don't guarantee Serialiable compatibility with future versions of Java.
     * @param value the value to check for serializability
     * @return true if the given property value can be serialized.
@@ -232,7 +232,7 @@ public class DefaultBeanSerializer implements BeanSerializer
 	 /** for invoking the read methods. Read methods don't take parameters */
 	 Object[] read_params = new Object[0];
 	 PropertiesMemento ppm = new PropertiesMemento();
-	 
+
 	 Component comp = jbean.getDelegate();
 	 if ( comp != null )
 	 {
@@ -287,7 +287,7 @@ public class DefaultBeanSerializer implements BeanSerializer
 		     FormsLogger.severe( e );
 		  }
 	       }
-	       
+
 	       /**
 		* Always store the component name.  I've encountered some Java Beans that don't define the 'name'
                 * property in the BeanInfo class.  Since this architecture depends on the component name, we need
@@ -308,7 +308,7 @@ public class DefaultBeanSerializer implements BeanSerializer
       {
 	 if ( e instanceof FormException )
 	    throw (FormException)e;
-	 
+
 	 throw new FormException(e);
       }
    }

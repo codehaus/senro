@@ -58,6 +58,12 @@ public class SenroListBeanFactory extends JComponentBeanFactory
         }
         props.setPreferred("scollBars", false);
         props.setPreferred("border", false);
+        props.removeProperty("background");
+        props.removeProperty("enabled");
+        props.removeProperty("font");
+        props.removeProperty("foreground");
+        props.removeProperty("preferredSize");
+        props.removeProperty("toolTipText");
     }
 
 

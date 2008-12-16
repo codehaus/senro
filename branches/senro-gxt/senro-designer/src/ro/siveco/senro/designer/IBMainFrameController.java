@@ -96,6 +96,7 @@ public class IBMainFrameController extends IBFormEditorController
 
         assignAction(MainFrameNames.ID_CREATE_PROJECT, new NewDesignerProjectAction());
         assignAction(MainFrameNames.ID_OPEN_PROJECT, new OpenDesignerProjectAction());
+        assignAction(MainFrameNames.ID_OPEN_SENRO_PROJECT, new OpenSenroProjectAction());
         assignAction(MainFrameNames.ID_SAVE_PROJECT, new SaveDesignerProjectAction());
         assignAction(MainFrameNames.ID_CLOSE_PROJECT, new CloseDesignerProjectAction());
 
@@ -106,6 +107,7 @@ public class IBMainFrameController extends IBFormEditorController
         assignAction(MainFrameNames.ID_SYSTEM_PROPERTIES, new SystemPropertiesAction());
         assignAction(MainFrameNames.ID_ENV_SETTINGS, new UserPreferencesAction());
         assignAction(MainFrameNames.ID_PARAMETERS_MANAGER, new ShowParametersAction());
+        assignAction(MainFrameNames.ID_SENRO_CONTEXT, new ShowSenroContextAction());
 
         assignAction(MainFrameNames.ID_ABOUT, new AboutAction());
         assignAction(MainFrameNames.ID_EXIT, new ExitAction());
@@ -988,11 +990,27 @@ public class IBMainFrameController extends IBFormEditorController
         }
     }
 
+    public class OpenSenroProjectAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            m_frame.getDesignerManager().openProjectFromComponentXml();
+        }
+    }
+
     public class ShowParametersAction implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
         {
             m_frame.getDesignerManager().getProject().showParameters();
+        }
+    }
+
+    public class ShowSenroContextAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            m_frame.getDesignerManager().getProject().showSenroContext();
         }
     }
 

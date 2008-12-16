@@ -25,6 +25,7 @@ public class MainFrameNames extends FormEditorNames
    public static final String ID_CREATE_PROJECT   = "create.project";
    public static final String ID_OPEN_FORM        = "open.form";
    public static final String ID_OPEN_PROJECT     = "open.project";
+   public static final String ID_OPEN_SENRO_PROJECT     = "open.senro.project";
    public static final String ID_CLOSE_PROJECT    = "close.project";
 
    public static final String ID_SAVE_FORM        = "save.form";
@@ -43,6 +44,7 @@ public class MainFrameNames extends FormEditorNames
    public static final String ID_FOCUS_MANAGER   = "focus.manager";
    public static final String ID_BEAN_MANAGER    = "bean.manager";
    public static final String ID_PARAMETERS_MANAGER    = "parameters.manager";
+   public static final String ID_SENRO_CONTEXT    = "senro.context";
 
    public static final String ID_SHOW_FORM_MANAGER = "show.form.manager";
    public static final String ID_SHOW_UNDO_MANAGER = "show.undo.manager";

@@ -36,7 +36,7 @@ import com.jeta.forms.logger.FormsLogger;
 
 /**
  * The look and feel manager for the application.
- * 
+ *
  * @author Jeff Tassin
  */
 public class DefaultLookAndFeelManager {
@@ -51,7 +51,7 @@ public class DefaultLookAndFeelManager {
     */
    private LinkedHashMap m_lafs = new LinkedHashMap();
 
-   // public static final String ALLOY = AlloyLoader.class.getName();
+   // public static final String ALLOY = AlloyLoader.class.toString();
    public static final String JGOODIES = JGoodiesLoader.class.getName();
 
    public static final String DEFAULT = DefaultLoader.class.getName();
@@ -169,9 +169,9 @@ public class DefaultLookAndFeelManager {
 
          createDefaultLookAndFeel(DEFAULT, "javax.swing.plaf.metal.MetalLookAndFeel", "", I18N
                   .getLocalizedMessage("Metal"));
-         
+
          createDefaultLookAndFeel( DEFAULT, "org.jvnet.substance.SubstanceLookAndFeel", "", I18N.getLocalizedMessage("Substance") );
-         
+
 
          UIManager.LookAndFeelInfo[] lfinfo = UIManager.getInstalledLookAndFeels();
          if (lfinfo != null) {

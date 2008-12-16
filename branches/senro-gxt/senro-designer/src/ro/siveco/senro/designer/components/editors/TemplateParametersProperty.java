@@ -9,6 +9,7 @@ import ro.siveco.senro.designer.components.TemplateParameter;
 
 import java.util.List;
 import java.io.IOException;
+import java.awt.*;
 
 public class TemplateParametersProperty extends JETAProperty
 {
@@ -87,6 +88,17 @@ public class TemplateParametersProperty extends JETAProperty
 
     public void setValue(Object new_param)
     {
+        if (new_param instanceof List) {
+            Component comp = null;
+            if (m_bean != null) {
+                comp = m_bean.getDelegate();
+            }
+
+            if (comp instanceof TemplateComponent) {
+                TemplateComponent tc = (TemplateComponent) comp;
+                tc.setParametersValues((List<TemplateParameter>) new_param);
+            }
+        }
     }
 
     /**

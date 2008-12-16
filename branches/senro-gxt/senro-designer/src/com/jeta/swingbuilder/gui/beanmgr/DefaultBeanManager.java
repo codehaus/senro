@@ -239,32 +239,32 @@ public class DefaultBeanManager implements BeanManager
 //      registerDefaultBean(I18N.getLocalizedMessage("JEditorPane"), "javax.swing.JEditorPane", FormDesignerUtils
 //               .loadImage(Icons.RICH_TEXT_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("Horizontal Line"), HorizontalLineComponent.class.getName(),
+//      registerDefaultBean(I18N.getLocalizedMessage("Horizontal Line"), HorizontalLineComponent.class.toString(),
 //               FormDesignerUtils.loadImage(Icons.HORIZONTAL_LINE_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("Vertical Line"), VerticalLineComponent.class.getName(),
+//      registerDefaultBean(I18N.getLocalizedMessage("Vertical Line"), VerticalLineComponent.class.toString(),
 //               FormDesignerUtils.loadImage(Icons.VERTICAL_LINE_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("Color Well"), JETAColorWell.class.getName(), FormDesignerUtils
+//      registerDefaultBean(I18N.getLocalizedMessage("Color Well"), JETAColorWell.class.toString(), FormDesignerUtils
 //               .loadImage(Icons.COLOR_WELL_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("Image"), "com.jeta.forms.components.image.ImageComponent",
 //               FormDesignerUtils.loadImage(Icons.PORTRAIT_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Label"), TitledBorderLabel.class.getName(),
+//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Label"), TitledBorderLabel.class.toString(),
 //               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_LABEL_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Bottom"), TitledBorderBottom.class.getName(),
+//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Bottom"), TitledBorderBottom.class.toString(),
 //               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_BOTTOM_16));
 
-//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Side"), TitledBorderSide.class.getName(),
+//      registerDefaultBean(I18N.getLocalizedMessage("Titled Border Side"), TitledBorderSide.class.toString(),
 //               FormDesignerUtils.loadImage(Icons.TITLE_BORDER_SIDE_16));
 
 //      registerDefaultBean(I18N.getLocalizedMessage("JGoodies Separator"),
-//               com.jeta.forms.components.separator.TitledSeparator.class.getName(), FormDesignerUtils
+//               com.jeta.forms.components.separator.TitledSeparator.class.toString(), FormDesignerUtils
 //                        .loadImage(Icons.JGOODIES_SEPARATOR_16));
 //      registerDefaultBean(I18N.getLocalizedMessage("SENRO Panel"),
-//               JPanel.class.getName(), FormDesignerUtils
+//               JPanel.class.toString(), FormDesignerUtils
 //                        .loadImage(Icons.PORTRAIT_16));
         registerDefaultBean(I18N.getLocalizedMessage("Template"),
                 "ro.siveco.senro.designer.components.TemplateComponent",

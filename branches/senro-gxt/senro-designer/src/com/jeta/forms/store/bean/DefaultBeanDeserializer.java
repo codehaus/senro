@@ -1,48 +1,40 @@
 /*
  * Copyright (c) 2004 JETA Software, Inc.  All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
  *
- *  o Redistributions of source code must retain the above copyright notice, 
+ *  o Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  *
- *  o Redistributions in binary form must reproduce the above copyright notice, 
- *    this list of conditions and the following disclaimer in the documentation 
+ *  o Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  o Neither the name of JETA Software nor the names of its contributors may 
- *    be used to endorse or promote products derived from this software without 
+ *  o Neither the name of JETA Software nor the names of its contributors may
+ *    be used to endorse or promote products derived from this software without
  *    specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package com.jeta.forms.store.bean;
 
 import java.awt.Component;
-import java.awt.Dimension;
-
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-
-import java.lang.reflect.Method;
 
 import java.util.Collection;
 import java.util.Iterator;
 
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 import com.jeta.forms.beanmgr.BeanManager;
@@ -51,7 +43,6 @@ import com.jeta.forms.gui.beans.JETABean;
 import com.jeta.forms.gui.beans.JETAPropertyDescriptor;
 
 import com.jeta.forms.gui.common.FormException;
-import com.jeta.forms.gui.common.FormUtils;
 
 import com.jeta.forms.logger.FormsLogger;
 
@@ -59,7 +50,6 @@ import com.jeta.forms.store.memento.PropertiesMemento;
 
 import com.jeta.forms.store.properties.ColorHolder;
 import com.jeta.forms.store.properties.FontProperty;
-import com.jeta.forms.store.properties.JETAProperty;
 
 import com.jeta.open.registry.JETARegistry;
 
@@ -67,7 +57,7 @@ import com.jeta.open.registry.JETARegistry;
  * An implementation of BeanDeserializer that defines how a bean is instantiated
  * and intialized from a PropertiesMemento instance. See
  * {@link com.jeta.forms.store.memento.PropertiesMemento}
- * 
+ *
  * @author Jeff Tassin
  */
 public class DefaultBeanDeserializer implements BeanDeserializer {
@@ -80,7 +70,7 @@ public class DefaultBeanDeserializer implements BeanDeserializer {
    /**
     * Creates a <code>DefaultBeanDeserializer</code> instance with the
     * specified PropertiesMemento object.
-    * 
+    *
     * @param memento
     *           the properties memento that will be used to create and
     *           initialize java beans.
@@ -92,7 +82,7 @@ public class DefaultBeanDeserializer implements BeanDeserializer {
    /**
     * Returns the PropertiesMemento object that is used to create and initialize
     * java bean instances.
-    * 
+    *
     * @return the properties memento associated with this deserializer.
     */
    public PropertiesMemento getProperties() {
@@ -102,7 +92,7 @@ public class DefaultBeanDeserializer implements BeanDeserializer {
    /**
     * Creates an unitialized Java Bean component using the properties memento
     * associated with this deserializer.
-    * 
+    *
     * @return a default Java Bean component.
     */
    public Component createBean() throws FormException {
@@ -141,7 +131,7 @@ public class DefaultBeanDeserializer implements BeanDeserializer {
     * Sets the property values of a java bean using the PropertiesMemento
     * contained by this deserializer. Both standard and custom property values
     * are set.
-    * 
+    *
     * @param jbean
     *           the container for the Java bean that will be intialize
     */
@@ -188,7 +178,7 @@ public class DefaultBeanDeserializer implements BeanDeserializer {
                   if (m_memento.containsProperty(jpd.getName())) {
                      Object prop_value = m_memento.getPropertyValue(jpd.getName());
                      // System.out.println( "default bean deserializer prop
-                     // descriptor: " + jpd.getName() + " mementovalue: " +
+                     // descriptor: " + jpd.toString() + " mementovalue: " +
                      // prop_value + " comp: " + comp.getClass() );
 
                      if (prop_value instanceof FontProperty) {
@@ -249,7 +239,7 @@ public class DefaultBeanDeserializer implements BeanDeserializer {
     *  as String objects (when storing to XML).
     */
    private Object convertValue(Class c, Object prop_value) {
-      
+
       String propclass = prop_value == null ? "null" : prop_value.getClass().getName();
       if ( prop_value instanceof String ) {
          String sval = (String)prop_value;
@@ -259,7 +249,7 @@ public class DefaultBeanDeserializer implements BeanDeserializer {
             return Byte.valueOf( sval );
          else if ( c == Character.class || c == char.class )
             return new Character( sval.length() == 0 ? '\0' : sval.charAt(0) );
-         else if ( c == Short.class || c == short.class ) 
+         else if ( c == Short.class || c == short.class )
             return Short.valueOf(sval);
          else if ( c == Integer.class || c == int.class )
             return Integer.valueOf(sval);
