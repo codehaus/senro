@@ -1,35 +1,74 @@
-<project name="SENRO Client" default="makeJAR">
+<project name="SENRO Client" default="generate-gwtreflect">
+	<path id="project.class.path">
+		<fileset dir="${basedir}/lib" includes="*.jar"/>
+		<fileset dir="${basedir}/target" includes="*.jar"/>
+	</path>
+	
+	<path id="gwtreflect.lib.path">
+		<fileset dir="${basedir}/lib" includes="*.jar"/>
+	</path>
+	
+	<taskdef name="gwtreflect"
+		classname="pl.rmalinowski.gwtreflect.ant.GWTReflect"
+	    classpathref="gwtreflect.lib.path">
+	</taskdef>
+	
+	<target name="compile" description="Compile model src to bin">
+			<exec executable="mvn.bat" dir="${basedir}" failonerror="true">
+		    		<arg value="package"/>
+		    </exec> 
+		
+			<mkdir dir="target/bin"/>
+			<javac srcdir="src"
+			       destdir="target/bin"
+				   includes="org/senro/gwt/client/assoc/**"
+			       debug="on"
+			       debuglevel="lines,vars,source"
+			       source="5"
+					target="5">
+				<classpath refid="project.class.path"/>
+			</javac>
+	</target>
+	
+	<target name="extract-deps">
+		<unzip src="${basedir}/lib/gxt-1.0.jar"
+		       dest="${basedir}/target/deps"/>
+		<unzip src="${basedir}/lib/gwt-user.jar"
+				       dest="${basedir}/target/deps"/>
+		<unzip src="${basedir}/lib/gwtr-core.jar"
+		       dest="${basedir}/target/deps"/>
+		<unzip src="${basedir}/target/senro-client-0.1.0-SNAPSHOT.jar"
+				       dest="${basedir}/target/deps"/>
+	</target>
 
-	<target name="init">
-		<path id="senro.build.path">
-			<fileset dir="lib">
-				<include name="*.jar"/>
+	<target name="package"
+	        depends="compile, extract-deps"
+	        description="Package up the project as a jar">
+		<jar destfile="${basedir}/target/gwtreflect-senro.jar">
+			<fileset dir="${basedir}/target/bin">
+				<include name="**/*.class"/>
 			</fileset>
-		</path>
-	</target>
-
-	<target name="clean" depends="init">
-		<delete dir="target" />
-		<delete file="senro-client.jar" />
-	</target>
-
-	<target name="compile" depends="init">
-		<mkdir dir="target"/>
-
-		<javac
-			srcdir="src"
-			destdir="target"
-			classpathref="senro.build.path"
-			source="1.5"
-			target="1.5"
-			debug="true"
-			debuglevel="lines,vars,source"
-		/>
-	</target>
-
-	<target name="makeJAR" depends="clean, compile">
-		<jar destfile="senro-client.jar">
-			<fileset dir="target" />
+			<fileset dir="${basedir}/target/deps">
+				<include name="**/*.class"/>
+			</fileset>
 		</jar>
+		<delete dir="${basedir}/target/bin"/>
 	</target>
+
+	<target name="generate-gwtreflect" depends="package"
+		        description="generate description classes for reflection">
+			<delete dir="${basedir}/src/org/senro/gwt/client/assoc/gwtr" />
+			<gwtreflect outdir="${basedir}/src"
+			            source="${basedir}/target/gwtreflect-senro.jar"
+			            packagein="org.senro.gwt.client.assoc.impl"
+			            packageout="org.senro.gwt.client.assoc.gwtr"
+			            templatepath="${basedir}/lib/st">
+			</gwtreflect>
+			<delete dir="${basedir}/target/deps" />
+		</target>
+	
+	<target name="clean">
+		<delete dir="target/bin" />
+	</target>
+
 </project>

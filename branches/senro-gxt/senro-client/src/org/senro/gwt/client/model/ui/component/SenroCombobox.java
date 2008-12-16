@@ -1,32 +1,56 @@
 package org.senro.gwt.client.model.ui.component;
 
-import org.senro.gwt.client.model.ui.binding.DataModel;
-import org.senro.gwt.client.model.ui.binding.MapModel;
+import org.senro.gwt.client.model.ui.SenroComponent;
+import org.senro.gwt.client.model.ui.binding.BooleanModelObject;
+import org.senro.gwt.client.model.ui.binding.MapModelObject;
+import org.senro.gwt.client.model.ui.binding.Model;
 
 import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 
+/**
+ * Senro wrapped GWT combobox. This class wraps a GXT {@link ComboBox} component.
+ * The combobox uses a {@link MapModelObject} as its data object. 
+ * 
+ * @author CristiS
+ */
 public class SenroCombobox extends ComboBox<BaseModel> {
-	private DataModel<MapModel> model;
+	private SenroComponent<MapModelObject> component;
 	
-	public SenroCombobox( DataModel<MapModel> model ) {
-		this.model = model;
+	/**
+	 * Constructs a {@link SenroCombobox} from the given {@link SenroComponent}.
+	 * 
+	 * @param component the provided Senro component.
+	 * 					The component must have a data object of type {@link MapModelObject}
+	 */
+	public SenroCombobox( SenroComponent<MapModelObject> component ) {
+		this.component = component;
 		
 		ListStore store = new ListStore();
 		
-		if( model.getDataObject() != null && model.getDataObject().getValue() != null ) {
-			store.add(model.getDataObject().getValue());
+		if( component.getModel().getDataObject() != null && component.getModel().getDataObject().getValue() != null ) {
+			store.add(component.getModel().getDataObject().getValue());
 		}
 		
 		setStore(store);
 	}
 	
-	public DataModel<MapModel> getDataModel() {
-		return model;
+	/**
+	 * Returns the {@link Model} for this component.
+	 * The data object must be a {@link MapModelObject} object.
+	 * @return {@link Model} object
+	 */
+	public Model<MapModelObject> getDataModel() {
+		return component.getModel();
 	}
 
-	public void setDataModel(DataModel<MapModel> model) {
-		this.model = model;
+	/**
+	 * Sets the {@link Model} for this component.
+	 * The data object must be a {@link MapModelObject} object.
+	 * @param model {@link Model} object
+	 */
+	public void setDataModel(Model<MapModelObject> model) {
+		component.setModel(model);
 	} 
 }

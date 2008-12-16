@@ -1,25 +1,49 @@
 package org.senro.gwt.client.model.ui.component;
 
-import org.senro.gwt.client.model.ui.binding.DataModel;
-import org.senro.gwt.client.model.ui.binding.StringModel;
+import org.senro.gwt.client.model.ui.SenroComponent;
+import org.senro.gwt.client.model.ui.binding.Model;
+import org.senro.gwt.client.model.ui.binding.StringModelObject;
 
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 
+/**
+ * Senro wrapped GWT text area. This class wraps a GXT {@link TextArea} component.
+ * The text area uses a {@link StringModelObject} as its data object. 
+ * @see StringModelObject
+ * 
+ * @author CristiS
+ */
 public class SenroTextArea extends TextArea {
-	private DataModel<StringModel> model;
+	private SenroComponent<StringModelObject> component;
 	
-	public SenroTextArea( DataModel<StringModel> model ) {
-		this.model = model;
+	/**
+	 * Constructs a {@link SenroTextArea} from the given {@link SenroComponent}.
+	 * 
+	 * @param component the provided Senro component.
+	 * 					The component must have a data object of type {@link StringModelObject}
+	 */
+	public SenroTextArea( SenroComponent<StringModelObject> component ) {
+		this.component = component;
 		
-		if( model.getDataObject() != null )
-			setEmptyText(model.getDataObject().getValue());
+		if( component.getModel().getDataObject() != null )
+			setEmptyText(component.getModel().getDataObject().getValue());
 	}
 	
-	public DataModel<StringModel> getDataModel() {
-		return model;
+	/**
+	 * Returns the {@link Model} for this component.
+	 * The data object must be a {@link StringModelObject} object.
+	 * @return {@link Model} object
+	 */
+	public Model<StringModelObject> getDataModel() {
+		return component.getModel();
 	}
 
-	public void setDataModel(DataModel<StringModel> model) {
-		this.model = model;
+	/**
+	 * Sets the {@link Model} for this component.
+	 * The data object must be a {@link StringModelObject} object.
+	 * @param model {@link Model} object
+	 */
+	public void setDataModel(Model<StringModelObject> model) {
+		component.setModel(model);
 	} 
 }
