@@ -1,52 +1,76 @@
 package org.senro.gwt.client.model.ui;
 
-import java.util.List;
-
 import org.senro.gwt.client.exception.SenroUIException;
+import org.senro.gwt.client.model.ui.binding.ComponentAssociation;
 
+import com.google.gwt.core.client.GWT;
+
+/**
+ * Utility class
+ */
 public class SenroContainerComponentUtil {
-
-	public static int[][] getBooleanMatrix(SenroContainerComponent scc) throws SenroUIException{
+	/**
+	 * Returns a boolean matrix indicating empty and non-empty cells for
+	 * the provided {@link SenroContainerComponent}
+	 * <p>
+	 * Empty cells are marked with 0, non-empty cells are marked with 1
+	 * </p>
+	 * Example:
+	 * <p>===================</p>
+	 * <p>| 0 | 0 | 1 | ...| 0 |</p>
+	 * <p>| 1 | 0 | 0 | ...| 1 |</p>
+	 * <p>| 0 | 0 | 0 | ...| 0 |</p>
+	 * <p>....</p>
+	 * <p>| 1 | 1 | 0 | ...| 0 |</p>
+	 * <p>===================</p>
+	 * 
+	 * @param component provided {@link SenroContainerComponent}
+	 * @return boolean matrix
+	 * @throws SenroUIException
+	 */
+	public static int[][] getBooleanMatrix(SenroContainerComponent<SenroComponent> container) throws SenroUIException{
+		if( container.getLayout() == null )
+			throw new SenroUIException("Container component has null layout specification");
 		
-		int rows = scc.getLayout().getRows();
-		int columns = scc.getLayout().getColumns();
+		int rows = container.getLayout().getRows();
+		if( rows == 0 )
+			rows++;
 		
-		int[][] abstractMatrix = new int[rows+1][columns+1];
+		int columns = container.getLayout().getColumns();
+		
+		int[][] abstractMatrix = new int[rows][columns];
 
-		for (int row = 1; row <=rows; row++ ) 
-			for (int column = 1; column <= columns; column ++) {
-				abstractMatrix[row][column] = 0;
+		for( SenroComponent cc : container.getComponents() ) {
+			if( ComponentAssociation.POPUP.equals(cc.getRenderComponent()) )
+				continue;
+			
+			SenroCellLayout data = cc.getLayoutData();
+			if( data.getRow() >= rows ) {
+				GWT.log("Template has more components than the declared number of rows", new SenroUIException("Template has more components than the declared number of rows"));
+				break;
 			}
-		
-		
-		List<SenroComponent> subcomponents = scc.getComponents();
-		
-		for (SenroComponent subcomponent : subcomponents) {
 			
-			int myRow = subcomponent.getLayoutData().getRow();
-			int myCol = subcomponent.getLayoutData().getColumn();
-			int myRowSpan = subcomponent.getLayoutData().getRowSpan();
-			int myColSpan = subcomponent.getLayoutData().getColSpan();
-			
-			for (int i = myRow; i < myRow + myRowSpan; i++)
-				for (int j = myCol; j < myCol + myColSpan; j++) 
-					abstractMatrix[i][j] ++;
+			for(int i=data.getRow(); i<data.getRow()+data.getRowSpan(); i++) {
+				for( int j=data.getColumn(); j<data.getColumn()+data.getColSpan(); j++ ) 
+					abstractMatrix[i][j] = 1;
+			}
 		}
-		
-		for (int row = 1; row <=rows; row++ ) 
-			for (int column = 1; column <= columns; column ++) {
-				if (abstractMatrix[row][column] > 1) throw new SenroUIException("Invalid UI abstract matrix. Two or more component attemp to use row : " + row + " col : " + column + ".");
-			}
 		
 		return abstractMatrix;
 	}
 	
-	public static SenroComponent getComponentAt(SenroContainerComponent scc, int row, int col) {
-		
-		for (SenroComponent sc : scc.getComponents()) {
+	/**
+	 * Returns the child component at the specified parent position.
+	 * 
+	 * @param component the provided {@link SenroContainerComponent}
+	 * @param row row position
+	 * @param col column position
+	 * @return found {@link SenroComponent} or null
+	 */
+	public static SenroComponent getComponentAt(SenroContainerComponent<SenroComponent> component, int row, int col) {
+		for (SenroComponent sc : component.getComponents()) {
 			if ((sc.getLayoutData().getRow() == row)&&(sc.getLayoutData().getColumn() == col)) return sc;
 		}
-		
 		return null;
 	}
 	

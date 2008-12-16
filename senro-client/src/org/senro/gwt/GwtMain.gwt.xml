@@ -1,9 +1,9 @@
-<module>
+<module>    
 	<!-- Inherit the core Web Toolkit stuff.                  -->
     <inherits name='com.extjs.gxt.themes.Themes'/>
     <inherits name="com.extjs.gxt.ui.GXT"/>
-
-    
+	<!-- inherits name="pl.rmalinowski.gwtreflect.GWTReflect"/ -->
+	
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='org.senro.gwt.client.GwtMain'/>
 	
