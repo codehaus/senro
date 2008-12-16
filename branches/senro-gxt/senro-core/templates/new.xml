@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/ComponentTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Layout>
+        <Grid id="new" name="new">
+            <Columns>
+                <Column>
+                    <Alignment>Right</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Constant>82</Constant>
+                    </Size>
+                </Column>
+                <Column>
+                    <Alignment>Left</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Constant>81</Constant>
+                    </Size>
+                </Column>
+            </Columns>
+            <Rows>
+                <Row>
+                    <Alignment>Top</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+                <Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+                <Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+                <Row>
+                    <Alignment>Bottom</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+            </Rows>
+            <Components>
+                <Label col="0" colSpan="2" halign="Center" id="lblTitle" name="lblTitle" row="0" rowSpan="1" valign="Default">
+                    <Text>@{entity.name}</Text>
+                </Label>
+                <GridAllocatorRenderer col="0" colSpan="2" gridAllocator="@{gridAllocator}" halign="Center" id="gridRenderer" name="gridRenderer" row="1" rowSpan="1" valign="Default"/>
+                <Button col="0" colSpan="1" halign="Center" id="btnBack" name="btnBack" row="2" rowSpan="1" valign="Default">
+                    <Label>Back</Label>
+                    <Entity>@{entity.qualifiedName}</Entity>
+                    <Task>list</Task>
+                    <Icon/>
+                    <HoverIcon/>
+                </Button>
+                <Button col="1" colSpan="1" halign="Center" id="btnSave" name="btnSave" row="2" rowSpan="1" valign="Default">
+                    <Label>Save</Label>
+                    <Entity/>
+                    <Task/>
+                    <Icon/>
+                    <HoverIcon/>
+                </Button>
+                <TabPanel col="0" colSpan="2" halign="Left" id="tabPanel" name="tabPanel" row="3" rowSpan="1" valign="Default">
+                    <Iterator filterCondition="@{tabIter.currentItem.isMany}" id="tabIter" list="@{entity.properties}" name="tabIter">
+                        <TabPage orderNo="0" title="@{tabIter.currentItem.type}">
+                            <Template file="list" id="" name="">
+                                <Param name="entity" value="@{metadata.getMetadata(tabIter.currentItem.type)}"/>
+                            </Template>
+                        </TabPage>
+                    </Iterator>
+                </TabPanel>
+            </Components>
+        </Grid>
+    </Layout>
+    <Server>
+        <GridAllocator columns="4" entity="@{entity}" id="gridAllocator1" name="gridAllocator"/>
+    </Server>
+    <Client/>
+    <Params>
+        <Parameter defaultValue="@{metadata.getMetadata(senroContext.get(senroContext.MAIN_ENTITY))}" name="entity" type="org.senro.metadata.MetadataClass"/>
+    </Params>
+    <Associations/>
+</ComponentTemplate>

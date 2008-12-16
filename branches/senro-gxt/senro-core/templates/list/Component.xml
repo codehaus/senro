@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/ComponentTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.siveco.ro/senro/ComponentTemplate file:///c:/work/SENRO_SIVECO/senro-core/src/resources/ComponentTemplate.xsd">
+    <Layout>
+        <Grid id="SimpleList" name="SimpleList">
+            <Columns>
+                <Column>
+                    <Alignment>Left</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Column>
+            </Columns>
+            <Rows>
+                <Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+                <Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+                <Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+				<Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+                <Row>
+                    <Alignment>Center</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+            </Rows>
+            <Components>
+                <Label col="0" colSpan="1" halign="Center" id="lblTitle" name="lblTitle" row="0" rowSpan="1" valign="Default">
+                    <Text>@{entity.name}</Text>
+                </Label>
+                <List col="0" colSpan="1" entity="@{entity}" halign="Default" id="list" name="list" row="1" rowSpan="1" valign="Default"/>
+                <Button col="0" colSpan="1" halign="Center" id="btnNew" name="btnNew" row="2" rowSpan="1" valign="Default">
+                    <Label>New</Label>
+                    <Entity>@{entity.qualifiedName}</Entity>
+                    <Task>new</Task>
+                    <Icon/>
+                    <HoverIcon/>
+                </Button>
+				<TextField id="text1" name="text1" col="0" row="3" />
+				<TextField id="text2" name="text2" col="0" row="4" />
+            </Components>
+        </Grid>
+    </Layout>
+    <Server/>
+    <Client/>
+    <Params>
+        <Parameter defaultValue="@{metadata.getMetadata(senroContext.get(senroContext.MAIN_ENTITY))}" name="entity" type="org.senro.metadata.MetadataClass"/>
+    </Params>
+    <Associations>
+		<Assoc id="assoc1" name="assoc1" type="org.senro.gwt.client.assoc.impl.TextToTextAssoc">
+			<binding name="t1" value="text1">
+				<aspect>text</aspect>
+				<event>170</event>
+			</binding>
+			<binding name="t2" value="text2">
+				<aspect>text</aspect>
+				<event>170</event>
+			</binding>
+		</Assoc>
+	</Associations>
+</ComponentTemplate>

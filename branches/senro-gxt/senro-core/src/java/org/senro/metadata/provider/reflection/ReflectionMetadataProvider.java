@@ -6,6 +6,7 @@ import java.beans.Introspector;
 import java.beans.MethodDescriptor;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,17 +18,21 @@ import org.senro.metadata.MetadataMethod;
 import org.senro.metadata.MetadataProperty;
 import org.senro.metadata.MetadataProvider;
 
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
+
 /**
- * @author Flavius Burca
+ * Metadata provider that builds metadata based on Java class objects as input via the
+ * Java Reflection API.
  * 
+ * @author Flavius Burca
  */
 public class ReflectionMetadataProvider implements MetadataProvider {
 	public MetadataClass getClassMetadata(Object clazz) {
 		Class _class = (Class) clazz;
 		MetadataClass metadataClass = new MetadataClass();
 		
-		metadataClass.addMetadata("name", _class.getSimpleName());
-		metadataClass.addMetadata("qualifiedName", _class.getName());
+		metadataClass.put(MetadataClass.NAME, _class.getSimpleName());
+		metadataClass.put(MetadataClass.QUALIFIED_NAME, _class.getName());
 		
 		metadataClass.addMethods(getMethods(_class));
 		metadataClass.addProperties(getProperties(_class));
@@ -59,8 +64,19 @@ public class ReflectionMetadataProvider implements MetadataProvider {
 
 	private MetadataProperty createMetadataProperty( Method readMethod ) {
 		MetadataProperty property = new MetadataProperty();
-		property.addMetadata("name", StringUtils.uncapitalize(readMethod.getName().substring(3)));
-		property.addMetadata("type", readMethod.getReturnType().getName());
+		property.put(MetadataProperty.NAME, StringUtils.uncapitalize(readMethod.getName().substring(3)));
+		if( readMethod.getReturnType().getName().equals("java.util.Collection") ) {
+			Type[] actualTypes = ((ParameterizedTypeImpl) readMethod.getGenericReturnType()).getActualTypeArguments();
+			if (actualTypes.length >0) {
+				property.put(MetadataProperty.TYPE, ((Class)actualTypes[0]).getName());
+				property.put(MetadataProperty.IS_MANY, true);
+			}
+		}
+		else {
+			property.put(MetadataProperty.IS_MANY, false);
+			property.put(MetadataProperty.TYPE, readMethod.getReturnType().getName());
+		}
+		
 		return property;
 	}
 	
@@ -104,14 +120,14 @@ public class ReflectionMetadataProvider implements MetadataProvider {
 
 	private MetadataMethod createMetadataMethod( Method method ) {
 		MetadataMethod metadataMethod = new MetadataMethod();
-		metadataMethod.addMetadata("name", method.getName());
-		metadataMethod.addMetadata("returnType", method.getReturnType().getName());
+		metadataMethod.put(MetadataMethod.NAME, method.getName());
+		metadataMethod.put(MetadataMethod.RETURN_TYPE, method.getReturnType().getName());
 		List<String> params = new ArrayList<String>();
 		if( method.getParameterTypes() != null ) {
 			for(Class paramType : method.getParameterTypes())
 				params.add(paramType.getName());
 		}
-		metadataMethod.addMetadata("arguments", params);
+		metadataMethod.put(MetadataMethod.ARGUMENTS, params);
 		return metadataMethod;
 	}
 	

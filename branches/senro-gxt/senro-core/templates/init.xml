@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/ComponentTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Layout>
+        <Grid id="init" name="init">
+            <Columns>
+                <Column>
+                    <Alignment>Left</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Column>
+                <Column>
+                    <Alignment>Left</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Column>
+            </Columns>
+            <Rows>
+                <Row>
+                    <Alignment>Top</Alignment>
+                    <Resize>0.0</Resize>
+                    <Size>
+                        <Component>Default</Component>
+                    </Size>
+                </Row>
+            </Rows>
+            <Components>
+                <Tree col="0" colSpan="1" halign="Default" id="tree1" name="menu" row="0" rowSpan="1" valign="Default">
+                    <Iterator filterCondition="" list="@{metadata.allEntities.values()}" id="menuIterator" name="menuIterator">
+                        <TreeNode>
+                            <Text>@{menuIterator.currentItem.qualifiedName}</Text>
+                        </TreeNode>
+                    </Iterator>
+                </Tree>
+                <Grid col="1" colSpan="1" halign="Default" id="rootPanel" name="rootPanel" row="0" rowSpan="1" valign="Default">
+                    <Columns>
+                        <Column>
+                            <Alignment>Fill</Alignment>
+                            <Resize>0.0</Resize>
+                            <Size>
+                                <Component>Default</Component>
+                            </Size>
+                        </Column>
+                    </Columns>
+                    <Rows>
+                        <Row>
+                            <Alignment>Center</Alignment>
+                            <Resize>0.0</Resize>
+                            <Size>
+                                <Component>Default</Component>
+                            </Size>
+                        </Row>
+                    </Rows>
+                    <Components/>
+                </Grid>
+            </Components>
+        </Grid>
+    </Layout>
+    <Server/>
+    <Client/>
+    <Params/>
+    <Associations/>
+</ComponentTemplate>

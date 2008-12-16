@@ -60,7 +60,6 @@ public class Utils {
 
     /**
      * @param type the (usable) super type if passed a CGLIB enhanced class
-     * @return
      */
     public static Class checkForCGLIB(Class type) {
         if (type.getName().contains("CGLIB")) {
