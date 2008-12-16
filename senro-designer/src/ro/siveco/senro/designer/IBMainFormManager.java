@@ -1,7 +1,10 @@
 package ro.siveco.senro.designer;
 
 import com.jeta.forms.gui.form.FormComponent;
+import com.jeta.forms.gui.common.FormException;
+import com.jeta.forms.store.memento.FormMemento;
 import com.jeta.swingbuilder.gui.editor.FormEditor;
+import com.jeta.swingbuilder.gui.editor.DesignFormComponent;
 import com.jeta.swingbuilder.gui.formmgr.AbstractFormManager;
 import com.jeta.swingbuilder.gui.formmgr.FormManagerDesignUtils;
 
@@ -104,5 +107,10 @@ public class IBMainFormManager extends AbstractFormManager
             System.out.println("MainFormManager.showForm failed: " + formId);
             assert (false);
         }
+    }
+
+    public FormComponent openSenroForm(FormMemento memento) throws FormException
+    {
+        return super.openSenroForm(memento);
     }
 }

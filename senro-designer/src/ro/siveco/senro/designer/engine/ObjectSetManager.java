@@ -5,8 +5,10 @@ import ro.siveco.senro.designer.ui.MatrixSelectionListener;
 import ro.siveco.senro.designer.ui.MatrixView;
 import ro.siveco.senro.designer.ui.CellCoordinates;
 import ro.siveco.senro.designer.objects.ObjectDescription;
-import ro.siveco.senro.designer.objects.ObjectChangeListener;
 import ro.siveco.senro.designer.inspector.InspectorManager;
+import ro.siveco.senro.designer.basic.SenroDesignerObject;
+import ro.siveco.senro.designer.basic.DesignerObjectListener;
+import ro.siveco.senro.designer.util.UIUtil;
 
 import javax.swing.*;
 import java.util.*;
@@ -25,7 +27,7 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import org.apache.log4j.Logger;
 import org.apache.commons.io.IOUtils;
 
-public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, ObjectChangeListener
+public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, DesignerObjectListener
 {
     private static final int VERSION = 1;
 
@@ -61,7 +63,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     {
         List<T> obj_with_T_class = new ArrayList<T>();
         for (ObjectDescription dataObject : dataObjects) {
-            if(dataObject.getClass().isAssignableFrom(obj_class)) {
+            if (dataObject.getClass().isAssignableFrom(obj_class)) {
                 obj_with_T_class.add((T) dataObject);
             }
         }
@@ -102,8 +104,8 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         CellConstraints cc = new CellConstraints();
         JLabel label = new JLabel(objSetName, JLabel.CENTER);
         JScrollPane scrollPane = new JScrollPane(matrixView);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setPreferredSize(MATRIXVIEW_SCROLLPANE_PREF_DIM);
         builder.add(label, cc.xy(2, 2));
         builder.add(scrollPane, cc.xy(2, 4));
@@ -198,7 +200,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         int idx = getFirstNullDataIndex();
         if (idx != -1) {
             dataObjects.set(idx, unique_obj_desc);
-            unique_obj_desc.addChangeListener(this);
+            unique_obj_desc.addListener(this);
             if (matrixView != null) {
                 CellCoordinates unique_obj_coord = getCellCoordinatesForIndex(idx);
                 List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
@@ -266,49 +268,49 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
 
     public void selectionDidChange(Set<CellCoordinates> new_selected_cells)
     {
-        if(!isActive() && !new_selected_cells.isEmpty()) {
+        if (!isActive() && !new_selected_cells.isEmpty()) {
             setActive(true);
             // empty selection in others ObjectSetManagers
-             for(ObjectSetManager other: otherObjSetManagers) {
+            for (ObjectSetManager other : otherObjSetManagers) {
                 other.setActive(false);
                 other.resetSelection();
             }
             // show the specific palette associated with this ObjectSetManager
             showObjSetPalette();
         }
-        if(!isActive()) {
+        if (!isActive()) {
             return;
         }
         // inspect new selection
         ObjectDescription obj_to_inspect;
-        if(new_selected_cells.size() == 1) {
+        if (new_selected_cells.size() == 1) {
             CellCoordinates sel_cell = new_selected_cells.iterator().next();
             obj_to_inspect = (ObjectDescription) getDataAt(sel_cell.col, sel_cell.row);
         } else {
-           obj_to_inspect = null;
+            obj_to_inspect = null;
         }
         inspectObject(obj_to_inspect);
     }
 
     public void mousePressedAtCoordinates(CellCoordinates cell_coordinates)
     {
-        if(matrixView.getSelectedCells().size() != 1) {
+        if (matrixView.getSelectedCells().size() != 1) {
             return;
         }
         ObjectDescription new_obj = objSetPalette.getSelectedObjectInstance();
         ObjectDescription old_obj = (ObjectDescription) getDataAt(cell_coordinates.col, cell_coordinates.row);
-        if(new_obj == null) {
+        if (new_obj == null) {
             inspectObject(old_obj);
             return;
         }
-        if(old_obj != null) {
+        if (old_obj != null) {
             JOptionPane.showMessageDialog(matrixView, "Cannot add new object because the cell is not empty!",
                     "Add new object in empty cell!", JOptionPane.INFORMATION_MESSAGE);
             inspectObject(old_obj);
             return;
         }
         setDataAt(new_obj, cell_coordinates.col, cell_coordinates.row);
-        new_obj.addChangeListener(this);
+        new_obj.addListener(this);
 
         // put changed data in a list
         List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
@@ -317,6 +319,32 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         setClean(false);
         inspectObject(new_obj);
         objSetPalette.selectToggleButtonWithCmd(ObjectSetPalette.ARROW_BUTTON_ACTION_CMD);
+    }
+
+    public void mouseClickedAtCoordinates(CellCoordinates cell_coordinates)
+    {
+        // create association if we are in association mode
+        AssociationManager assoc_mng = DesignerManager.getSharedDesignerManager().getAssociationManager();
+        if (assoc_mng.isAssociationMode()) {
+            SenroDesignerObject target_obj = (SenroDesignerObject) getDataAt(cell_coordinates.col, cell_coordinates.row);
+            assoc_mng.createAssociation(target_obj);
+        }
+        matrixView.setCursor(null);
+    }
+
+    public void mouseMovedAtCoordinates(CellCoordinates cell_coordinates)
+    {
+        AssociationManager am = DesignerManager.getSharedDesignerManager().getAssociationManager();
+        if (am.isAssociationMode()) {
+            SenroDesignerObject senro_obj = (SenroDesignerObject) getDataAt(cell_coordinates.col, cell_coordinates.row);
+            if (senro_obj != null && am.accept(senro_obj)) {
+                matrixView.setCursor(UIUtil.getLinkCursor());
+            } else {
+                matrixView.setCursor(UIUtil.getNoCursor());
+            }
+        } else {
+            matrixView.setCursor(null);
+        }
     }
 
     public void resetSelection()
@@ -381,14 +409,14 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
 
     public void writeData(ObjectOutputStream os) throws IOException
     {
-        if(os == null) {
+        if (os == null) {
             logger.error("Cannot write data in null ObjectOutputStream");
             return;
         }
         os.writeInt(VERSION);
         os.writeInt(cols);
         os.writeInt(rows);
-        for(ObjectDescription dataObject : dataObjects) {
+        for (ObjectDescription dataObject : dataObjects) {
             os.writeObject(dataObject);
         }
     }
@@ -402,13 +430,13 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         is.readInt();
         cols = is.readInt();
         rows = is.readInt();
-        int size = cols*rows;
+        int size = cols * rows;
         dataObjects = new ArrayList<ObjectDescription>(size);
         for (int i = 0; i < size; i++) {
-            ObjectDescription obj_desc = (ObjectDescription)is.readObject();
+            ObjectDescription obj_desc = (ObjectDescription) is.readObject();
             dataObjects.add(obj_desc);
             if (obj_desc != null) {
-                obj_desc.addChangeListener(this);
+                obj_desc.addListener(this);
             }
         }
         matrixView.refreshCellStructure();
@@ -417,8 +445,8 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     public List<ObjectDescription> getData()
     {
         List<ObjectDescription> data = new ArrayList<ObjectDescription>();
-        for(ObjectDescription obj_desc : dataObjects) {
-            if(obj_desc != null) {
+        for (ObjectDescription obj_desc : dataObjects) {
+            if (obj_desc != null) {
                 data.add(obj_desc);
             }
         }
@@ -509,10 +537,15 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         setClean(false);
     }
 
-    public void objectDidChange(ObjectDescription o)
+    public void objectDidChange(SenroDesignerObject obj)
     {
         matrixView.modelDataDidChanged(Collections.<CellCoordinates>emptyList());
         setClean(false);
+    }
+
+    public void objectWillBeDeleted(SenroDesignerObject obj)
+    {
+        // not implemented
     }
 
     public boolean isClean()

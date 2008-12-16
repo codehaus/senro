@@ -497,6 +497,26 @@ public class MatrixView extends JPanel implements ActionListener
             Rectangle r = new Rectangle(mouseX, mouseY, 1, 1);
             scrollRectToVisible(r);
         }
+
+        public void mouseClicked(MouseEvent e)
+        {
+            int x = e.getX();
+            int y = e.getY();
+            int selectedCol = x / getCellWidth();
+            int selectedRow = y / getCellHeight();
+            CellCoordinates clickedCell = new CellCoordinates(selectedCol, selectedRow);
+            model.mouseClickedAtCoordinates(clickedCell);
+        }
+
+        public void mouseMoved(MouseEvent e)
+        {
+            int x = e.getX();
+            int y = e.getY();
+            int selectedCol = x / getCellWidth();
+            int selectedRow = y / getCellHeight();
+            CellCoordinates clickedCell = new CellCoordinates(selectedCol, selectedRow);
+            model.mouseMovedAtCoordinates(clickedCell);            
+        }
     }
 
     public class MatrixKeyListener extends KeyAdapter

@@ -33,6 +33,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Rectangle;
+import java.awt.Point;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -630,6 +631,15 @@ public class GridView extends SenroPanel implements Paintable, FormAccessor, Gri
             return null;
     }
 
+    public GridComponent getGridComponent(Point p)
+    {
+        Component c = m_form.getComponentAt(p);
+        if(c instanceof GridComponent) {
+            return (GridComponent)c;
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Return the FormLayout.LayoutInfo.

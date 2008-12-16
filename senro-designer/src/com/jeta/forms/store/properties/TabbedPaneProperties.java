@@ -152,12 +152,12 @@ public class TabbedPaneProperties extends JETAProperty {
       if (jbean != null)
          comp = jbean.getDelegate();
 
-      if (comp instanceof JTabbedPane) {
-         JTabbedPane tpane = (JTabbedPane) comp;
-         int selected_tab = tpane.getSelectedIndex();
-         tpane.removeAll();
+       if (comp instanceof JTabbedPane) {
+           JTabbedPane tpane = (JTabbedPane) comp;
+           int selected_tab = tpane.getSelectedIndex();
+           tpane.removeAll();               
 
-         if (m_items != null) {
+           if (m_items != null) {
 
             Iterator iter = m_items.iterator();
             while (iter.hasNext()) {

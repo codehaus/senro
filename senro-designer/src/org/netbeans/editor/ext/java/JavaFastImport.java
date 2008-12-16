@@ -1,11 +1,11 @@
 /*
  *                 Sun Public License Notice
- * 
+ *
  * The contents of this file are subject to the Sun Public License
  * Version 1.0 (the "License"). You may not use this file except in
  * compliance with the License. A copy of the License is available at
  * http://www.sun.com/
- * 
+ *
  * The Original Code is NetBeans. The Initial Developer of the Original
  * Code is Sun Microsystems, Inc. Portions Copyright 1997-2000 Sun
  * Microsystems, Inc. All Rights Reserved.
@@ -35,19 +35,19 @@ import org.netbeans.editor.ext.ListCompletionView;
  */
 
 public class JavaFastImport implements ActionListener {
-    
+
     protected JTextComponent target;
-    
+
     private String exp;
-    
+
     private JavaFastImportPanel panel;
-    
+
     private ListCellRenderer cellRenderer;
-    
+
     private JList resultList;
-    
+
     private Dialog dialog;
-    
+
     private JButton[] buttons;
 
     public JavaFastImport(JTextComponent target) {
@@ -55,7 +55,7 @@ public class JavaFastImport implements ActionListener {
 
         exp = Utilities.getSelectionOrIdentifier(target);
     }
-    
+
     public void setDialogVisible(boolean visible) {
         List result = null;
         if (visible) {
@@ -65,11 +65,11 @@ public class JavaFastImport implements ActionListener {
             }
             populate(result);
         }
-        
+
         if (dialog == null) {
             dialog = createDialog();
         }
-        
+
 
         getResultList().requestFocus();
         dialog.setVisible(visible);
@@ -81,16 +81,16 @@ public class JavaFastImport implements ActionListener {
             dialog.dispose();
         }
     }
-    
+
     protected void updateImport(Object item) {
     }
-    
+
     protected ListCellRenderer createCellRenderer() {
         JCCellRenderer rr = new JCCellRenderer();
         rr.setClassDisplayFullName(true);
         return rr;
     }
-    
+
     protected JList createResultList() {
         JList list = new ListCompletionView(getCellRenderer());
         list.addMouseListener(new MouseAdapter() {
@@ -102,7 +102,7 @@ public class JavaFastImport implements ActionListener {
         });
         return list;
     }
-    
+
     private JButton[] getButtons() {
         if (buttons == null) {
             buttons = new JButton[] {
@@ -113,7 +113,7 @@ public class JavaFastImport implements ActionListener {
             if (mnemonic != null && mnemonic.length() > 0) {
                 buttons[0].setMnemonic(mnemonic.charAt(0));
             }
-            
+
             mnemonic = LocaleSupport.getString("JFI_cancelButtonMnemonic", "C"); // NOI18N
             if (mnemonic != null && mnemonic.length() > 0) {
                 buttons[1].setMnemonic(mnemonic.charAt(0));
@@ -121,16 +121,16 @@ public class JavaFastImport implements ActionListener {
             buttons[0].getAccessibleContext().setAccessibleDescription(LocaleSupport.getString("ACSD_JFI_importButton")); // NOI18N
             buttons[1].getAccessibleContext().setAccessibleDescription(LocaleSupport.getString("ACSD_JFI_cancelButton")); // NOI18N
         }
-        
+
         return buttons;
     }
-    
+
     private Dialog createDialog() {
         String title = LocaleSupport.getString("JFI_title", "Import Class");
 
         Dialog dialog = DialogSupport.createDialog(title,
             getPanel(), true, getButtons(), false, 0, 1, this);
-        
+
         return dialog;
     }
 
@@ -140,21 +140,21 @@ public class JavaFastImport implements ActionListener {
         }
         return panel;
     }
-    
+
     ListCellRenderer getCellRenderer() {
         if (cellRenderer == null) {
             cellRenderer = createCellRenderer();
         }
         return cellRenderer;
     }
-    
+
     JList getResultList() {
         if (resultList == null) {
             resultList = createResultList();
         }
         return resultList;
     }
-    
+
     List evaluate() {
         List ret = null;
 
@@ -165,16 +165,16 @@ public class JavaFastImport implements ActionListener {
 /*            IteratorComponent it = ret.iterator();
             while (it.hasNext()) {
                 JCClass cls = (JCClass)it.next();
-                if (cls.getName().indexOf('.') >= 0) {
+                if (cls.toString().indexOf('.') >= 0) {
                     it.remove();
                 }
             }
  */
         }
-        
+
         return ret;
     }
-    
+
     void populate(List result) {
         if (result != null) {
             if (getResultList() instanceof ListCompletionView) {
@@ -192,10 +192,10 @@ public class JavaFastImport implements ActionListener {
                 updateImport(getResultList().getModel().getElementAt(selIndex));
             }
             setDialogVisible(false);
-            
+
         } else if (src == buttons[1]) { // Close button
             setDialogVisible(false);
         }
     }
-    
+
 }

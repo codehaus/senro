@@ -3,24 +3,23 @@ package ro.siveco.senro.designer.components;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.DesignerObjectListener;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
+import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
+import ro.siveco.senro.designer.association.AssociationInstance;
 
 import javax.swing.*;
 
-import org.apache.commons.lang.ObjectUtils;
-
 import java.util.Map;
+import java.util.List;
 
 public class SenroList extends JTable implements UIDesignerObject
 {
-    private String senroId = "";
-    private String senroName = "";
+    private final UIDesignerObjectDelegate udoDelegate;
     private String entity;
-    private String row;
-    private String col;
 
     public SenroList()
     {
         super();
+        udoDelegate = new UIDesignerObjectDelegate(this);
     }
 
     public String getEntity()
@@ -33,69 +32,89 @@ public class SenroList extends JTable implements UIDesignerObject
         this.entity = entity;
     }
 
+    @Override
     public String getName()
     {
-        return senroName == null || senroName.length() == 0 ? senroId : senroName;
+        return udoDelegate.getName();
     }
 
+    @Override
     public void setName(String obj_name)
     {
-        if(ObjectUtils.equals(senroName, obj_name)) {
-            return;
-        }
-        senroName = obj_name == null ? "" : obj_name;
-        super.setName(senroName);
+        udoDelegate.setName(obj_name);
+        super.setName(obj_name);
     }
 
+    @Override
     public String getId()
     {
-        return senroId == null || senroId.length() == 0 ? senroName : senroId;
+        return udoDelegate.getId();
     }
 
+    @Override
     public void setId(String obj_id)
     {
-        if(ObjectUtils.equals(senroId, obj_id)) {
-            return;
-        }
-        senroId = obj_id == null ? "" : obj_id;
+        udoDelegate.setId(obj_id);
     }
 
+    @Override
     public void addListener(DesignerObjectListener listener)
     {
+        udoDelegate.addListener(listener);
     }
 
+    @Override
     public void removeListener(DesignerObjectListener listener)
     {
+        udoDelegate.removeListener(listener);
     }
 
+    @Override
     public void updateLinks(Map<String, SenroDesignerObject> obj_map)
     {
+        udoDelegate.updateLinks(obj_map);
     }
 
-    public void setRow(String _row)
-    {
-        if (ObjectUtils.equals(row, _row)) {
-            return;
-        }
-        row = _row == null ? "" : _row;
-    }
-
+    @Override
     public String getRow()
     {
-        return row == null ? "" : row;
+        return udoDelegate.getRow();
     }
 
-    public void setColumn(String _col)
+    @Override
+    public void setRow(String _row)
     {
-        if (ObjectUtils.equals(col, _col)) {
-            return;
-        }
-        col = _col == null ? "" : _col;
+        udoDelegate.setRow(_row);
     }
 
+    @Override
     public String getColumn()
     {
-        return col == null ? "" : col;
+        return udoDelegate.getColumn();
+    }
+
+    @Override
+    public void setColumn(String _col)
+    {
+        udoDelegate.setColumn(_col);
+    }
+
+    @Override
+    public void addAssociation(AssociationInstance assoc)
+    {
+        udoDelegate.addAssociation(assoc);
+    }
+
+    @Override
+    public void removeAssociation(AssociationInstance assoc)
+    {
+        udoDelegate.removeAssociation(assoc);
+    }
+
+    @Override
+    public List<AssociationInstance> getAssociations()
+    {
+        return udoDelegate.getAssociations();
     }
 
 }

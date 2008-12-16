@@ -281,7 +281,7 @@ public class ComponentsToolBar extends JETAPanel implements ComponentSource
 	    {
 
 	       // insert the form beans just before the horizontal line component - legacy reasons
-//	       if ( HorizontalLineComponent.class.getName().equals( bname ) && add_forms )
+//	       if ( HorizontalLineComponent.class.toString().equals( bname ) && add_forms )
 //	       {
 //
 //		  btns.add( registerBean( ID_LINKED_FORM_COMPONENT, I18N.getLocalizedMessage("LinkedForm"),

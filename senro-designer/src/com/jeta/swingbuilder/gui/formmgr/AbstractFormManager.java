@@ -23,8 +23,6 @@ import java.awt.Container;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -54,7 +52,6 @@ import com.jeta.swingbuilder.gui.handler.TabPaneCellHandler;
 import com.jeta.forms.project.ProjectManager;
 
 import com.jeta.forms.store.memento.FormMemento;
-import com.jeta.forms.store.memento.FormPackage;
 
 import com.jeta.open.registry.JETARegistry;
 
@@ -62,7 +59,7 @@ import com.jeta.swingbuilder.gui.utils.FormDesignerUtils;
 
 /**
  * Provides some common form management operations.
- * 
+ *
  * @author Jeff Tassin
  */
 public abstract class AbstractFormManager implements FormManager {
@@ -202,7 +199,7 @@ public abstract class AbstractFormManager implements FormManager {
 				FormSurrogate fs = new FormSurrogate(childform);
 
 				// System.out.println( "FormComponent.deactivate child form: " +
-				// childform.getName() + " id: " + childform.getId() + " replace
+				// childform.toString() + " id: " + childform.getId() + " replace
 				// child form at: col: " + childform.getColumn() + " row: " +
 				// childform.getRow() );
 
@@ -358,14 +355,25 @@ public abstract class AbstractFormManager implements FormManager {
 		return openForm(f);
 	}
 
-	/**
+     public FormComponent openSenroForm(FormMemento memento) throws FormException
+     {
+        FormComponent fc = new DesignFormComponent();
+        fc.setState(memento);
+        // This works for the moment
+        fc.setAbsolutePath(memento.getId());
+        FormManagerDesignUtils.registerForms(this, fc);
+        installHandlers(m_compsrc, fc);
+        return fc;
+    }
+
+    /**
 	 * Opens the form from a file and puts it in the cache.
 	 */
 	protected FormComponent openForm(File file) throws FormException {
 		try {
 			FormComponent fc = findForm(file.getPath());
 			if (fc == null) {
-				
+
 				FormMemento memento = FormManagerUtils.loadForm( new FileInputStream(file) );
 
 				/**

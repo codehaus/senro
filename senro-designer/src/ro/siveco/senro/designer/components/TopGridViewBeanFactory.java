@@ -40,7 +40,8 @@ public class TopGridViewBeanFactory implements BeanFactory
             }
         }
         BeanProperties default_props = new BeanProperties(beaninfo);
-
+        default_props.removeProperty("column");
+        default_props.removeProperty("row");
         return new JETABean(comp, default_props);
     }
 

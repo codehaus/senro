@@ -18,8 +18,7 @@ import java.awt.Component;
 public class TabPageViewBeanFactory implements BeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-        Collections
-            .unmodifiableSet(new HashSet<String>(Arrays.asList("id", "condition")));
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("id", "condition")));
 
     public JETABean createBean(String compName, boolean instantiateBean, boolean setDefaults)
         throws FormException
@@ -27,7 +26,8 @@ public class TabPageViewBeanFactory implements BeanFactory
         Component comp = null;
         if(instantiateBean) {
             comp = new TabPageView();
-            comp.setName(compName);
+            TabPageView tpv = (TabPageView) comp;
+            tpv.setName(compName);
         }
 
         DynamicBeanInfo beaninfo = JComponentBeanFactory.createBeanInfo(TabPageView.class);
@@ -41,6 +41,8 @@ public class TabPageViewBeanFactory implements BeanFactory
             }
         }
         BeanProperties default_props = new BeanProperties(beaninfo);
+        default_props.removeProperty("row");
+        default_props.removeProperty("column");
         return new JETABean(comp, default_props);
     }
 

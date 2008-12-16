@@ -25,6 +25,7 @@ import javax.swing.*;
 
 import ro.siveco.senro.designer.util.XmlHelper;
 import ro.siveco.senro.designer.util.XmlException;
+import ro.siveco.senro.designer.basic.SenroDesignerObject;
 
 public class DesignerProject
 {
@@ -41,14 +42,17 @@ public class DesignerProject
     private Set<String> gridNames = new HashSet<String>();
     private File projectFilePath;
     private ProjectModel projectModel;
-    protected ParametersManager parametersManager;
-    protected JFrame parametersFrame;
+    private ParametersManager parametersManager;
+    private JFrame parametersFrame;
+    private SenroContextManager senroContextManager;
+    private JFrame senroContextFrame;
 
     public DesignerProject(File path, boolean create)
-        throws IOException, ClassNotFoundException, EngineException
+            throws IOException, ClassNotFoundException, EngineException
     {
         createParametersManager();
-        if(create) {
+        createSenroContextManager();
+        if (create) {
             createNewProject(path);
         } else {
             createProject(path);
@@ -69,12 +73,31 @@ public class DesignerProject
         parametersFrame.getContentPane().add(parametersManager.getParametersPanel(), cc.xy(2, 2));
     }
 
+    private void createSenroContextManager()
+    {
+        senroContextFrame = new JFrame("Senro Context");
+        senroContextFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        senroContextManager = new SenroContextManager();
+        FormLayout layout = new FormLayout("1dlu, fill:pref:grow, 1dlu", "1dlu, fill:pref:grow, 1dlu");
+        senroContextFrame.getContentPane().setLayout(layout);
+        CellConstraints cc = new CellConstraints();
+        senroContextFrame.getContentPane().add(senroContextManager.getDataPanel(), cc.xy(2, 2));
+    }
+
     public void showParameters()
     {
         parametersManager.pack();
         parametersFrame.pack();
         parametersFrame.setVisible(true);
         locateOnScreenCenter(parametersFrame);
+    }
+
+    public void showSenroContext()
+    {
+        senroContextManager.pack();
+        senroContextFrame.pack();
+        senroContextFrame.setVisible(true);
+        locateOnScreenCenter(senroContextFrame);
     }
 
     private void loadTemplates() throws EngineException
@@ -84,7 +107,7 @@ public class DesignerProject
         {
             public boolean accept(File pathname)
             {
-                if(!pathname.isDirectory()) {
+                if (!pathname.isDirectory()) {
                     return false;
                 }
                 File proj_file = new File(pathname, PROJECT_FILE_NAME);
@@ -92,7 +115,7 @@ public class DesignerProject
 
             }
         });
-        for(File proj_dir : f) {
+        for (File proj_dir : f) {
             String template_name = proj_dir.getName();
             Template tpl = new Template(template_name);
             templates.add(tpl);
@@ -117,7 +140,7 @@ public class DesignerProject
             Document doc = XmlHelper.readDocument(comp_file);
             Element params_elem = XmlHelper.getChild(doc.getDocumentElement(), ComponentXmlNames.PARAMS_ELEMENT);
             Element param = XmlHelper.getFirstChildElement(params_elem);
-            while(param != null) {
+            while (param != null) {
                 String param_name = param.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE);
                 String param_type = param.getAttribute(ComponentXmlNames.TYPE_ATTRIBUTE);
                 String param_default = param.getAttribute(ComponentXmlNames.DEFAULT_VALUE_ATTRIBUTE);
@@ -125,7 +148,7 @@ public class DesignerProject
                 param = XmlHelper.getNextSiblingElement(param);
             }
         }
-        catch(XmlException e) {
+        catch (XmlException e) {
             throw new EngineException("Cannot load template from dir: " + proj_dir.getAbsolutePath());
         }
         tpl.setParameters(parameter_list);
@@ -133,17 +156,17 @@ public class DesignerProject
 
     public void updateTemplate(Template tpl)
     {
-        if(tpl == null) {
+        if (tpl == null) {
             return;
         }
-        if(tpl.getName().equals(getProjectDir().getName())) {
+        if (tpl.getName().equals(getProjectDir().getName())) {
             List<Parameter> parameter_list = parametersManager.getParametersList();
             tpl.setParameters(parameter_list);
         } else {
             try {
                 updateImportedTemplate(tpl);
             }
-            catch(EngineException e) {
+            catch (EngineException e) {
                 templates.remove(tpl);
                 templatesByName.remove(tpl.getName());
             }
@@ -157,15 +180,15 @@ public class DesignerProject
 
     public static void locateOnScreenCenter(Component component)
     {
-      Dimension compSize = component.getSize();
-      Dimension screenSize = component.getToolkit().getScreenSize();
-      component.setLocation((screenSize.width - compSize.width)/2,
-        (screenSize.height - compSize.height)/2);
+        Dimension compSize = component.getSize();
+        Dimension screenSize = component.getToolkit().getScreenSize();
+        component.setLocation((screenSize.width - compSize.width) / 2,
+                (screenSize.height - compSize.height) / 2);
     }
 
     private void createNewProject(File path) throws IOException
     {
-        if(path.exists()) {
+        if (path.exists()) {
             throw new EngineRuntimeException("Cannot create project in an existing folder.");
         }
         path.mkdir();
@@ -175,10 +198,10 @@ public class DesignerProject
 
     private void createProject(File path) throws IOException, ClassNotFoundException
     {
-        if(!path.exists()) {
+        if (!path.exists()) {
             throw new EngineRuntimeException("Path " + path + " doesn't exist.");
         }
-        if(path.isDirectory()) {
+        if (path.isDirectory()) {
             path = new File(path, PROJECT_FILE_NAME);
         }
         InputStream fis = null;
@@ -226,12 +249,12 @@ public class DesignerProject
         os.writeObject(parametersManager.getParametersList());
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public void readProject(ObjectInputStream is) throws IOException, ClassNotFoundException
     {
         is.readInt();
-        gridNames = new HashSet<String>((Set<String>)is.readObject());
-        parametersManager.setParameters((java.util.List<Parameter>)is.readObject());
+        gridNames = new HashSet<String>((Set<String>) is.readObject());
+        parametersManager.setParameters((java.util.List<Parameter>) is.readObject());
     }
 
     public List<Template> getTemplates()
@@ -284,4 +307,11 @@ public class DesignerProject
     {
         return parametersManager;
     }
+
+    public SenroDesignerObject getObjectById(String obj_id)
+    {
+        // not implemented
+        return null;
+    }
+    
 }
