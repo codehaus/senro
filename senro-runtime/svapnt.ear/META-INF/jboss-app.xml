@@ -1,3 +1,0 @@
-<jboss-app>
-  <loader-repository>org.jdt.eclipse:loader=unique-archive-name</loader-repository>
-</jboss-app>
