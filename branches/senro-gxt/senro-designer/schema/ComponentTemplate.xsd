@@ -29,8 +29,8 @@
             <xs:extension base="BasicComponentType">
                 <xs:attribute name="row" type="xs:string" default="0" use="optional"/>
                 <xs:attribute name="col" type="xs:string" default="0"/>
-                <xs:attribute name="rowSpan" type="strictPositiveInteger" default="1"/>
-                <xs:attribute name="colSpan" type="strictPositiveInteger" default="1"/>
+                <xs:attribute name="rowSpan" type="strictPositiveInteger" default="1" />
+                <xs:attribute name="colSpan" type="strictPositiveInteger" default="1" />
 				<xs:attribute name="halign" type="xs:string"/>
 				<xs:attribute name="valign" type="xs:string"/>
             </xs:extension>
@@ -305,7 +305,7 @@
 
     <xs:element name="Associations">
         <xs:complexType>
-            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:sequence minOccurs="0"  maxOccurs="unbounded">
                 <xs:element ref="Assoc"/>
             </xs:sequence>
         </xs:complexType>
@@ -580,7 +580,6 @@
                     <xs:element ref="Iterator" minOccurs="0"/>
 
                     <xs:element ref="Conditional" minOccurs="0"/>
-
                 </xs:sequence>
 
             </xs:extension>
@@ -655,33 +654,17 @@
 
                     <xs:complexType>
 
-                        <xs:sequence>
+                        <xs:sequence maxOccurs="unbounded" minOccurs="0">
 
-                            <xs:element name="aspect" type="xs:string">
+                            <xs:element name="aspect">
 
-                            </xs:element>
+                                <xs:complexType>
 
-                            <xs:element name="event">
+                                    <xs:attribute name="name" type="xs:string"/>
 
-                                <xs:simpleType>
+                                    <xs:attribute name="value" type="xs:string"/>
 
-                                    <xs:restriction base="xs:NMTOKEN">
-										<xs:enumeration value="1"/>
-										<xs:enumeration value="2"/>
-										<xs:enumeration value="4"/>
-										<xs:enumeration value="8"/>
-										<xs:enumeration value="16"/>
-										<xs:enumeration value="32"/>
-										<xs:enumeration value="64"/>
-										<xs:enumeration value="128"/>
-										<xs:enumeration value="512"/>
-										<xs:enumeration value="140"/>
-										<xs:enumeration value="170"/>
-										<xs:enumeration value="380"/>
-										<xs:enumeration value="710"/>
-									</xs:restriction>
-
-                                </xs:simpleType>
+                                </xs:complexType>
 
                             </xs:element>
 
@@ -706,5 +689,33 @@
         </xs:complexType>
 
     </xs:element>
+
+    <xs:complexType name="TableType">
+
+        <xs:complexContent>
+
+            <xs:extension base="UIComponentType">
+
+                <xs:sequence>
+
+                    <xs:element name="TableColumn" type="TableColumnType"/>
+
+                </xs:sequence>
+
+            </xs:extension>
+
+        </xs:complexContent>
+
+    </xs:complexType>
+
+    <xs:complexType name="TableColumnType">
+
+        <xs:complexContent>
+
+            <xs:extension base="BasicComponentType"/>
+
+        </xs:complexContent>
+
+    </xs:complexType>
 
 </xs:schema>
