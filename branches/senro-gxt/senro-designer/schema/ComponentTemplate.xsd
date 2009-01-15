@@ -87,6 +87,7 @@
                                     <xs:element ref="List"/>
                                     <xs:element ref="TabPanel"/>
                                     <xs:element ref="SwitchComponent"/>
+                                    <xs:element ref="Table"/>
                                 </xs:choice>
                             </xs:sequence>
                         </xs:complexType>
@@ -377,6 +378,10 @@
 
                         <xs:element ref="SwitchComponent"/>
 
+                        <xs:element ref="Table"/>
+
+                        <xs:element ref="TableColumn"/>
+
                     </xs:choice>
 
                     <xs:element name="CurrentItem" minOccurs="0" maxOccurs="1"/>
@@ -515,6 +520,8 @@
 
             <xs:element ref="SwitchComponent"/>
 
+            <xs:element ref="Table"/>
+
         </xs:choice>
 
             </xs:extension>
@@ -568,6 +575,7 @@
     </xs:complexType>
 
     <xs:element name="List" type="ListType"/>
+	<xs:element name="Table" type="TableType"/>
 
     <xs:complexType name="TabPanelType">
 
@@ -698,9 +706,11 @@
 
             <xs:extension base="UIComponentType">
 
-                <xs:sequence>
+                <xs:sequence minOccurs="1" maxOccurs="unbounded">
 
                     <xs:element name="TableColumn" type="TableColumnType"/>
+
+                    <xs:element ref="Iterator"/>
 
                 </xs:sequence>
 
@@ -714,7 +724,11 @@
 
         <xs:complexContent>
 
-            <xs:extension base="BasicComponentType"/>
+            <xs:extension base="BasicComponentType">
+
+                <xs:attribute name="expression" type="xs:string"/>
+
+            </xs:extension>
 
         </xs:complexContent>
 
@@ -729,5 +743,7 @@
         <xs:attribute name="value" type="xs:string"/>
 
     </xs:complexType>
+
+    <xs:element name="TableColumn" type="TableColumnType"/>
 
 </xs:schema>
