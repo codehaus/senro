@@ -13,7 +13,6 @@ import org.senro.gwt.client.model.ui.binding.ComponentAssociation;
 import org.senro.gwt.client.model.ui.context.SenroContext;
 import org.senro.ui.control.AssociationRegistry;
 import org.senro.ui.template.TemplateParser;
-import org.senro.ui.template.sid.SIDComponent;
 
 public class TestSenro {
 	public static void main(String[] args) {
@@ -28,10 +27,6 @@ public class TestSenro {
 		Set<SenroAssoc> assocs = AssociationRegistry.getAll();
 		List<Assoc> a = AssociationRegistry.associationClassesForObject(tf);
 		System.out.println(a);
-		for(SenroAssoc assoc : assocs) {
-			System.out.println(assoc.getBindingSignatures());
-			System.out.println(assoc.getSupportedAspects());
-		}
 	}
 	
 	private void testSenro() {
@@ -44,7 +39,7 @@ public class TestSenro {
 		runtimeContext.put("senroContext", ctx);
 		runtimeContext.put("metadata", Senro.getMetadataManager());
 		
-		String template = "templates/selector/Component.xml";
+		String template = "templates/list/Component.xml";
 		try {
 			TemplateParser parser = Senro.getTemplateParser();
 			parser.setInputStream(new FileInputStream(template));
