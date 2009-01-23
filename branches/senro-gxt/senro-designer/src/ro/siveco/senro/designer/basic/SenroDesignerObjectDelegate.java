@@ -18,7 +18,7 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     private static final long serialVersionUID = 1L;
     private String senroName;
     private String senroId;
-    private Set<AssociationInstance> associations = new HashSet<AssociationInstance>();
+    private transient Set<AssociationInstance> associations = new HashSet<AssociationInstance>();
     protected transient Set<DesignerObjectListener> listeners = new HashSet<DesignerObjectListener>();
     private final transient SenroDesignerObject senroObject;
 
@@ -97,6 +97,9 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     @Override
     public void addAssociation(AssociationInstance assoc)
     {
+        if(associations == null) {
+            associations = new HashSet<AssociationInstance>();
+        }
         if (assoc != null) {
             associations.add(assoc);
             notifyListeners(DesignerObjectEvent.OBJECT_DID_CHANGE);

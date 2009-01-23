@@ -2,7 +2,6 @@ package ro.siveco.senro.designer.inspectors.association;
 
 import ro.siveco.senro.designer.inspector.Inspector;
 import ro.siveco.senro.designer.association.AssociationInstance;
-import ro.siveco.senro.designer.association.AspectEvent;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.engine.DesignerManager;
 
@@ -10,61 +9,67 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.builder.PanelBuilder;
 
-public class BindingInspector implements Inspector, ActionListener, ItemListener
+public class BindingInspector implements Inspector, ActionListener
 {
     protected JPanel panel;
     protected AssociationInstance.BindingInstance binding;
-    protected AssociationInstance associationInstance;
     protected String title;
 
     protected JLabel bindingNameL = new JLabel();
     protected JTextField bindingValueTF = new JTextField();
-    protected JComboBox aspectCB = new JComboBox();
-    protected JComboBox eventCB = new JComboBox();
+    protected List<JLabel> aspectNames = new ArrayList<JLabel>();
+    protected List<JTextField> aspectValues = new ArrayList<JTextField>();
 
-    public BindingInspector(AssociationInstance assoc_instance)
+    public BindingInspector(AssociationInstance.BindingInstance binding_instance)
     {
         title = "Binding Inspector";
-        associationInstance = assoc_instance;
-        FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 100:grow, 1dlu",
-                "1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu");
+        StringBuffer rows_buff = new StringBuffer();
+        rows_buff.append("1dlu, fill:pref, 1dlu, fill:pref, 1dlu");
+        int asp_no = binding_instance.getAspects().size();
+        for (int n = 0; n < asp_no; n++) {
+            rows_buff.append(", fill:pref, 1dlu");
+        }
+        FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 100:grow, 1dlu", rows_buff.toString());
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         CellConstraints cc = new CellConstraints();
-        builder.add(new JLabel("Binding Name", JLabel.RIGHT), cc.xy(2, 2));
-        builder.add(bindingNameL, cc.xy(4, 2));
-        builder.add(new JLabel("Binding Value", JLabel.RIGHT), cc.xy(2, 4));
-        bindingValueTF.addActionListener(this);
-        builder.add(bindingValueTF, cc.xy(4, 4));
-        builder.add(new JLabel("Aspect", JLabel.RIGHT), cc.xy(2, 6));
-        aspectCB.addItemListener(this);
-        setItemsToComboBox(aspectCB, associationInstance.getDescription().getAspects());
-        builder.add(aspectCB, cc.xy(4, 6));
-        builder.add(new JLabel("Event", JLabel.RIGHT), cc.xy(2, 8));
-        eventCB.addItemListener(this);
-        setItemsToComboBox(eventCB, AspectEvent.ALL_EVENTS);
-        builder.add(eventCB, cc.xy(4, 8));
+        builder.add(getNameValuePanel(), cc.xywh(2, 2, 3, 1));
+        if(asp_no > 0) {
+            builder.add(new JLabel("Aspects: ", JLabel.LEFT), cc.xy(2, 4));
+            int i = 6;
+            for (AssociationInstance.AspectInstance aspect : binding_instance.getAspects()) {
+                JLabel aspectNameL = new JLabel(aspect.getName(), JLabel.RIGHT);
+                aspectNames.add(aspectNameL);
+                builder.add(aspectNameL, cc.xy(2, i));
+                JTextField aspectValueTF = new JTextField();
+                aspectValues.add(aspectValueTF);
+                aspectValueTF.addActionListener(this);
+                builder.add(aspectValueTF, cc.xy(4, i));
+                i += 2;
+            }
+        }
         panel = builder.getPanel();
     }
 
-    private void setItemsToComboBox(JComboBox combo_box, Set objects)
+    private JPanel getNameValuePanel()
     {
-        combo_box.removeItemListener(this);
-        combo_box.removeAllItems();
-        if (objects != null) {
-            for (Object object : objects) {
-                combo_box.addItem(object);
-            }
-        }
-        combo_box.addItemListener(this);
+        FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 50:grow, 3dlu, fill:pref, 1dlu, 50:grow, 1dlu", "fill:pref");
+        PanelBuilder builder = new PanelBuilder(layout);
+        builder.setBorder(null);
+        CellConstraints cc = new CellConstraints();
+        builder.add(new JLabel("Binding:", JLabel.RIGHT), cc.xy(2, 1));
+        builder.add(bindingNameL, cc.xy(4, 1));
+        builder.add(new JLabel("Value:", JLabel.RIGHT), cc.xy(6, 1));
+        bindingValueTF.addActionListener(this);
+        builder.add(bindingValueTF, cc.xy(8, 1));        
+        return builder.getPanel();
     }
 
     public String getTitle()
@@ -75,6 +80,11 @@ public class BindingInspector implements Inspector, ActionListener, ItemListener
     public JPanel getPanel()
     {
         return panel;
+    }
+
+    public AssociationInstance.BindingInstance getLastInspectedObject()
+    {
+        return binding;
     }
 
     public void setObject(Object o)
@@ -92,15 +102,17 @@ public class BindingInspector implements Inspector, ActionListener, ItemListener
     public void enable()
     {
         bindingValueTF.setEnabled(true);
-        aspectCB.setEnabled(true);
-        eventCB.setEnabled(true);
+        for (JTextField aspectValueTF : aspectValues) {
+            aspectValueTF.setEnabled(true);
+        }
     }
 
     public void disable()
     {
         bindingValueTF.setEnabled(false);
-        aspectCB.setEnabled(false);
-        eventCB.setEnabled(false);
+        for (JTextField aspectValueTF : aspectValues) {
+            aspectValueTF.setEnabled(false);
+        }
     }
 
     public void updateUI()
@@ -109,16 +121,18 @@ public class BindingInspector implements Inspector, ActionListener, ItemListener
             return;
         }
         String binding_name;
-        if(binding.getDescription() == null) {
+        if (binding.getDescription() == null) {
             binding_name = null;
         } else {
             binding_name = binding.getDescription().getName();
         }
         bindingNameL.setText(binding_name == null ? "" : binding_name);
         SenroDesignerObject value = binding.getValue();
-        bindingValueTF.setText(value == null ? "" :value.getId());
-        aspectCB.setSelectedItem(binding.getAspect());
-        eventCB.setSelectedItem(binding.getEvent());
+        bindingValueTF.setText(value == null ? "" : value.getId());
+        for (int i = 0; i < aspectValues.size(); i++) {
+            String aspect_val = binding.getAspects().get(i).getValue();
+            aspectValues.get(i).setText(aspect_val == null ? "" : aspect_val);
+        }
     }
 
     public void actionPerformed(ActionEvent e)
@@ -130,16 +144,11 @@ public class BindingInspector implements Inspector, ActionListener, ItemListener
             SenroDesignerObject obj = DesignerManager.getSharedDesignerManager().getProject().getObjectById(obj_id);
             binding.setValue(obj);
         }
-    }
-
-    public void itemStateChanged(ItemEvent e)
-    {
-        Object source = e.getSource();
-        if (source == aspectCB) {
-            binding.setAspect((String) aspectCB.getSelectedItem());
-        }
-        if (source == eventCB) {
-            binding.setEvent((AspectEvent) eventCB.getSelectedItem());
+        for (int i = 0; i < aspectValues.size(); i++) {
+            JTextField aspectValueTF = aspectValues.get(i);
+            if (source == aspectValueTF) {
+                binding.getAspects().get(i).setValue(aspectValueTF.getText());
+            }
         }
     }
 }

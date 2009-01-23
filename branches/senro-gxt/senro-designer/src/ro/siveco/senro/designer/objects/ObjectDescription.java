@@ -5,8 +5,6 @@ import ro.siveco.senro.designer.basic.DesignerObjectListener;
 import ro.siveco.senro.designer.basic.SenroDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
 
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.List;
 import java.io.Serializable;
