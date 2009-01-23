@@ -37,6 +37,7 @@ public interface ComponentXmlNames
 
     public static final String ORDER_NO_ATTRIBUTE = "orderNo";
     public static final String TITLE_ATTRIBUTE = "title";
+    public static final String SHOW_ON_LOAD_ATTRIBUTE = "showOnLoad";
 
     public static final String NAME_ATTRIBUTE = "name";
     public static final String VALUE_ATTRIBUTE = "value";

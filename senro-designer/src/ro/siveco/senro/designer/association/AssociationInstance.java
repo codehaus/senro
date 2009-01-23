@@ -46,32 +46,15 @@ public class AssociationInstance
     {
         private final BindingDescription description;
         private SenroDesignerObject value;
-        private String aspect;
-        private AspectEvent event;
+        private List<AspectInstance> aspects = new ArrayList<AspectInstance>();
 
         public BindingInstance(BindingDescription description)
         {
             this.description = description;
-        }
-
-        public String getAspect()
-        {
-            return aspect;
-        }
-
-        public void setAspect(String aspect)
-        {
-            this.aspect = aspect;
-        }
-
-        public AspectEvent getEvent()
-        {
-            return event;
-        }
-
-        public void setEvent(AspectEvent event)
-        {
-            this.event = event;
+            Set<String> aspects_name = description.getAspects();
+            for(String aspect_name : aspects_name) {
+                aspects.add(new AspectInstance(aspect_name));
+            }
         }
 
         public SenroDesignerObject getValue()
@@ -88,5 +71,38 @@ public class AssociationInstance
         {
             return description;
         }
+
+        public List<AspectInstance> getAspects()
+        {
+            return aspects;
+        }
+
     }
+
+    public static class AspectInstance
+    {
+        private String name;
+        private String value = null;
+
+        public AspectInstance(String name)
+        {
+            this.name = name;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+
+        public void setValue(String value)
+        {
+            this.value = value;
+        }
+    }
+
 }

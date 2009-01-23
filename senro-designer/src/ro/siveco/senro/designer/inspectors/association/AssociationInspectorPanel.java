@@ -16,8 +16,8 @@ import javax.swing.event.TableModelEvent;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.*;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 import ro.siveco.senro.designer.inspectors.SenroUiInspector;
@@ -25,10 +25,12 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.DesignerObjectListener;
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.association.AssociationDescription;
 
 public class AssociationInspectorPanel extends JETAPanel implements GridViewListener, SenroUiInspector, DesignerObjectListener
 {
     private static Logger logger = Logger.getLogger(AssociationInspectorPanel.class);
+    private Map<AssociationDescription, List<BindingInspector>> bindingInspectors = new HashMap<AssociationDescription, List<BindingInspector>>();
 
     private JLabel nameLabel;
     private JTable assocTable;
@@ -41,6 +43,8 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
 
     public AssociationInspectorPanel()
     {
+        // make a new Map to register for each AssociationDescription its corresponding BindingInspectors
+        bindingInspectors = new HashMap<AssociationDescription, List<BindingInspector>>();
         String col_spec = "fill:12px, fill:pref:grow, fill:12px";
         String row_spec = "fill:4px, fill:pref, fill:4px, fill:pref, fill:4px, fill:pref, fill:4px, fill:pref, fill:4px";
         FormLayout f = new FormLayout(col_spec, row_spec);
@@ -99,11 +103,24 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
                 if (sel_idx >= 0) {
                     AssociationInstance sel_assoc = selectedObject.getAssociations().get(sel_idx);
                     List<AssociationInstance.BindingInstance> bindings = sel_assoc.getBindings();
-                    List<BindingInspector> binding_inspectors = new ArrayList<BindingInspector>();
-                    for (AssociationInstance.BindingInstance binding : bindings) {
-                        BindingInspector bi = new BindingInspector(sel_assoc);
-                        bi.setObject(binding);
-                        binding_inspectors.add(bi);
+                    // When any AssociationInstance is inspected, it searches for its bindingInspectors
+                    // and if there are none they must be construct and register.
+                    List<BindingInspector> binding_inspectors = bindingInspectors.get(sel_assoc.getDescription());
+                    if (binding_inspectors == null) {
+                        binding_inspectors = new ArrayList<BindingInspector>();
+                        for (AssociationInstance.BindingInstance binding : bindings) {
+                            BindingInspector bi = new BindingInspector(binding);
+                            bi.setObject(binding);
+                            binding_inspectors.add(bi);
+                        }
+                    } else {
+                        for (BindingInspector bi : binding_inspectors) {
+                            for (AssociationInstance.BindingInstance binding : bindings) {
+                                if (binding.getDescription().equals(bi.getLastInspectedObject().getDescription())) {
+                                    bi.setObject(binding);
+                                }
+                            }
+                        }
                     }
                     updateBindingsPanel(binding_inspectors);
                 }
@@ -126,7 +143,7 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
         bindingsPanel.setBorder(null);
         CellConstraints cc = new CellConstraints();
         for (int i = 0; i < n; i++) {
-            bindingsPanel.add(binding_inspectors.get(i).getPanel(), cc.xy(2, 2*i + 2));
+            bindingsPanel.add(binding_inspectors.get(i).getPanel(), cc.xy(2, 2 * i + 2));
         }
         revalidate();
     }

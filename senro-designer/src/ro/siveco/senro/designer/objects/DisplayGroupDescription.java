@@ -8,10 +8,6 @@ public class DisplayGroupDescription extends ObjectDescription
 
     private String entityName;
 
-    public DisplayGroupDescription()
-    {
-    }
-
     public String getObjectClassName()
     {
         return OBJECT_CLASS_NAME;

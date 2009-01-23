@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 import org.senro.gwt.client.assoc.impl.SenroAssoc;
-import org.senro.gwt.client.assoc.impl.TextToTextAssoc;
 import org.senro.gwt.client.model.ui.binding.ComponentAssociation;
+import org.senro.ui.control.AssociationRegistry;
+import org.senro.Senro;
 import org.apache.log4j.Logger;
 import ro.siveco.senro.designer.util.ClassHelper;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
@@ -29,6 +30,7 @@ import ro.siveco.senro.designer.components.SenroTextArea;
 import ro.siveco.senro.designer.components.SenroTextField;
 import ro.siveco.senro.designer.components.SenroTree;
 import ro.siveco.senro.designer.components.TreeNode;
+import ro.siveco.senro.designer.objects.DisplayGroupDescription;
 
 public final class AssociationDescription
 {
@@ -38,7 +40,6 @@ public final class AssociationDescription
 
     private final String name;
     private final Set<BindingDescription> bindings;
-    private final Set<String> aspects;
 
     public AssociationDescription(SenroAssoc assoc)
     {
@@ -47,10 +48,13 @@ public final class AssociationDescription
         Set<BindingDescription> assoc_bindings = new HashSet<BindingDescription>();
         for(String b_name : b_sig.keySet()) {
             ComponentAssociation cmp_a = b_sig.get(b_name);
-            assoc_bindings.add(new BindingDescription(b_name, getSidClass(cmp_a)));
+            Set<String> asp_names = assoc.getSupportedAspects(b_name);
+            if(asp_names == null) {
+                asp_names = Collections.emptySet();
+            }
+            assoc_bindings.add(new BindingDescription(b_name, getSidClass(cmp_a), asp_names));
         }
         bindings = Collections.unmodifiableSet(assoc_bindings);
-        aspects = Collections.unmodifiableSet(assoc.getSupportedAspects());
     }
 
     public AssociationInstance create(SenroDesignerObject obj_1, SenroDesignerObject obj_2)
@@ -89,18 +93,14 @@ public final class AssociationDescription
         return bindings;
     }
 
-    public Set<String> getAspects()
-    {
-        return aspects;
-    }
-
     public static void init()
     {
+        Senro.init();
         Set<AssociationDescription> all_desc = new HashSet<AssociationDescription>();
-//        Set<SenroAssoc> assocs = AssociationRegistry.getAll();
-        all_desc.add(new AssociationDescription(new TextToTextAssoc()));
-//        all_desc.add(new AssociationDescription(new SenroAssoc()));
-
+        Set<SenroAssoc> assocs = AssociationRegistry.getAll();
+        for(SenroAssoc assoc : assocs) {
+            all_desc.add(new AssociationDescription(assoc));
+        }
         allDesc = Collections.unmodifiableSet(all_desc);
     }
 
@@ -152,6 +152,7 @@ public final class AssociationDescription
                 return IteratorComponent.class;
             case LABEL:
                 return SenroLabel.class;
+            case TABLE:
             case LIST:
                 return SenroList.class;
             case SWITCHCOMPONENT:
@@ -168,6 +169,8 @@ public final class AssociationDescription
                 return SenroTree.class;
             case TREENODE:
                 return TreeNode.class;
+            case DISPLAYGROUP:
+                return DisplayGroupDescription.class;
             case TABPAGE:
             case ICON_BUTTON:
             case GRID:
