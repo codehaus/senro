@@ -21,8 +21,6 @@ public class SenroButton extends JButton implements UIDesignerObject
     public static final int INT_ICON_TYPE = 1;
     public static final int INT_ICON_BUTTON_TYPE = 2;
 
-    private String entity;
-    private String task;
     private String buttonIcon;
     private String hoverIcon;
     private String type = BUTTON_TYPE;
@@ -95,26 +93,6 @@ public class SenroButton extends JButton implements UIDesignerObject
             default:
                 type = BUTTON_TYPE;
         }
-    }
-
-    public String getEntity()
-    {
-        return (entity == null ? "" : entity);
-    }
-
-    public void setEntity(String entity)
-    {
-        this.entity = entity;
-    }
-
-    public String getTask()
-    {
-        return (task == null ? "" : task);
-    }
-
-    public void setTask(String task)
-    {
-        this.task = task;
     }
 
     public String getButtonIcon()

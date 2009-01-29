@@ -1,5 +1,9 @@
 package ro.siveco.senro.designer.util;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+
 public interface Predicate
 {
     public boolean accept(Object o);
@@ -25,6 +29,20 @@ public interface Predicate
             return false;
         }
 
+    }
+
+    public static class Util
+    {
+        public static <T> List<T> filterList(Collection<T> list, Predicate p)
+        {
+            List<T> filteredList = new ArrayList<T>();
+            for(T t : list) {
+                if(p.accept(t)) {
+                    filteredList.add(t);
+                }
+            }
+            return filteredList;
+        }
     }
 
 }

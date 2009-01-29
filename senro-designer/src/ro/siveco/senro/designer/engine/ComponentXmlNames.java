@@ -77,7 +77,6 @@ public interface ComponentXmlNames
     public static final String CHECKBOX_ELEMENT = "CheckBox";
     public static final String COMBOBOX_ELEMENT = "ComboBox";
     public static final String ENTITY_ELEMENT = "Entity";
-    public static final String TASK_ELEMENT = "Task";
     public static final String ICON_ELEMENT = "Icon";
     public static final String HOVER_ELEMENT = "HoverIcon";
     public static final String TEMPLATE_PARAM_ELEMENT = "Param";

@@ -130,6 +130,7 @@ public class JETABeanFactory
        registerFactory(IteratorComponent.class.getName(), new IteratorBeanFactory());
        registerFactory(ConditionalComponent.class.getName(), new ConditionalComponentBeanFactory());
        registerFactory(TemplateComponent.class.getName(), new TemplateBeanFactory());
+       registerFactory(TemplateRendererComponent.class.getName(), new TemplateRendererBeanFactory());
        registerFactory(TopGridView.class.getName(), new TopGridViewBeanFactory());
        registerFactory(TabPageView.class.getName(), new TabPageViewBeanFactory());
 
