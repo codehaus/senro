@@ -269,6 +269,9 @@ public class DefaultBeanManager implements BeanManager
         registerDefaultBean(I18N.getLocalizedMessage("Template"),
                 "ro.siveco.senro.designer.components.TemplateComponent",
                 new DesignerIcon(20, 12, "T"));
+//        registerDefaultBean(I18N.getLocalizedMessage("TemplateRenderer"),
+//                "ro.siveco.senro.designer.components.TemplateRendererComponent",
+//                new DesignerIcon(20, 12, "TR"));
         registerDefaultBean(I18N.getLocalizedMessage("Conditional"),
                 "ro.siveco.senro.designer.components.ConditionalComponent",
                 DesignerManager.getIconForImage("cond_16x16.png"));

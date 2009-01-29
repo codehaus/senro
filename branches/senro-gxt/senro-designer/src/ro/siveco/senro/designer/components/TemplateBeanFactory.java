@@ -7,7 +7,6 @@ import com.jeta.forms.gui.beans.DynamicBeanInfo;
 import com.jeta.forms.gui.beans.StandardPropertyDescriptor;
 import com.jeta.forms.gui.beans.BeanProperties;
 import com.jeta.forms.gui.common.FormException;
-import com.jeta.forms.store.properties.JETAProperty;
 
 import java.awt.*;
 import java.util.*;

@@ -64,8 +64,8 @@
         <xs:complexContent>
             <xs:extension base="UIComponentType">
                 <xs:sequence>
-                    <xs:element ref="Columns" maxOccurs="1"/>
-                    <xs:element ref="Rows" maxOccurs="1"/>
+                    <xs:element name="Columns" maxOccurs="1" type="xs:string"/>
+                    <xs:element name="Rows" maxOccurs="1" type="xs:string"/>
                     <xs:element name="Components">
                         <xs:complexType>
                             <xs:sequence>
@@ -96,63 +96,6 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-
-    <xs:complexType name="GridSpecificationElement">
-        <xs:sequence>
-            <xs:element name="Alignment" minOccurs="1" maxOccurs="1">
-                <xs:simpleType>
-                    <xs:restriction base="xs:NMTOKEN">
-                        <xs:enumeration value="Left"/>
-                        <xs:enumeration value="Right"/>
-                        <xs:enumeration value="Top"/>
-                        <xs:enumeration value="Bottom"/>
-                        <xs:enumeration value="Center"/>
-                        <xs:enumeration value="Fill"/>
-                        <xs:enumeration value="Top"/>
-                        <xs:enumeration value="Middle"/>
-                        <xs:enumeration value="Bottom"/>
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
-            <xs:element name="Resize" minOccurs="0" maxOccurs="1" type="xs:decimal"/>
-            <xs:element name="Size" minOccurs="0" maxOccurs="1">
-                <xs:complexType>
-                    <xs:choice>
-                        <xs:element name="Constant" type="xs:integer"/>
-                        <xs:element name="Component">
-                            <xs:simpleType>
-                                <xs:restriction base="xs:NMTOKEN">
-                                    <xs:enumeration value="Default"/>
-                                    <xs:enumeration value="Pref"/>
-                                    <xs:enumeration value="Min"/>
-                                </xs:restriction>
-                            </xs:simpleType>
-                        </xs:element>
-                        <xs:element name="Min" type="xs:integer"/>
-                        <xs:element name="Max" type="xs:integer"/>
-                    </xs:choice>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="Group" minOccurs="0" maxOccurs="1" type="xs:integer"/>
-        </xs:sequence>
-
-    </xs:complexType>
-
-    <xs:element name="Columns">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="Column" type="GridSpecificationElement" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="Rows">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="Row" type="GridSpecificationElement" minOccurs="0" maxOccurs="unbounded"/>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
 
     <xs:complexType name="LabelType">
         <xs:complexContent>

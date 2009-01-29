@@ -30,6 +30,7 @@ import ro.siveco.senro.designer.components.SenroTextArea;
 import ro.siveco.senro.designer.components.SenroTextField;
 import ro.siveco.senro.designer.components.SenroTree;
 import ro.siveco.senro.designer.components.TreeNode;
+import ro.siveco.senro.designer.components.TemplateRendererComponent;
 import ro.siveco.senro.designer.objects.DisplayGroupDescription;
 
 public final class AssociationDescription
@@ -160,7 +161,8 @@ public final class AssociationDescription
             case TABPANEL:
                 return SenroTabbedPane.class;
             case TEMPLATE:
-                return TemplateComponent.class;
+//                return TemplateComponent.class;
+                return TemplateRendererComponent.class;
             case TEXTAREA:
                 return SenroTextArea.class;
             case TEXTFIELD:
