@@ -113,7 +113,7 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
+
 	<xs:complexType name="DateFieldType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
@@ -162,7 +162,7 @@
 	<xs:complexType name="TemplateType">
         <xs:complexContent>
             <xs:extension base="UIComponentType">
-                <xs:sequence maxOccurs="unbounded">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
                     <xs:element name="Param">
                         <xs:complexType>
                             <xs:attribute name="name" type="xs:string"/>
@@ -654,13 +654,13 @@
 
             <xs:extension base="UIComponentType">
 
-                <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
 
                     <xs:element name="TableColumn" type="TableColumnType"/>
 
-                    <xs:element ref="Iterator"/>
-
                 </xs:sequence>
+
+                <xs:attribute name="columnList" type="xs:string"/>
 
             </xs:extension>
 
