@@ -132,9 +132,10 @@
         <xs:complexContent>
             <xs:extension base="UIComponentType">
                 <xs:sequence>
-                    <xs:element name="Label" type="xs:string"/>
-                    <xs:element name="Icon" type="xs:string"/>
-                    <xs:element name="HoverIcon" type="xs:string"/>
+                    <xs:element name="Label" type="xs:string" maxOccurs="1" minOccurs="1"/>
+                    <xs:element name="Icon" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="HoverIcon" type="xs:string" minOccurs="0" />
+                    <xs:element name="Panel" type="ButtonPanelType" maxOccurs="1" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="type" type="xs:string"/>
             </xs:extension>
@@ -170,6 +171,7 @@
                     </xs:element>
                 </xs:sequence>
                 <xs:attribute name="file" type="xs:string"/>
+                <xs:attribute name="editingContext" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -199,6 +201,7 @@
             <xs:extension base="BasicComponentType">
                 <xs:attribute name="entity" type="xs:string"/>
                 <xs:attribute name="columns" type="xs:integer"/>
+                <xs:attribute name="displayGroup" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -220,6 +223,7 @@
                 <xs:attribute name="entity" type="xs:string"/>
                 <xs:attribute name="fetchSpec" type="xs:string"/>
                 <xs:attribute name="editingContext" type="xs:string"/>
+                <xs:attribute name="master" type="xs:boolean"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -417,6 +421,7 @@
 
             <xs:element name="Text" type="xs:string"/>
 
+            <xs:element name="Panel" type="ButtonPanelType" minOccurs="0"/>
         </xs:sequence>
 
     </xs:complexType>
@@ -689,4 +694,13 @@
 
     <xs:element name="TableColumn" type="TableColumnType"/>
 
+    <xs:complexType name="ButtonPanelType">
+
+        <xs:attribute name="id" type="xs:string" use="required"/>
+
+        <xs:attribute name="stack" type="xs:string" use="required"/>
+
+        <xs:attribute name="editingContext" type="xs:string" use="optional"/>
+
+    </xs:complexType>
 </xs:schema>
