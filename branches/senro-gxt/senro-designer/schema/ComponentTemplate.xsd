@@ -29,6 +29,8 @@
             <xs:extension base="BasicComponentType">
                 <xs:attribute name="row" type="xs:string" default="0" use="optional"/>
                 <xs:attribute name="col" type="xs:string" default="0"/>
+                <xs:attribute name="rowExpression" type="xs:string" use="optional"/>
+                <xs:attribute name="colExpression" type="xs:string" use="optional"/>
                 <xs:attribute name="rowSpan" type="strictPositiveInteger" default="1" />
                 <xs:attribute name="colSpan" type="strictPositiveInteger" default="1" />
 				<xs:attribute name="halign" type="xs:string"/>
