@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ComponentTemplate xmlns="http://www.siveco.ro/senro/ComponentTemplate" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.siveco.ro/senro/ComponentTemplate file:///c:/work/SENRO_SIVECO/senro-core/src/resources/ComponentTemplate.xsd">
+    <Layout>
+        <Grid id="new" name="new">
+            <Columns>fill:default:grow</Columns>
+            <Rows>default, 3dlu, default:grow(0.20),3dlu, default:grow(0.10), 3dlu, fill:default:grow(0.70)</Rows>
+            <Components>
+                <Label col="1" colSpan="1" halign="Center" id="lblTitle" name="lblTitle" row="1" rowSpan="1" valign="Default">
+                    <Text>@{entity.name}</Text>
+                </Label>
+                <GridAllocatorRenderer col="1" colSpan="1" gridAllocator="@{gridAllocator}" halign="Default" id="gridRenderer" name="gridRenderer" row="3" rowSpan="1" valign="Default"/>
+                <Grid id="formButtonGrid" name="formButtonGrid" col="1" row="5" colSpan="1" rowSpan="1" halign="Default" valign="Default">
+                    <Columns>2*(center:5dlu:grow(0.5), 3dlu)</Columns>
+                    <Rows>default</Rows>
+                    <Components>
+                        <Button col="1" colSpan="1" halign="Center" id="btnSave" name="btnSave" row="1" rowSpan="1" valign="Default">
+                            <Label>Save</Label>
+                            <Panel id="new" stack="pop"/>
+                        </Button>
+                        <Button col="3" colSpan="1" halign="Center" id="btnBack" name="btnBack" row="1" rowSpan="1" valign="Default">
+                            <Label>Back</Label>
+                            <Panel id="new" stack="pop" />
+                        </Button>
+                    </Components>
+                </Grid>
+                <TabPanel col="1" colSpan="1" halign="Default" id="tabPanel" name="tabPanel" row="7" rowSpan="1" valign="Default">
+                    <Iterator filterCondition="@{tabIter.currentItem.isMany}" id="tabIter" list="@{entity.properties}" name="tabIter">
+                        <TabPage orderNo="0" title="@{tabIter.currentItem.type}">
+                            <Template file="list" id="" name="" editingContext="independent" >
+                                <Param name="entity" value="@{metadata.getMetadata(tabIter.currentItem.type)}"/>
+                            </Template>
+                        </TabPage>
+                    </Iterator>
+                </TabPanel>
+            </Components>
+        </Grid>
+    </Layout>
+    <Server>
+        <GridAllocator columns="6" entity="@{entity}" id="gridAllocator1" name="gridAllocator" displayGroup="displayGroup"/>
+    </Server>
+    <Client>
+		<DisplayGroup id="displayGroup" name="displayGroup" entity="@{entity.qualifiedName}" master="true" />
+	</Client>
+    <Params>
+        <Parameter defaultValue="@{metadata.getMetadata(senroContext.get(senroContext.MAIN_ENTITY))}" name="entity" type="org.senro.metadata.MetadataClass"/>
+    </Params>
+    <Associations>
+		<Assoc id="assoc2" name="assoc2" type="org.senro.gwt.client.assoc.impl.ServerActionAssoc">
+			<binding name="button" value="btnSave">
+				<aspect name="context" value="senroContext" />
+			</binding>
+			<binding name="displayGroup" value="displayGroup">
+				<aspect name="displayGroupAction" value="save" />
+			</binding>
+		</Assoc>
+	</Associations>
+</ComponentTemplate>
