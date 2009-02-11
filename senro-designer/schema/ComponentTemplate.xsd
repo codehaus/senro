@@ -183,6 +183,7 @@
             <xs:sequence>
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element name="GridAllocator" type="GridAllocatorType" maxOccurs="1"/>
+                    <xs:element name="SenroContext" type="SenroContextType" maxOccurs="1"/>
                 </xs:choice>
             </xs:sequence>
         </xs:complexType>
@@ -214,6 +215,7 @@
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element name="DisplayGroup" type="DisplayGroupType" maxOccurs="1"/>
                     <xs:element name="EditingContext" type="EditingContextType" maxOccurs="1"/>
+                    <xs:element name="SenroContext" type="SenroContextType" maxOccurs="1"/>
                 </xs:choice>
             </xs:sequence>
         </xs:complexType>
