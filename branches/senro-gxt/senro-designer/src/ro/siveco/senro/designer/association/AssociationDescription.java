@@ -1,43 +1,23 @@
 package ro.siveco.senro.designer.association;
 
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Collections;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
-import org.senro.gwt.client.assoc.impl.SenroAssoc;
-import org.senro.gwt.client.model.ui.binding.ComponentAssociation;
+import org.senro.gwt.model.SenroAssoc;
+import org.senro.gwt.model.ui.ComponentAssociation;
 import org.senro.ui.control.AssociationRegistry;
-import org.senro.Senro;
+import org.senro.sid.SidSenroAdapter;
 import org.apache.log4j.Logger;
 import ro.siveco.senro.designer.util.ClassHelper;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
-import ro.siveco.senro.designer.components.SenroButton;
-import ro.siveco.senro.designer.components.SenroCheckBox;
-import ro.siveco.senro.designer.components.SenroComboBox;
-import ro.siveco.senro.designer.components.ConditionalComponent;
-import ro.siveco.senro.designer.components.SenroDateField;
-import ro.siveco.senro.designer.components.SenroList;
-import ro.siveco.senro.designer.components.GridAllocatorRenderer;
-import ro.siveco.senro.designer.components.IteratorComponent;
-import ro.siveco.senro.designer.components.SenroLabel;
-import ro.siveco.senro.designer.components.SwitchComponent;
-import ro.siveco.senro.designer.components.SenroTabbedPane;
-import ro.siveco.senro.designer.components.TemplateComponent;
-import ro.siveco.senro.designer.components.SenroTextArea;
-import ro.siveco.senro.designer.components.SenroTextField;
-import ro.siveco.senro.designer.components.SenroTree;
-import ro.siveco.senro.designer.components.TreeNode;
-import ro.siveco.senro.designer.components.TemplateRendererComponent;
+import ro.siveco.senro.designer.components.*;
 import ro.siveco.senro.designer.objects.DisplayGroupDescription;
+import ro.siveco.senro.designer.objects.EditingContextDescription;
 
 public final class AssociationDescription
 {
     private static Logger logger = Logger.getLogger(AssociationDescription.class);
 
-    private static Set<AssociationDescription> allDesc;
+    private static Map<String, AssociationDescription> allDesc;
 
     private final String name;
     private final Set<BindingDescription> bindings;
@@ -45,7 +25,9 @@ public final class AssociationDescription
     public AssociationDescription(SenroAssoc assoc)
     {
         name = ClassHelper.getShortClassName(assoc);
+        logger.info("Create association description with name: " + name);
         Map<String, ComponentAssociation> b_sig = assoc.getBindingSignatures();
+        logger.info("Binding signatures: " + b_sig);
         Set<BindingDescription> assoc_bindings = new HashSet<BindingDescription>();
         for(String b_name : b_sig.keySet()) {
             ComponentAssociation cmp_a = b_sig.get(b_name);
@@ -96,19 +78,19 @@ public final class AssociationDescription
 
     public static void init()
     {
-        Senro.init();
-        Set<AssociationDescription> all_desc = new HashSet<AssociationDescription>();
+        Map<String, AssociationDescription> all_desc = new HashMap<String, AssociationDescription>();
         Set<SenroAssoc> assocs = AssociationRegistry.getAll();
         for(SenroAssoc assoc : assocs) {
-            all_desc.add(new AssociationDescription(assoc));
+            AssociationDescription assoc_desc = new AssociationDescription(assoc);
+            all_desc.put(assoc_desc.getName(), assoc_desc);
         }
-        allDesc = Collections.unmodifiableSet(all_desc);
+        allDesc = Collections.unmodifiableMap(all_desc);
     }
 
     public static List<AssociationDescription> getAssociationsThatAccept(SenroDesignerObject obj_1, SenroDesignerObject obj_2)
     {
         List<AssociationDescription> ret_assocs = new ArrayList<AssociationDescription>();
-        for(AssociationDescription assoc_desc : allDesc) {
+        for(AssociationDescription assoc_desc : allDesc.values()) {
             boolean accept_one = false;
             boolean accept_two = false;
             Set<BindingDescription> bindings = assoc_desc.getBindings();
@@ -129,12 +111,17 @@ public final class AssociationDescription
         return ret_assocs;
     }
 
-    public static Set<AssociationDescription> getAll()
+    public static Map<String, AssociationDescription> getAll()
     {
         return allDesc;
     }
 
-    public static Class<? extends SenroDesignerObject> getSidClass(ComponentAssociation cmp_assoc)
+    public static AssociationDescription getAssociationDescription(String assoc_name)
+    {
+        return allDesc.get(assoc_name);
+    }
+
+    private static Class<? extends SenroDesignerObject> getSidClass(ComponentAssociation cmp_assoc)
     {
         switch(cmp_assoc) {
             case BUTTON:
@@ -154,6 +141,9 @@ public final class AssociationDescription
             case LABEL:
                 return SenroLabel.class;
             case TABLE:
+                return TableComponent.class;
+            case TABLECOLUMN:
+                return TableComponent.SenroTableColumn.class;
             case LIST:
                 return SenroList.class;
             case SWITCHCOMPONENT:
@@ -173,6 +163,10 @@ public final class AssociationDescription
                 return TreeNode.class;
             case DISPLAYGROUP:
                 return DisplayGroupDescription.class;
+            case EDITINGCONTEXT:
+                return EditingContextDescription.class;
+            case ASSOC:
+                return AssociationInstance.class;
             case TABPAGE:
             case ICON_BUTTON:
             case GRID:
@@ -185,6 +179,10 @@ public final class AssociationDescription
                 // not implemented
             default:
                 logger.error("No object specified for '" + cmp_assoc + "'.");
+            case GRIDALLOCATOR:
+                break;
+            case SENRO_CONTEXT:
+                break;
         }
         return null;
     }

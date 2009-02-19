@@ -16,7 +16,7 @@ import com.jeta.swingbuilder.gui.editor.FormEditor;
 import com.jeta.forms.gui.form.FormComponent;
 import org.apache.log4j.Logger;
 
-public class AssociationManager
+public class AssociationManager implements AssociationCreator
 {
     private static Logger logger = Logger.getLogger(AssociationManager.class);
 
@@ -44,7 +44,13 @@ public class AssociationManager
         populateAssocObjects();
         if(assocObjects.size() == 0) {
             sourceObject = null;
-//            return;
+        }
+    }
+
+    public void createAssociation(Object o)
+    {
+        if(o instanceof SenroDesignerObject) {
+            startAssociationMode((SenroDesignerObject)o);
         }
     }
 
@@ -65,7 +71,12 @@ public class AssociationManager
             logger.warn("Cannot found any association description.");
             return;
         }
-        AssociationDescription assoc_d = AssociationChooser.chooseAssociationDescription(descriptions);
+        AssociationDescription assoc_d = null;
+        if(descriptions.size() == 1) {
+            assoc_d = descriptions.get(0);
+        } else {
+            assoc_d = AssociationChooser.chooseAssociationDescription(descriptions);
+        }
         if(assoc_d == null) {
             return;
         }

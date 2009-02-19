@@ -1,7 +1,6 @@
 package ro.siveco.senro.designer.components.editors;
 
 import com.jeta.swingbuilder.gui.properties.JETAPropertyEditor;
-import com.jeta.forms.store.properties.TransformOptionsProperty;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -9,7 +8,6 @@ import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class TemplatePropertyEditor extends JETAPropertyEditor
 {
@@ -48,9 +46,6 @@ public class TemplatePropertyEditor extends JETAPropertyEditor
         return templatesCombo.getSelectedItem();
     }
 
-    /**
-     *
-     */
     public void setValue(Object value)
     {
         super.setValue(value);

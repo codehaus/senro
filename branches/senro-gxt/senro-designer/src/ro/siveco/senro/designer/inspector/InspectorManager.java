@@ -8,13 +8,14 @@ import javax.swing.*;
 import java.util.Hashtable;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.HashMap;
 import java.awt.*;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
 public class InspectorManager
 {
-    protected static Hashtable<Class, ArrayList<Inspector>> inspectors = new Hashtable<Class, ArrayList<Inspector>>();
+    protected static Map<Class, ArrayList<Inspector>> inspectors = new HashMap<Class, ArrayList<Inspector>>();
     public static InspectorMessagePanel messagePanel = new InspectorMessagePanel();
     public static final Dimension INSPECTOR_PANEL_PREF_DIM = new Dimension(200, 100);
 
@@ -88,6 +89,7 @@ public class InspectorManager
         if(sel_inspector == null) {
             sel_inspector = object_inspectors.get(0);
         }
+        inspectorsChoice.setSelectedItem(sel_inspector.getTitle());
         sel_inspector.setObject(selectedObj);
         sel_inspector.updateUI();
         updateInspectorPanel(sel_inspector.getPanel());

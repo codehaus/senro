@@ -12,6 +12,10 @@ public interface ComponentXmlNames
     public static final String GRID_ELEMENT = "Grid";
     public static final String POPUP_ELEMENT = "Popup";
     public static final String LIST_ELEMENT = "List";
+    public static final String TABLE_ELEMENT = "Table";
+    public static final String TABLE_COLUMN_ELEMENT = "TableColumn";
+    public static final String SENRO_CONTEXT_ELEMENT = "SenroContext";
+    public static final String CONTEXT_ELEMENT_ELEMENT = "ContextElement";
 
     public static final String COLUMNS_ELEMENT = "Columns";
     public static final String ROWS_ELEMENT = "Rows";
@@ -41,12 +45,18 @@ public interface ComponentXmlNames
 
     public static final String NAME_ATTRIBUTE = "name";
     public static final String VALUE_ATTRIBUTE = "value";
+    public static final String KEY_ATTRIBUTE = "key";
     public static final String TEMPLATE_FILE_ATTRIBUTE = "file";
     public static final String ID_ATTRIBUTE = "id";
     public static final String TYPE_ATTRIBUTE = "type";
     public static final String DEFAULT_VALUE_ATTRIBUTE = "defaultValue";
     public static final String LIST_ATTRIBUTE = "list";
     public static final String ENTITY_ATTRIBUTE = "entity";
+    public static final String FETCH_SPEC_ATTRIBUTE = "fetchSpec";
+    public static final String EDITING_CONTEXT_ATTRIBUTE = "editingContext";
+    public static final String MASTER_ATTRIBUTE = "master";
+    public static final String COLUMN_LIST_ATTRIBUTE = "columnList";
+    public static final String COLUMN_EXPRESSION_ATTRIBUTE = "expression";
     public static final String COLUMNS_ATTRIBUTE = "columns";
     public static final String HALIGN_ATTRIBUTE = "halign";
     public static final String VALIGN_ATTRIBUTE = "valign";
@@ -55,7 +65,6 @@ public interface ComponentXmlNames
 
     public static final String PROPERTY_ATTRIBUTE = "property";
     public static final String CREATE_LABEL_ATTRIBUTE = "createLabel";
-
 
     public static final String ITERATOR_ELEMENT = "Iterator";
     public static final String CONDITIONAL_ELEMENT = "Conditional";

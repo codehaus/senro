@@ -32,7 +32,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import javax.swing.Icon;
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 
 import com.jeta.forms.logger.FormsLogger;
@@ -47,6 +47,7 @@ import com.jeta.swingbuilder.gui.commands.CommandUtils;
 import com.jeta.swingbuilder.gui.editor.FormEditor;
 import com.jeta.swingbuilder.gui.properties.editors.UnknownEditor;
 import ro.siveco.senro.designer.components.editors.*;
+import org.apache.log4j.Logger;
 
 /**
  * TableModel for managing properties for a given bean.
@@ -55,6 +56,8 @@ import ro.siveco.senro.designer.components.editors.*;
  */
 public class PropertyTableModel extends AbstractTableModel
 {
+    private static Logger logger = Logger.getLogger(PropertyTableModel.class);
+
     private JETAPropertyDescriptor[] m_descriptors;
 
     private BeanDescriptor m_beandescriptor;
@@ -261,6 +264,8 @@ public class PropertyTableModel extends AbstractTableModel
 
     /**
      * Returns the Java type info for the property at the given row.
+     * @param row the specified row
+     * @return the Java type info for the property at the given row
      */
     public Class getPropertyType(int row)
     {
@@ -269,10 +274,12 @@ public class PropertyTableModel extends AbstractTableModel
 
     /**
      * Returns the PropertyDescriptor for the row.
+     * @param row the specified row
+     * @return the PropertyDescriptor for the row
      */
     public JETAPropertyDescriptor getPropertyDescriptor(int row)
     {
-        return (JETAPropertyDescriptor) m_descriptors[row];
+        return m_descriptors[row];
     }
 
     /**
@@ -510,7 +517,9 @@ public class PropertyTableModel extends AbstractTableModel
             JETAPropertyDescriptor dpd = getPropertyDescriptor(row);
             SetPropertyCommand cmd = new SetPropertyCommand(dpd, m_bean, value, old_value, FormComponent
                     .getParentForm(m_bean));
+//            printTableInfo();
             CommandUtils.invoke(cmd, FormEditor.getEditor(m_bean));
+//            printTableInfo();
             fireTableRowsUpdated(row, row);
             firePropertyEditorEvent(new PropertyEditorEvent(PropertyEditorEvent.BEAN_PROPERTY_CHANGED, m_bean));
         } catch (Exception e) {
@@ -518,4 +527,28 @@ public class PropertyTableModel extends AbstractTableModel
         }
     }
 
+    private void printTableInfo()
+    {
+        JTable table = getTable();
+        if(table == null) {
+            logger.info("Null table");
+            return;
+        }
+        logger.debug("Editing row: " + table.getEditingRow() + " col: " + table.getEditingColumn());
+    }
+
+    public JTable getTable()
+    {
+        Object[] ls = listenerList.getListenerList();
+        JTable table = null;
+        for (Object l : ls) {
+            if(l instanceof  JTable) {
+                if(table != null) {
+                    logger.error("More than one table.");
+                }
+                table = (JTable) l;
+            }
+        }
+        return table;
+    }
 }

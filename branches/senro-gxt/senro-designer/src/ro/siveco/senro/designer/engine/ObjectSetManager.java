@@ -4,7 +4,7 @@ import ro.siveco.senro.designer.ui.MatrixModel;
 import ro.siveco.senro.designer.ui.MatrixSelectionListener;
 import ro.siveco.senro.designer.ui.MatrixView;
 import ro.siveco.senro.designer.ui.CellCoordinates;
-import ro.siveco.senro.designer.objects.ObjectDescription;
+import ro.siveco.senro.designer.objects.*;
 import ro.siveco.senro.designer.inspector.InspectorManager;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.DesignerObjectListener;
@@ -26,6 +26,9 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.builder.PanelBuilder;
 import org.apache.log4j.Logger;
 import org.apache.commons.io.IOUtils;
+import org.senro.gwt.model.ui.SenroComponent;
+import org.senro.gwt.model.ui.ComponentAssociation;
+import org.senro.gwt.client.model.ui.binding.DisplayGroupModelObject;
 
 public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, DesignerObjectListener
 {
@@ -440,6 +443,63 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
             }
         }
         matrixView.refreshCellStructure();
+    }
+
+    public void loadData(List<ObjectDescription> data_objs)
+    {
+        clear();
+        for (int i = 0; i < data_objs.size(); i++) {
+            ObjectDescription obj_desc = data_objs.get(i);
+            dataObjects.set(i, obj_desc);
+            if (obj_desc != null) {
+                obj_desc.addListener(this);
+            }
+        }
+        matrixView.refreshCellStructure();
+    }
+
+    @SuppressWarnings({"EnumSwitchStatementWhichMissesCases"})
+    public static ObjectDescription getObjectDescription(SenroComponent comp)
+    {
+        ComponentAssociation cmp_assoc = comp.getRenderComponent();
+        String comp_id = DesignerManager.getSharedDesignerManager().getSenroComponenIdFromParser(comp);
+        switch (cmp_assoc) {
+            case DISPLAYGROUP:
+                DisplayGroupDescription dg_d = new DisplayGroupDescription();
+                DisplayGroupModelObject model = (DisplayGroupModelObject) comp.getModel().getDataObject();
+                dg_d.setName(comp.getName());
+                dg_d.setId(comp_id);
+                dg_d.setEntityName(model.getEntity());
+                dg_d.setFetchSpecification(model.getFetchSpec());
+                dg_d.setEditingContext(model.getEditingContext());
+                dg_d.setMaster(model.isMaster());
+                return dg_d;
+            case EDITINGCONTEXT:
+                EditingContextDescription ec_d = new EditingContextDescription();
+                ec_d.setName(comp.getName());
+                ec_d.setId(comp_id);
+                return ec_d;
+            case GRIDALLOCATOR:
+                GridAllocatorDescription ga_d = new GridAllocatorDescription();
+                ga_d.setName(comp.getName());
+                ga_d.setId(comp_id);
+//                ga_d.setColumnsCount();
+//                ga_d.setEntityName();
+                return ga_d;
+            case SENRO_CONTEXT:
+                SenroContextDescription sc_d;
+                if (comp.getName().equals(DesignerManager.SENRO_CONTEXT_DEFAULT_NAME)) {
+                    sc_d = new ServerSenroContextDescription();
+                } else {
+                    sc_d = new ClientSenroContextDescription();
+                }
+                sc_d.setName(comp.getName());
+                sc_d.setId(comp_id);
+                // TODO add contextParameters
+                return sc_d;
+            default:
+                return null;
+        }
     }
 
     public List<ObjectDescription> getData()

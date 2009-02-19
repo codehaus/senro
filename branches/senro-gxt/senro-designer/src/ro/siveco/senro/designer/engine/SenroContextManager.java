@@ -13,19 +13,20 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-import org.senro.gwt.client.model.ui.context.SenroContext;
+import org.senro.gwt.model.SenroContext;
 
 public class SenroContextManager extends AbstractTableModel implements ActionListener
 {
     public static final String ADD_ACTION = "Add";
     public static final String DELETE_ACTION = "Delete";
+    public static final String RENDER_ACTION = "Render";
     public final static int NAME_IDX = 0;
     public final static int VALUE_IDX = 1;
 
     private List<SenroContextData> dataList = new ArrayList<SenroContextData>();
     protected String[] columnNames = new String[]{"Name", "Value"};
     protected JTable dataTable;
-    protected JButton addButton, deleteButton, applyButton, revertButton;
+    protected JButton addButton, deleteButton, renderButton;
     protected JPanel dataPanel;
 
     public SenroContextManager()
@@ -52,13 +53,16 @@ public class SenroContextManager extends AbstractTableModel implements ActionLis
         builder.add(param_scrollpane, cc.xy(1, 2));
 
         JPanel buttons_panel = new JPanel();
-        buttons_panel.setLayout(new GridLayout(1, 4));
+        buttons_panel.setLayout(new GridLayout(1, 3));
         buttons_panel.add(addButton = new JButton(ADD_ACTION));
         addButton.setActionCommand(ADD_ACTION);
         addButton.addActionListener(this);
         buttons_panel.add(deleteButton = new JButton(DELETE_ACTION));
         deleteButton.setActionCommand(DELETE_ACTION);
         deleteButton.addActionListener(this);
+        buttons_panel.add(renderButton = new JButton(RENDER_ACTION));
+        renderButton.setActionCommand(RENDER_ACTION);
+        renderButton.addActionListener(this);
 
         builder.add(buttons_panel, cc.xy(1, 4));
 
@@ -134,7 +138,13 @@ public class SenroContextManager extends AbstractTableModel implements ActionLis
             addSenroContextData();
         } else if (act_cmd.equals(DELETE_ACTION)) {
             deleteSenroContextData();
+        } else if (act_cmd.equals(RENDER_ACTION)) {
+            renderWithContext();
         }
+    }
+
+    private void renderWithContext()
+    {
     }
 
     public SenroContext getSenroContext()

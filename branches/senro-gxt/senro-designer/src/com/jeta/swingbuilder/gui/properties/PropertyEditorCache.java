@@ -28,72 +28,64 @@ import com.jeta.forms.gui.common.FormUtils;
 
 public class PropertyEditorCache
 {
-   /**
-    * @directed 
-    */
-   private PropertyTableModel      m_model;
+    /**
+     * @directed
+     */
+    private PropertyTableModel m_model;
 
-   /**
-    * The bean we are currently rendering properties for
-    */
-   private Object             m_bean;
+    /**
+     * The bean we are currently rendering properties for
+     */
+    private Object m_bean;
 
-   /**
-    * The property editors for each row in the table
-    */
-   private PropertyEditor[]   m_editors;
+    /**
+     * The property editors for each row in the table
+     */
+    private PropertyEditor[] m_editors;
 
 
-   /**
-    *ctor
-    */
-   public PropertyEditorCache( PropertyTableModel model )
-   {
-      m_model = model;
-   }
+    /**
+     * ctor
+     */
+    public PropertyEditorCache(PropertyTableModel model)
+    {
+        m_model = model;
+    }
 
-   public PropertyEditor getPropertyEditor( int row )
-   {
-      if ( m_bean != m_model.getBean() || m_editors == null || m_editors.length != m_model.getRowCount() )
-      {
-	 m_bean = m_model.getBean();
-	 m_editors = new PropertyEditor[m_model.getRowCount()];
-      }
-      
-      PropertyEditor editor = m_editors[row];
-      if ( editor == null )
-      {
-	 editor = m_model.getPropertyEditor( row );
-	 if ( editor != null )
-	 {
-	    try
-	    {
-	       m_editors[row] = (PropertyEditor)editor.getClass().newInstance(); // we need to create a copy here
-	       editor = m_editors[row];
-	    }
-	    catch( Exception e )
-	    {
-	       e.printStackTrace();
-	    }
-	 }
-      }
-      return editor;
-   }
+    public PropertyEditor getPropertyEditor(int row)
+    {
+        if (m_bean != m_model.getBean() || m_editors == null || m_editors.length != m_model.getRowCount()) {
+            m_bean = m_model.getBean();
+            m_editors = new PropertyEditor[m_model.getRowCount()];
+        }
 
-   public void updateUI()
-   {
-      if (  m_editors != null )
-      {
-	 for( int index=0; index < m_editors.length; index++ )
-	 {
-	    PropertyEditor editor = m_editors[index];
-	    if ( editor != null )
-	    {
-	       Component comp = editor.getCustomEditor();
-	       FormUtils.updateLookAndFeel( comp );
-	    }
-	 }
-      }
+        PropertyEditor editor = m_editors[row];
+        if (editor == null) {
+            editor = m_model.getPropertyEditor(row);
+            if (editor != null) {
+                try {
+                    m_editors[row] = (PropertyEditor) editor.getClass().newInstance(); // we need to create a copy here
+                    editor = m_editors[row];
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return editor;
+    }
 
-   }
+    public void updateUI()
+    {
+        if (m_editors != null) {
+            for (int index = 0; index < m_editors.length; index++) {
+                PropertyEditor editor = m_editors[index];
+                if (editor != null) {
+                    Component comp = editor.getCustomEditor();
+                    FormUtils.updateLookAndFeel(comp);
+                }
+            }
+        }
+
+    }
 }

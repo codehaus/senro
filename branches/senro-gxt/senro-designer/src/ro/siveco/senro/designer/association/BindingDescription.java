@@ -7,18 +7,24 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Collections;
 
+import org.apache.log4j.Logger;
+
 public class BindingDescription
 {
+    private static Logger logger = Logger.getLogger(AssociationDescription.class);
+
     private final String name;
     private final Class<? extends SenroDesignerObject> bindingClass;
     private final Set<String> aspects;
 
     public BindingDescription(String b_name, Class<? extends SenroDesignerObject> binding_class,
-                              Collection<String> aspects)
+                              Collection<String> binding_aspects)
     {
-        this.bindingClass = binding_class;
-        this.name = b_name;
-        this.aspects = Collections.unmodifiableSet(new HashSet<String>(aspects));
+        bindingClass = binding_class;
+        name = b_name;
+        logger.info("Create binding description with name: " + name + " and binding class: " + bindingClass.getName());
+        aspects = Collections.unmodifiableSet(new HashSet<String>(binding_aspects));
+        logger.info("Aspects: " + aspects);
     }
 
     public String getName()
