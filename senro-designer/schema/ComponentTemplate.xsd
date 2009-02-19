@@ -183,7 +183,7 @@
             <xs:sequence>
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
                     <xs:element name="GridAllocator" type="GridAllocatorType" maxOccurs="1"/>
-                    <xs:element name="SenroContext" type="SenroContextType" maxOccurs="1"/>
+                    <xs:element name="ContextFragment" type="ContextFragmentType" maxOccurs="1"/>
                 </xs:choice>
             </xs:sequence>
         </xs:complexType>
@@ -705,6 +705,16 @@
         <xs:attribute name="stack" type="xs:string" use="required"/>
 
         <xs:attribute name="editingContext" type="xs:string" use="optional"/>
+
+    </xs:complexType>
+
+    <xs:complexType name="ContextFragmentType">
+
+    	<xs:complexContent>
+
+    		<xs:extension base="SenroContextType"/>
+
+    	</xs:complexContent>
 
     </xs:complexType>
 </xs:schema>
