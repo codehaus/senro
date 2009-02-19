@@ -5,7 +5,6 @@ import com.jgoodies.forms.layout.CellConstraints;
 import com.jeta.forms.gui.form.GridViewListener;
 import com.jeta.forms.gui.form.GridViewEvent;
 import com.jeta.forms.gui.form.GridComponent;
-import com.jeta.forms.gui.beans.JETABean;
 import com.jeta.open.gui.framework.JETAPanel;
 
 import javax.swing.*;
@@ -20,19 +19,28 @@ import java.util.*;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.ClassUtils;
 import ro.siveco.senro.designer.inspectors.SenroUiInspector;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.DesignerObjectListener;
+import ro.siveco.senro.designer.basic.SenroDesignerObjectContainer;
 import ro.siveco.senro.designer.engine.DesignerManager;
+import ro.siveco.senro.designer.engine.AssociationCreator;
+import ro.siveco.senro.designer.engine.TableColumnAssociationCreator;
 import ro.siveco.senro.designer.association.AssociationInstance;
 import ro.siveco.senro.designer.association.AssociationDescription;
+import ro.siveco.senro.designer.util.MapUtil;
+import ro.siveco.senro.designer.components.TableComponent;
 
 public class AssociationInspectorPanel extends JETAPanel implements GridViewListener, SenroUiInspector, DesignerObjectListener
 {
     private static Logger logger = Logger.getLogger(AssociationInspectorPanel.class);
     private Map<AssociationDescription, List<BindingInspector>> bindingInspectors = new HashMap<AssociationDescription, List<BindingInspector>>();
+    private Map<Class, AssociationCreator> assocCreators = new HashMap<Class, AssociationCreator>();
+
 
     private JLabel nameLabel;
+    private JLabel classLabel;
     private JTable assocTable;
     private JButton addButton;
     private JButton removeButton;
@@ -43,6 +51,7 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
 
     public AssociationInspectorPanel()
     {
+        assocCreators.put(TableComponent.SenroTableColumn.class, new TableColumnAssociationCreator());
         // make a new Map to register for each AssociationDescription its corresponding BindingInspectors
         bindingInspectors = new HashMap<AssociationDescription, List<BindingInspector>>();
         String col_spec = "fill:12px, fill:pref:grow, fill:12px";
@@ -58,7 +67,6 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
         add(createBindingsPanel(), cc.xy(2, 6));
         // add button panel
         add(createButtonPanel(), cc.xy(2, 8));
-//        setBackground(Color.BLUE);
     }
 
     private JScrollPane createBindingsPanel()
@@ -75,12 +83,17 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
     private JPanel createNamePanel()
     {
         JPanel name_panel = new JPanel();
-        FormLayout f = new FormLayout("fill:pref, fill:8px, fill:pref:grow", "fill:pref");
+        FormLayout f = new FormLayout("fill:pref, fill:2px, fill:pref, fill:12px, fill:pref, fill:2px, fill:pref", "fill:pref");
         name_panel.setLayout(f);
         CellConstraints cc = new CellConstraints();
         name_panel.add(new JLabel("Name:"), cc.xy(1, 1));
         nameLabel = new JLabel("");
         name_panel.add(nameLabel, cc.xy(3, 1));
+
+        name_panel.add(new JLabel("Component:"), cc.xy(5, 1));
+        classLabel = new JLabel("");
+        name_panel.add(classLabel, cc.xy(7, 1));
+
         return name_panel;
     }
 
@@ -167,7 +180,13 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
                 if (selectedObject == null) {
                     return;
                 }
-                DesignerManager.getSharedDesignerManager().getAssociationManager().startAssociationMode(selectedObject);
+                AssociationCreator assoc_creator = assocCreators.get(selectedObject.getClass());
+                if(assoc_creator == null) {
+                    DesignerManager.getSharedDesignerManager().getAssociationManager().startAssociationMode(selectedObject);
+                } else {
+                    assoc_creator.createAssociation(selectedObject);
+                    updateInspectorUI();
+                }
             }
         });
         removeButton.addActionListener(new ActionListener()
@@ -198,12 +217,26 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
     void updateInspectorUI()
     {
         nameLabel.setText(selectedObject == null ? "" : selectedObject.getName());
+        classLabel.setText(getComponentClassName(selectedObject));
         addButton.setEnabled(selectedObject != null);
         if (selectedObject != null) {
             assocTable.tableChanged(new TableModelEvent(assocTableModel));
         }
         bindingsPanel.removeAll();
         revalidate();
+    }
+
+    private static Map<Class, String> componentClassNames = MapUtil.createMap(Class.class, String.class,
+            TableComponent.SenroTableColumn.class, "TableColumn");
+
+    private String getComponentClassName(Object o)
+    {
+        if(o == null) {
+            return "";
+        }
+        Class comp_class = o.getClass();
+        String cc_name = componentClassNames.get(comp_class);
+        return cc_name == null ? ClassUtils.getShortClassName(selectedObject.getClass()) : cc_name;
     }
 
     @Override
@@ -214,25 +247,20 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
             logger.debug("Null grid component.");
             selected_object = null;
         } else {
-            JETABean jb = gc.getBean();
-            if (jb == null) {
-                logger.debug("Null jeta bean.");
-                selected_object = null;
-            } else {
-                Component c = jb.getDelegate();
-                if (c instanceof SenroDesignerObject) {
-                    selected_object = (SenroDesignerObject) c;
-                } else {
-                    selected_object = null;
-                }
-            }
-
+            selected_object = gc.getEmbeddedSDO();
         }
         setSelectedObject(selected_object);
     }
 
     public void setSelectedObject(SenroDesignerObject object)
     {
+        while(object instanceof SenroDesignerObjectContainer) {
+            SenroDesignerObject sel_obj = ((SenroDesignerObjectContainer)object).getSelectedObject();
+            if(sel_obj == null) {
+                break;
+            }
+            object = sel_obj;
+        }
         if (selectedObject != null) {
             if (selectedObject.equals(object)) {
                 return;

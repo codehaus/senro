@@ -2,22 +2,24 @@ package ro.siveco.senro.designer.association;
 
 import ro.siveco.senro.designer.DesignerRuntimeException;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
+import ro.siveco.senro.designer.basic.SenroDesignerObjectDelegate;
+import ro.siveco.senro.designer.basic.DesignerObjectListener;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
-public class AssociationInstance
+public class AssociationInstance implements SenroDesignerObject
 {
     private final AssociationDescription description;
     private final List<BindingInstance> bindings;
+    private final SenroDesignerObjectDelegate sdoDelegate;
 
     public AssociationInstance(AssociationDescription description)
     {
         if(description == null) {
             throw new DesignerRuntimeException("Description cannot be null.");
         }
+        sdoDelegate = new SenroDesignerObjectDelegate(this);
+        sdoDelegate.setName(description.getName());
         this.description = description;
         List<BindingInstance> assoc_bindings = new ArrayList<BindingInstance>();
         Set<BindingDescription> b_descs = description.getBindings();
@@ -27,10 +29,6 @@ public class AssociationInstance
         bindings = Collections.unmodifiableList(assoc_bindings);
     }
 
-    public String getName()
-    {
-        return description.getName();
-    }
 
     public List<BindingInstance> getBindings()
     {
@@ -40,6 +38,66 @@ public class AssociationInstance
     public AssociationDescription getDescription()
     {
         return description;
+    }
+
+    @Override
+    public String getName()
+    {
+        return sdoDelegate.getName();
+    }
+
+    @Override
+    public void setName(String obj_name)
+    {
+        sdoDelegate.setName(obj_name);
+    }
+
+    @Override
+    public String getId()
+    {
+        return sdoDelegate.getId();
+    }
+
+    @Override
+    public void setId(String obj_id)
+    {
+        sdoDelegate.setId(obj_id);
+    }
+
+    @Override
+    public void addListener(DesignerObjectListener listener)
+    {
+        sdoDelegate.addListener(listener);
+    }
+
+    @Override
+    public void removeListener(DesignerObjectListener listener)
+    {
+        sdoDelegate.removeListener(listener);
+    }
+
+    @Override
+    public void updateLinks(Map<String, SenroDesignerObject> obj_map)
+    {
+        sdoDelegate.updateLinks(obj_map);
+    }
+
+    @Override
+    public void addAssociation(AssociationInstance assoc)
+    {
+        sdoDelegate.addAssociation(assoc);
+    }
+
+    @Override
+    public void removeAssociation(AssociationInstance assoc)
+    {
+        sdoDelegate.removeAssociation(assoc);
+    }
+
+    @Override
+    public List<AssociationInstance> getAssociations()
+    {
+        return sdoDelegate.getAssociations();
     }
 
     public class BindingInstance

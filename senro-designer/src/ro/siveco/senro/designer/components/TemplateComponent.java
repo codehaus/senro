@@ -37,9 +37,10 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
         udoDelegate = new UIDesignerObjectDelegate(this);
     }
 
-    public void setTemplateName(String templateName)
+    public void setTemplateName(String template_name)
     {
-        this.templateName = templateName;
+        templateName = template_name;
+        panelText.setText("T:" + templateName);
     }
 
     public String getTemplateName()
@@ -53,7 +54,7 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
             return;
         }
         this.template = template;
-        templateName = this.template == null ? null : this.template.getName();
+        setTemplateName(this.template == null ? null : this.template.getName());
         refreshParameters();
     }
 

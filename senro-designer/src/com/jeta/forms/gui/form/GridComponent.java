@@ -49,6 +49,7 @@ import com.jeta.forms.gui.handler.CellKeyboardHandler;
 
 import com.jeta.forms.store.memento.ComponentMemento;
 import com.jeta.forms.store.memento.StateRequest;
+import ro.siveco.senro.designer.basic.SenroDesignerObject;
 
 /**
  * This class is used to contain a JETABean in a cell on a form.  It
@@ -166,7 +167,7 @@ abstract public class GridComponent extends JPanel
      */
     public void addListener(GridCellListener listener)
     {
-        if(!m_listeners.contains(listener)) {
+        if (!m_listeners.contains(listener)) {
             m_listeners.add(listener);
         }
     }
@@ -180,8 +181,8 @@ abstract public class GridComponent extends JPanel
     public void fireGridCellEvent(GridCellEvent evt)
     {
         Iterator iter = m_listeners.iterator();
-        while(iter.hasNext()) {
-            GridCellListener listener = (GridCellListener)iter.next();
+        while (iter.hasNext()) {
+            GridCellListener listener = (GridCellListener) iter.next();
             listener.cellChanged(evt);
         }
     }
@@ -206,7 +207,7 @@ abstract public class GridComponent extends JPanel
      */
     public Component getBeanChildComponent()
     {
-        if(m_jetabean != null) {
+        if (m_jetabean != null) {
             return m_jetabean.getBeanChildComponent();
         } else {
             return null;
@@ -220,7 +221,7 @@ abstract public class GridComponent extends JPanel
      */
     public Component getBeanDelegate()
     {
-        if(m_jetabean != null) {
+        if (m_jetabean != null) {
             return m_jetabean.getDelegate();
         } else {
             return null;
@@ -237,8 +238,9 @@ abstract public class GridComponent extends JPanel
      */
     public ComponentConstraints getConstraints()
     {
-        if(m_cc == null)
+        if (m_cc == null) {
             m_cc = new GridComponentConstraints(this);
+        }
 
         return m_cc;
     }
@@ -249,7 +251,7 @@ abstract public class GridComponent extends JPanel
      */
     public Dimension getMinimumSize()
     {
-        if(m_design_mode) {
+        if (m_design_mode) {
             return m_min_size;
         } else {
             return super.getMinimumSize();
@@ -264,17 +266,19 @@ abstract public class GridComponent extends JPanel
      */
     public Dimension getPreferredSize()
     {
-        if(m_design_mode) {
+        if (m_design_mode) {
             Dimension d = super.getPreferredSize();
-            if(d == null || d.width < MIN_WIDTH || d.height < MIN_HEIGHT) {
-                if(d == null)
+            if (d == null || d.width < MIN_WIDTH || d.height < MIN_HEIGHT) {
+                if (d == null) {
                     d = m_min_size;
+                }
 
                 m_min_size.width = Math.max(d.width, MIN_WIDTH);
                 m_min_size.height = Math.max(d.height, MIN_HEIGHT);
                 return m_min_size;
-            } else
+            } else {
                 return d;
+            }
         } else {
             Dimension d = super.getPreferredSize();
             return d;
@@ -288,10 +292,11 @@ abstract public class GridComponent extends JPanel
      */
     public String getBeanName()
     {
-        if(m_jetabean == null)
+        if (m_jetabean == null) {
             return null;
-        else
+        } else {
             return m_jetabean.getName();
+        }
     }
 
 
@@ -304,18 +309,21 @@ abstract public class GridComponent extends JPanel
     public GridView getParentView()
     {
         java.awt.Component parent = getParent();
-        if(parent instanceof GridView)
-            return (GridView)parent;
+        if (parent instanceof GridView) {
+            return (GridView) parent;
+        }
 
-        if(parent != null) {
+        if (parent != null) {
             parent = parent.getParent();
-            if(parent instanceof GridView)
-                return (GridView)parent;
+            if (parent instanceof GridView) {
+                return (GridView) parent;
+            }
 
-            if(parent != null) {
+            if (parent != null) {
                 parent = parent.getParent();
-                if(parent instanceof GridView)
-                    return (GridView)parent;
+                if (parent instanceof GridView) {
+                    return (GridView) parent;
+                }
             }
         }
         return null;
@@ -326,10 +334,11 @@ abstract public class GridComponent extends JPanel
      */
     public int getRow()
     {
-        if(getParentView() == null)
+        if (getParentView() == null) {
             return 1;
-        else
+        } else {
             return getConstraints().getRow();
+        }
     }
 
     /**
@@ -338,10 +347,11 @@ abstract public class GridComponent extends JPanel
      */
     public int getRowSpan()
     {
-        if(getParentView() == null)
+        if (getParentView() == null) {
             return 1;
-        else
+        } else {
             return getConstraints().getRowSpan();
+        }
     }
 
     /**
@@ -350,10 +360,11 @@ abstract public class GridComponent extends JPanel
      */
     public int getColumnSpan()
     {
-        if(getParentView() == null)
+        if (getParentView() == null) {
             return 1;
-        else
+        } else {
             return getConstraints().getColumnSpan();
+        }
     }
 
     /**
@@ -363,10 +374,11 @@ abstract public class GridComponent extends JPanel
      */
     public int getColumn()
     {
-        if(getParentView() == null)
+        if (getParentView() == null) {
             return 1;
-        else
+        } else {
             return getConstraints().getColumn();
+        }
     }
 
     /**
@@ -391,8 +403,9 @@ abstract public class GridComponent extends JPanel
         int col = getColumn();
 
         int width = getParentView().getColumnWidth(col);
-        for(int index = 1; index < colspan; index++)
+        for (int index = 1; index < colspan; index++) {
             width += getParentView().getColumnWidth(col + index);
+        }
         return width;
     }
 
@@ -407,8 +420,9 @@ abstract public class GridComponent extends JPanel
         int row = getRow();
 
         int height = getParentView().getRowHeight(row);
-        for(int index = 1; index < rowspan; index++)
+        for (int index = 1; index < rowspan; index++) {
             height += getParentView().getRowHeight(row + index);
+        }
         return height;
     }
 
@@ -496,14 +510,14 @@ abstract public class GridComponent extends JPanel
     {
         boolean old_sel = m_selected;
         m_selected = sel;
-        if(sel != old_sel) {
-            if(getParentView() == null) {
+        if (sel != old_sel) {
+            if (getParentView() == null) {
 
             } else {
                 getParentView().getOverlay().repaint(this);
             }
         }
-        if(sel) {
+        if (sel) {
             fireGridCellEvent(new GridCellEvent(GridCellEvent.CELL_SELECTED, this));
         }
     }
@@ -574,7 +588,7 @@ abstract public class GridComponent extends JPanel
      */
     public boolean hasBean()
     {
-        if(m_jetabean != null) {
+        if (m_jetabean != null) {
             return (m_jetabean.getDelegate() != null);
         } else {
             return false;
@@ -590,15 +604,15 @@ abstract public class GridComponent extends JPanel
      */
     public boolean isShowing()
     {
-        if(m_jetabean == null) {
+        if (m_jetabean == null) {
             return true;
         } else {
             Component delegate = m_jetabean.getDelegate();
-            if(delegate == null) {
+            if (delegate == null) {
                 return true;
             } else {
                 Dimension d = delegate.getSize();
-                if(d == null || d.width == 0 || d.height == 0) {
+                if (d == null || d.width == 0 || d.height == 0) {
                     return false;
                 } else {
                     return true;
@@ -607,6 +621,28 @@ abstract public class GridComponent extends JPanel
         }
     }
 
+    public SenroDesignerObject getEmbeddedSDO()
+    {
+        SenroDesignerObject sdo;
+        JETABean jb = getBean();
+        if (jb == null) {
+            sdo = null;
+        } else {
+            Component c = jb.getDelegate();
+            if (c instanceof SenroDesignerObject) {
+                sdo = (SenroDesignerObject) c;
+                if (c instanceof GridView) {
+                    GridComponent gc = ((GridView) c).getSelectedComponent();
+                    if (gc != null) {
+                        sdo = gc.getEmbeddedSDO();
+                    }
+                }
+            } else {
+                sdo = null;
+            }
+        }
+        return sdo;
+    }
 
     /**
      * Print for debugging

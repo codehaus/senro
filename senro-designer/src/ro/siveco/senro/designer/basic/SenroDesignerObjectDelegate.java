@@ -71,11 +71,17 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     @Override
     public void removeListener(DesignerObjectListener listener)
     {
+        if (listeners == null) {
+            return;
+        }
         listeners.remove(listener);
     }
 
     public void notifyListeners(DesignerObjectEvent e)
     {
+        if (listeners == null) {
+            return;
+        }
         for (DesignerObjectListener listener : listeners) {
             switch (e) {
                 case OBJECT_WILL_BE_DELETED:
@@ -116,6 +122,9 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     @Override
     public List<AssociationInstance> getAssociations()
     {
+        if(associations == null) {
+            associations = new HashSet<AssociationInstance>();
+        }
         List<AssociationInstance> assocs = new ArrayList<AssociationInstance>(associations);
         Collections.sort(assocs, new Comparator<AssociationInstance>()
         {

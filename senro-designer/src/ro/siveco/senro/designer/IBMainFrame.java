@@ -44,9 +44,12 @@ import java.util.ArrayList;
 
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.components.TopGridView;
+import ro.siveco.senro.designer.components.TableComponent;
 import ro.siveco.senro.designer.util.ComponentStructureInfo;
 import ro.siveco.senro.designer.inspectors.association.AssociationInspectorPanel;
 import ro.siveco.senro.designer.inspectors.SenroUiInspector;
+import ro.siveco.senro.designer.inspectors.TableComponentInspector;
+import ro.siveco.senro.designer.inspector.UIInspectorManager;
 
 /**
  * The main frame window for the application
@@ -66,10 +69,14 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
      */
     private TSButtonBar m_buttonbar;
 
-    /**
-     * Frame window that displays the properties for a selected Java Bean
-     */
-    private PropertyPaneContainer m_propsview;
+//    /**
+//     * Frame window that displays the properties for a selected Java Bean
+//     */
+//    private PropertyPaneContainer m_propsview;
+//    private CustomPropertyPaneContainer propertyContainer;
+
+    private UIInspectorManager.UIInspectorsPanel inspectorsPanel;
+    private UIInspectorManager uiInspectorManager;
 
     /**
      * Panels that show the RowSpec and ColumnSpec for the selected row/column in
@@ -293,8 +300,12 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
                 return;
             }
 
-            if (view == m_propsview) {
-                m_propsview.update(gc);
+            if (view == inspectorsPanel) {
+                inspectorsPanel.update(gc);
+
+            // Todo trebuie scrisa metoda update la propertyContainer
+//            if (view == propertyContainer) {
+//                propertyContainer.getAbeillePropertyPane().update(gc);
             } else if (view == m_col_spec_panel) {
                 m_col_spec_panel.update(gc);
             } else if (view == m_row_spec_panel) {
@@ -351,13 +362,21 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
      */
     private Container createControlsView()
     {
-        m_propsview = new PropertyPaneContainer();
+//        m_propsview = new PropertyPaneContainer();
+//        propertyContainer = new CustomPropertyPaneContainer();
 
         m_buttonbar = new TSButtonBar();
         m_buttonbar.addListener(this);
 
-        m_buttonbar.addView(I18N.getLocalizedMessage("Selected Component"), m_propsview, FormDesignerUtils
-                .loadImage(Icons.COMPONENT_16));
+//        m_buttonbar.addView(I18N.getLocalizedMessage("Selected Component"), propertyContainer, FormDesignerUtils
+//                .loadImage(Icons.COMPONENT_16));
+
+        uiInspectorManager = new UIInspectorManager();
+        inspectorsPanel = uiInspectorManager.getPanel();
+        uiInspectorManager.addInspectorForClass(new TableComponentInspector(), TableComponent.class);
+
+        m_buttonbar.addView(I18N.getLocalizedMessage("Selected Component"), inspectorsPanel,
+                FormDesignerUtils.loadImage(Icons.COMPONENT_16));
 
         /**
          * lazily load the views to speed up application startup.
@@ -936,7 +955,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
      */
     public PropertyPaneContainer getPropertyContainer()
     {
-        return m_propsview;
+        return uiInspectorManager.getPropertyContainer();
+//        return propertyContainer.getAbeillePropertyPane();
     }
 
     /**
@@ -964,7 +984,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
             }
 
             if (evt.getId() == GridViewEvent.EDIT_COMPONENT) {
-                m_buttonbar.setCurrentView(m_propsview);
+                m_buttonbar.setCurrentView(inspectorsPanel);
+//                m_buttonbar.setCurrentView(propertyContainer);
             }
         }
 
@@ -976,7 +997,6 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         }
 
         updateComponents();
-
     }
 
     /**

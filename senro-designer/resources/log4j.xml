@@ -18,6 +18,11 @@
         <appender-ref ref="console"/>
     </logger>
 
+    <logger name="com.jeta.swingbuilder" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+
     <!-- -->
 
     <!--<logger name="ro.siveco.senro.designer" additivity="false">-->
