@@ -12,29 +12,28 @@ import org.senro.ui.template.RenderContext;
 import org.senro.ui.template.TemplateParser;
 
 public class TestSenro {
-	public static void main(String[] args) throws Exception {
-		SidSenroAdapter sid = new SidSenroAdapter();
-		sid.setTemplateSearchPath("templates/");
-		
-		SenroContext ctx = new SenroContext();
-		Map<String, Object> runtimeContext = new HashMap<String, Object>();
-		runtimeContext.put("senroContext", ctx);
-		runtimeContext.put("senroContext", sid.getSenro().getMetadataManager());
+    public static void main( final String... args ) throws Exception {
+        SidSenroAdapter sid = new SidSenroAdapter();
 
-		String template = "new";
+        SenroContext ctx = new SenroContext();
+        Map<String, Object> runtimeContext = new HashMap<String, Object>();
+        runtimeContext.put("senroContext", ctx);
 
-		ITemplateRepository templateRepo = sid.getSenro()
-				.getTemplateRepository();
-		InputStream is = templateRepo.getTemplate(template);
+        String template = "new";
 
-		TemplateParser parser = new TemplateParser();
-		parser.setInputStream(is);
-		parser.setApplicationContext(sid.getSpringContext());
+        ITemplateRepository templateRepo = sid.getSenro().getTemplateRepository();
+        sid.setTemplateSearchPath("d:/work/senro/senro-default-templates/src/main/resources/templates");
+        InputStream is = templateRepo.getTemplate(template);
 
-		RenderContext rc = new RenderContext(runtimeContext);
-		rc.setRoot(true);
+        TemplateParser parser = new TemplateParser();
+        parser.setInputStream(is);
+        parser.setApplicationContext(sid.getSpringContext());
 
-		SenroComponent rootComponent = parser.render(rc);
-		System.out.println(rootComponent);
-	}
+        RenderContext rc = new RenderContext(runtimeContext);
+        rc.setRenderTemplates(false);
+        rc.setRoot(true);
+        
+        SenroComponent rootComponent = parser.render(rc);
+        System.out.println(rootComponent);                
+    }
 }
