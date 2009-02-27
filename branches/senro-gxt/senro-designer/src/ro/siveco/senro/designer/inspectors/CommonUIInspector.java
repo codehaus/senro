@@ -70,6 +70,9 @@ public class CommonUIInspector implements Inspector, ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
+        if(uiDesignerObject == null) {
+            return;
+        }
         Object source = e.getSource();
         if(source == nameTF) {
            uiDesignerObject.setName(nameTF.getText());
@@ -80,5 +83,6 @@ public class CommonUIInspector implements Inspector, ActionListener
         } else if(source == colTF) {
            uiDesignerObject.setColumn(colTF.getText());
         }
+        updateUI();
     }
 }

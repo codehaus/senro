@@ -7,11 +7,15 @@ import ro.siveco.senro.designer.basic.DesignerObjectListener;
 
 import java.util.*;
 
+import org.apache.commons.lang.StringUtils;
+
 public class AssociationInstance implements SenroDesignerObject
 {
     private final AssociationDescription description;
     private final List<BindingInstance> bindings;
     private final SenroDesignerObjectDelegate sdoDelegate;
+
+    private static int nextId = 1;
 
     public AssociationInstance(AssociationDescription description)
     {
@@ -20,6 +24,8 @@ public class AssociationInstance implements SenroDesignerObject
         }
         sdoDelegate = new SenroDesignerObjectDelegate(this);
         sdoDelegate.setName(description.getName());
+        setId("assoc_" + nextId);
+        nextId++;
         this.description = description;
         List<BindingInstance> assoc_bindings = new ArrayList<BindingInstance>();
         Set<BindingDescription> b_descs = description.getBindings();
@@ -100,11 +106,35 @@ public class AssociationInstance implements SenroDesignerObject
         return sdoDelegate.getAssociations();
     }
 
+    public static void updateNextId(int val)
+    {
+        if(val >= nextId) {
+            nextId = val+1;
+        }
+    }
+
+    public static void updateNextId(String assoc_id)
+    {
+        if(StringUtils.startsWith(assoc_id, "assoc_")) {
+            String nr_str = StringUtils.removeStart(assoc_id, "assoc_");
+
+            try {
+                updateNextId(Integer.parseInt(nr_str));
+            }
+            catch(NumberFormatException e) {
+                // do nothing, it is an user assigned id
+            }
+        }
+    }
+
     public class BindingInstance
     {
         private final BindingDescription description;
         private SenroDesignerObject value;
         private List<AspectInstance> aspects = new ArrayList<AspectInstance>();
+        // daca parameter e diferit de null, inseamna ca bindingul e la un parameter. In acest caz
+        // value este null
+        private String parameter = null;
 
         public BindingInstance(BindingDescription description)
         {
@@ -133,6 +163,16 @@ public class AssociationInstance implements SenroDesignerObject
         public List<AspectInstance> getAspects()
         {
             return aspects;
+        }
+
+        public String getParameter()
+        {
+            return parameter;
+        }
+
+        public void setParameter(String parameter)
+        {
+            this.parameter = parameter;
         }
 
     }

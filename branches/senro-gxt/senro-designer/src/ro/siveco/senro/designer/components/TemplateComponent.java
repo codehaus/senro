@@ -29,6 +29,7 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
     private final UIDesignerObjectDelegate udoDelegate;
     private transient Template template = null;
     private String templateName;
+    private String editingContext;
     private List<TemplateParameter> parameters = new ArrayList<TemplateParameter>();
 
     public TemplateComponent()
@@ -46,6 +47,16 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
     public String getTemplateName()
     {
         return templateName;
+    }
+
+    public String getEditingContext()
+    {
+        return editingContext;
+    }
+
+    public void setEditingContext(String editingContext)
+    {
+        this.editingContext = editingContext;
     }
 
     public void setTemplate(Template template)

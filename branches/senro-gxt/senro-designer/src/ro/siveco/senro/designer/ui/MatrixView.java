@@ -46,7 +46,7 @@ public class MatrixView extends JPanel implements ActionListener
     public MatrixView()
     {
         setAutoscrolls(true);
-        setCellWidth(100);
+        setCellWidth(110);
         setCellHeight(100);
         setCellHorizBorder(4);
         setCellVertBorder(6);
@@ -515,7 +515,7 @@ public class MatrixView extends JPanel implements ActionListener
             int selectedCol = x / getCellWidth();
             int selectedRow = y / getCellHeight();
             CellCoordinates clickedCell = new CellCoordinates(selectedCol, selectedRow);
-            model.mouseMovedAtCoordinates(clickedCell);            
+            model.mouseMovedAtCoordinates(clickedCell);
         }
     }
 

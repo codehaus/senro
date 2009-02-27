@@ -45,10 +45,12 @@ import java.util.ArrayList;
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.components.TopGridView;
 import ro.siveco.senro.designer.components.TableComponent;
+import ro.siveco.senro.designer.components.TemplateComponent;
 import ro.siveco.senro.designer.util.ComponentStructureInfo;
 import ro.siveco.senro.designer.inspectors.association.AssociationInspectorPanel;
 import ro.siveco.senro.designer.inspectors.SenroUiInspector;
 import ro.siveco.senro.designer.inspectors.TableComponentInspector;
+import ro.siveco.senro.designer.inspectors.TemplateInspector;
 import ro.siveco.senro.designer.inspector.UIInspectorManager;
 
 /**
@@ -374,6 +376,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         uiInspectorManager = new UIInspectorManager();
         inspectorsPanel = uiInspectorManager.getPanel();
         uiInspectorManager.addInspectorForClass(new TableComponentInspector(), TableComponent.class);
+        uiInspectorManager.addInspectorForClass(new TemplateInspector(), TemplateComponent.class);
 
         m_buttonbar.addView(I18N.getLocalizedMessage("Selected Component"), inspectorsPanel,
                 FormDesignerUtils.loadImage(Icons.COMPONENT_16));

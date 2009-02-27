@@ -123,8 +123,6 @@ public class TableComponentInspector extends CommonUIInspector implements ListSe
 
     public void actionPerformed(ActionEvent e)
     {
-        super.actionPerformed(e);
-
         Object source = e.getSource();
         if (source == columnListTF) {
             table.setColumnList(columnListTF.getText());
@@ -140,6 +138,8 @@ public class TableComponentInspector extends CommonUIInspector implements ListSe
         } else if (act_cmd.equals(MOVE_DOWN)) {
             moveDownSenroTableColumn();
         }
+        super.actionPerformed(e);        
+        updateUI();
     }
 
     private void addSenroTableColumn()

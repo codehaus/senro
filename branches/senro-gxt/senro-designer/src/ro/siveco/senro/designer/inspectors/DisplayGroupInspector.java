@@ -23,7 +23,7 @@ public class DisplayGroupInspector extends CommonInspector
     {
         title = DG_INSPECTOR_TITLE;
         FormLayout layout = new FormLayout("fill:pref, 1dlu, 100:grow",
-        "1dlu:grow, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref,1dlu, fill:pref,1dlu, fill:pref, 1dlu:grow");
+                "1dlu:grow, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref,1dlu, fill:pref,1dlu, fill:pref, 1dlu:grow");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
@@ -51,6 +51,11 @@ public class DisplayGroupInspector extends CommonInspector
     {
         displayGroupDescription = (DisplayGroupDescription) o;
         super.setObject(o);
+        if(displayGroupDescription.isFeedback()) {
+            disable();
+        } else {
+            enable();
+        }
     }
 
     public void updateUI()
@@ -67,7 +72,6 @@ public class DisplayGroupInspector extends CommonInspector
 
     public void actionPerformed(ActionEvent e)
     {
-        super.actionPerformed(e);
         Object source = e.getSource();
         if (source == entityTF) {
             displayGroupDescription.setEntityName(entityTF.getText());
@@ -78,5 +82,27 @@ public class DisplayGroupInspector extends CommonInspector
         } else if (source == isMasterCB) {
             displayGroupDescription.setMaster(isMasterCB.isSelected());
         }
+        super.actionPerformed(e);
+        updateUI();
+    }
+
+    public void disable()
+    {
+        nameTF.setEnabled(false);
+        idTF.setEnabled(false);
+        entityTF.setEnabled(false);
+        fetchSpecificationTF.setEnabled(false);
+        editingContextTF.setEnabled(false);
+        isMasterCB.setEnabled(false);
+    }
+
+    public void enable()
+    {
+        nameTF.setEnabled(true);
+        idTF.setEnabled(true);
+        entityTF.setEnabled(true);
+        fetchSpecificationTF.setEnabled(true);
+        editingContextTF.setEnabled(true);
+        isMasterCB.setEnabled(true);
     }
 }

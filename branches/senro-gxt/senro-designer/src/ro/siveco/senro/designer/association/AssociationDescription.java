@@ -19,11 +19,13 @@ public final class AssociationDescription
 
     private static Map<String, AssociationDescription> allDesc;
 
+    private final SenroAssoc senroAssoc;
     private final String name;
     private final Set<BindingDescription> bindings;
 
     public AssociationDescription(SenroAssoc assoc)
     {
+        senroAssoc = assoc;
         name = ClassHelper.getShortClassName(assoc);
         logger.info("Create association description with name: " + name);
         Map<String, ComponentAssociation> b_sig = assoc.getBindingSignatures();
@@ -74,6 +76,11 @@ public final class AssociationDescription
     public Set<BindingDescription> getBindings()
     {
         return bindings;
+    }
+
+    public SenroAssoc getSenroAssoc()
+    {
+        return senroAssoc;
     }
 
     public static void init()

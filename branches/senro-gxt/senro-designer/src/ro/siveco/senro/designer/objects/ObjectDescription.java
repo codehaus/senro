@@ -14,6 +14,7 @@ import org.apache.commons.lang.ObjectUtils;
 public abstract class ObjectDescription implements Serializable, SenroDesignerObject
 {
     private static final long serialVersionUID = 1;
+    protected boolean canBeDeleted = true;
 
     private final SenroDesignerObjectDelegate sdoDelegate;
 
@@ -26,7 +27,12 @@ public abstract class ObjectDescription implements Serializable, SenroDesignerOb
 
     public boolean canBeDeleted()
     {
-        return true;
+        return canBeDeleted;
+    }
+
+    public void setCanBeDeleted(boolean canBeDeleted)
+    {
+        this.canBeDeleted = canBeDeleted;
     }
 
     @Override

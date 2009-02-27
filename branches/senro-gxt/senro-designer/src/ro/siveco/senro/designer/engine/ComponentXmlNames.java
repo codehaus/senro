@@ -9,12 +9,16 @@ public interface ComponentXmlNames
     public static final String PARAMS_ELEMENT = "Params";
     public static final String PARAM_ELEMENT = "Parameter";
     public static final String ASSOCIATIONS_ELEMENT = "Associations";
+    public static final String ASSOC_ELEMENT = "Assoc";
+    public static final String BINDING_ELEMENT = "binding";
+    public static final String ASPECT_ELEMENT = "aspect";
     public static final String GRID_ELEMENT = "Grid";
     public static final String POPUP_ELEMENT = "Popup";
     public static final String LIST_ELEMENT = "List";
     public static final String TABLE_ELEMENT = "Table";
     public static final String TABLE_COLUMN_ELEMENT = "TableColumn";
     public static final String SENRO_CONTEXT_ELEMENT = "SenroContext";
+    public static final String CONTEXT_FRAGMENT_ELEMENT = "ContextFragment";
     public static final String CONTEXT_ELEMENT_ELEMENT = "ContextElement";
 
     public static final String COLUMNS_ELEMENT = "Columns";
@@ -47,11 +51,13 @@ public interface ComponentXmlNames
     public static final String VALUE_ATTRIBUTE = "value";
     public static final String KEY_ATTRIBUTE = "key";
     public static final String TEMPLATE_FILE_ATTRIBUTE = "file";
+    public static final String TEMPLATE_EDITING_CONTEXT = "editingContext";
     public static final String ID_ATTRIBUTE = "id";
     public static final String TYPE_ATTRIBUTE = "type";
     public static final String DEFAULT_VALUE_ATTRIBUTE = "defaultValue";
     public static final String LIST_ATTRIBUTE = "list";
     public static final String ENTITY_ATTRIBUTE = "entity";
+    public static final String DISPLAY_GROUP_ATTRIBUTE = "displayGroup";
     public static final String FETCH_SPEC_ATTRIBUTE = "fetchSpec";
     public static final String EDITING_CONTEXT_ATTRIBUTE = "editingContext";
     public static final String MASTER_ATTRIBUTE = "master";
@@ -75,6 +81,7 @@ public interface ComponentXmlNames
     public static final String TAB_PAGE_ELEMENT = "TabPage";
 
     public static final String GRID_ALLOCATOR_RENDERER_ELEMENT = "GridAllocatorRenderer";
+    public static final String GRID_ALLOCATOR_ELEMENT = "GridAllocator";
     public static final String GRID_ALLOCATOR_ATTRIBUTE = "gridAllocator";
     public static final String TEXT_FIELD_ELEMENT = "TextField";
     public static final String DATE_FIELD_ELEMENT = "DateField";
