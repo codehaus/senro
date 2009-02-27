@@ -1,10 +1,14 @@
 package ro.siveco.senro.designer.objects;
 
+import org.apache.commons.lang.StringUtils;
+
 public class DisplayGroupDescription extends ObjectDescription
 {
     private static final long serialVersionUID = 1;
 
     public static final String OBJECT_CLASS_NAME = "DisplayGroup";
+    public static final String FEEDBACK_DG_NAME = "SenroFeedbackDG";
+    public static final String FEEDBACK_DG_ENTITY_NAME = "SenroFeedback";
 
     private String entityName;
     private String fetchSpecification;
@@ -55,4 +59,17 @@ public class DisplayGroupDescription extends ObjectDescription
     {
         isMaster = master;
     }
+
+    public void setFeedback()
+    {
+        setName(FEEDBACK_DG_NAME);
+        setId(FEEDBACK_DG_NAME);
+        setEntityName(FEEDBACK_DG_ENTITY_NAME);
+    }
+
+    public boolean isFeedback()
+    {
+        return StringUtils.equals(getId(), FEEDBACK_DG_NAME);
+    }
+
 }

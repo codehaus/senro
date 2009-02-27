@@ -19,7 +19,7 @@ public class SfdCell extends MatrixCell {
 	protected String description = null;
 	protected MissingIcon missingIcon = new MissingIcon();
 	protected Color textColor = Color.BLACK;
-	protected Font font = new Font("SansSerif", Font.BOLD, 12);
+	protected Font font = new Font("SansSerif", Font.BOLD, 11);
 
 	public SfdCell(MatrixView parent) {
 		this(parent, null);

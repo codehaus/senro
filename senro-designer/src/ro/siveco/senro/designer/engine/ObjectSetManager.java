@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.math.BigInteger;
 
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -28,7 +29,9 @@ import org.apache.log4j.Logger;
 import org.apache.commons.io.IOUtils;
 import org.senro.gwt.model.ui.SenroComponent;
 import org.senro.gwt.model.ui.ComponentAssociation;
+import org.senro.gwt.model.ui.SenroContainerComponent;
 import org.senro.gwt.client.model.ui.binding.DisplayGroupModelObject;
+import org.senro.ui.template.sid.SIDComponent;
 
 public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, DesignerObjectListener
 {
@@ -483,20 +486,32 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
                 GridAllocatorDescription ga_d = new GridAllocatorDescription();
                 ga_d.setName(comp.getName());
                 ga_d.setId(comp_id);
-//                ga_d.setColumnsCount();
-//                ga_d.setEntityName();
+                ga_d.setColumnsCount(((BigInteger) comp.get(SIDComponent.GridAllocator_Columns)).intValue());
+                ga_d.setEntityName((String) comp.get(SIDComponent.GridAllocator_Entity));
+                ga_d.setDisplayGroup((String) comp.get(SIDComponent.GridAllocator_DisplayGroup));
                 return ga_d;
             case SENRO_CONTEXT:
-                SenroContextDescription sc_d;
-                if (comp.getName().equals(DesignerManager.SENRO_CONTEXT_DEFAULT_NAME)) {
-                    sc_d = new ServerSenroContextDescription();
-                } else {
-                    sc_d = new ClientSenroContextDescription();
-                }
+                SenroContextDescription sc_d = new SenroContextDescription();
                 sc_d.setName(comp.getName());
                 sc_d.setId(comp_id);
-                // TODO add contextParameters
+                List client_context_elems = ((SenroContainerComponent) comp).getComponents();
+                for (Object context_elem : client_context_elems) {
+                    SenroComponent ctx_elem = (SenroComponent) context_elem;
+                    String key = ctx_elem.getId();
+                    String value = (String) ctx_elem.get(key);
+                    sc_d.addContextParameter(key, value);
+                }
                 return sc_d;
+            case CONTEXT_FRAGMENT:
+                ContextFragmentDescription cf_d = new ContextFragmentDescription();
+                List server_context_elems = ((SenroContainerComponent) comp).getComponents();
+                for (Object context_elem : server_context_elems) {
+                    SenroComponent ctx_elem = (SenroComponent) context_elem;
+                    String key = ctx_elem.getId();
+                    String value = (String) ctx_elem.get(key);
+                    cf_d.addContextParameter(key, value);
+                }
+                return cf_d;
             default:
                 return null;
         }

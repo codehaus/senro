@@ -67,5 +67,6 @@ public class CommonInspector implements Inspector, ActionListener
         } else if(source == idTF) {
            objectDescription.setId(idTF.getText());
         }
+        updateUI();
     }
 }

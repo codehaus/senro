@@ -17,12 +17,13 @@ public class GridAllocatorInspector extends CommonInspector
     protected GridAllocatorDescription gridAllocatorDescription = null;
     protected JTextField entityTF = new JTextField();
     protected JTextField columnsTF = new JTextField();
+    protected JTextField displayGroupTF = new JTextField();
 
     public GridAllocatorInspector()
     {
         title = GA_INSPECTOR_TITLE;
         FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 90:grow, 1dlu",
-                "1dlu:grow, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu:grow");
+                "1dlu:grow, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu:grow");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
@@ -35,9 +36,12 @@ public class GridAllocatorInspector extends CommonInspector
         builder.add(new JLabel("Entity Name", JLabel.RIGHT), cc.xy(2, 6));
         entityTF.addActionListener(this);
         builder.add(entityTF, cc.xy(4, 6));
-        builder.add(new JLabel("Columns Count", JLabel.RIGHT), cc.xy(2, 8));
+        builder.add(new JLabel("Display Group", JLabel.RIGHT), cc.xy(2, 8));
+        displayGroupTF.addActionListener(this);
+        builder.add(displayGroupTF, cc.xy(4, 8));
+        builder.add(new JLabel("Columns Count", JLabel.RIGHT), cc.xy(2, 10));
         columnsTF.addActionListener(this);
-        builder.add(columnsTF, cc.xy(4, 8));
+        builder.add(columnsTF, cc.xy(4, 10));
         panel = builder.getPanel();
     }
 
@@ -51,18 +55,17 @@ public class GridAllocatorInspector extends CommonInspector
     {
         super.updateUI();
         entityTF.setText(gridAllocatorDescription.getEntityName());
+        displayGroupTF.setText(gridAllocatorDescription.getDisplayGroup());
         columnsTF.setText(String.valueOf(gridAllocatorDescription.getColumnsCount()));
     }
 
     public void actionPerformed(ActionEvent e)
     {
         Object source = e.getSource();
-        if (source == nameTF) {
-            gridAllocatorDescription.setName(nameTF.getText());
-        } else if (source == idTF) {
-            gridAllocatorDescription.setId(idTF.getText());
-        } else if (source == entityTF) {
+        if (source == entityTF) {
             gridAllocatorDescription.setEntityName(entityTF.getText());
+        } else if (source == displayGroupTF) {
+            gridAllocatorDescription.setDisplayGroup(displayGroupTF.getText());
         } else if (source == columnsTF) {
             int col;
             String col_count = columnsTF.getText();
@@ -78,5 +81,7 @@ public class GridAllocatorInspector extends CommonInspector
             }
             gridAllocatorDescription.setColumnsCount(col);
         }
+        super.actionPerformed(e);
+        updateUI();
     }
 }

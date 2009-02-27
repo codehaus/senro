@@ -7,7 +7,9 @@ import ro.siveco.senro.designer.inspector.InspectorManager;
 import ro.siveco.senro.designer.IBMainFrame;
 import ro.siveco.senro.designer.IBMainFrameController;
 import ro.siveco.senro.designer.IBMainFormManager;
+import ro.siveco.senro.designer.engine.xmlgen.AssociationXmlGenerator;
 import ro.siveco.senro.designer.association.AssociationDescription;
+import ro.siveco.senro.designer.association.AssociationInstance;
 import ro.siveco.senro.designer.util.XmlException;
 import ro.siveco.senro.designer.util.Predicate;
 import ro.siveco.senro.designer.util.MessageBox;
@@ -33,6 +35,7 @@ import org.senro.templates.ITemplateRepository;
 import org.senro.sid.SidSenroAdapter;
 import org.senro.ui.template.TemplateParser;
 import org.senro.ui.template.RenderContext;
+import org.senro.ui.template.sid.SIDComponent;
 import org.senro.gwt.model.SenroContext;
 import org.senro.gwt.model.ui.*;
 import org.senro.gwt.client.model.ui.binding.*;
@@ -81,7 +84,7 @@ public class DesignerManager
     public static final String NEW_SENRO_CONTEXT = "SC";
     public static final String SERVER_OBJECT_SET_NAME = "Server Objects";
     public static final String CLIENT_OBJECT_SET_NAME = "Client Objects";
-    public static final String SENRO_CONTEXT_DEFAULT_NAME = "Senro Context";
+    public static final String TAB_PAGE_GRID_PREFIX = "grid_";
 
     public static final String COMPONENT_FILE_NAME = "Component.xml";
     public static final Dimension DESIGNER_PANEL_MIN_DIM = new Dimension(900, 1);
@@ -183,11 +186,11 @@ public class DesignerManager
         // init xml generators
         Map<Class, XmlGenerator> xml_generators = new HashMap<Class, XmlGenerator>();
 
-        xml_generators.put(ServerSenroContextDescription.class, new SenroContextXmlGenerator());
+        xml_generators.put(ContextFragmentDescription.class, new SenroContextXmlGenerator(true));
         xml_generators.put(GridAllocatorDescription.class, new GridAllocatorXmlGenerator());
         xml_generators.put(EditingContextDescription.class, new EditingContextXmlGenerator());
         xml_generators.put(DisplayGroupDescription.class, new DisplayGroupXmlGenerator());
-        xml_generators.put(ClientSenroContextDescription.class, new SenroContextXmlGenerator());
+        xml_generators.put(SenroContextDescription.class, new SenroContextXmlGenerator(false));
 
         xml_generators.put(TopGridView.class, new TopGridXmlGenerator());
         xml_generators.put(GridView.class, new GridXmlGenerator());
@@ -227,6 +230,7 @@ public class DesignerManager
         comp_memento_generators.put(ComponentAssociation.DATEFIELD, new DateFieldMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.TEXTAREA, new TextAreaMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.BUTTON, new ButtonMementoGenerator());
+        comp_memento_generators.put(ComponentAssociation.ICON_BUTTON, new ButtonMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.TEMPLATE, new TemplateMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.SWITCHCOMPONENT, new SwitchComponentMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.TABPANEL, new TabbedPaneMementoGenerator());
@@ -271,7 +275,7 @@ public class DesignerManager
         ObjectSetPalette client_palette = new ObjectSetPalette(CLIENT_PALETTE);
         client_palette.addToggleButton(null, NEW_DISPLAY_GROUP, DisplayGroupDescription.class);
         client_palette.addToggleButton(null, NEW_EDITING_CONTEXT, EditingContextDescription.class);
-        client_palette.addToggleButton(null, NEW_SENRO_CONTEXT, ClientSenroContextDescription.class);
+        client_palette.addToggleButton(null, NEW_SENRO_CONTEXT, SenroContextDescription.class);
         // add Palettes to palettesPanel
         palettes_panel.add(server_palette, SERVER_PALETTE);
         palettes_panel.add(client_palette, CLIENT_PALETTE);
@@ -315,14 +319,14 @@ public class DesignerManager
         inspectorManager.addInspectorForClass(new DisplayGroupInspector(), DisplayGroupDescription.class);
         inspectorManager.addInspectorForClass(new EditingContextInspector(), EditingContextDescription.class);
         inspectorManager.addInspectorForClass(new GridAllocatorInspector(), GridAllocatorDescription.class);
-        inspectorManager.addInspectorForClass(new ServerSenroContextInspector(), ServerSenroContextDescription.class);
-        inspectorManager.addInspectorForClass(new ClientSenroContextInspector(), ClientSenroContextDescription.class);
+        inspectorManager.addInspectorForClass(new ContextFragmentInspector(), ContextFragmentDescription.class);
+        inspectorManager.addInspectorForClass(new SenroContextInspector(), SenroContextDescription.class);
         AssociationInspector ai = new AssociationInspector();
         inspectorManager.addInspectorForClass(ai, DisplayGroupDescription.class);
         inspectorManager.addInspectorForClass(ai, EditingContextDescription.class);
         inspectorManager.addInspectorForClass(ai, GridAllocatorDescription.class);
-        inspectorManager.addInspectorForClass(ai, ClientSenroContextDescription.class);
-        inspectorManager.addInspectorForClass(ai, ServerSenroContextDescription.class);
+        inspectorManager.addInspectorForClass(ai, SenroContextDescription.class);
+        inspectorManager.addInspectorForClass(ai, ContextFragmentDescription.class);
     }
 
     private void updateDesignerPanel(JPanel palettes_panel, ObjectSetManager server_obj_set_manager,
@@ -447,7 +451,7 @@ public class DesignerManager
                     continue;
                 }
                 DesignFormComponent tab_page = (DesignFormComponent) tab_cmp;
-                TabPageView tab_page_view = (TabPageView) getTabPageComponent(tab_page);
+                GridView tab_page_view = (GridView) getTabPageComponent(tab_page);
                 assert tab_page_view != null;
                 collectSenroComponents(tab_page_view, cl_map);
             }
@@ -489,7 +493,7 @@ public class DesignerManager
                     continue;
                 }
                 DesignFormComponent tab_page = (DesignFormComponent) tab_cmp;
-                TabPageView tab_page_view = (TabPageView) getTabPageComponent(tab_page);
+                GridView tab_page_view = (GridView) getTabPageComponent(tab_page);
                 assert tab_page_view != null;
                 collectSenroComponents(tab_page_view, sd_objs);
             }
@@ -643,13 +647,13 @@ public class DesignerManager
 
     public boolean isServerObject(SenroDesignerObject sdo)
     {
-        return (sdo instanceof GridAllocatorDescription) || (sdo instanceof ServerSenroContextDescription);
+        return (sdo instanceof GridAllocatorDescription) || (sdo instanceof ContextFragmentDescription);
     }
 
     public boolean isClientObject(SenroDesignerObject sdo)
     {
         return (sdo instanceof DisplayGroupDescription) || (sdo instanceof EditingContextDescription) ||
-                (sdo instanceof ClientSenroContextDescription);
+                (sdo instanceof SenroContextDescription);
     }
 
     public List<SenroDesignerObject> getAllSenroObjectsThat(Predicate p)
@@ -733,8 +737,19 @@ public class DesignerManager
             param_elem.setAttribute(ComponentXmlNames.DEFAULT_VALUE_ATTRIBUTE, param.getDefaultValue());
             params_elem.appendChild(param_elem);
         }
-        Element assoc_elem = doc.createElement(ComponentXmlNames.ASSOCIATIONS_ELEMENT);
-        root_elem.appendChild(assoc_elem);
+        // save associations
+        Element assocs_elem = doc.createElement(ComponentXmlNames.ASSOCIATIONS_ELEMENT);
+        root_elem.appendChild(assocs_elem);
+        List<SenroDesignerObject> all_objs = getAllSenroObjects();
+        Set<AssociationInstance> assocs = new HashSet<AssociationInstance>();
+        for (SenroDesignerObject crt_obj : all_objs) {
+            collectAssociations(crt_obj, assocs);
+        }
+        AssociationXmlGenerator assoc_gen = new AssociationXmlGenerator();
+        for (AssociationInstance assoc : assocs) {
+            Element assoc_elem = assoc_gen.getXml(doc, assoc);
+            assocs_elem.appendChild(assoc_elem);
+        }
 
         FileOutputStream os = new FileOutputStream(new File(project.getProjectDir(), COMPONENT_FILE_NAME));
         TransformerFactory tf = TransformerFactory.newInstance();
@@ -744,6 +759,15 @@ public class DesignerManager
 
         t.transform(new DOMSource(doc), new StreamResult(os));
         os.close();
+    }
+
+    private void collectAssociations(SenroDesignerObject sdo, Set<AssociationInstance> assoc_collection)
+    {
+        List<AssociationInstance> assocs = sdo.getAssociations();
+        assoc_collection.addAll(assocs);
+        for (AssociationInstance assoc : assocs) {
+            collectAssociations(assoc, assoc_collection);
+        }
     }
 
     private File saveGrid(FormEditor editor)
@@ -833,14 +857,17 @@ public class DesignerManager
         }
         try {
             project = new DesignerProject(proj_dir, true);
-            ServerSenroContextDescription server_senro_context_desc = new ServerSenroContextDescription();
-            server_senro_context_desc.setName(SENRO_CONTEXT_DEFAULT_NAME);
-            serverObjSetManager.addObject(server_senro_context_desc);
+            ContextFragmentDescription context_fragment_desc = new ContextFragmentDescription();
+            serverObjSetManager.addObject(context_fragment_desc);
             serverObjSetManager.setEnabled(true);
+            DisplayGroupDescription dg_desc = new DisplayGroupDescription();
+            dg_desc.setFeedback();
+            clientObjSetManager.addObject(dg_desc);
             clientObjSetManager.setEnabled(true);
             inspectorManager.setEnabled(true);
             saveProjectFiles();
             mainFrame.setProject(project.getProjectModel());
+            newGrid(mainFrame.getController(), proj_dir.getName());
         }
         catch (Exception ex) {
             logger.error("Cannot create new project. ", ex);
@@ -896,9 +923,8 @@ public class DesignerManager
         SenroContext ctx = new SenroContext();
         Map<String, Object> runtimeContext = new HashMap<String, Object>();
         runtimeContext.put("senroContext", ctx);
-        runtimeContext.put("metadataManager", sid.getSenro().getMetadataManager());
         RenderContext rc = new RenderContext(runtimeContext);
-
+        rc.setRenderTemplates(false);
         openProject(rc, path_to_comp_xml);
     }
 
@@ -919,10 +945,6 @@ public class DesignerManager
             logger.error("Cannot open project. ", ex);
             JOptionPane.showMessageDialog(mainFrame, "Cannot open project. See log for details.",
                     "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        Map<String, SenroDesignerObject> senro_objs = getAllSenroObjectsMap();
-        for (SenroDesignerObject senro_obj : senro_objs.values()) {
-            senro_obj.updateLinks(senro_objs);
         }
     }
 
@@ -1011,11 +1033,14 @@ public class DesignerManager
         List<SenroContainerComponent> all_grids = new ArrayList<SenroContainerComponent>();
         List<ObjectDescription> server_objs = new ArrayList<ObjectDescription>();
         List<ObjectDescription> client_objs = new ArrayList<ObjectDescription>();
+        List<SenroComponent> assocs = new ArrayList<SenroComponent>();
         all_grids.add((SenroContainerComponent) rootComponent);
         for (SenroComponent comp : all_components) {
             ComponentAssociation comp_assoc = comp.getRenderComponent();
             if (comp_assoc.equals(ComponentAssociation.POPUP)) {
                 all_grids.add((SenroContainerComponent) comp);
+            } else if (comp_assoc.equals(ComponentAssociation.ASSOC)) {
+                assocs.add(comp);
             }
             ObjectDescription od = ObjectSetManager.getObjectDescription(comp);
             if (od != null) {
@@ -1035,8 +1060,16 @@ public class DesignerManager
         }
         serverObjSetManager.loadData(server_objs);
         clientObjSetManager.loadData(client_objs);
+        updateAssocs(assocs);
     }
 
+    public void updateAssocs(List<SenroComponent> assocs)
+    {
+        Map<String, SenroDesignerObject> senro_objs = getAllSenroObjectsMap();
+        for (SenroDesignerObject senro_obj : senro_objs.values()) {
+            senro_obj.updateLinks(senro_objs);
+        }
+    }
 
     private FormMemento getFormMementoForGrid(SenroContainerComponent grid_comp) throws FormException
     {
@@ -1052,10 +1085,10 @@ public class DesignerManager
         ppm.addProperty("name", grid_comp.getName());
         ppm.addProperty("id", getSenroComponenIdFromParser(grid_comp));
         if (grid_comp.getRenderComponent().equals(ComponentAssociation.GRID)) {
-            ppm.addProperty("popup", "false");
+            ppm.addProperty("mainGrid", "true");
             ppm.addProperty("showOnLoad", "true");
         } else {
-            ppm.addProperty("popup", "true");
+            ppm.addProperty("mainGrid", "false");
             // todo showOnLoad must be obtained from grid_comp
             ppm.addProperty("showOnLoad", "true");
         }
@@ -1069,11 +1102,16 @@ public class DesignerManager
         if (project == null) {
             return;
         }
+        FormEditor fe = mainFrame.getCurrentEditor();
+        TopGridView top_grid_view = (TopGridView) fe.getFormComponent().getChildView();
+        if (top_grid_view.isMainGrid()) {
+            JOptionPane.showMessageDialog(mainFrame, "Main grid cannot be deleted!");
+            return;
+        }
         String title = I18N.getLocalizedMessage("Confirm grid file delete");
         String msg = I18N.getLocalizedMessage("Are you sure you want to delete the current grid?");
         int result = JOptionPane.showConfirmDialog(mainFrame, msg, title, JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
-            FormEditor fe = mainFrame.getCurrentEditor();
             closeGrid(fe);
             performDeleteGrid(fe);
             saveProject();
@@ -1171,6 +1209,14 @@ public class DesignerManager
                 null,
                 null,
                 "");
+        newGrid(controller, grid_name);
+    }
+
+    public void newGrid(IBMainFrameController controller, String grid_name)
+    {
+        if (project == null) {
+            return;
+        }
         if (grid_name == null || grid_name.length() == 0) {
             return;
         }
@@ -1187,14 +1233,14 @@ public class DesignerManager
         editor.getForm().setControlButtonsVisible(false);
         editor.getForm().setAbsolutePath(grid_path.getAbsolutePath());
         TopGridView top_grid_view = (TopGridView) editor.getFormComponent().getChildView();
-        top_grid_view.setPopup(newGridIsPopup(top_grid_view));
+        top_grid_view.setMainGrid(newGridIsMainGrid(top_grid_view));
         top_grid_view.setName(grid_name);
         controller.saveForm(false);
         project.addGrid(grid_name);
         saveProject();
     }
 
-    private boolean newGridIsPopup(TopGridView top_grid_view)
+    private boolean newGridIsMainGrid(TopGridView top_grid_view)
     {
         Collection editors = mainFrame.getEditors();
         for (Object editor_obj : editors) {
@@ -1203,11 +1249,11 @@ public class DesignerManager
             if (other_top_grid_view == top_grid_view) {
                 continue;
             }
-            if (!other_top_grid_view.isPopup()) {
-                return true;
+            if (other_top_grid_view.isMainGrid()) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private File chooseDirectory(String crtDir, String title)
@@ -1311,8 +1357,16 @@ public class DesignerManager
         } else {
             Element elem = parent_elem.getOwnerDocument().createElement(ComponentXmlNames.GRID_ELEMENT);
             parent_elem.appendChild(elem);
-            elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, "grid-" + context.prevContext.object.getName());
-            elem.setAttribute(ComponentXmlNames.ID_ATTRIBUTE, "grid-" + context.prevContext.object.getId());
+            String gr_name = grid.getName();
+            String gr_id = grid.getId();
+            if (StringUtils.isEmpty(gr_name) || context.generateTabPage) {
+                gr_name = TAB_PAGE_GRID_PREFIX + context.prevContext.object.getName();
+            }
+            if (StringUtils.isEmpty(gr_id) || context.generateTabPage) {
+                gr_id = TAB_PAGE_GRID_PREFIX + context.prevContext.object.getId();
+            }
+            elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, gr_name);
+            elem.setAttribute(ComponentXmlNames.ID_ATTRIBUTE, gr_id);
             addAttributes(elem, context.attributes);
             buildGridBody(elem, context);
         }
@@ -1345,7 +1399,6 @@ public class DesignerManager
         Iterator<GridComponent> comp_it = grid.gridIterator();
         while (comp_it.hasNext()) {
             GridComponent crt_comp = comp_it.next();
-//            Component cmp = crt_comp.getBeanChildComponent();
             Component cmp = crt_comp.getBeanDelegate();
             if (cmp != null) {
                 Map<String, Object> attr_map = new HashMap<String, Object>();
@@ -1403,7 +1456,7 @@ public class DesignerManager
 
         public String getTagName(XmlGenerationContext context)
         {
-            return "GridAllocator";
+            return ComponentXmlNames.GRID_ALLOCATOR_ELEMENT;
         }
 
         public void buildElementBody(Element e, XmlGenerationContext context)
@@ -1411,6 +1464,7 @@ public class DesignerManager
             GridAllocatorDescription ga_desc = (GridAllocatorDescription) context.object;
             e.setAttribute(ComponentXmlNames.ENTITY_ATTRIBUTE, String.valueOf(ga_desc.getEntityName()));
             e.setAttribute(ComponentXmlNames.COLUMNS_ATTRIBUTE, String.valueOf(ga_desc.getColumnsCount()));
+            e.setAttribute(ComponentXmlNames.DISPLAY_GROUP_ATTRIBUTE, String.valueOf(ga_desc.getDisplayGroup()));
         }
     }
 
@@ -1429,18 +1483,28 @@ public class DesignerManager
 
     private class SenroContextXmlGenerator extends ObjectDescriptionXmlGenerator
     {
+        protected boolean isContextFragment;
+
+        public SenroContextXmlGenerator(boolean contextFragment)
+        {
+            isContextFragment = contextFragment;
+        }
 
         public String getTagName(XmlGenerationContext context)
         {
-            return ComponentXmlNames.SENRO_CONTEXT_ELEMENT;
+            if (isContextFragment) {
+                return ComponentXmlNames.CONTEXT_FRAGMENT_ELEMENT;
+            } else {
+                return ComponentXmlNames.SENRO_CONTEXT_ELEMENT;
+            }
         }
 
         public void buildElementBody(Element e, XmlGenerationContext context)
         {
-            SenroContextDescription csc = (SenroContextDescription) context.object;
+            SCDescription csc = (SCDescription) context.object;
             Document doc = e.getOwnerDocument();
             for (int i = 0; i < csc.getContextParametersCount(); i++) {
-                SenroContextDescription.ParamEntry pe = csc.getParametersEntry(i);
+                SCDescription.ParamEntry pe = csc.getParametersEntry(i);
                 Element ctx_elem = doc.createElement(ComponentXmlNames.CONTEXT_ELEMENT_ELEMENT);
                 e.appendChild(ctx_elem);
                 ctx_elem.setAttribute(ComponentXmlNames.KEY_ATTRIBUTE, pe.getKey());
@@ -1591,6 +1655,8 @@ public class DesignerManager
             TemplateComponent tc = (TemplateComponent) context.object;
             String templateName = tc.getTemplate() == null ? "" : tc.getTemplate().getName();
             e.setAttribute(ComponentXmlNames.TEMPLATE_FILE_ATTRIBUTE, templateName);
+            String editing_Context = tc.getEditingContext();
+            e.setAttribute(ComponentXmlNames.TEMPLATE_EDITING_CONTEXT, editing_Context == null ? "" : editing_Context);
 
             Document doc = e.getOwnerDocument();
             for (TemplateParameter templateParameter : tc.getParameters()) {
@@ -2000,7 +2066,7 @@ public class DesignerManager
 
     }
 
-    private class XmlGenerationContext
+    public class XmlGenerationContext
     {
         public final Map<String, Object> attributes = new HashMap<String, Object>();
         public boolean generateTabPage = false;
@@ -2021,6 +2087,11 @@ public class DesignerManager
     public String getSenroComponenIdFromParser(SenroComponent comp)
     {
         String path_to_comp_id = comp.getId();
+        if (path_to_comp_id == null) {
+            System.out.println(" id null pentru componenta: " + comp.getRenderComponent());
+            return "";
+        }
+        System.out.println(" id pentru componenta: " + comp.getRenderComponent() + " este: " + path_to_comp_id);
         String[] sp_path_to_comp_id = StringUtils.split(path_to_comp_id, ".");
         return sp_path_to_comp_id[sp_path_to_comp_id.length - 1];
     }
@@ -2058,6 +2129,8 @@ public class DesignerManager
 
     private abstract class ComponentMementoGenerator
     {
+        public static final String DEFAULT_ELSE_TABPAGEVIEW_ID = "else_id";
+
         private int embeddedId = 1;
 
         //        public abstract ComponentMemento getCompMemento(Element comp_elem) throws FormException;
@@ -2074,14 +2147,33 @@ public class DesignerManager
             return "CENTER:DEFAULT:NONE";
         }
 
+        public String getGridDefaultRowSpecs()
+        {
+            return "CENTER:DEFAULT:NONE, CENTER:DEFAULT:NONE, CENTER:DEFAULT:NONE";
+        }
+
         public String getSingleCellDefaultColumnSpecs()
         {
             return "FILL:DEFAULT:NONE";
         }
 
+        public String getGridDefaultColumnSpecs()
+        {
+            return "FILL:DEFAULT:NONE, FILL:DEFAULT:NONE, FILL:DEFAULT:NONE";
+        }
+
+        public CellConstraints getSingleCellDefaultCellConstraints()
+        {
+            return new CellConstraints(1, 1, 1, 1, CellConstraints.DEFAULT, CellConstraints.DEFAULT, new Insets(0, 0, 0, 0));
+        }
+
         public CellConstraints getComponentCellConstraints(SenroComponent comp)
         {
             SenroCellLayout cell_layout = comp.getLayoutData();
+            if (cell_layout == null) {
+                System.out.println("null SenroCellLayout for component: " + comp.getRenderComponent());
+                return getSingleCellDefaultCellConstraints();
+            }
             int col = cell_layout.getColumn() + 1;
             int row = cell_layout.getRow() + 1;
             int colspan = cell_layout.getColSpan();
@@ -2156,8 +2248,7 @@ public class DesignerManager
         {
             BeanMemento bm = getBeanMementoForStandardComponent(comp, SenroCheckBox.class);
             PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, SenroCheckBox.class);
-            Model mo = comp.getModel();
-            ppm.addProperty("label", "");
+            ppm.addProperty("label", (Serializable) comp.get(SIDComponent.CheckBox_Label));
             bm.setProperties(ppm);
             return bm;
         }
@@ -2220,9 +2311,8 @@ public class DesignerManager
                 SenroComponent col_sc = (SenroComponent) col_component;
                 if (col_sc.getRenderComponent().equals(ComponentAssociation.TABLECOLUMN)) {
                     TableComponent.SenroTableColumn col = new TableComponent.SenroTableColumn();
-                    StringPair sp = ((ColumnModelObject) col_sc.getModel().getDataObject()).getValue();
-                    String col_name = sp.getKey();
-                    String col_expression = sp.getValue();
+                    String col_name = col_sc.getName();
+                    String col_expression = (String) col_sc.get(SIDComponent.TableColumn_expression);
                     col.setName(col_name == null ? "  " : col_name);
                     col.setId(col_sc.getId() == null ? "  " : col_sc.getId());
                     col.setExpression(col_expression);
@@ -2230,8 +2320,8 @@ public class DesignerManager
                 }
             }
             ppm.addProperty("columnsHex", HexUtil.getObjectsHexFromList(columns));
-            Model mo = comp.getModel();
-//            ppm.addProperty("columnList", );
+            String column_list = (String) comp.get(SIDComponent.Table_columnList);
+            ppm.addProperty("columnList", column_list == null ? "" : column_list);
             ScrollBarsProperty sbp = new ScrollBarsProperty();
             sbp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             sbp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -2258,8 +2348,7 @@ public class DesignerManager
         {
             BeanMemento bm = getBeanMementoForStandardComponent(comp, GridAllocatorRenderer.class);
             PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, GridAllocatorRenderer.class);
-            Model mo = comp.getModel();
-//            ppm.addProperty("gridAllocator", getPropertyStringValue("gridAllocator", comp));
+            ppm.addProperty("gridAllocator", (Serializable) comp.get(SIDComponent.GridAllocatorRenderer_gridAllocator));
             bm.setProperties(ppm);
             return bm;
         }
@@ -2329,14 +2418,7 @@ public class DesignerManager
             ppm.addProperty("text", mo.getText() == null ? "" : mo.getText());
             ppm.addProperty("buttonIcon", mo.getIcon() == null ? "" : mo.getIcon());
             ppm.addProperty("hoverIcon", mo.getHoverIcon() == null ? "" : mo.getHoverIcon());
-            ppm.addProperty("type", SenroButton.BUTTON_TYPE);
-            if (mo.getIcon() != null) {
-                if (mo.getText() != null) {
-                    ppm.addProperty("type", SenroButton.ICON_BUTTON_TYPE);
-                } else {
-                    ppm.addProperty("type", SenroButton.ICON_TYPE);
-                }
-            }
+            ppm.addProperty("type", (Serializable) comp.get(SIDComponent.Button_Type));
             bm.setProperties(ppm);
             return bm;
         }
@@ -2381,28 +2463,30 @@ public class DesignerManager
         {
             BeanMemento bm = getBeanMementoForStandardComponent(comp, TemplateComponent.class);
             PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, TemplateComponent.class);
-            Model mo = comp.getModel();
-//            ppm.addProperty("templateName", getPropertyStringValue("templateName", comp));
-//
-//            List<TemplateParameter> parameters = new ArrayList<TemplateParameter>();
-//            Template template = getProject().getTemplate(template_name);
-//            if (template != null) {
-//                List<Parameter> params = template.getParameters();
-//                Map<String, Parameter> param_map = new HashMap<String, Parameter>();
-//                for (Parameter parameter : params) {
-//                    param_map.put(parameter.getName(), parameter);
-//                }
-//                Element param_elem = XmlHelper.getFirstChildElement(comp_elem);
-//                while (param_elem != null) {
-//                    String param_name = param_elem.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE);
-//                    String param_value = param_elem.getAttribute(ComponentXmlNames.VALUE_ATTRIBUTE);
-//                    TemplateParameter tp = new TemplateParameter(param_map.get(param_name));
-//                    tp.setValue(param_value);
-//                    parameters.add(tp);
-//                    param_elem = XmlHelper.getNextSiblingElement(param_elem);
-//                }
-//            }
-//            ppm.addProperty("parameters", (Serializable) parameters);
+            String template_name = (String) comp.get(SIDComponent.Template_File);
+            ppm.addProperty("templateName", template_name);
+            ppm.addProperty("editingContext", (Serializable) comp.get(SIDComponent.Template_EditingContext));
+
+            List<TemplateParameter> parameters = new ArrayList<TemplateParameter>();
+            Template template = getProject().getTemplate(template_name);
+            if (template != null) {
+                List<Parameter> params = template.getParameters();
+                Map<String, Parameter> param_map = new HashMap<String, Parameter>();
+                for (Parameter parameter : params) {
+                    param_map.put(parameter.getName(), parameter);
+                }
+                List<SenroComponent> param_list = ((SenroContainerComponent) comp).getComponents();
+                for (SenroComponent param : param_list) {
+                    if (param.getRenderComponent().equals(ComponentAssociation.TEMPLATE_PARAM)) {
+                        String param_name = param.getId();
+                        String param_value = String.valueOf(param.get(param_name));
+                        TemplateParameter tp = new TemplateParameter(param_map.get(param_name));
+                        tp.setValue(param_value);
+                        parameters.add(tp);
+                    }
+                }
+            }
+            ppm.addProperty("parameters", (Serializable) parameters);
 
             bm.setProperties(ppm);
             return bm;
@@ -2428,14 +2512,10 @@ public class DesignerManager
         {
             BeanMemento bm = getBeanMementoForStandardComponent(comp, SwitchComponent.class);
             PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, SwitchComponent.class);
-            Model mo = comp.getModel();
-            if (comp.containsKey("SwitchComponent_Property")) {
-                String prop_attribute = (String) comp.get("SwitchComponent_Property");
-                if(prop_attribute != null) {
-                    ppm.addProperty("property", prop_attribute);
-                }
-            }
-//            ppm.addProperty("createLabel", comp_elem.getAttribute(ComponentXmlNames.CREATE_LABEL_ATTRIBUTE));
+            String prop_attribute = (String) comp.get(SIDComponent.SwitchComponent_Property);
+            Boolean create_label_attribute = (Boolean) comp.get(SIDComponent.SwitchComponent_CreateLabel);
+            ppm.addProperty("property", prop_attribute == null ? "" : prop_attribute);
+            ppm.addProperty("createLabel", create_label_attribute);
             bm.setProperties(ppm);
             return bm;
         }
@@ -2479,35 +2559,45 @@ public class DesignerManager
         public ComponentMemento getCompMemento(SenroComponent comp) throws FormException
         {
             FormMemento state = new FormMemento();
-            state.setCellConstraints(getComponentCellConstraints(comp));
+            if (comp.getParent().getRenderComponent().equals(ComponentAssociation.TABPANEL)) {
+                state.setCellConstraints(getSingleCellDefaultCellConstraints());
+            } else {
+                state.setCellConstraints(getComponentCellConstraints(comp));
+            }
             state.setComponentClass(FormComponent.class.getName());
             PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, IteratorComponent.class);
-            Model mo = comp.getModel();
-//            ppm.addProperty("list", comp_elem.getAttribute(ComponentXmlNames.LIST_ATTRIBUTE));
-//            ppm.addProperty("filterCondition", comp_elem.getAttribute(ComponentXmlNames.FILTER_CONDITION_ATTRIBUTE));
+            String iter_list = (String) comp.get(SIDComponent.Iterator_List);
+            ppm.addProperty("list", iter_list == null ? "" : iter_list);
+            String iter_filter_cond = (String) comp.get(SIDComponent.Iterator_FilterCondition);
+            ppm.addProperty("filterCondition", iter_filter_cond == null ? "" : iter_filter_cond);
             state.setPropertiesMemento(ppm);
 
             state.setId(getNextEmbeddedId());
-//            Element first_child = XmlHelper.getFirstChildElement(comp_elem);
-//            String first_child_tag_name = first_child.getTagName();
-//            if (first_child_tag_name.equals(ComponentXmlNames.TAB_PAGE_ELEMENT)) {
-//                Element grid_elem = XmlHelper.getChild(first_child, ComponentXmlNames.GRID_ELEMENT);
-//                setRowAndColumnSpecsToStateFromGrid(state, grid_elem);
-//                addComponentsToStateFromGrid(state, grid_elem);
-//            } else if (first_child_tag_name.equals(ComponentXmlNames.GRID_ELEMENT)) {
-//                setRowAndColumnSpecsToStateFromGrid(state, first_child);
-//                addComponentsToStateFromGrid(state, first_child);
-//            } else {
-//                state.setRowSpecs(getSingleCellDefaultRowSpecs());
-//                state.setColumnSpecs(getSingleCellDefaultColumnSpecs());
-//                ComponentMemento comp_memento = compMementoGenerators.get(first_child_tag_name).getCompMemento(first_child);
-//                state.addComponent(comp_memento);
-//            }
+            SenroComponent first_comp = ((SenroContainerComponent) comp).getComponents().get(0);
+            ComponentAssociation type = first_comp.getRenderComponent();
+            if (type.equals(ComponentAssociation.TABPAGE)) {
+                List<SenroComponent> first_comp_children = ((SenroContainerComponent) first_comp).getComponents();
+                for (SenroComponent first_comp_child : first_comp_children) {
+                    if (first_comp_child.getRenderComponent().equals(ComponentAssociation.GRID)) {
+                        SenroContainerComponent grid_comp = (SenroContainerComponent) first_comp_child;
+                        setRowAndColumnSpecsToStateFromGrid(state, grid_comp);
+                        addComponentsToStateFromGrid(state, grid_comp);
+                    }
+                }
+            } else if (type.equals(ComponentAssociation.GRID)) {
+                SenroContainerComponent grid_comp = (SenroContainerComponent) first_comp;
+                setRowAndColumnSpecsToStateFromGrid(state, grid_comp);
+                addComponentsToStateFromGrid(state, grid_comp);
+            } else {
+                state.setRowSpecs(getSingleCellDefaultRowSpecs());
+                state.setColumnSpecs(getSingleCellDefaultColumnSpecs());
+                ComponentMemento comp_memento = compMementoGenerators.get(first_comp.getRenderComponent()).getCompMemento(first_comp);
+                state.addComponent(comp_memento);
+            }
             return state;
         }
     }
 
-    //
     private class EmbeddedGridMementoGenerator extends ComponentMementoGenerator
     {
 //        @Override
@@ -2683,7 +2773,6 @@ public class DesignerManager
         {
             BeanMemento bm = getBeanMementoForContainerComponent(comp, SenroTabbedPane.class);
             PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, SenroTabbedPane.class);
-            Model mo = comp.getModel();
             TabbedPaneProperties tpp = new TabbedPaneProperties();
             List tab_page_components = ((SenroContainerComponent) comp).getComponents();
             for (Object tab_page_component : tab_page_components) {
@@ -2699,8 +2788,8 @@ public class DesignerManager
                         tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, getSenroComponenIdFromParser(tab_page_comp));
                     } else {
                         if (grid_comp.getRenderComponent().equals(ComponentAssociation.GRID)) {
-                            tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, StringUtils.substringAfter(grid_comp.getName(), "grid-"));
-                            tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, StringUtils.substringAfter(getSenroComponenIdFromParser(grid_comp), "grid-"));
+                            tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, StringUtils.substringAfter(grid_comp.getName(), TAB_PAGE_GRID_PREFIX));
+                            tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, StringUtils.substringAfter(getSenroComponenIdFromParser(grid_comp), TAB_PAGE_GRID_PREFIX));
                         } else {
                             // grid_comp is a simple component
                             tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, "tpv-" + grid_comp.getName());
@@ -2721,7 +2810,17 @@ public class DesignerManager
                 } else if (type.equals(ComponentAssociation.CONDITIONAL)) {
 
                 } else if (type.equals(ComponentAssociation.ITERATOR)) {
-
+                    List<SenroComponent> tab_page_children = ((SenroContainerComponent) tab_page_comp).getComponents();
+                    for (SenroComponent tab_page_child : tab_page_children) {
+                        if (tab_page_child.getRenderComponent().equals(ComponentAssociation.TABPAGE)) {
+                            SenroContainerComponent inner_tab_page_comp = (SenroContainerComponent) tab_page_child;
+                            TabProperty tp = new TabProperty((String) inner_tab_page_comp.getModel().getDataObject().getValue());
+                            tp.setContentClass(TabProperty.ITERATOR_CONTENT);
+                            FormMemento state = (FormMemento) compMementoGenerators.get(type).getCompMemento(tab_page_comp);
+                            tp.setFormMemento(state);
+                            tpp.addTab(tp);
+                        }
+                    }
                 }
             }
 //            Element tab_page_elem = XmlHelper.getFirstChildElement(comp_elem);
@@ -2804,6 +2903,25 @@ public class DesignerManager
             tp_ppm.addProperty("condition", (Serializable) tab_parameters.get(ComponentXmlNames.CONDITION_ATTRIBUTE));
             state.setPropertiesMemento(tp_ppm);
             addComponentsToStateFromGrid(state, grid_comp);
+            tp.setFormMemento(state);
+            return tp;
+        }
+
+        protected TabProperty getNewElseTabProperty() throws FormException
+        {
+            TabProperty tp = new TabProperty(ConditionalComponentBeanFactory.ELSE_TAB_TITLE);
+            FormMemento state = new FormMemento();
+            tp.setContentClass(TabProperty.TAB_PAGE_CONTENT);
+            state.setId(getNextEmbeddedId());
+            state.setComponentClass(FormComponent.class.getName());
+            state.setRowSpecs(getGridDefaultRowSpecs());
+            state.setColumnSpecs(getGridDefaultColumnSpecs());
+            PropertiesMemento tp_ppm = new PropertiesMemento();
+            tp_ppm.setBeanClassName(TabPageView.class.getName());
+            tp_ppm.addProperty("name", DEFAULT_ELSE_TABPAGEVIEW_ID);
+            tp_ppm.addProperty("id", DEFAULT_ELSE_TABPAGEVIEW_ID);
+            tp_ppm.addProperty("condition", "");
+            state.setPropertiesMemento(tp_ppm);
             tp.setFormMemento(state);
             return tp;
         }
@@ -2902,50 +3020,40 @@ public class DesignerManager
         {
             BeanMemento bm = getBeanMementoForContainerComponent(comp, ConditionalComponent.class);
             PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, ConditionalComponent.class);
+            ppm.addProperty("condition", (Serializable) comp.get(SIDComponent.Conditional_condition));
 
-            Model mo = comp.getModel();
             TabbedPaneProperties tpp = new TabbedPaneProperties();
             List tab_page_components = ((SenroContainerComponent) comp).getComponents();
             for (Object tab_page_component : tab_page_components) {
                 SenroContainerComponent tab_page_comp = (SenroContainerComponent) tab_page_component;
                 Map<String, Object> tab_parameters = new HashMap<String, Object>();
                 ComponentAssociation type = tab_page_comp.getRenderComponent();
-                if (type.equals(ComponentAssociation.TABPAGE)) {
-                    String tab_page_title = (String)tab_page_comp.getModel().getDataObject().getValue();
-                    tab_parameters.put(ComponentXmlNames.TITLE_ATTRIBUTE, tab_page_title);
-                    if(tab_page_title.equals(ConditionalComponentBeanFactory.IF_TAB_TITLE)) {
-                        // TODO Get the condition attribute from model
-                        ppm.addProperty("condition", "");
-                        ppm.addProperty(ConditionalComponentBeanFactory.TAB_PROP_NAME, false);
-                    } else {
-                        ppm.addProperty(ConditionalComponentBeanFactory.TAB_PROP_NAME, true);
-                    }
-                    SenroComponent grid_comp = ((SenroComponent) tab_page_comp.getComponents().get(0));
+                if (type.equals(ComponentAssociation.GRID)) {
+                    tab_parameters.put(ComponentXmlNames.TITLE_ATTRIBUTE, ConditionalComponentBeanFactory.IF_TAB_TITLE);
                     // Add TabPageView basic properties
-                    if (tab_page_comp.getName() != null && tab_page_comp.getId() != null) {
-                        tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, tab_page_comp.getName());
-                        tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, getSenroComponenIdFromParser(tab_page_comp));
-                    } else {
-                        if (grid_comp.getRenderComponent().equals(ComponentAssociation.GRID)) {
-                            tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, StringUtils.substringAfter(grid_comp.getName(), "grid-"));
-                            tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, StringUtils.substringAfter(getSenroComponenIdFromParser(grid_comp), "grid-"));
-                        } else {
-                            // grid_comp is a simple component
-                            tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, "tpv-" + grid_comp.getName());
-                            tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, "tpv-" + getSenroComponenIdFromParser(grid_comp));
-                        }
-                    }
+                    tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, tab_page_comp.getName());
+                    tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, getSenroComponenIdFromParser(tab_page_comp));
                     tab_parameters.put(ComponentXmlNames.CONDITION_ATTRIBUTE, "");
 
-                    if (grid_comp.getRenderComponent().equals(ComponentAssociation.GRID)) {
-                        // Add GRID SenroContainerComponent
-                        tab_parameters.put(ComponentXmlNames.GRID_ELEMENT, grid_comp);
-                        tpp.addTab(getSenroTabProperty(tab_parameters));
-                    } else {
-                        tab_parameters.put(ComponentXmlNames.COMPONENT_ELEMENT, grid_comp);
-                        tpp.addTab(getSenroComponentTabProperty(tab_parameters));
+                    tab_parameters.put(ComponentXmlNames.GRID_ELEMENT, tab_page_comp);
+                    ppm.addProperty(ConditionalComponentBeanFactory.TAB_PROP_NAME, false);
+                } else if (type.equals(ComponentAssociation.CONDITIONAL_ELSE)) {
+                    SenroContainerComponent else_grid = (SenroContainerComponent) tab_page_comp.getComponents().get(0);
+                    if (else_grid != null) {
+                        tab_parameters.put(ComponentXmlNames.TITLE_ATTRIBUTE, ConditionalComponentBeanFactory.ELSE_TAB_TITLE);
+                        // Add TabPageView basic properties
+                        tab_parameters.put(ComponentXmlNames.NAME_ATTRIBUTE, else_grid.getName());
+                        tab_parameters.put(ComponentXmlNames.ID_ATTRIBUTE, getSenroComponenIdFromParser(else_grid));
+                        tab_parameters.put(ComponentXmlNames.CONDITION_ATTRIBUTE, "");
+
+                        tab_parameters.put(ComponentXmlNames.GRID_ELEMENT, else_grid);
+                        ppm.addProperty(ConditionalComponentBeanFactory.TAB_PROP_NAME, true);
                     }
                 }
+                tpp.addTab(getSenroTabProperty(tab_parameters));
+            }
+            if (tab_page_components.size() == 1) {
+                tpp.addTab(getNewElseTabProperty());
             }
             ppm.addProperty("tabs", tpp);
             bm.setProperties(ppm);

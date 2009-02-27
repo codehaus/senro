@@ -6,7 +6,6 @@ import ro.siveco.senro.designer.engine.DesignerManager;
 import javax.swing.*;
 import java.util.Map;
 import java.util.HashMap;
-import java.net.URL;
 
 public class DesignerCellFactory implements CellFactory
 {
@@ -49,8 +48,8 @@ public class DesignerCellFactory implements CellFactory
 
         iconForClass.put(DisplayGroupDescription.OBJECT_CLASS_NAME, dg_icon);
         iconForClass.put(EditingContextDescription.OBJECT_CLASS_NAME, ec_icon);
-        iconForClass.put(ServerSenroContextDescription.OBJECT_CLASS_NAME, ssc_icon);
+        iconForClass.put(ContextFragmentDescription.OBJECT_CLASS_NAME, ssc_icon);
         iconForClass.put(GridAllocatorDescription.OBJECT_CLASS_NAME, ga_icon);
-        iconForClass.put(ClientSenroContextDescription.OBJECT_CLASS_NAME, csc_icon);
+        iconForClass.put(SenroContextDescription.OBJECT_CLASS_NAME, csc_icon);
     }
 }

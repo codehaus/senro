@@ -4,17 +4,16 @@ import com.jeta.forms.gui.form.GridView;
 
 public class TopGridView extends GridView
 {
-    private boolean isPopup;
+    private boolean isMainGrid;
     private boolean showOnLoad = false;
 
     public boolean isPopup()
     {
-        return isPopup;
+        return !isMainGrid;
     }
 
     public void setPopup(boolean popup)
     {
-        isPopup = popup;
     }
 
     public boolean isShowOnLoad()
@@ -25,5 +24,15 @@ public class TopGridView extends GridView
     public void setShowOnLoad(boolean showOnLoad)
     {
         this.showOnLoad = showOnLoad;
+    }
+
+    public boolean isMainGrid()
+    {
+        return isMainGrid;
+    }
+
+    public void setMainGrid(boolean mainGrid)
+    {
+        isMainGrid = mainGrid;
     }
 }

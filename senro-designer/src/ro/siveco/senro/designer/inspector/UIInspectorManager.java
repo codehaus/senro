@@ -146,10 +146,7 @@ public class UIInspectorManager
 
     public boolean hasCustomInspector(Object obj)
     {
-        if(obj == null) {
-            return false;
-        }
-        return inspectors.containsKey(obj.getClass());
+        return obj != null && inspectors.containsKey(obj.getClass());
     }
 
     public static UIInspectorManager get()
