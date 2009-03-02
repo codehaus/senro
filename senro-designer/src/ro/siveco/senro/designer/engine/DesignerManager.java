@@ -2067,8 +2067,8 @@ public class DesignerManager
     public String getSenroComponentIdFromParser(SenroComponent comp)
     {
         String path_to_comp_id = comp.getId();
-        if (path_to_comp_id == null) {
-            System.out.println(" id null pentru componenta: " + comp.getRenderComponent());
+        if (StringUtils.isBlank(path_to_comp_id)) {
+            System.out.println(" id empty pentru componenta: " + comp.getRenderComponent());
             return "";
         }
         System.out.println(" id pentru componenta: " + comp.getRenderComponent() + " este: " + path_to_comp_id);
