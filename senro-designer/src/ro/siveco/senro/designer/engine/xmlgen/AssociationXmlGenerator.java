@@ -21,8 +21,7 @@ public class AssociationXmlGenerator
             Element binding_elem = doc.createElement(ComponentXmlNames.BINDING_ELEMENT);
             assoc_elem.appendChild(binding_elem);
             binding_elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, binding.getDescription().getName());
-            String b_val = binding.getValue() == null ? "" : binding.getValue().getId();
-            binding_elem.setAttribute(ComponentXmlNames.VALUE_ATTRIBUTE, b_val);
+            binding_elem.setAttribute(ComponentXmlNames.VALUE_ATTRIBUTE, binding.getValueId());
             List<AssociationInstance.AspectInstance> aspects = binding.getAspects();
             for(AssociationInstance.AspectInstance aspect : aspects) {
                 Element aspect_elem = doc.createElement(ComponentXmlNames.ASPECT_ELEMENT);

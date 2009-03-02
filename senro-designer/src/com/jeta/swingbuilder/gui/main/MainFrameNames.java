@@ -31,9 +31,10 @@ public class MainFrameNames extends FormEditorNames
    public static final String ID_SAVE_FORM        = "save.form";
    public static final String ID_SAVE_FORM_AS     = "save.form.as";
    public static final String ID_SAVE_PROJECT     = "save.project";
+   public static final String ID_SAVE_AS_PROJECT  = "save.as.project";
    public static final String ID_SHOW_FORM        = "show.form";
    public static final String ID_CLOSE_FORM       = "close.form";
-   public static final String ID_DELETE_FORM       = "delete.form";
+   public static final String ID_DELETE_FORM      = "delete.form";
 
    public static final String ID_FORM_PROPERTIES  = "form.properties";
 

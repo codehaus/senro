@@ -3,6 +3,7 @@ package ro.siveco.senro.designer.engine;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.builder.PanelBuilder;
+
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.*;
@@ -139,19 +140,25 @@ public class SenroContextManager extends AbstractTableModel implements ActionLis
         } else if (act_cmd.equals(DELETE_ACTION)) {
             deleteSenroContextData();
         } else if (act_cmd.equals(RENDER_ACTION)) {
-            renderWithContext();
+            render();
         }
     }
 
-    private void renderWithContext()
+    private void renderWithContext(SenroContext ctx)
     {
+        DesignerManager.getSharedDesignerManager().render(ctx);
+    }
+
+    private void render()
+    {
+        renderWithContext(new SenroContext());
     }
 
     public SenroContext getSenroContext()
     {
         SenroContext senro_context = new SenroContext();
         for (SenroContextData senroContextData : dataList) {
-            if(senroContextData.isPrivileged() && senroContextData.getValue().trim().isEmpty()) {
+            if (senroContextData.isPrivileged() && senroContextData.getValue().trim().isEmpty()) {
                 continue;
             }
             senro_context.put(senroContextData.getKey(), senroContextData.getValue());

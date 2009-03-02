@@ -43,6 +43,7 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
     private JLabel classLabel;
     private JTable assocTable;
     private JButton addButton;
+    private JButton addParamButton;
     private JButton removeButton;
     private AssociationsTableModel assocTableModel;
     private JPanel bindingsPanel;
@@ -164,15 +165,19 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
     private JPanel createButtonPanel()
     {
         JPanel btn_panel = new JPanel();
-        FormLayout f = new FormLayout("fill:pref:grow, fill:pref, fill:8px, fill:pref", "fill:pref");
-        f.setColumnGroups(new int[][]{{2, 4}});
+        FormLayout f = new FormLayout("fill:pref:grow, fill:pref, fill:8px, fill:pref, fill:8px, fill:pref", "fill:pref");
+//        f.setColumnGroups(new int[][]{{2, 4}});
         btn_panel.setLayout(f);
-        addButton = new JButton("Add");
+        addButton = new JButton("New");
         addButton.setEnabled(false);
+        addParamButton = new JButton("New parameter assoc");
+        addParamButton.setEnabled(false);
+
         removeButton = new JButton("Remove");
         CellConstraints cc = new CellConstraints();
         btn_panel.add(addButton, cc.xy(2, 1));
-        btn_panel.add(removeButton, cc.xy(4, 1));
+        btn_panel.add(addParamButton, cc.xy(4, 1));
+        btn_panel.add(removeButton, cc.xy(6, 1));
         addButton.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -187,6 +192,16 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
                     assoc_creator.createAssociation(selectedObject);
                     updateInspectorUI();
                 }
+            }
+        });
+        addParamButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if(selectedObject == null) {
+                    return;
+                }
+                DesignerManager.getSharedDesignerManager().getAssociationManager().createParameterAssociation(selectedObject);
             }
         });
         removeButton.addActionListener(new ActionListener()
@@ -219,6 +234,7 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
         nameLabel.setText(selectedObject == null ? "" : selectedObject.getName());
         classLabel.setText(getComponentClassName(selectedObject));
         addButton.setEnabled(selectedObject != null);
+        addParamButton.setEnabled(selectedObject != null);
         if (selectedObject != null) {
             assocTable.tableChanged(new TableModelEvent(assocTableModel));
         }

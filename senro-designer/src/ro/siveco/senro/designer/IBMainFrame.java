@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.io.File;
 
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.components.TopGridView;
@@ -569,7 +570,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.addSeparator();
         menu.add(i18n_createMenuItem("New Project", MainFrameNames.ID_CREATE_PROJECT, null));
         menu.add(i18n_createMenuItem("Save Project", MainFrameNames.ID_SAVE_PROJECT, null));
-        menu.add(i18n_createMenuItem("Open Project", MainFrameNames.ID_OPEN_PROJECT, null));
+        menu.add(i18n_createMenuItem("Save Project As...", MainFrameNames.ID_SAVE_AS_PROJECT, null));
         menu.add(i18n_createMenuItem("Open Senro Project", MainFrameNames.ID_OPEN_SENRO_PROJECT, null));
         menu.add(i18n_createMenuItem("Close Project", MainFrameNames.ID_CLOSE_PROJECT, null));
         menu.addSeparator();
@@ -739,7 +740,6 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         getContentPane().add(panel, BorderLayout.NORTH);
 
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_CREATE_PROJECT, Icons.NEW_PROJECT_24, "Create Project"));
-        toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_PROJECT, Icons.OPEN_PROJECT_24, "Open Project"));
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_OPEN_SENRO_PROJECT, Icons.OPEN_PROJECT_24, "Open Senro Project"));
 
         toolbar.add(i18n_createToolBarButton(MainFrameNames.ID_SAVE_PROJECT, Icons.SAVE_24, "Save Project"));
@@ -1137,6 +1137,16 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
             m_status_cell.setText(pmodel.getProjectPath());
         }
 
+    }
+
+    public void updateStatusCell(File proj_dir)
+    {
+        if ((proj_dir == null) || !proj_dir.exists()) {
+            m_status_cell.setText("");
+        } else {
+            File proj_model_file = new File(proj_dir, "model.jfpr");
+            m_status_cell.setText(proj_model_file.getAbsolutePath());
+        }
     }
 
     /**
