@@ -95,9 +95,9 @@ public class IBMainFrameController extends IBFormEditorController
         assignAction(MainFrameNames.ID_SAVE_FORM_AS, new SaveAsAction());
 
         assignAction(MainFrameNames.ID_CREATE_PROJECT, new NewDesignerProjectAction());
-        assignAction(MainFrameNames.ID_OPEN_PROJECT, new OpenDesignerProjectAction());
         assignAction(MainFrameNames.ID_OPEN_SENRO_PROJECT, new OpenSenroProjectAction());
         assignAction(MainFrameNames.ID_SAVE_PROJECT, new SaveDesignerProjectAction());
+        assignAction(MainFrameNames.ID_SAVE_AS_PROJECT, new SaveAsDesignerProjectAction());
         assignAction(MainFrameNames.ID_CLOSE_PROJECT, new CloseDesignerProjectAction());
 
         assignAction(FormEditorNames.ID_EXPORT_COMPONENT_NAMES, new ExportNamesAction());
@@ -307,7 +307,7 @@ public class IBMainFrameController extends IBFormEditorController
      */
     void openLastProject()
     {
-        if(true) {
+        if (true) {
             return;
         }
         // not implemented
@@ -961,10 +961,10 @@ public class IBMainFrameController extends IBFormEditorController
                 while (iter.hasNext()) {
                     FormEditor editor = (FormEditor) iter.next();
                     editor.updatePreferences();
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
     public class NewDesignerProjectAction implements ActionListener
     {
@@ -982,11 +982,11 @@ public class IBMainFrameController extends IBFormEditorController
         }
     }
 
-    public class OpenDesignerProjectAction implements ActionListener
+    public class SaveAsDesignerProjectAction implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
         {
-            m_frame.getDesignerManager().openProject();
+            m_frame.getDesignerManager().saveAsProject();
         }
     }
 

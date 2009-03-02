@@ -465,7 +465,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
     public static ObjectDescription getObjectDescription(SenroComponent comp)
     {
         ComponentAssociation cmp_assoc = comp.getRenderComponent();
-        String comp_id = DesignerManager.getSharedDesignerManager().getSenroComponenIdFromParser(comp);
+        String comp_id = DesignerManager.getSharedDesignerManager().getSenroComponentIdFromParser(comp);
         switch (cmp_assoc) {
             case DISPLAYGROUP:
                 DisplayGroupDescription dg_d = new DisplayGroupDescription();

@@ -46,6 +46,16 @@ public class AssociationInstance implements SenroDesignerObject
         return description;
     }
 
+    public BindingInstance getBindingWithName(String binding_name)
+    {
+        for(BindingInstance binding : bindings) {
+            if(StringUtils.equals(binding.getDescription().getName(), binding_name)) {
+                return binding;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String getName()
     {
@@ -150,9 +160,21 @@ public class AssociationInstance implements SenroDesignerObject
             return value;
         }
 
+        public String getValueId()
+        {
+            if(StringUtils.isNotEmpty(parameter)) {
+                return parameter;
+            } else {
+                return value == null ? "" : value.getId();
+            }
+        }
+
         public void setValue(SenroDesignerObject value)
         {
             this.value = value;
+            if(value != null) {
+                parameter = null;
+            }
         }
 
         public BindingDescription getDescription()
@@ -173,6 +195,9 @@ public class AssociationInstance implements SenroDesignerObject
         public void setParameter(String parameter)
         {
             this.parameter = parameter;
+            if(StringUtils.isNotEmpty(parameter)) {
+                value = null;
+            }
         }
 
     }

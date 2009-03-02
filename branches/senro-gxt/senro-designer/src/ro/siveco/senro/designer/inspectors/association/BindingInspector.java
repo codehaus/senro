@@ -127,8 +127,7 @@ public class BindingInspector implements Inspector, ActionListener
             binding_name = binding.getDescription().getName();
         }
         bindingNameL.setText(binding_name == null ? "" : binding_name);
-        SenroDesignerObject value = binding.getValue();
-        bindingValueTF.setText(value == null ? "" : value.getId());
+        bindingValueTF.setText(binding.getValueId());
         for (int i = 0; i < aspectValues.size(); i++) {
             String aspect_val = binding.getAspects().get(i).getValue();
             aspectValues.get(i).setText(aspect_val == null ? "" : aspect_val);

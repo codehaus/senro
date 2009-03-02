@@ -5,19 +5,12 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.CellConstraints;
 
 import java.io.File;
-import java.io.ObjectOutputStream;
 import java.io.IOException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.ObjectInputStream;
-import java.io.InputStream;
-import java.io.FileInputStream;
 import java.io.FileFilter;
 import java.util.*;
 import java.util.List;
 import java.awt.*;
 
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -29,18 +22,16 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 
 public class DesignerProject
 {
-    private final int VERSION = 1;
 
-    public static final String PROJECT_FILE_NAME = "project.sdp";
+    public static final String COMPONENT_FILE_NAME = "Component.xml";
     public static final String PROJECT_MODEL_FILE_NAME = "model.jfpr";
-    public static final String SERVER_OBJECTS_NAME = "server.bin";
-    public static final String CLIENT_OBJECTS_NAME = "client.bin";
 
     private List<Template> templates = new ArrayList<Template>();
     private Map<String, Template> templatesByName = new HashMap<String, Template>();
 
     private Set<String> gridNames = new HashSet<String>();
-    private File projectFilePath;
+
+    private File projectFileDir;
     private ProjectModel projectModel;
     private ParametersManager parametersManager;
     private JFrame parametersFrame;
@@ -110,7 +101,7 @@ public class DesignerProject
                 if (!pathname.isDirectory()) {
                     return false;
                 }
-                File proj_file = new File(pathname, PROJECT_FILE_NAME);
+                File proj_file = new File(pathname, COMPONENT_FILE_NAME);
                 return proj_file.exists() && !proj_file.isDirectory();
 
             }
@@ -192,8 +183,7 @@ public class DesignerProject
             throw new EngineRuntimeException("Cannot create project in an existing folder.");
         }
         path.mkdir();
-        projectFilePath = new File(path, PROJECT_FILE_NAME);
-        save();
+        projectFileDir = path;
     }
 
     private void createProject(File path) throws IOException, ClassNotFoundException
@@ -201,60 +191,14 @@ public class DesignerProject
         if (!path.exists()) {
             throw new EngineRuntimeException("Path " + path + " doesn't exist.");
         }
-        if (path.isDirectory()) {
-            path = new File(path, PROJECT_FILE_NAME);
+        if(!path.isDirectory()) {
+            throw new EngineRuntimeException("Path " + path + " is not a directory.");
         }
-        InputStream fis = null;
-        ObjectInputStream ois = null;
-        try {
-            fis = new FileInputStream(path);
-            ois = new ObjectInputStream(fis);
-            readProject(ois);
+        File comp_file = new File(path, COMPONENT_FILE_NAME);
+        if(!comp_file.exists() || comp_file.isDirectory()) {
+            throw new EngineRuntimeException("Component.xml file doesn't exist.");
         }
-        finally {
-            IOUtils.closeQuietly(ois);
-            IOUtils.closeQuietly(fis);
-        }
-        projectFilePath = path;
-    }
-
-    public List<File> getGridFilesList()
-    {
-        List<File> gridFilesList = new ArrayList<File>();
-        for (String grid_name : gridNames) {
-            gridFilesList.add(getGridPath(grid_name));
-        }
-        return gridFilesList;
-    }
-
-    public void save() throws IOException
-    {
-        OutputStream fos = null;
-        ObjectOutputStream os = null;
-        try {
-            fos = new FileOutputStream(projectFilePath);
-            os = new ObjectOutputStream(fos);
-            writeProject(os);
-        }
-        finally {
-            IOUtils.closeQuietly(os);
-            IOUtils.closeQuietly(fos);
-        }
-    }
-
-    public void writeProject(ObjectOutputStream os) throws IOException
-    {
-        os.writeInt(VERSION);
-        os.writeObject(gridNames);
-        os.writeObject(parametersManager.getParametersList());
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public void readProject(ObjectInputStream is) throws IOException, ClassNotFoundException
-    {
-        is.readInt();
-        gridNames = new HashSet<String>((Set<String>) is.readObject());
-        parametersManager.setParameters((java.util.List<Parameter>) is.readObject());
+        projectFileDir = path;
     }
 
     public List<Template> getTemplates()
@@ -268,34 +212,14 @@ public class DesignerProject
         return true;
     }
 
-    public File getGridPath(String grid_name)
-    {
-        return new File(getProjectDir(), grid_name + ".xml");
-    }
-
-    public void addGrid(String grid_name)
-    {
-        gridNames.add(grid_name);
-    }
-
-    public void removeGrid(String grid_name)
-    {
-        gridNames.remove(grid_name);
-    }
-
     public File getProjectDir()
     {
-        return projectFilePath.getParentFile();
+        return projectFileDir;
     }
 
-    public File getServerObjectsPath()
+    public void setProjectDir(File proj_dir)
     {
-        return new File(getProjectDir(), SERVER_OBJECTS_NAME);
-    }
-
-    public File getClientObjectsPath()
-    {
-        return new File(getProjectDir(), CLIENT_OBJECTS_NAME);
+        projectFileDir = proj_dir;
     }
 
     public ProjectModel getProjectModel()
@@ -308,10 +232,30 @@ public class DesignerProject
         return parametersManager;
     }
 
+    public File getGridPath(String grid_name)
+    {
+        return new File(getProjectDir(), grid_name + ".xml");
+    }
+
+    public boolean existGrid(String grid_name)
+    {
+        return gridNames.contains(grid_name);
+    }
+
+    public void addGrid(String grid_name)
+    {
+        gridNames.add(grid_name);
+    }
+
+    public void removeGrid(String grid_name)
+    {
+        gridNames.remove(grid_name);
+    }
+
     public SenroDesignerObject getObjectById(String obj_id)
     {
         // not implemented
         return null;
     }
-    
+
 }
