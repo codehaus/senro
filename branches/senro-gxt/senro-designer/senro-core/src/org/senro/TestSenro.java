@@ -19,18 +19,18 @@ public class TestSenro {
         Map<String, Object> runtimeContext = new HashMap<String, Object>();
         runtimeContext.put("senroContext", ctx);
 
-        String template = "new";
+        String template = "list";
 
         ITemplateRepository templateRepo = sid.getSenro().getTemplateRepository();
         sid.setTemplateSearchPath("d:/work/senro/senro-default-templates/src/main/resources/templates");
         InputStream is = templateRepo.getTemplate(template);
-
         TemplateParser parser = new TemplateParser();
         parser.setInputStream(is);
         parser.setApplicationContext(sid.getSpringContext());
 
         RenderContext rc = new RenderContext(runtimeContext);
         rc.setRenderTemplates(false);
+        rc.setRenderIterators(false);
         rc.setRoot(true);
         
         SenroComponent rootComponent = parser.render(rc);
