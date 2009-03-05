@@ -61,7 +61,7 @@ public class GridViewBeanFactory implements BeanFactory
 {
 
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("id", "row", "column")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("id", "rowExpr", "columnExpr")));
 
     /**
      * BeanFactory implementation.  Creates a JETABean and if specified, its GridView component.

@@ -22,7 +22,7 @@ public class TemplateRendererBeanFactory implements BeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
         Collections
-            .unmodifiableSet(new HashSet<String>(Arrays.asList("template", "parameters", "id", "row", "column")));
+            .unmodifiableSet(new HashSet<String>(Arrays.asList("template", "parameters", "id", "rowExpr", "columnExpr")));
 
     public JETABean createBean(String compName, boolean instantiateBean, boolean setDefaults) throws FormException
     {

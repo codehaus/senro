@@ -41,8 +41,8 @@ public class TabPageViewBeanFactory implements BeanFactory
             }
         }
         BeanProperties default_props = new BeanProperties(beaninfo);
-        default_props.removeProperty("row");
-        default_props.removeProperty("column");
+        default_props.removeProperty("rowExpr");
+        default_props.removeProperty("columnExpr");
         return new JETABean(comp, default_props);
     }
 

@@ -17,7 +17,7 @@ import java.awt.*;
 public class SenroListBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("entity", "id", "row", "column")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("entity", "id", "rowExpr", "columnExpr")));
 
     public SenroListBeanFactory()
     {

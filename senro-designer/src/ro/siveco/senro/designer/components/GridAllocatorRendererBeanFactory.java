@@ -13,7 +13,7 @@ import java.awt.*;
 public class GridAllocatorRendererBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("gridAllocator", "id", "row", "column")));
+        Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("gridAllocator", "id", "rowExpr", "columnExpr")));
 
     public GridAllocatorRendererBeanFactory()
     {

@@ -39,7 +39,9 @@ public interface ComponentXmlNames
     public static final String COMPONENTS_ELEMENT = "Components";
 
     public static final String ROW_ATTRIBUTE = "row";
+    public static final String ROW_EXPR_ATTRIBUTE = "rowExpression";
     public static final String COL_ATTRIBUTE = "col";
+    public static final String COL_EXPR_ATTRIBUTE = "colExpression";
     public static final String ROW_SPAN_ATTRIBUTE = "rowSpan";
     public static final String COL_SPAN_ATTRIBUTE = "colSpan";
 

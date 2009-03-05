@@ -66,27 +66,27 @@ public class TreeNode extends JLabel implements UIDesignerObject
     }
 
     @Override
-    public String getRow()
+    public String getRowExpr()
     {
-        return udoDelegate.getRow();
+        return udoDelegate.getRowExpr();
     }
 
     @Override
-    public void setRow(String _row)
+    public void setRowExpr(String _row)
     {
-        udoDelegate.setRow(_row);
+        udoDelegate.setRowExpr(_row);
     }
 
     @Override
-    public String getColumn()
+    public String getColumnExpr()
     {
-        return udoDelegate.getColumn();
+        return udoDelegate.getColumnExpr();
     }
 
     @Override
-    public void setColumn(String _col)
+    public void setColumnExpr(String _col)
     {
-        udoDelegate.setColumn(_col);
+        udoDelegate.setColumnExpr(_col);
     }
 
     @Override

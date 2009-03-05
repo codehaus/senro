@@ -20,7 +20,7 @@ public class ConditionalComponentBeanFactory extends JComponentBeanFactory
     public static final String ELSE_TAB_TITLE = "Else";
     private static final Set<String> BASIC_PROPERTIES =
             Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("condition", TAB_PROP_NAME,
-                    "id", "row", "column")));
+                    "id", "rowExpr", "columnExpr")));
 
     public ConditionalComponentBeanFactory()
     {

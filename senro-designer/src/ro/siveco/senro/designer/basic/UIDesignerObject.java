@@ -2,10 +2,10 @@ package ro.siveco.senro.designer.basic;
 
 public interface UIDesignerObject extends SenroDesignerObject
 {
-    public void setRow(String row);
-    public String getRow();
+    public void setRowExpr(String row);
+    public String getRowExpr();
 
-    public void setColumn(String col);
-    public String getColumn();
+    public void setColumnExpr(String col);
+    public String getColumnExpr();
 
 }
