@@ -151,7 +151,8 @@ public class SenroContextManager extends AbstractTableModel implements ActionLis
 
     private void render()
     {
-        renderWithContext(new SenroContext());
+        DesignerManager.getSharedDesignerManager().getProject().hideSenroContext();        
+        renderWithContext(getSenroContext());
     }
 
     public SenroContext getSenroContext()

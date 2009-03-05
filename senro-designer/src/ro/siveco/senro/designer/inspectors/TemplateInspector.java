@@ -20,6 +20,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.util.*;
 
+import org.senro.gwt.client.model.ui.binding.EcReplaceType;
+
 public class TemplateInspector extends CommonUIInspector implements ItemListener
 {
     public static final String TEMPLATE_INSPECTOR_TITLE = "Template Inspector";
@@ -31,7 +33,7 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
     protected JTable parametersTable;
     protected TemplateParametersModel model;
     protected JButton expandButton;
-    protected JTextField editingContextTF = new JTextField();
+    protected JComboBox editingContextCB = new JComboBox();
     protected boolean isUpdating = false;
 
     public TemplateInspector()
@@ -90,8 +92,9 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
         colTF.addActionListener(this);
         builder.add(colTF, cc.xy(3, 8));
         builder.add(new JLabel("Editing Context", JLabel.RIGHT), cc.xy(1, 10));
-        editingContextTF.addActionListener(this);
-        builder.add(editingContextTF, cc.xy(3, 10));
+        populateEditingContextCombo();
+        editingContextCB.addItemListener(this);
+        builder.add(editingContextCB, cc.xy(3, 10));
         builder.add(new JLabel("Template", JLabel.RIGHT), cc.xy(1, 12));
         templatesCB.addItemListener(this);
         builder.add(templatesCB, cc.xy(3, 12));
@@ -105,7 +108,7 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
         updateUI();
     }
 
-    public Collection getOptions()
+    public Collection getTemplateOptions()
     {
         DesignerProject proj = DesignerManager.getSharedDesignerManager().getProject();
         if (proj == null) {
@@ -122,7 +125,7 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
     private void updateTemplatesCombo()
     {
         templatesCB.removeAllItems();
-        Collection c = getOptions();
+        Collection c = getTemplateOptions();
         if (c != null) {
             for (Object tpl_name : c) {
                 templatesCB.addItem(tpl_name);
@@ -131,13 +134,22 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
         templatesCB.setSelectedItem(templateComponent.getTemplateName());
     }
 
+    private void populateEditingContextCombo()
+    {
+        editingContextCB.removeAllItems();
+        EcReplaceType[] ed_ctx_values = EcReplaceType.values();
+        for (EcReplaceType ed_ctx_value : ed_ctx_values) {
+            editingContextCB.addItem(ed_ctx_value.getName());
+        }
+    }
+
     public void updateUI()
     {
         if (templateComponent == null) {
             return;
         }
         super.updateUI();
-        editingContextTF.setText(templateComponent.getEditingContext());
+        editingContextCB.setSelectedItem(templateComponent.getEditingContext());
         isUpdating = true;
         updateTemplatesCombo();
         parametersTable.tableChanged(new TableModelEvent(model));
@@ -146,15 +158,11 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
 
     public void actionPerformed(ActionEvent e)
     {
-        Object source = e.getSource();
-        if(source == editingContextTF) {
-           templateComponent.setEditingContext(editingContextTF.getText());
-        }
         String act_cmd = e.getActionCommand();
         if (act_cmd.equals(EXPAND_ACTION)) {
             expand();
         }
-        super.actionPerformed(e);        
+        super.actionPerformed(e);
         updateUI();
     }
 
@@ -167,9 +175,14 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
         if (isUpdating || templateComponent == null) {
             return;
         }
-        DesignerProject project = DesignerManager.getSharedDesignerManager().getProject();
-        templateComponent.setTemplate(project.getTemplate((String) templatesCB.getSelectedItem()));
-        parametersTable.tableChanged(new TableModelEvent(model));
+        Object source = e.getSource();
+        if(source == editingContextCB) {
+            templateComponent.setEditingContext((String) editingContextCB.getSelectedItem());
+        } else if(source == templatesCB) {
+            DesignerProject project = DesignerManager.getSharedDesignerManager().getProject();
+            templateComponent.setTemplate(project.getTemplate((String) templatesCB.getSelectedItem()));
+            parametersTable.tableChanged(new TableModelEvent(model));
+        }
     }
 
     public class TemplateParametersModel extends AbstractTableModel

@@ -91,6 +91,11 @@ public class DesignerProject
         locateOnScreenCenter(senroContextFrame);
     }
 
+    public void hideSenroContext()
+    {
+        senroContextFrame.setVisible(false);
+    }
+
     private void loadTemplates() throws EngineException
     {
         File projects_path = getProjectDir().getParentFile();

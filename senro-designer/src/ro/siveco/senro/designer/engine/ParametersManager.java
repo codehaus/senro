@@ -22,9 +22,10 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
     public final static int NAME_IDX = 0;
     public final static int TYPE_IDX = 1;
     public final static int DEFAULT_VALUE_IDX = 2;
+    public final static int DIRECTION_IDX = 3;
 
     private List<Parameter> parameters = new ArrayList<Parameter>();
-    protected String[] columnNames = new String[]{"Name", "Type", "Default Value"};
+    protected String[] columnNames = new String[]{"Name", "Type", "Default Value", "Direction"};
     protected JTable parametersTable;
     protected JButton addButton, deleteButton;
     protected JPanel parametersPanel;
@@ -42,6 +43,16 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
         CellConstraints cc = new CellConstraints();
 
         parametersTable = new JTable(this);
+        // setup direction column
+        TableColumn dir_col = parametersTable.getColumnModel().getColumn(DIRECTION_IDX);
+        JComboBox dir_combo = new JComboBox();
+        dir_combo.addItem(ParameterDirection.IN.getName());
+        dir_combo.addItem(ParameterDirection.OUT.getName());
+        dir_combo.addItem(ParameterDirection.INOUT.getName());
+        DefaultCellEditor dir_editor = new DefaultCellEditor(dir_combo);
+        dir_editor.setClickCountToStart(2);
+        dir_col.setCellEditor(dir_editor);
+
         parametersTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         parametersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane param_scrollpane = new JScrollPane(parametersTable);
@@ -91,6 +102,9 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
             case DEFAULT_VALUE_IDX:
                 value = param.getDefaultValue();
                 break;
+            case DIRECTION_IDX:
+                value = param.getDirection().getName();
+                break;
         }
         return value;
     }
@@ -113,6 +127,9 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
                 break;
             case DEFAULT_VALUE_IDX:
                 param.setDefaultValue((String) aValue);
+                break;
+            case DIRECTION_IDX:
+                param.setDirection((String)aValue);
                 break;
         }
         fireTableCellUpdated(rowIndex, columnIndex);

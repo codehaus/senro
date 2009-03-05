@@ -212,6 +212,8 @@ public final class AssociationDescription
                 return SenroContextDescription.class;
             case CONTEXT_FRAGMENT:
                 return ContextFragmentDescription.class;
+            case ANY:
+                return DisplayGroupDescription.class;
             case TABPAGE:
             case ICON_BUTTON:
             case GRID:
