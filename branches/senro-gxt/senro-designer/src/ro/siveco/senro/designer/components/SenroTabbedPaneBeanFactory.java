@@ -14,7 +14,7 @@ import java.awt.*;
 public class SenroTabbedPaneBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("tabs", "id", "row", "column")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("tabs", "id", "rowExpr", "columnExpr")));
 
     public SenroTabbedPaneBeanFactory()
     {

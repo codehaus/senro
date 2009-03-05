@@ -13,7 +13,7 @@ import java.awt.*;
 public class SenroDateFieldBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
-            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("id", "row", "column")));
+            Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("id", "rowExpr", "columnExpr")));
 
     public SenroDateFieldBeanFactory()
     {

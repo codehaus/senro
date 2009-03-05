@@ -64,8 +64,8 @@ public class CommonUIInspector implements Inspector, ActionListener
     {
         nameTF.setText(uiDesignerObject.getName());
         idTF.setText(uiDesignerObject.getId());
-        rowTF.setText(uiDesignerObject.getRow());
-        colTF.setText(uiDesignerObject.getColumn());
+        rowTF.setText(uiDesignerObject.getRowExpr());
+        colTF.setText(uiDesignerObject.getColumnExpr());
     }
 
     public void actionPerformed(ActionEvent e)
@@ -79,9 +79,9 @@ public class CommonUIInspector implements Inspector, ActionListener
         } else if(source == idTF) {
            uiDesignerObject.setId(idTF.getText());
         } else if(source == rowTF) {
-           uiDesignerObject.setRow(rowTF.getText());
+           uiDesignerObject.setRowExpr(rowTF.getText());
         } else if(source == colTF) {
-           uiDesignerObject.setColumn(colTF.getText());
+           uiDesignerObject.setColumnExpr(colTF.getText());
         }
         updateUI();
     }

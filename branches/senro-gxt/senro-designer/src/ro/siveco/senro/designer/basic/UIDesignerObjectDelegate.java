@@ -16,31 +16,31 @@ public class UIDesignerObjectDelegate extends SenroDesignerObjectDelegate implem
     }
 
     @Override
-    public void setRow(String _row)
+    public void setRowExpr(String row_expr)
     {
-        if(ObjectUtils.equals(rowExpression, _row)) {
+        if(ObjectUtils.equals(rowExpression, row_expr)) {
             return;
         }
-        rowExpression = _row == null ? "" : _row;
+        rowExpression = row_expr == null ? "" : row_expr;
     }
 
     @Override
-    public String getRow()
+    public String getRowExpr()
     {
         return rowExpression == null ? "" : rowExpression;
     }
 
     @Override
-    public void setColumn(String _col)
+    public void setColumnExpr(String col_expr)
     {
-        if(ObjectUtils.equals(colExpression, _col)) {
+        if(ObjectUtils.equals(colExpression, col_expr)) {
             return;
         }
-        colExpression = _col == null ? "" : _col;
+        colExpression = col_expr == null ? "" : col_expr;
     }
 
     @Override
-    public String getColumn()
+    public String getColumnExpr()
     {
         return colExpression == null ? "" : colExpression;
     }

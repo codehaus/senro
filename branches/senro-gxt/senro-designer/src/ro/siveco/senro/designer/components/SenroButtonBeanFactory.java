@@ -19,7 +19,7 @@ public class SenroButtonBeanFactory extends JComponentBeanFactory
 {
     private static final Set<String> BASIC_PROPERTIES =
             Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("text", "id",
-                    "buttonIcon", "hoverIcon", "type", "row", "column")));
+                    "buttonIcon", "hoverIcon", "type", "rowExpr", "columnExpr")));
 
     public SenroButtonBeanFactory()
     {

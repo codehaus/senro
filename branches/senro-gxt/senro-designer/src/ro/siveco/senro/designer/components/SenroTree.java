@@ -54,7 +54,7 @@ public class SenroTree extends GridView implements UIDesignerObject
     {
     }
 
-    public void setRow(String _row)
+    public void setRowExpr(String _row)
     {
         if (ObjectUtils.equals(row, _row)) {
             return;
@@ -62,12 +62,12 @@ public class SenroTree extends GridView implements UIDesignerObject
         row = _row == null ? "" : _row;
     }
 
-    public String getRow()
+    public String getRowExpr()
     {
         return row == null ? "" : row;
     }
 
-    public void setColumn(String _col)
+    public void setColumnExpr(String _col)
     {
         if (ObjectUtils.equals(col, _col)) {
             return;
@@ -75,7 +75,7 @@ public class SenroTree extends GridView implements UIDesignerObject
         col = _col == null ? "" : _col;
     }
 
-    public String getColumn()
+    public String getColumnExpr()
     {
         return col == null ? "" : col;
     }

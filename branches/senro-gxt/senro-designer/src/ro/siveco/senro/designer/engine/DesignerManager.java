@@ -65,7 +65,6 @@ import com.jeta.swingbuilder.gui.components.TSErrorDialog2;
 import com.jeta.swingbuilder.gui.formmgr.FormSurrogate;
 import com.jeta.open.registry.JETARegistry;
 import com.jeta.open.i18n.I18N;
-import com.extjs.gxt.ui.client.event.GridEvent;
 
 public class DesignerManager
 {
@@ -835,6 +834,7 @@ public class DesignerManager
                     case MessageBox.CUSTOM_OPTION:
                         assignIdsAutomatically();
                         mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent().getSelectedComponent()));
+                        saveProjectFiles();
                         break;
                     case MessageBox.CANCEL_OPTION:
                 }
@@ -863,7 +863,6 @@ public class DesignerManager
                 uI_and_nonUI_obj_ids.add(id);
             }
         }
-        System.out.println("Ids Set is: " + uI_and_nonUI_obj_ids);
         for (SenroDesignerObject sdo : without_id_objs) {
             setAutomaticIdForObject(sdo, uI_and_nonUI_obj_ids);
             uI_and_nonUI_obj_ids.add(sdo.getId());
@@ -1013,11 +1012,12 @@ public class DesignerManager
                 }
             }
         }
+        Set<SenroAssoc> senro_assocs = rootComponent.getAssociations();
         recoverTopGrids(all_grids);
         serverObjSetManager.loadData(server_objs);
         clientObjSetManager.loadData(client_objs);
         recoverParameters(senro_params);
-        recoverAssociations(rootComponent);
+        recoverAssociations(senro_assocs);
     }
 
     private void recoverTopGrids(List<SenroContainerComponent> all_grids) throws FormException
@@ -1046,10 +1046,9 @@ public class DesignerManager
         project.getParametersManager().setParameters(parameters);
     }
 
-    private void recoverAssociations(SenroComponent root_component)
+    private void recoverAssociations(Set<SenroAssoc> senro_assocs)
     {
         Map<String, SenroAssoc> all_senro_assocs = new HashMap<String, SenroAssoc>();
-        Set<SenroAssoc> senro_assocs = root_component.getAssociations();
         if (senro_assocs != null) {
             for (SenroAssoc senro_assoc : senro_assocs) {
                 all_senro_assocs.put(getSenroComponentIdFromParser(senro_assoc), senro_assoc);
@@ -1445,16 +1444,10 @@ public class DesignerManager
             Component cmp = crt_comp.getBeanDelegate();
             if (cmp != null) {
                 Map<String, Object> attr_map = new HashMap<String, Object>();
-                String row_attr = ((UIDesignerObject) cmp).getRow();
-                if (row_attr == null || row_attr.trim().length() == 0) {
-                    row_attr = String.valueOf(crt_comp.getRow() - 1);
-                }
-                attr_map.put(ComponentXmlNames.ROW_ATTRIBUTE, row_attr);
-                String col_attr = ((UIDesignerObject) cmp).getColumn();
-                if (col_attr == null || col_attr.trim().length() == 0) {
-                    col_attr = String.valueOf(crt_comp.getColumn() - 1);
-                }
-                attr_map.put(ComponentXmlNames.COL_ATTRIBUTE, col_attr);
+                attr_map.put(ComponentXmlNames.ROW_EXPR_ATTRIBUTE, ((UIDesignerObject)cmp).getRowExpr());
+                attr_map.put(ComponentXmlNames.ROW_ATTRIBUTE, String.valueOf(crt_comp.getRow()));
+                attr_map.put(ComponentXmlNames.COL_EXPR_ATTRIBUTE, ((UIDesignerObject)cmp).getColumnExpr());
+                attr_map.put(ComponentXmlNames.COL_ATTRIBUTE, String.valueOf(crt_comp.getColumn()));
                 attr_map.put(ComponentXmlNames.ROW_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getRowSpan()));
                 attr_map.put(ComponentXmlNames.COL_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getColumnSpan()));
                 ComponentConstraints cnstr = crt_comp.getConstraints();
@@ -2146,8 +2139,8 @@ public class DesignerManager
         ppm.setBeanClassName(comp_class.getName());
         ppm.addProperty("name", comp.getName() == null ? "" : comp.getName());
         ppm.addProperty("id", comp.getId() == null ? "" : getSenroComponentIdFromParser(comp));
-        ppm.addProperty("row", "");
-        ppm.addProperty("column", "");
+        ppm.addProperty("rowExpr", StringUtils.defaultString(comp.getLayoutData().getRowExpr()));
+        ppm.addProperty("columnExpr", StringUtils.defaultString(comp.getLayoutData().getColumnExpr()));
 
         return ppm;
     }
@@ -2218,8 +2211,8 @@ public class DesignerManager
                 System.out.println("invalid SenroCellLayout for component: " + comp.getRenderComponent() + " with id: " + comp.getId());
                 return getSingleCellDefaultCellConstraints();
             }
-            int col = cell_layout.getColumn() + 1;
-            int row = cell_layout.getRow() + 1;
+            int col = cell_layout.getColumn();
+            int row = cell_layout.getRow();
             int colspan = cell_layout.getColSpan();
             int rowspan = cell_layout.getRowSpan();
             String va = cell_layout.getVerticalAlignment();
