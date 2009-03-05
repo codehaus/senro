@@ -9,6 +9,7 @@ public class Parameter implements Serializable
     protected String name = "";
     protected String type = "";
     protected String defaultValue = "";
+    protected ParameterDirection direction = ParameterDirection.IN;
 
     public Parameter(String name, String type, String defaultValue)
     {
@@ -50,4 +51,23 @@ public class Parameter implements Serializable
     {
         this.defaultValue = defaultValue;
     }
+
+    public ParameterDirection getDirection()
+    {
+        return direction;
+    }
+
+    public void setDirection(ParameterDirection direction)
+    {
+        if(direction != null) {
+            this.direction = direction;
+        }
+    }
+
+    public void setDirection(String dir_name)
+    {
+        ParameterDirection dir = ParameterDirection.getDirection(dir_name);
+        direction = dir == null ? ParameterDirection.IN : dir;
+    }
+
 }

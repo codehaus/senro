@@ -68,6 +68,7 @@ public interface ComponentXmlNames
     public static final String VALIGN_ATTRIBUTE = "valign";
     public static final String CONDITION_ATTRIBUTE = "condition";
     public static final String FILTER_CONDITION_ATTRIBUTE = "filterCondition";
+    public static final String PARAMETER_DIRECTION_ATTRIBUTE = "direction";
 
     public static final String PROPERTY_ATTRIBUTE = "property";
     public static final String CREATE_LABEL_ATTRIBUTE = "createLabel";

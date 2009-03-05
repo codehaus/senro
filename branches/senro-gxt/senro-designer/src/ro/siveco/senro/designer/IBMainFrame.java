@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.io.File;
 
 import ro.siveco.senro.designer.engine.DesignerManager;
+import ro.siveco.senro.designer.engine.DesignerProject;
 import ro.siveco.senro.designer.components.TopGridView;
 import ro.siveco.senro.designer.components.TableComponent;
 import ro.siveco.senro.designer.components.TemplateComponent;
@@ -52,6 +53,7 @@ import ro.siveco.senro.designer.inspectors.association.AssociationInspectorPanel
 import ro.siveco.senro.designer.inspectors.SenroUiInspector;
 import ro.siveco.senro.designer.inspectors.TableComponentInspector;
 import ro.siveco.senro.designer.inspectors.TemplateInspector;
+import ro.siveco.senro.designer.inspectors.TopGridViewInspector;
 import ro.siveco.senro.designer.inspector.UIInspectorManager;
 
 /**
@@ -378,6 +380,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         inspectorsPanel = uiInspectorManager.getPanel();
         uiInspectorManager.addInspectorForClass(new TableComponentInspector(), TableComponent.class);
         uiInspectorManager.addInspectorForClass(new TemplateInspector(), TemplateComponent.class);
+        uiInspectorManager.addInspectorForClass(new TopGridViewInspector(), TopGridView.class);
 
         m_buttonbar.addView(I18N.getLocalizedMessage("Selected Component"), inspectorsPanel,
                 FormDesignerUtils.loadImage(Icons.COMPONENT_16));
@@ -1144,7 +1147,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         if ((proj_dir == null) || !proj_dir.exists()) {
             m_status_cell.setText("");
         } else {
-            File proj_model_file = new File(proj_dir, "model.jfpr");
+            File proj_model_file = new File(proj_dir, DesignerProject.PROJECT_MODEL_FILE_NAME);
             m_status_cell.setText(proj_model_file.getAbsolutePath());
         }
     }
