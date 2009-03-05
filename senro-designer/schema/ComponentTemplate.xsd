@@ -170,6 +170,7 @@
                         <xs:complexType>
                             <xs:attribute name="name" type="xs:string"/>
                             <xs:attribute name="value" type="xs:string"/>
+                            <xs:attribute name="direction" type="xs:string"/>
                         </xs:complexType>
                     </xs:element>
                 </xs:sequence>
@@ -253,6 +254,7 @@
         <xs:complexType>
             <xs:attribute name="name" type="xs:string"/>
             <xs:attribute name="type" type="xs:string"/>
+            <xs:attribute name="direction" type="xs:string"/>
             <xs:attribute name="defaultValue" type="xs:string"/>
         </xs:complexType>
 
