@@ -119,7 +119,7 @@ public final class AssociationDescription
                 if (!accept_one && binding.acceptObject(obj_1)) {
                     accept_one = true;
                 } else
-                if (!accept_two && binding.getBindingClass().equals(obj_2.getClass())) {
+                if (!accept_two && binding.acceptObject(obj_2)) {
                     accept_two = true;
                 }
                 if (accept_one && accept_two) {
@@ -213,9 +213,10 @@ public final class AssociationDescription
             case CONTEXT_FRAGMENT:
                 return ContextFragmentDescription.class;
             case ANY:
-                return DisplayGroupDescription.class;
-            case TABPAGE:
+                return SenroDesignerObject.class;
             case ICON_BUTTON:
+                return SenroButton.class;
+            case TABPAGE:
             case GRID:
             case POPUP:
             case ROOTPANEL:
@@ -225,6 +226,7 @@ public final class AssociationDescription
             case CONDITIONAL_ELSE:
             case CONTEXT_ELEMENT:
             case TEMPLATE_PARAM:
+            case PARAMETER:
                 // not implemented
             default:
                 logger.error("No object specified for '" + cmp_assoc + "'.");

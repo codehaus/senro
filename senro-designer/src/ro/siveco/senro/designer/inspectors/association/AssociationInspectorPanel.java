@@ -137,6 +137,8 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
                         }
                     }
                     updateBindingsPanel(binding_inspectors);
+                } else {
+                    updateBindingsPanel(Collections.<BindingInspector>emptyList());
                 }
             }
         });
@@ -147,6 +149,12 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
     {
         bindingsPanel.removeAll();
         int n = binding_inspectors.size();
+        if(n == 0) {
+            revalidate();
+            bindingsPanel.setVisible(false);
+            bindingsPanel.setVisible(true);
+            return;
+        }
         StringBuffer rows_buff = new StringBuffer();
         for (int i = 0; i < n; i++) {
             rows_buff.append("1dlu, fill:pref, ");
