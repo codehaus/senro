@@ -814,7 +814,7 @@ public class DesignerManager
         } catch (IOException ex) {
             logger.error("Delete temp file error", ex);
         }
-        mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_SELECTED, getCurrentEditor().getFormComponent()));
+        mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent()));
     }
 
     public void saveProject()
@@ -856,7 +856,7 @@ public class DesignerManager
         for (SenroDesignerObject sdo : all_UI_and_nonUI_objs) {
             String id = sdo.getId();
             if (!StringUtils.isBlank(id)) {
-                if(uI_and_nonUI_obj_ids.contains(id)) {
+                if (uI_and_nonUI_obj_ids.contains(id)) {
                     // id is duplicate of other object id
                     id = setAutomaticIdForObject(sdo, uI_and_nonUI_obj_ids);
                 }
@@ -995,6 +995,7 @@ public class DesignerManager
         List<SenroComponent> senro_params = new ArrayList<SenroComponent>();
         List<ObjectDescription> server_objs = new ArrayList<ObjectDescription>();
         List<ObjectDescription> client_objs = new ArrayList<ObjectDescription>();
+        List<ObjectDescription> context_fragments = new ArrayList<ObjectDescription>();
         all_grids.add((SenroContainerComponent) rootComponent);
         for (SenroComponent comp : all_components) {
             ComponentAssociation comp_assoc = comp.getRenderComponent();
@@ -1003,21 +1004,77 @@ public class DesignerManager
             } else if (comp_assoc.equals(ComponentAssociation.PARAMETER)) {
                 senro_params.add(comp);
             }
-            ObjectDescription od = ObjectSetManager.getObjectDescription(comp);
-            if (od != null) {
-                if (isServerObject(od)) {
-                    server_objs.add(od);
-                } else {
-                    client_objs.add(od);
-                }
-            }
+            sortNonUIObj(comp, server_objs, client_objs, context_fragments);
         }
         Set<SenroAssoc> senro_assocs = rootComponent.getAssociations();
+        for (SenroContainerComponent top_grid : all_grids) {
+            collectAssocsAndNonUIObjs(top_grid, senro_assocs, server_objs, client_objs, context_fragments);
+        }
+        server_objs.add(joinContextFragments(context_fragments));
         recoverTopGrids(all_grids);
         serverObjSetManager.loadData(server_objs);
         clientObjSetManager.loadData(client_objs);
         recoverParameters(senro_params);
         recoverAssociations(senro_assocs);
+    }
+
+    private ObjectDescription joinContextFragments(List<ObjectDescription> context_fragments)
+    {
+        ContextFragmentDescription root_ctx = (ContextFragmentDescription) context_fragments.get(0);
+        if(context_fragments.size() == 1) {
+            return root_ctx;
+        }
+        for (int i = 1; i < context_fragments.size(); i++) {
+            ContextFragmentDescription ctx = (ContextFragmentDescription) context_fragments.get(i);
+            for (int j = 0; j < ctx.getContextParametersCount(); j++) {
+                SCDescription.ParamEntry pe = ctx.getParametersEntry(j);
+                root_ctx.addContextParameter(pe.getKey(), pe.getValue());
+            }
+        }
+        return root_ctx;
+    }
+
+    private void sortNonUIObj(SenroComponent comp, List<ObjectDescription> server_objs,
+                              List<ObjectDescription> client_objs, List<ObjectDescription> context_fragments)
+    {
+        ObjectDescription od = ObjectSetManager.getObjectDescription(comp);
+        if (od != null) {
+            boolean has_feedback = false;
+            for (ObjectDescription co : client_objs) {
+                if (co.getId().equals(DisplayGroupDescription.FEEDBACK_DG_NAME)) {
+                    has_feedback = true;
+                }
+            }
+            if (comp.getRenderComponent().equals(ComponentAssociation.CONTEXT_FRAGMENT)) {
+                context_fragments.add(od);
+            } else if (isServerObject(od)) {
+                server_objs.add(od);
+            } else
+            if (!(has_feedback && od.getId().equals(DisplayGroupDescription.FEEDBACK_DG_NAME))) {
+                client_objs.add(od);
+            }
+        }
+    }
+
+    private void collectAssocsAndNonUIObjs(SenroContainerComponent container, Set<SenroAssoc> senro_assocs,
+                                           List<ObjectDescription> server_objs, List<ObjectDescription> client_objs, List<ObjectDescription> context_fragments)
+    {
+        List<SenroComponent> comps = container.getComponents();
+        for (SenroComponent comp : comps) {
+            ComponentAssociation comp_assoc = comp.getRenderComponent();
+            if (comp_assoc.equals(ComponentAssociation.GRID)) {
+                Set<SenroAssoc> assocs = comp.getAssociations();
+                senro_assocs.addAll(assocs);
+                List<SenroComponent> grid_comps = ((SenroContainerComponent) comp).getComponents();
+                for (SenroComponent sc : grid_comps) {
+                    sortNonUIObj(sc, server_objs, client_objs, context_fragments);
+                    if (sc instanceof SenroContainerComponent) {
+                        SenroContainerComponent scc = (SenroContainerComponent) sc;
+                        collectAssocsAndNonUIObjs(scc, senro_assocs, server_objs, client_objs, context_fragments);
+                    }
+                }
+            }
+        }
     }
 
     private void recoverTopGrids(List<SenroContainerComponent> all_grids) throws FormException
@@ -1444,9 +1501,9 @@ public class DesignerManager
             Component cmp = crt_comp.getBeanDelegate();
             if (cmp != null) {
                 Map<String, Object> attr_map = new HashMap<String, Object>();
-                attr_map.put(ComponentXmlNames.ROW_EXPR_ATTRIBUTE, ((UIDesignerObject)cmp).getRowExpr());
+                attr_map.put(ComponentXmlNames.ROW_EXPR_ATTRIBUTE, ((UIDesignerObject) cmp).getRowExpr());
                 attr_map.put(ComponentXmlNames.ROW_ATTRIBUTE, String.valueOf(crt_comp.getRow()));
-                attr_map.put(ComponentXmlNames.COL_EXPR_ATTRIBUTE, ((UIDesignerObject)cmp).getColumnExpr());
+                attr_map.put(ComponentXmlNames.COL_EXPR_ATTRIBUTE, ((UIDesignerObject) cmp).getColumnExpr());
                 attr_map.put(ComponentXmlNames.COL_ATTRIBUTE, String.valueOf(crt_comp.getColumn()));
                 attr_map.put(ComponentXmlNames.ROW_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getRowSpan()));
                 attr_map.put(ComponentXmlNames.COL_SPAN_ATTRIBUTE, String.valueOf(crt_comp.getColumnSpan()));

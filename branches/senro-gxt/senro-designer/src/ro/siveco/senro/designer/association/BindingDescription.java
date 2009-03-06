@@ -39,7 +39,7 @@ public class BindingDescription
 
     public boolean acceptObject(SenroDesignerObject o)
     {
-        return o == null || bindingClass.equals(o.getClass());
+        return o == null || bindingClass.isAssignableFrom(o.getClass());
     }
 
     public Set<String> getAspects()
