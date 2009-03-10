@@ -16,6 +16,8 @@ public class AssociationXmlGenerator
         assoc_elem.setAttribute(ComponentXmlNames.ID_ATTRIBUTE, assoc.getId());
         assoc_elem.setAttribute(ComponentXmlNames.TYPE_ATTRIBUTE,
                                 assoc.getDescription().getSenroAssoc().getClass().getName());
+        assoc_elem.setAttribute(ComponentXmlNames.PRECEDENCE_ATTRIBUTE, 
+        		String.valueOf(assoc.getDescription().getSenroAssoc().getPrecedence()));
         List<AssociationInstance.BindingInstance> bindings = assoc.getBindings();
         for(AssociationInstance.BindingInstance binding : bindings) {
             Element binding_elem = doc.createElement(ComponentXmlNames.BINDING_ELEMENT);

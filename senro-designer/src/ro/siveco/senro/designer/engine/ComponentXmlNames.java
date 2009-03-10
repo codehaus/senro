@@ -56,6 +56,7 @@ public interface ComponentXmlNames
     public static final String TEMPLATE_EDITING_CONTEXT = "editingContext";
     public static final String ID_ATTRIBUTE = "id";
     public static final String TYPE_ATTRIBUTE = "type";
+    public static final String PRECEDENCE_ATTRIBUTE = "precedence";
     public static final String DEFAULT_VALUE_ATTRIBUTE = "defaultValue";
     public static final String LIST_ATTRIBUTE = "list";
     public static final String ENTITY_ATTRIBUTE = "entity";
