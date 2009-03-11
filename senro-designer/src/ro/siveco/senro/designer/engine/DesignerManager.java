@@ -113,6 +113,9 @@ public class DesignerManager
     public DesignerManager(IBMainFrame main_frame)
     {
         sid = new SidSenroAdapter();
+        String working_dir = new File(System.getProperty("user.dir")).getAbsolutePath();
+        sid.setTaskOverridesSearchPath(working_dir);
+        sid.setTaskDefaultsSearchPath(working_dir);
         sharedDesignerManager = this;
         associationManager = new AssociationManager(this);
         this.mainFrame = main_frame;
@@ -504,6 +507,10 @@ public class DesignerManager
                     return false;
                 }
                 SenroDesignerObject sdo = (SenroDesignerObject) o;
+                if (sdo instanceof TableComponent.SenroTableColumn) {
+                    TableComponent table = ((TableComponent.SenroTableColumn) sdo).getTable();
+                    return getGridContainer(table).getName().equals(grid_name);
+                }
                 return isUIObject(sdo) && (getGridContainer((Component) sdo).getName().equals(grid_name));
             }
         };
@@ -552,7 +559,7 @@ public class DesignerManager
 
     public boolean isUIObject(SenroDesignerObject sdo)
     {
-        return (sdo instanceof Component);
+        return (sdo instanceof Component || sdo instanceof TableComponent.SenroTableColumn);
     }
 
     public boolean isServerObject(SenroDesignerObject sdo)
@@ -1020,8 +1027,11 @@ public class DesignerManager
 
     private ObjectDescription joinContextFragments(List<ObjectDescription> context_fragments)
     {
-        ContextFragmentDescription root_ctx = (ContextFragmentDescription) context_fragments.get(0);
-        if(context_fragments.size() == 1) {
+        if(context_fragments.size() == 0) {
+            context_fragments.add(new ContextFragmentDescription());
+        }
+        ContextFragmentDescription root_ctx = (ContextFragmentDescription)context_fragments.get(0);
+        if (context_fragments.size() == 1) {
             return root_ctx;
         }
         for (int i = 1; i < context_fragments.size(); i++) {
@@ -1064,7 +1074,9 @@ public class DesignerManager
             ComponentAssociation comp_assoc = comp.getRenderComponent();
             if (comp_assoc.equals(ComponentAssociation.GRID)) {
                 Set<SenroAssoc> assocs = comp.getAssociations();
-                senro_assocs.addAll(assocs);
+                if(assocs != null) {
+                    senro_assocs.addAll(assocs);                    
+                }
                 List<SenroComponent> grid_comps = ((SenroContainerComponent) comp).getComponents();
                 for (SenroComponent sc : grid_comps) {
                     sortNonUIObj(sc, server_objs, client_objs, context_fragments);
