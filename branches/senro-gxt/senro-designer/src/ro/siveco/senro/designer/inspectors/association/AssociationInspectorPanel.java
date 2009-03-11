@@ -150,9 +150,7 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
         bindingsPanel.removeAll();
         int n = binding_inspectors.size();
         if(n == 0) {
-            revalidate();
-            bindingsPanel.setVisible(false);
-            bindingsPanel.setVisible(true);
+            redisplayBindingsPanel();
             return;
         }
         StringBuffer rows_buff = new StringBuffer();
@@ -167,7 +165,14 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
         for (int i = 0; i < n; i++) {
             bindingsPanel.add(binding_inspectors.get(i).getPanel(), cc.xy(2, 2 * i + 2));
         }
+        redisplayBindingsPanel();
+    }
+
+    public void redisplayBindingsPanel()
+    {
         revalidate();
+        bindingsPanel.setVisible(false);
+        bindingsPanel.setVisible(true);
     }
 
     private JPanel createButtonPanel()
@@ -245,8 +250,10 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
         addParamButton.setEnabled(selectedObject != null);
         if (selectedObject != null) {
             assocTable.tableChanged(new TableModelEvent(assocTableModel));
+        } else {
+            bindingsPanel.removeAll();
+            redisplayBindingsPanel();
         }
-        bindingsPanel.removeAll();
         revalidate();
     }
 
