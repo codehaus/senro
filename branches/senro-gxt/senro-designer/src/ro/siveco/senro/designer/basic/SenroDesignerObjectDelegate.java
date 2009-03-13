@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.io.Serializable;
 
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AddAssociationEvent;
+import ro.siveco.senro.designer.util.event.RemoveAssociationEvent;
 
 public class SenroDesignerObjectDelegate implements SenroDesignerObject, Serializable
 {
@@ -107,6 +109,7 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
             associations = new HashSet<AssociationInstance>();
         }
         if (assoc != null) {
+            new AddAssociationEvent(this, assoc).post();
             associations.add(assoc);
             notifyListeners(DesignerObjectEvent.OBJECT_DID_CHANGE);
         }
@@ -115,6 +118,7 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     @Override
     public void removeAssociation(AssociationInstance assoc)
     {
+        new RemoveAssociationEvent(this, assoc).post();
         associations.remove(assoc);
         notifyListeners(DesignerObjectEvent.OBJECT_DID_CHANGE);
     }

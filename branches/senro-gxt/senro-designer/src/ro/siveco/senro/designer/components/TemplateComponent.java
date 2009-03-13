@@ -77,7 +77,8 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
         if (templateName == null) {
             return null;
         }
-        setTemplate(DesignerManager.getSharedDesignerManager().getProject().getTemplate(templateName));
+        Template loaded_template = DesignerManager.getSharedDesignerManager().getProject().getTemplate(templateName);
+        setTemplate(loaded_template);
         return template;
     }
 
@@ -94,7 +95,9 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
         List<Parameter> param_list = template.getParameters();
         for (Parameter parameter : param_list) {
             TemplateParameter t_param = param_map.get(parameter.getName());
-            if (t_param != null && t_param.getType().equals(parameter.getType())) {
+            if (t_param != null) {
+                t_param.setType(parameter.getType());
+                t_param.setDirection(parameter.getDirection());
                 parameters.add(t_param);
             } else {
                 parameters.add(new TemplateParameter(parameter));

@@ -13,6 +13,7 @@ import java.awt.*;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 
@@ -41,8 +42,6 @@ public class DesignerProject
     public DesignerProject(File path, boolean create)
             throws IOException, ClassNotFoundException, EngineException
     {
-        createParametersManager();
-        createSenroContextManager();
         if (create) {
             createNewProject(path);
         } else {
@@ -51,13 +50,15 @@ public class DesignerProject
         projectModel = new ProjectModel();
         projectModel.setProjectPath(new File(getProjectDir(), PROJECT_MODEL_FILE_NAME).getAbsolutePath());
         loadTemplates();
+        createParametersManager(getTemplate(getProjectDir().getName()));
+        createSenroContextManager();
     }
 
-    private void createParametersManager()
+    private void createParametersManager(Template template)
     {
         parametersFrame = new JFrame("Parameters");
         parametersFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        parametersManager = new ParametersManager();
+        parametersManager = new ParametersManager(template);
         FormLayout layout = new FormLayout("1dlu, fill:pref:grow, 1dlu", "1dlu, fill:pref:grow, 1dlu");
         parametersFrame.getContentPane().setLayout(layout);
         CellConstraints cc = new CellConstraints();
@@ -118,6 +119,12 @@ public class DesignerProject
             templatesByName.put(template_name, tpl);
             updateTemplate(tpl);
         }
+        String prj_template_name = getProjectDir().getName();
+        if(getTemplate(prj_template_name) == null) {
+            Template tpl = new Template(prj_template_name);
+            templates.add(tpl);
+            templatesByName.put(prj_template_name, tpl);
+        }
         Collections.sort(templates, new Comparator<Template>()
         {
             public int compare(Template tpl_1, Template tpl_2)
@@ -140,7 +147,10 @@ public class DesignerProject
                 String param_name = param.getAttribute(ComponentXmlNames.NAME_ATTRIBUTE);
                 String param_type = param.getAttribute(ComponentXmlNames.TYPE_ATTRIBUTE);
                 String param_default = param.getAttribute(ComponentXmlNames.DEFAULT_VALUE_ATTRIBUTE);
-                parameter_list.add(new Parameter(param_name, param_type, param_default));
+                Parameter par = new Parameter(param_name, param_type, param_default);
+                String dir_name = param.getAttribute(ComponentXmlNames.DIRECTION_ATTRIBUTE);
+                par.setDirection(ParameterDirection.getDirection(StringUtils.isBlank(dir_name) ? ParameterDirection.IN.getName() : dir_name));
+                parameter_list.add(par);
                 param = XmlHelper.getNextSiblingElement(param);
             }
         }
@@ -155,17 +165,12 @@ public class DesignerProject
         if (tpl == null) {
             return;
         }
-        if (tpl.getName().equals(getProjectDir().getName())) {
-            List<Parameter> parameter_list = parametersManager.getParametersList();
-            tpl.setParameters(parameter_list);
-        } else {
-            try {
-                updateImportedTemplate(tpl);
-            }
-            catch (EngineException e) {
-                templates.remove(tpl);
-                templatesByName.remove(tpl.getName());
-            }
+        try {
+            updateImportedTemplate(tpl);
+        }
+        catch (EngineException e) {
+            templates.remove(tpl);
+            templatesByName.remove(tpl.getName());
         }
     }
 
@@ -196,11 +201,11 @@ public class DesignerProject
         if (!path.exists()) {
             throw new EngineRuntimeException("Path " + path + " doesn't exist.");
         }
-        if(!path.isDirectory()) {
+        if (!path.isDirectory()) {
             throw new EngineRuntimeException("Path " + path + " is not a directory.");
         }
         File comp_file = new File(path, COMPONENT_FILE_NAME);
-        if(!comp_file.exists() || comp_file.isDirectory()) {
+        if (!comp_file.exists() || comp_file.isDirectory()) {
             throw new EngineRuntimeException("Component.xml file doesn't exist.");
         }
         projectFileDir = path;

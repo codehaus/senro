@@ -4,6 +4,8 @@ import org.apache.commons.lang.ObjectUtils;
 
 import java.io.Serializable;
 
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
+
 public class UIDesignerObjectDelegate extends SenroDesignerObjectDelegate implements UIDesignerObject, Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -21,6 +23,7 @@ public class UIDesignerObjectDelegate extends SenroDesignerObjectDelegate implem
         if(ObjectUtils.equals(rowExpression, row_expr)) {
             return;
         }
+        new AttributeChangeEvent(this, "rowExpression", rowExpression, row_expr).post();
         rowExpression = row_expr == null ? "" : row_expr;
     }
 
@@ -36,6 +39,7 @@ public class UIDesignerObjectDelegate extends SenroDesignerObjectDelegate implem
         if(ObjectUtils.equals(colExpression, col_expr)) {
             return;
         }
+        new AttributeChangeEvent(this, "colExpression", colExpression, col_expr).post();
         colExpression = col_expr == null ? "" : col_expr;
     }
 

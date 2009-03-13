@@ -38,5 +38,19 @@ public class Template
         parameters.addAll(new_params);
     }
 
+    public void addParameter(Parameter new_param)
+    {
+        parameters.add(new_param);
+    }
+
+    public void deleteParameter(Parameter param)
+    {
+        parameters.remove(param);
+    }
+
+    public void deleteParameter(int idx)
+    {
+        parameters.remove(idx);
+    }
 }
 

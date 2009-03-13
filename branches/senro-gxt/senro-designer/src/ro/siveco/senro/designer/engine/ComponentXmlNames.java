@@ -51,6 +51,7 @@ public interface ComponentXmlNames
 
     public static final String NAME_ATTRIBUTE = "name";
     public static final String VALUE_ATTRIBUTE = "value";
+    public static final String DIRECTION_ATTRIBUTE = "direction";
     public static final String KEY_ATTRIBUTE = "key";
     public static final String TEMPLATE_FILE_ATTRIBUTE = "file";
     public static final String TEMPLATE_EDITING_CONTEXT = "editingContext";

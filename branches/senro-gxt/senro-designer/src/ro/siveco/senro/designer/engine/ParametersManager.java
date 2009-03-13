@@ -3,6 +3,8 @@ package ro.siveco.senro.designer.engine;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.builder.PanelBuilder;
+import com.jeta.forms.gui.form.GridViewEvent;
+import com.jeta.forms.gui.form.GridComponent;
 
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
@@ -12,8 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.*;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
+
+import ro.siveco.senro.designer.IBMainFrame;
 
 public class ParametersManager extends AbstractTableModel implements ActionListener
 {
@@ -24,14 +26,15 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
     public final static int DEFAULT_VALUE_IDX = 2;
     public final static int DIRECTION_IDX = 3;
 
-    private List<Parameter> parameters = new ArrayList<Parameter>();
+    private Template template = null;
     protected String[] columnNames = new String[]{"Name", "Type", "Default Value", "Direction"};
     protected JTable parametersTable;
     protected JButton addButton, deleteButton;
     protected JPanel parametersPanel;
 
-    public ParametersManager()
+    public ParametersManager(Template template)
     {
+        this.template = template;
         createUI();
     }
 
@@ -77,7 +80,10 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
 
     public int getRowCount()
     {
-        return parameters.size();
+        if(template == null) {
+            return 0;
+        }
+        return template.getParameters().size();
     }
 
     public int getColumnCount()
@@ -87,11 +93,11 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
 
     public Object getValueAt(int rowIndex, int columnIndex)
     {
-        if (parameters.size() == 0) {
+        if (template == null || template.getParameters().size() == 0) {
             return "";
         }
         Object value = "";
-        Parameter param = parameters.get(rowIndex);
+        Parameter param = template.getParameters().get(rowIndex);
         switch (columnIndex) {
             case NAME_IDX:
                 value = param.getName();
@@ -111,10 +117,10 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
 
     public void setValueAt(Object aValue, int rowIndex, int columnIndex)
     {
-        if (parameters.size() == 0) {
+        if (template == null || template.getParameters().size() == 0) {
             return;
         }
-        Parameter param = parameters.get(rowIndex);
+        Parameter param = template.getParameters().get(rowIndex);
         switch (columnIndex) {
             case NAME_IDX:
                 if (param.getName().equals(aValue)) {
@@ -133,6 +139,7 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
                 break;
         }
         fireTableCellUpdated(rowIndex, columnIndex);
+        notifyListeners();
     }
 
     public String getColumnName(int columnIndex)
@@ -167,30 +174,49 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
         }
     }
 
-    public void setParameters(List<Parameter> param)
+    public void setParameters(List<Parameter> params)
     {
-        parameters.clear();
-        for (Parameter parameter : param) {
-            parameters.add(parameter);
+        if(template == null) {
+            return;
         }
+        template.setParameters(params);
+        notifyListeners();
     }
 
     private void addParameter()
     {
+        if(template == null) {
+            return;
+        }
         Parameter new_param = new Parameter();
-        parameters.add(new_param);
+        template.addParameter(new_param);
         parametersTable.tableChanged(new TableModelEvent(this));
+        notifyListeners();
     }
 
     private void deleteParameter()
     {
+        if(template == null) {
+            return;
+        }
         stopEditingInTable();
         int selected_row = parametersTable.getSelectedRow();
         if (!isEditableRow(selected_row)) {
             return;
         }
-        parameters.remove(selected_row);
+        template.deleteParameter(selected_row);
         parametersTable.tableChanged(new TableModelEvent(this));
+        notifyListeners();
+    }
+
+    private void notifyListeners()
+    {
+        DesignerManager dm = DesignerManager.getSharedDesignerManager();
+        IBMainFrame mainFrame = dm.getMainFrame();
+        GridComponent sel_gc = dm.getCurrentEditor().getFormComponent().getSelectedComponent();
+        if(sel_gc!= null) {
+            mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, sel_gc));
+        }
     }
 
     private void stopEditingInTable()
@@ -218,6 +244,6 @@ public class ParametersManager extends AbstractTableModel implements ActionListe
 
     public List<Parameter> getParametersList()
     {
-        return Collections.unmodifiableList(parameters);
+        return template.getParameters();
     }
 }
