@@ -187,16 +187,18 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
 
     public class TemplateParametersModel extends AbstractTableModel
     {
-        public final static int NAME_IDX = 0;
-        public final static int VALUE_IDX = 1;
+        public final static int NAME_IDX      = 0;
+        public final static int VALUE_IDX     = 1;
+        public final static int DIRECTION_IDX = 2;
 
-        protected String[] columnNames = new String[]{"Name", "Value"};
+        protected String[] columnNames = new String[]{"Name", "Value", "Direction"};
 
         public int getRowCount()
         {
             if (templateComponent == null) {
                 return 0;
             }
+            templateComponent.refreshParameters();
             return templateComponent.getParameters().size();
         }
 
@@ -211,6 +213,7 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
             if (templateComponent == null || getRowCount() == 0) {
                 return null;
             }
+            templateComponent.refreshParameters();            
             TemplateParameter param = templateComponent.getParameters().get(rowIndex);
             switch (columnIndex) {
                 case NAME_IDX:
@@ -218,6 +221,9 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
                     break;
                 case VALUE_IDX:
                     value = param.getValue();
+                    break;
+                case DIRECTION_IDX:
+                    value = param.getDirection().getName();
                     break;
             }
             return value;
@@ -235,13 +241,15 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
                 case VALUE_IDX:
                     param.setValue((String) aValue);
                     break;
+                case DIRECTION_IDX:
+                    break;
             }
             fireTableCellUpdated(rowIndex, columnIndex);
         }
 
         public boolean isCellEditable(int rowIndex, int columnIndex)
         {
-            return columnIndex != NAME_IDX;
+            return columnIndex != NAME_IDX && columnIndex != DIRECTION_IDX;
         }
 
         public String getColumnName(int columnIndex)

@@ -18,4 +18,9 @@ public abstract class Event
         return source;
     }
 
+    public void post()
+    {
+        EventCenter.post(this);
+    }
+
 }

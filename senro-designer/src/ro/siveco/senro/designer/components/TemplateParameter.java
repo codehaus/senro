@@ -1,6 +1,7 @@
 package ro.siveco.senro.designer.components;
 
 import ro.siveco.senro.designer.engine.Parameter;
+import ro.siveco.senro.designer.engine.ParameterDirection;
 
 import java.io.Serializable;
 
@@ -11,12 +12,14 @@ public class TemplateParameter implements Serializable
     private String name;
     private String type;
     private String value;
+    private ParameterDirection direction;
 
     public TemplateParameter(Parameter parameter)
     {
         name = parameter.getName();
         type = parameter.getType();
         value = parameter.getDefaultValue();
+        direction = parameter.getDirection();
     }
 
     public String getName()
@@ -47,6 +50,16 @@ public class TemplateParameter implements Serializable
     public void setValue(String value)
     {
         this.value = value;
+    }
+
+    public ParameterDirection getDirection()
+    {
+        return direction;
+    }
+
+    public void setDirection(ParameterDirection direction)
+    {
+        this.direction = direction;
     }
 
     public String toString()

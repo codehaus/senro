@@ -1075,7 +1075,7 @@ public class DesignerManager
             if (comp_assoc.equals(ComponentAssociation.GRID)) {
                 Set<SenroAssoc> assocs = comp.getAssociations();
                 if(assocs != null) {
-                    senro_assocs.addAll(assocs);                    
+                    senro_assocs.addAll(assocs);
                 }
                 List<SenroComponent> grid_comps = ((SenroContainerComponent) comp).getComponents();
                 for (SenroComponent sc : grid_comps) {
@@ -1110,6 +1110,8 @@ public class DesignerManager
             String type = (String) senro_param.get(SIDComponent.Param_Type);
             String default_value = (String) senro_param.get(SIDComponent.Param_DefaultValue);
             Parameter param = new Parameter(name, type, default_value);
+            // TODO DIRECTION
+//            param.setDirection((String) senro_param.get(SIDComponent.);
             parameters.add(param);
         }
         project.getParametersManager().setParameters(parameters);
@@ -1771,6 +1773,7 @@ public class DesignerManager
                 param_elem.setAttribute(ComponentXmlNames.NAME_ATTRIBUTE, name);
                 String value = (templateParameter.getValue() == null ? "" : templateParameter.getValue());
                 param_elem.setAttribute(ComponentXmlNames.VALUE_ATTRIBUTE, value);
+                param_elem.setAttribute(ComponentXmlNames.DIRECTION_ATTRIBUTE, templateParameter.getDirection().getName());
             }
         }
     }
