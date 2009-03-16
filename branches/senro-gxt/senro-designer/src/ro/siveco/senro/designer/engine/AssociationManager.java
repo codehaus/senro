@@ -128,7 +128,7 @@ public class AssociationManager implements AssociationCreator
         AssociationInstance.BindingInstance obj_bi = assoc.getBindingWithName(obj_binding.getName());
         AssociationInstance.BindingInstance param_bi = assoc.getBindingWithName(param_binding.getName());
         obj_bi.setValue(o);
-        param_bi.setParameter(param.getName());
+        param_bi.setParameter("@{" + param.getName() + "}");
         o.addAssociation(assoc);
     }
 
