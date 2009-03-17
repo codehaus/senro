@@ -191,18 +191,6 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
     }
 
     @Override
-    public void addListener(DesignerObjectListener listener)
-    {
-        udoDelegate.addListener(listener);
-    }
-
-    @Override
-    public void removeListener(DesignerObjectListener listener)
-    {
-        udoDelegate.removeListener(listener);
-    }
-
-    @Override
     public void updateLinks(Map<String, SenroDesignerObject> obj_map)
     {
         udoDelegate.updateLinks(obj_map);
@@ -317,18 +305,6 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
                 return;
             }
             sdoDelegate.setId(obj_id);
-        }
-
-        @Override
-        public void addListener(DesignerObjectListener listener)
-        {
-            sdoDelegate.addListener(listener);
-        }
-
-        @Override
-        public void removeListener(DesignerObjectListener listener)
-        {
-            sdoDelegate.removeListener(listener);
         }
 
         @Override

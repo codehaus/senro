@@ -14,6 +14,8 @@ import java.io.Serializable;
 import ro.siveco.senro.designer.association.AssociationInstance;
 import ro.siveco.senro.designer.util.event.AddAssociationEvent;
 import ro.siveco.senro.designer.util.event.RemoveAssociationEvent;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
+import ro.siveco.senro.designer.util.event.IdChangeEvent;
 
 public class SenroDesignerObjectDelegate implements SenroDesignerObject, Serializable
 {
@@ -21,7 +23,6 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     private String senroName;
     private String senroId;
     private transient Set<AssociationInstance> associations = new HashSet<AssociationInstance>();
-    protected transient Set<DesignerObjectListener> listeners = new HashSet<DesignerObjectListener>();
     private final transient SenroDesignerObject senroObject;
 
     public SenroDesignerObjectDelegate(SenroDesignerObject senroObject)
@@ -41,8 +42,8 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
         if (ObjectUtils.equals(senroName, obj_name)) {
             return;
         }
+        new AttributeChangeEvent(this, "name", senroName, obj_name).post();
         senroName = obj_name == null ? "" : obj_name;
-        notifyListeners(DesignerObjectEvent.OBJECT_DID_CHANGE);
     }
 
     @Override
@@ -57,43 +58,8 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
         if (ObjectUtils.equals(senroId, obj_id)) {
             return;
         }
+        new IdChangeEvent(this, senroId, obj_id).post();
         senroId = obj_id == null ? "" : obj_id;
-        notifyListeners(DesignerObjectEvent.OBJECT_DID_CHANGE);
-    }
-
-    @Override
-    public void addListener(DesignerObjectListener listener)
-    {
-        if (listeners == null) {
-            listeners = new HashSet<DesignerObjectListener>();
-        }
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeListener(DesignerObjectListener listener)
-    {
-        if (listeners == null) {
-            return;
-        }
-        listeners.remove(listener);
-    }
-
-    public void notifyListeners(DesignerObjectEvent e)
-    {
-        if (listeners == null) {
-            return;
-        }
-        for (DesignerObjectListener listener : listeners) {
-            switch (e) {
-                case OBJECT_WILL_BE_DELETED:
-                    listener.objectWillBeDeleted(senroObject);
-                    break;
-                case OBJECT_DID_CHANGE:
-                    listener.objectDidChange(senroObject);
-                    break;
-            }
-        }
     }
 
     @Override
@@ -111,7 +77,6 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
         if (assoc != null) {
             new AddAssociationEvent(this, assoc).post();
             associations.add(assoc);
-            notifyListeners(DesignerObjectEvent.OBJECT_DID_CHANGE);
         }
     }
 
@@ -120,7 +85,6 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     {
         new RemoveAssociationEvent(this, assoc).post();
         associations.remove(assoc);
-        notifyListeners(DesignerObjectEvent.OBJECT_DID_CHANGE);
     }
 
     @Override

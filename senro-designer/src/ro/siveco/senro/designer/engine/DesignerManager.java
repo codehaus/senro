@@ -7,6 +7,7 @@ import ro.siveco.senro.designer.inspector.InspectorManager;
 import ro.siveco.senro.designer.IBMainFrame;
 import ro.siveco.senro.designer.IBMainFrameController;
 import ro.siveco.senro.designer.IBMainFormManager;
+import ro.siveco.senro.designer.DesignerRuntimeException;
 import ro.siveco.senro.designer.engine.xmlgen.AssociationXmlGenerator;
 import ro.siveco.senro.designer.association.AssociationDescription;
 import ro.siveco.senro.designer.association.AssociationInstance;
@@ -159,7 +160,6 @@ public class DesignerManager
         xml_generators.put(GridAllocatorRenderer.class, new GridAllocatorRendererGenerator());
         xml_generators.put(SenroCheckBox.class, new CheckBoxXmlGenerator());
         xml_generators.put(SenroComboBox.class, new ComboBoxXmlGenerator());
-        xml_generators.put(SenroList.class, new ListXmlGenerator());
         xml_generators.put(TableComponent.class, new TableXmlGenerator());
         xml_generators.put(SenroTextField.class, new TextFieldXmlGenerator());
         xml_generators.put(SenroDateField.class, new DateFieldXmlGenerator());
@@ -184,7 +184,6 @@ public class DesignerManager
         comp_memento_generators.put(ComponentAssociation.LABEL, new LabelMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.CHECKBOX, new CheckBoxMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.COMBOBOX, new ComboBoxMementoGenerator());
-        comp_memento_generators.put(ComponentAssociation.LIST, new ListMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.TABLE, new TableMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.TEXTFIELD, new TextFieldMementoGenerator());
         comp_memento_generators.put(ComponentAssociation.DATEFIELD, new DateFieldMementoGenerator());
@@ -220,6 +219,7 @@ public class DesignerManager
                 IteratorComponent.class, "Iterator",
                 GridView.class, "Grid",
                 SenroTree.class, "Tree",
+                TreeNode.class, "TreeNode",
                 GridAllocatorRenderer.class, "GridAllocatorRenderer",
                 DisplayGroupDescription.class, "DisplayGroup",
                 EditingContextDescription.class, "EditingContext",
@@ -1027,10 +1027,10 @@ public class DesignerManager
 
     private ObjectDescription joinContextFragments(List<ObjectDescription> context_fragments)
     {
-        if(context_fragments.size() == 0) {
+        if (context_fragments.size() == 0) {
             context_fragments.add(new ContextFragmentDescription());
         }
-        ContextFragmentDescription root_ctx = (ContextFragmentDescription)context_fragments.get(0);
+        ContextFragmentDescription root_ctx = (ContextFragmentDescription) context_fragments.get(0);
         if (context_fragments.size() == 1) {
             return root_ctx;
         }
@@ -1074,7 +1074,7 @@ public class DesignerManager
             ComponentAssociation comp_assoc = comp.getRenderComponent();
             if (comp_assoc.equals(ComponentAssociation.GRID)) {
                 Set<SenroAssoc> assocs = comp.getAssociations();
-                if(assocs != null) {
+                if (assocs != null) {
                     senro_assocs.addAll(assocs);
                 }
                 List<SenroComponent> grid_comps = ((SenroContainerComponent) comp).getComponents();
@@ -1160,7 +1160,7 @@ public class DesignerManager
                 String comp_id = getSenroComponentIdFromParser(sc);
                 if (sc.getRenderComponent() == null) {
                     if (!StringUtils.isBlank(comp_id)) {
-                        binding.setParameter(comp_id);
+                        binding.setValue(comp_id);
                     }
                 } else {
                     // search in all senro objects map
@@ -1788,22 +1788,6 @@ public class DesignerManager
 
     }
 
-    private class ListXmlGenerator extends ComponentXmlGenerator
-    {
-
-        public String getTagName(XmlGenerationContext context)
-        {
-            return "List";
-        }
-
-        public void buildElementBody(Element e, XmlGenerationContext context)
-        {
-            SenroList list = (SenroList) context.object;
-            e.setAttribute(ComponentXmlNames.ENTITY_ATTRIBUTE, list.getEntity());
-        }
-
-    }
-
     private class TableXmlGenerator extends ComponentXmlGenerator
     {
         public String getTagName(XmlGenerationContext context)
@@ -2205,15 +2189,18 @@ public class DesignerManager
         return sp_path_to_comp_id[sp_path_to_comp_id.length - 1];
     }
 
-    public PropertiesMemento getDefaultPropertiesMementoForComponent(SenroComponent comp, Class comp_class) throws FormException
+    public PropertiesMemento getDefaultPropertiesMementoForComponent(SenroComponent comp, Class comp_class) throws FormException, DesignerRuntimeException
     {
         PropertiesMemento ppm = new PropertiesMemento();
         ppm.setBeanClassName(comp_class.getName());
         ppm.addProperty("name", comp.getName() == null ? "" : comp.getName());
         ppm.addProperty("id", comp.getId() == null ? "" : getSenroComponentIdFromParser(comp));
-        ppm.addProperty("rowExpr", StringUtils.defaultString(comp.getLayoutData().getRowExpr()));
-        ppm.addProperty("columnExpr", StringUtils.defaultString(comp.getLayoutData().getColumnExpr()));
-
+        try {
+            ppm.addProperty("rowExpr", StringUtils.defaultString(comp.getLayoutData().getRowExpr()));
+            ppm.addProperty("columnExpr", StringUtils.defaultString(comp.getLayoutData().getColumnExpr()));
+        } catch (Exception e) {
+            throw new DesignerRuntimeException("null layoutData for component: " + comp.getRenderComponent(), e);
+        }
         return ppm;
     }
 
@@ -2279,7 +2266,7 @@ public class DesignerManager
         public CellConstraints getComponentCellConstraints(SenroComponent comp)
         {
             SenroCellLayout cell_layout = comp.getLayoutData();
-            if (cell_layout == null || cell_layout.getColumn() == -1 || cell_layout.getRow() == -1) {
+            if (cell_layout == null || cell_layout.getColumn() == 0 || cell_layout.getRow() == 0) {
                 System.out.println("invalid SenroCellLayout for component: " + comp.getRenderComponent() + " with id: " + comp.getId());
                 return getSingleCellDefaultCellConstraints();
             }
@@ -2297,8 +2284,11 @@ public class DesignerManager
         public BeanMemento getBeanMementoForStandardComponent(SenroComponent comp, Class comp_class)
         {
             BeanMemento bm = new BeanMemento();
-            System.out.println("Component class: " + comp_class.getName());
-            bm.setCellConstraints(getComponentCellConstraints(comp));
+            if (comp.getParent().getRenderComponent().equals(ComponentAssociation.TABPAGE)) {
+                bm.setCellConstraints(getSingleCellDefaultCellConstraints());
+            } else {
+                bm.setCellConstraints(getComponentCellConstraints(comp));
+            }
             bm.setComponentClass(StandardComponent.class.getName());
             bm.setJETABeanClass(JETABean.class.getName());
             bm.setBeanClass(comp_class.getName());
@@ -2308,8 +2298,11 @@ public class DesignerManager
         public BeanMemento getBeanMementoForContainerComponent(SenroComponent comp, Class comp_class)
         {
             BeanMemento bm = new BeanMemento();
-            System.out.println("Component class: " + comp_class.getName());
-            bm.setCellConstraints(getComponentCellConstraints(comp));
+            if (comp.getParent().getRenderComponent().equals(ComponentAssociation.TABPAGE)) {
+                bm.setCellConstraints(getSingleCellDefaultCellConstraints());
+            } else {
+                bm.setCellConstraints(getComponentCellConstraints(comp));
+            }
             bm.setComponentClass(FormContainerComponent.class.getName());
             bm.setJETABeanClass(JETABean.class.getName());
             bm.setBeanClass(comp_class.getName());
@@ -2358,23 +2351,6 @@ public class DesignerManager
         {
             BeanMemento bm = getBeanMementoForStandardComponent(comp, SenroComboBox.class);
             PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, SenroComboBox.class);
-            bm.setProperties(ppm);
-            return bm;
-        }
-    }
-
-    private class ListMementoGenerator extends ComponentMementoGenerator
-    {
-        @Override
-        public ComponentMemento getCompMemento(SenroComponent comp) throws FormException
-        {
-            BeanMemento bm = getBeanMementoForStandardComponent(comp, SenroList.class);
-            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(comp, SenroList.class);
-//            ppm.addProperty("entity", getPropertyStringValue("entity", comp));
-            ScrollBarsProperty sbp = new ScrollBarsProperty();
-            sbp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            sbp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            ppm.addProperty("scollBars", sbp);
             bm.setProperties(ppm);
             return bm;
         }
@@ -2559,10 +2535,16 @@ public class DesignerManager
             if (type.equals(ComponentAssociation.TABPAGE)) {
                 List<SenroComponent> first_comp_children = ((SenroContainerComponent) first_comp).getComponents();
                 for (SenroComponent first_comp_child : first_comp_children) {
-                    if (first_comp_child.getRenderComponent().equals(ComponentAssociation.GRID)) {
+                    ComponentAssociation child_type = first_comp_child.getRenderComponent();
+                    if (child_type.equals(ComponentAssociation.GRID)) {
                         SenroContainerComponent grid_comp = (SenroContainerComponent) first_comp_child;
                         setRowAndColumnSpecsToStateFromGrid(state, grid_comp);
                         addComponentsToStateFromGrid(state, grid_comp);
+                    } else {
+                        state.setRowSpecs(getSingleCellDefaultRowSpecs());
+                        state.setColumnSpecs(getSingleCellDefaultColumnSpecs());
+                        ComponentMemento comp_memento = compMementoGenerators.get(child_type).getCompMemento(first_comp_child);
+                        state.addComponent(comp_memento);
                     }
                 }
             } else if (type.equals(ComponentAssociation.GRID)) {
@@ -2572,7 +2554,7 @@ public class DesignerManager
             } else {
                 state.setRowSpecs(getSingleCellDefaultRowSpecs());
                 state.setColumnSpecs(getSingleCellDefaultColumnSpecs());
-                ComponentMemento comp_memento = compMementoGenerators.get(first_comp.getRenderComponent()).getCompMemento(first_comp);
+                ComponentMemento comp_memento = compMementoGenerators.get(type).getCompMemento(first_comp);
                 state.addComponent(comp_memento);
             }
             return state;

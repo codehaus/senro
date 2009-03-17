@@ -4,7 +4,6 @@ import ro.siveco.senro.designer.engine.Template;
 import ro.siveco.senro.designer.engine.Parameter;
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
-import ro.siveco.senro.designer.basic.DesignerObjectListener;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
@@ -179,18 +178,6 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
     public void setId(String obj_id)
     {
         udoDelegate.setId(obj_id);
-    }
-
-    @Override
-    public void addListener(DesignerObjectListener listener)
-    {
-        udoDelegate.addListener(listener);
-    }
-
-    @Override
-    public void removeListener(DesignerObjectListener listener)
-    {
-        udoDelegate.removeListener(listener);
     }
 
     @Override

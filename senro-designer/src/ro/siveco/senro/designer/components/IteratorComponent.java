@@ -1,6 +1,7 @@
 package ro.siveco.senro.designer.components;
 
 import com.jeta.forms.gui.form.GridView;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 public class IteratorComponent extends GridView
 {
@@ -12,9 +13,10 @@ public class IteratorComponent extends GridView
         return list == null ? "" : list;
     }
 
-    public void setList(String list)
+    public void setList(String a_list)
     {
-        this.list = list;
+        new AttributeChangeEvent(this, "list", list, a_list).post();
+        list = a_list;
     }
 
     public String getFilterCondition()
@@ -22,9 +24,10 @@ public class IteratorComponent extends GridView
         return filterCondition == null ? "" : filterCondition;
     }
 
-    public void setFilterCondition(String filterCondition)
+    public void setFilterCondition(String filter_condition)
     {
-        this.filterCondition = filterCondition;
+        new AttributeChangeEvent(this, "filterCondition", filterCondition, filter_condition).post();                
+        filterCondition = filter_condition;
     }
 
 }

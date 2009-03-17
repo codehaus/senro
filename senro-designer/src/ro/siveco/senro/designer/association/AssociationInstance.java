@@ -3,7 +3,6 @@ package ro.siveco.senro.designer.association;
 import ro.siveco.senro.designer.DesignerRuntimeException;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.SenroDesignerObjectDelegate;
-import ro.siveco.senro.designer.basic.DesignerObjectListener;
 
 import java.util.*;
 
@@ -81,18 +80,6 @@ public class AssociationInstance implements SenroDesignerObject
     }
 
     @Override
-    public void addListener(DesignerObjectListener listener)
-    {
-        sdoDelegate.addListener(listener);
-    }
-
-    @Override
-    public void removeListener(DesignerObjectListener listener)
-    {
-        sdoDelegate.removeListener(listener);
-    }
-
-    @Override
     public void updateLinks(Map<String, SenroDesignerObject> obj_map)
     {
         sdoDelegate.updateLinks(obj_map);
@@ -140,11 +127,11 @@ public class AssociationInstance implements SenroDesignerObject
     public class BindingInstance
     {
         private final BindingDescription description;
-        private SenroDesignerObject value;
+        private String value;
         private List<AspectInstance> aspects = new ArrayList<AspectInstance>();
         // daca parameter e diferit de null, inseamna ca bindingul e la un parameter. In acest caz
         // value este null
-        private String parameter = null;
+//        private String parameter = null;
 
         public BindingInstance(BindingDescription description)
         {
@@ -155,26 +142,24 @@ public class AssociationInstance implements SenroDesignerObject
             }
         }
 
-        public SenroDesignerObject getValue()
+        public String getValue()
         {
-            return value;
+            return StringUtils.defaultString(value);
         }
 
         public String getValueId()
         {
-            if(StringUtils.isNotEmpty(parameter)) {
-                return parameter;
-            } else {
-                return value == null ? "" : value.getId();
-            }
+            return StringUtils.defaultString(value);
         }
 
-        public void setValue(SenroDesignerObject value)
+        public void setValue(SenroDesignerObject sdo)
+        {
+            value = sdo == null ? "" : sdo.getId();
+        }
+
+        public void setValue(String value)
         {
             this.value = value;
-            if(value != null) {
-                parameter = null;
-            }
         }
 
         public BindingDescription getDescription()
@@ -187,18 +172,18 @@ public class AssociationInstance implements SenroDesignerObject
             return aspects;
         }
 
-        public String getParameter()
-        {
-            return parameter;
-        }
-
-        public void setParameter(String parameter)
-        {
-            this.parameter = parameter;
-            if(StringUtils.isNotEmpty(parameter)) {
-                value = null;
-            }
-        }
+//        public String getParameter()
+//        {
+//            return parameter;
+//        }
+//
+//        public void setParameter(String parameter)
+//        {
+//            this.parameter = parameter;
+//            if(StringUtils.isNotEmpty(parameter)) {
+//                value = null;
+//            }
+//        }
 
     }
 
