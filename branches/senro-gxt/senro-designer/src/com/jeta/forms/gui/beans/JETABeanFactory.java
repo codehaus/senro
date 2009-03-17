@@ -122,7 +122,6 @@ public class JETABeanFactory
        registerFactory(GridAllocatorRenderer.class.getName(), new GridAllocatorRendererBeanFactory());
        registerFactory(SenroDateField.class.getName(), new SenroDateFieldBeanFactory());
        registerFactory(SenroTextField.class.getName(), new SenroTextFieldBeanFactory());
-       registerFactory(SenroList.class.getName(), new SenroListBeanFactory());
        registerFactory(TableComponent.class.getName(), new TableComponentBeanFactory());
        registerFactory(SenroComboBox.class.getName(), new SenroComboBoxBeanFactory());
        registerFactory(SenroLabel.class.getName(), new SenroLabelBeanFactory());

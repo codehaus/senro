@@ -7,8 +7,10 @@ import ro.siveco.senro.designer.ui.CellCoordinates;
 import ro.siveco.senro.designer.objects.*;
 import ro.siveco.senro.designer.inspector.InspectorManager;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
-import ro.siveco.senro.designer.basic.DesignerObjectListener;
 import ro.siveco.senro.designer.util.UIUtil;
+import ro.siveco.senro.designer.util.event.*;
+import ro.siveco.senro.designer.util.event.Observer;
+import ro.siveco.senro.designer.util.event.Event;
 
 import javax.swing.*;
 import java.util.*;
@@ -33,7 +35,7 @@ import org.senro.gwt.model.ui.SenroContainerComponent;
 import org.senro.gwt.client.model.ui.binding.DisplayGroupModelObject;
 import org.senro.ui.template.sid.SIDComponent;
 
-public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, DesignerObjectListener
+public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, Observer
 {
     private static final int VERSION = 1;
 
@@ -206,7 +208,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
         int idx = getFirstNullDataIndex();
         if (idx != -1) {
             dataObjects.set(idx, unique_obj_desc);
-            unique_obj_desc.addListener(this);
+            EventCenter.add(this, unique_obj_desc, Event.class);
             if (matrixView != null) {
                 CellCoordinates unique_obj_coord = getCellCoordinatesForIndex(idx);
                 List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
@@ -316,7 +318,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
             return;
         }
         setDataAt(new_obj, cell_coordinates.col, cell_coordinates.row);
-        new_obj.addListener(this);
+        EventCenter.add(this, new_obj, Event.class);
 
         // put changed data in a list
         List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
@@ -442,7 +444,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
             ObjectDescription obj_desc = (ObjectDescription) is.readObject();
             dataObjects.add(obj_desc);
             if (obj_desc != null) {
-                obj_desc.addListener(this);
+                EventCenter.add(this, obj_desc, Event.class);
             }
         }
         matrixView.refreshCellStructure();
@@ -455,7 +457,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
             ObjectDescription obj_desc = data_objs.get(i);
             dataObjects.set(i, obj_desc);
             if (obj_desc != null) {
-                obj_desc.addListener(this);
+                EventCenter.add(this, obj_desc, Event.class);
             }
         }
         matrixView.refreshCellStructure();
@@ -612,17 +614,6 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
         setClean(false);
     }
 
-    public void objectDidChange(SenroDesignerObject obj)
-    {
-        matrixView.modelDataDidChanged(Collections.<CellCoordinates>emptyList());
-        setClean(false);
-    }
-
-    public void objectWillBeDeleted(SenroDesignerObject obj)
-    {
-        // not implemented
-    }
-
     public boolean isClean()
     {
         return isClean;
@@ -631,5 +622,11 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, D
     public void setClean(boolean clean)
     {
         isClean = clean;
+    }
+
+    public void handleEvent(ro.siveco.senro.designer.util.event.Event event)
+    {
+        matrixView.modelDataDidChanged(Collections.<CellCoordinates>emptyList());
+        setClean(false);
     }
 }

@@ -1,7 +1,6 @@
 package ro.siveco.senro.designer.objects;
 
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
-import ro.siveco.senro.designer.basic.DesignerObjectListener;
 import ro.siveco.senro.designer.basic.SenroDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
 
@@ -63,18 +62,6 @@ public abstract class ObjectDescription implements Serializable, SenroDesignerOb
             return;
         }
         sdoDelegate.setId(obj_id);
-    }
-
-    @Override
-    public void addListener(DesignerObjectListener listener)
-    {
-        sdoDelegate.addListener(listener);
-    }
-
-    @Override
-    public void removeListener(DesignerObjectListener listener)
-    {
-        sdoDelegate.removeListener(listener);
     }
 
     @Override

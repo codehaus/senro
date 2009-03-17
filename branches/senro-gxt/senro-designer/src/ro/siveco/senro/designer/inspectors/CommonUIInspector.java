@@ -35,10 +35,10 @@ public class CommonUIInspector implements Inspector, ActionListener
         builder.add(new JLabel("Id", JLabel.RIGHT), cc.xy(2, 4));
         idTF.addActionListener(this);
         builder.add(idTF, cc.xy(4, 4));
-        builder.add(new JLabel("Row", JLabel.RIGHT), cc.xy(2, 6));
+        builder.add(new JLabel("RowExpr", JLabel.RIGHT), cc.xy(2, 6));
         rowTF.addActionListener(this);
         builder.add(rowTF, cc.xy(4, 6));
-        builder.add(new JLabel("Column", JLabel.RIGHT), cc.xy(2, 8));
+        builder.add(new JLabel("ColumnExpr", JLabel.RIGHT), cc.xy(2, 8));
         colTF.addActionListener(this);
         builder.add(colTF, cc.xy(4, 8));
         panel = builder.getPanel();

@@ -22,7 +22,9 @@ import org.apache.log4j.Logger;
 import org.apache.commons.lang.ClassUtils;
 import ro.siveco.senro.designer.inspectors.SenroUiInspector;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
-import ro.siveco.senro.designer.basic.DesignerObjectListener;
+import ro.siveco.senro.designer.util.event.Observer;
+import ro.siveco.senro.designer.util.event.Event;
+import ro.siveco.senro.designer.util.event.EventCenter;
 import ro.siveco.senro.designer.basic.SenroDesignerObjectContainer;
 import ro.siveco.senro.designer.engine.DesignerManager;
 import ro.siveco.senro.designer.engine.AssociationCreator;
@@ -32,7 +34,7 @@ import ro.siveco.senro.designer.association.AssociationDescription;
 import ro.siveco.senro.designer.util.MapUtil;
 import ro.siveco.senro.designer.components.TableComponent;
 
-public class AssociationInspectorPanel extends JETAPanel implements GridViewListener, SenroUiInspector, DesignerObjectListener
+public class AssociationInspectorPanel extends JETAPanel implements GridViewListener, SenroUiInspector, Observer
 {
     private static Logger logger = Logger.getLogger(AssociationInspectorPanel.class);
     private Map<AssociationDescription, List<BindingInspector>> bindingInspectors = new HashMap<AssociationDescription, List<BindingInspector>>();
@@ -226,10 +228,13 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
                     AssociationInstance sel_assoc = selectedObject.getAssociations().get(sel_idx);
                     List<AssociationInstance.BindingInstance> bindings = sel_assoc.getBindings();
                     for (AssociationInstance.BindingInstance binding : bindings) {
-                        SenroDesignerObject bind_obj = binding.getValue();
-                        if (bind_obj != null) {
-                            bind_obj.removeAssociation(sel_assoc);
-                        }
+                        // not implemented
+                        // Todo trebuie scoase asociatiile de la obiectele la care sunt legate binding-urile
+                        // daca e cazul (daca e o expresie, nu e cazul)
+//                        SenroDesignerObject bind_obj = binding.getValue();
+//                        if (bind_obj != null) {
+//                            bind_obj.removeAssociation(sel_assoc);
+//                        }
                     }
                 }
             }
@@ -296,20 +301,16 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
             if (selectedObject.equals(object)) {
                 return;
             }
-            selectedObject.removeListener(this);
+            EventCenter.remove(this, selectedObject, Event.class);
         }
         selectedObject = object;
         if (selectedObject != null) {
-            selectedObject.addListener(this);
+            EventCenter.add(this, selectedObject, Event.class);
         }
         updateInspectorUI();
     }
 
-    public void objectWillBeDeleted(SenroDesignerObject obj)
-    {
-    }
-
-    public void objectDidChange(SenroDesignerObject obj)
+    public void handleEvent(Event event)
     {
         updateInspectorUI();
     }

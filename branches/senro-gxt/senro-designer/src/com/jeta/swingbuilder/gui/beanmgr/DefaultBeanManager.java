@@ -195,8 +195,6 @@ public class DefaultBeanManager implements BeanManager
                 FormDesignerUtils.loadImage(Icons.CHECK_16));
         registerDefaultBean("ComboBox", "ro.siveco.senro.designer.components.SenroComboBox",
                 FormDesignerUtils.loadImage(Icons.COMBO_16));
-        registerDefaultBean("List", "ro.siveco.senro.designer.components.SenroList",
-                FormDesignerUtils.loadImage(Icons.TABLE_16));
         registerDefaultBean("TextField", "ro.siveco.senro.designer.components.SenroTextField",
                 FormDesignerUtils.loadImage(Icons.TEXT_FIELD_16));
         registerDefaultBean("DateField", "ro.siveco.senro.designer.components.SenroDateField",

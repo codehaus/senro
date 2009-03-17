@@ -2,8 +2,6 @@ package ro.siveco.senro.designer.inspectors.association;
 
 import ro.siveco.senro.designer.inspector.Inspector;
 import ro.siveco.senro.designer.association.AssociationInstance;
-import ro.siveco.senro.designer.basic.SenroDesignerObject;
-import ro.siveco.senro.designer.engine.DesignerManager;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -139,9 +137,11 @@ public class BindingInspector implements Inspector, ActionListener
         Object source = e.getSource();
 
         if (source == bindingValueTF) {
-            String obj_id = bindingValueTF.getText();
-            SenroDesignerObject obj = DesignerManager.getSharedDesignerManager().getProject().getObjectById(obj_id);
-            binding.setValue(obj);
+            String binding_val = bindingValueTF.getText();
+            // not implemented
+            // Todo trebuie facute legaturile cu obiectele (acolo unde e cazul)
+//            SenroDesignerObject obj = DesignerManager.getSharedDesignerManager().getProject().getObjectById(obj_id);
+            binding.setValue(binding_val);
         }
         for (int i = 0; i < aspectValues.size(); i++) {
             JTextField aspectValueTF = aspectValues.get(i);

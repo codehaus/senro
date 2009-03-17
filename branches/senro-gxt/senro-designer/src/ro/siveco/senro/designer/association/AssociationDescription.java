@@ -181,8 +181,6 @@ public final class AssociationDescription
                 return TableComponent.class;
             case TABLECOLUMN:
                 return TableComponent.SenroTableColumn.class;
-            case LIST:
-                return SenroList.class;
             case SWITCHCOMPONENT:
                 return SwitchComponent.class;
             case TABPANEL:
@@ -227,6 +225,7 @@ public final class AssociationDescription
             case CONTEXT_ELEMENT:
             case TEMPLATE_PARAM:
             case PARAMETER:
+            case LIST:
                 // not implemented
             default:
                 logger.error("No object specified for '" + cmp_assoc + "'.");

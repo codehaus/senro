@@ -14,9 +14,6 @@ public interface SenroDesignerObject
     public String getId();
     public void setId(String obj_id);
 
-    public void addListener(DesignerObjectListener listener);
-    public void removeListener(DesignerObjectListener listener);
-
     public void updateLinks(Map<String, SenroDesignerObject> obj_map);
 
     public void addAssociation(AssociationInstance assoc);
