@@ -4,9 +4,12 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 import java.util.Map;
 import java.util.List;
+
+import org.apache.commons.lang.ObjectUtils;
 
 public class SwitchComponent extends PanelComponent implements UIDesignerObject
 {
@@ -30,9 +33,13 @@ public class SwitchComponent extends PanelComponent implements UIDesignerObject
         return property;
     }
 
-    public void setProperty(String property)
+    public void setProperty(String new_property)
     {
-        this.property = property;
+        if(ObjectUtils.equals(property, new_property)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "property", property, new_property).post();
+        property = new_property;
     }
 
     public boolean isCreateLabel()
@@ -40,9 +47,13 @@ public class SwitchComponent extends PanelComponent implements UIDesignerObject
         return createLabel;
     }
 
-    public void setCreateLabel(boolean createLabel)
+    public void setCreateLabel(boolean create_label)
     {
-        this.createLabel = createLabel;
+        if(createLabel == create_label) {
+            return;
+        }
+        new AttributeChangeEvent(this, "createLabel", createLabel, create_label).post();        
+        createLabel = create_label;
     }
 
     @Override

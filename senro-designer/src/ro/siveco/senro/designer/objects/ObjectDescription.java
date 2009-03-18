@@ -3,6 +3,7 @@ package ro.siveco.senro.designer.objects;
 import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.SenroDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 import java.util.Map;
 import java.util.List;
@@ -29,9 +30,13 @@ public abstract class ObjectDescription implements Serializable, SenroDesignerOb
         return canBeDeleted;
     }
 
-    public void setCanBeDeleted(boolean canBeDeleted)
+    public void setCanBeDeleted(boolean can_be_deleted)
     {
-        this.canBeDeleted = canBeDeleted;
+        if(canBeDeleted == can_be_deleted) {
+            return;
+        }
+        new AttributeChangeEvent(this, "canBeDeleted", canBeDeleted, can_be_deleted).post();
+        canBeDeleted = can_be_deleted;
     }
 
     @Override

@@ -131,7 +131,10 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
                 templatesCB.addItem(tpl_name);
             }
         }
-        templatesCB.setSelectedItem(templateComponent.getTemplateName());
+        templatesCB.addItem("");
+        String template_name = templateComponent.getTemplateName();
+        template_name = template_name == null ? "" : template_name;
+        templatesCB.setSelectedItem(template_name);
     }
 
     private void populateEditingContextCombo()
@@ -213,7 +216,7 @@ public class TemplateInspector extends CommonUIInspector implements ItemListener
             if (templateComponent == null || getRowCount() == 0) {
                 return null;
             }
-            templateComponent.refreshParameters();            
+            templateComponent.refreshParameters();
             TemplateParameter param = templateComponent.getParameters().get(rowIndex);
             switch (columnIndex) {
                 case NAME_IDX:

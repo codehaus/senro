@@ -4,11 +4,14 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 import javax.swing.*;
 
 import java.util.Map;
 import java.util.List;
+
+import org.apache.commons.lang.ObjectUtils;
 
 public class SenroButton extends JButton implements UIDesignerObject
 {
@@ -62,9 +65,13 @@ public class SenroButton extends JButton implements UIDesignerObject
         return type;
     }
 
-    public void setType(String type)
+    public void setType(String new_type)
     {
-        this.type = type;
+        if (ObjectUtils.equals(type, new_type)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "type", type, new_type).post();
+        type = new_type;
     }
 
     public int getIntType()
@@ -99,9 +106,13 @@ public class SenroButton extends JButton implements UIDesignerObject
         return (buttonIcon == null ? "" : buttonIcon);
     }
 
-    public void setButtonIcon(String buttonIcon)
+    public void setButtonIcon(String button_icon)
     {
-        this.buttonIcon = buttonIcon;
+        if (ObjectUtils.equals(buttonIcon, button_icon)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "buttonIcon", buttonIcon, button_icon).post();
+        buttonIcon = button_icon;
     }
 
     public String getHoverIcon()
@@ -109,9 +120,22 @@ public class SenroButton extends JButton implements UIDesignerObject
         return (hoverIcon == null ? "" : hoverIcon);
     }
 
-    public void setHoverIcon(String hoverIcon)
+    public void setHoverIcon(String hover_icon)
     {
-        this.hoverIcon = hoverIcon;
+        if (ObjectUtils.equals(hoverIcon, hover_icon)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "hoverIcon", hoverIcon, hover_icon).post();
+        hoverIcon = hover_icon;
+    }
+
+    public void setText(String new_text)
+    {
+        if (ObjectUtils.equals(getText(), new_text)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "text", getText(), new_text).post();
+        super.setText(new_text);
     }
 
     @Override

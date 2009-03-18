@@ -4,11 +4,14 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 import javax.swing.*;
 import java.awt.Component;
 import java.util.Map;
 import java.util.List;
+
+import org.apache.commons.lang.ObjectUtils;
 
 public class ConditionalComponent extends JTabbedPane implements UIDesignerObject
 {
@@ -27,9 +30,13 @@ public class ConditionalComponent extends JTabbedPane implements UIDesignerObjec
         return condition == null ? "" : condition;
     }
 
-    public void setCondition(String condition)
+    public void setCondition(String new_condition)
     {
-        this.condition = condition;
+        if(ObjectUtils.equals(condition, new_condition)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "condition", condition, new_condition).post();
+        condition = new_condition;
     }
 
     public boolean getHasElseBranch()
@@ -37,9 +44,13 @@ public class ConditionalComponent extends JTabbedPane implements UIDesignerObjec
         return hasElseBranch;
     }
 
-    public void setHasElseBranch(boolean hasElseBranch)
+    public void setHasElseBranch(boolean has_else_branch)
     {
-        this.hasElseBranch = hasElseBranch;
+        if(hasElseBranch == has_else_branch) {
+            return;
+        }
+        new AttributeChangeEvent(this, "hasElseBranch", hasElseBranch, has_else_branch).post();
+        hasElseBranch = has_else_branch;
     }
 
     public boolean isHasElseBranch()

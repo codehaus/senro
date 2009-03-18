@@ -4,9 +4,12 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 import java.util.Map;
 import java.util.List;
+
+import org.apache.commons.lang.ObjectUtils;
 
 public class GridAllocatorRenderer extends PanelComponent implements UIDesignerObject
 {
@@ -27,9 +30,13 @@ public class GridAllocatorRenderer extends PanelComponent implements UIDesignerO
         return gridAllocator;
     }
 
-    public void setGridAllocator(String gridAllocator)
+    public void setGridAllocator(String grid_allocator)
     {
-        this.gridAllocator = gridAllocator;
+        if(ObjectUtils.equals(gridAllocator, grid_allocator)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "gridAllocator", gridAllocator, grid_allocator).post();
+        gridAllocator = grid_allocator;
     }
 
     @Override

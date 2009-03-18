@@ -4,11 +4,14 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 import javax.swing.*;
 
 import java.util.Map;
 import java.util.List;
+
+import org.apache.commons.lang.ObjectUtils;
 
 public class SenroLabel extends JLabel implements UIDesignerObject
 {
@@ -19,6 +22,15 @@ public class SenroLabel extends JLabel implements UIDesignerObject
         setText("Label");
         setHorizontalAlignment(SwingConstants.CENTER);
         udoDelegate = new UIDesignerObjectDelegate(this);
+    }
+
+    public void setText(String new_text)
+    {
+        if (ObjectUtils.equals(getText(), new_text)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "text", getText(), new_text).post();
+        super.setText(new_text);
     }
 
     @Override
