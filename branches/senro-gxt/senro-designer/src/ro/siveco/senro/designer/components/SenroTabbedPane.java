@@ -4,11 +4,15 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AddAssociationEvent;
+import ro.siveco.senro.designer.util.event.AddTabEvent;
+import ro.siveco.senro.designer.util.event.RemoveTabEvent;
 
 import javax.swing.*;
 
 import java.util.Map;
 import java.util.List;
+import java.awt.*;
 
 public class SenroTabbedPane extends JTabbedPane implements UIDesignerObject
 {
@@ -18,6 +22,25 @@ public class SenroTabbedPane extends JTabbedPane implements UIDesignerObject
     {
         super();
         udoDelegate = new UIDesignerObjectDelegate(this);
+    }
+
+    @Override
+    public void addTab(String title, Icon icon, Component component)
+    {
+        if (component != null) {
+            new AddTabEvent(this, title, icon, component).post();
+            super.addTab(title, icon, component);
+        }
+    }
+
+    @Override
+    public void removeTabAt(int index)
+    {
+        if(index < 0 || index >= getTabCount()) {
+            return;
+        }
+        new RemoveTabEvent(this, index).post();
+        super.removeTabAt(index);
     }
 
     @Override

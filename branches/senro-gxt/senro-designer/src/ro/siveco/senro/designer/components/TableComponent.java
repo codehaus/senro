@@ -2,6 +2,9 @@ package ro.siveco.senro.designer.components;
 
 import ro.siveco.senro.designer.basic.*;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
+import ro.siveco.senro.designer.util.event.AddColumnEvent;
+import ro.siveco.senro.designer.util.event.RemoveColumnEvent;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -52,6 +55,10 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
 
     public void setColumnList(String column_list)
     {
+        if (ObjectUtils.equals(columnList, column_list)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "columnList", columnList, column_list).post();
         columnList = column_list;
     }
 
@@ -65,7 +72,7 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
         return columns.indexOf(col);
     }
 
-    public void setTableColumnHeaderValue(SenroTableColumn col)
+    private void setTableColumnHeaderValue(SenroTableColumn col)
     {
         TableColumn table_col = getColumnModel().getColumn(getSenroColumnIdx(col));
         table_col.setHeaderValue(col.getName());
@@ -79,6 +86,7 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
     public SenroTableColumn addSenroColumn()
     {
         SenroTableColumn col = new SenroTableColumn();
+        new AddColumnEvent(this, col).post();
         col.setTable(this);
         columns.add(col);
         getColumnModel().addColumn(new TableColumn(columns.indexOf(col)));
@@ -87,6 +95,7 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
 
     public void addSenroColumn(SenroTableColumn col)
     {
+        new AddColumnEvent(this, col).post();
         col.setTable(this);
         columns.add(col);
         getColumnModel().addColumn(new TableColumn(columns.indexOf(col)));
@@ -95,6 +104,7 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
 
     public void removeSenroColumn(int idx)
     {
+        new RemoveColumnEvent(this, idx).post();
         columns.remove(idx);
         while (selectedSenroColumnIdx >= columns.size()) {
             selectedSenroColumnIdx--;
@@ -259,9 +269,13 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
             return expression == null ? "" : expression;
         }
 
-        public void setExpression(String expression)
+        public void setExpression(String new_expression)
         {
-            this.expression = expression;
+            if (ObjectUtils.equals(expression, new_expression)) {
+                return;
+            }
+            new AttributeChangeEvent(this, "expression", expression, new_expression).post();
+            expression = new_expression;
         }
 
         public TableComponent getTable()
@@ -269,9 +283,13 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
             return table;
         }
 
-        public void setTable(TableComponent table)
+        public void setTable(TableComponent new_table)
         {
-            this.table = table;
+            if (ObjectUtils.equals(table, new_table)) {
+                return;
+            }
+            new AttributeChangeEvent(this, "table", table, new_table).post();
+            table = new_table;
         }
 
         @Override
@@ -287,7 +305,7 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
                 return;
             }
             sdoDelegate.setName(obj_name);
-            if(table != null) {
+            if (table != null) {
                 table.setTableColumnHeaderValue(this);
             }
         }

@@ -7,6 +7,7 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 import java.util.*;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.Logger;
 
 public class TemplateComponent extends PanelComponent implements UIDesignerObject
@@ -39,8 +42,19 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
 
     public void setTemplateName(String template_name)
     {
+        if (StringUtils.isBlank(template_name)) {
+            template_name = null;
+        }
+        if (ObjectUtils.equals(templateName, template_name)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "templateName", templateName, template_name).post();
         templateName = template_name;
-        panelText.setText("T:" + templateName);
+        if (templateName == null) {
+            panelText.setText(DEFAULT_TEXT);
+        } else {
+            panelText.setText("T:" + templateName);
+        }
     }
 
     public String getTemplateName()
@@ -53,17 +67,22 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
         return editingContext;
     }
 
-    public void setEditingContext(String editingContext)
+    public void setEditingContext(String editing_context)
     {
-        this.editingContext = editingContext;
-    }
-
-    public void setTemplate(Template template)
-    {
-        if (this.template == template) {
+        if (ObjectUtils.equals(editingContext, editing_context)) {
             return;
         }
-        this.template = template;
+        new AttributeChangeEvent(this, "editingContext", editingContext, editing_context).post();
+        editingContext = editing_context;
+    }
+
+    public void setTemplate(Template new_template)
+    {
+        if (ObjectUtils.equals(template, new_template)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "template", template, new_template).post();
+        template = new_template;
         setTemplateName(this.template == null ? null : this.template.getName());
         refreshParameters();
     }
@@ -83,14 +102,15 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
 
     public void refreshParameters()
     {
+        if(template == null) {
+            return;
+        }
+        new AttributeChangeEvent(this, "parameters", null, null).post();        
         Map<String, TemplateParameter> param_map = new HashMap<String, TemplateParameter>();
         for (TemplateParameter parameter : parameters) {
             param_map.put(parameter.getName(), parameter);
         }
         parameters.clear();
-        if (template == null) {
-            return;
-        }
         List<Parameter> param_list = template.getParameters();
         for (Parameter parameter : param_list) {
             TemplateParameter t_param = param_map.get(parameter.getName());
@@ -125,15 +145,20 @@ public class TemplateComponent extends PanelComponent implements UIDesignerObjec
 
     public String getParamsHex()
     {
+        return getParamsHex(parameters);
+    }
+
+    public static String getParamsHex(List<TemplateParameter> prms)
+    {
         try {
             ByteArrayOutputStream ba_os = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(ba_os);
-            os.writeObject(parameters);
+            os.writeObject(prms);
             os.close();
             byte[] b = ba_os.toByteArray();
             return new String(Hex.encodeHex(b));
         }
-        catch (Exception e) {
+        catch(Exception e) {
             logger.error("Cannot build parameters hex representation.", e);
             return null;
         }

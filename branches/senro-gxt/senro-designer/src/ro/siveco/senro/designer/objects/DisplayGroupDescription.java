@@ -1,6 +1,8 @@
 package ro.siveco.senro.designer.objects;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.ObjectUtils;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 public class DisplayGroupDescription extends ObjectDescription
 {
@@ -25,9 +27,13 @@ public class DisplayGroupDescription extends ObjectDescription
         return entityName;
     }
 
-    public void setEntityName(String entityName)
+    public void setEntityName(String entity_name)
     {
-        this.entityName = entityName;
+        if (ObjectUtils.equals(entityName, entity_name)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "entityName", entityName, entity_name).post();
+        entityName = entity_name;
     }
 
     public String getFetchSpecification()
@@ -35,9 +41,13 @@ public class DisplayGroupDescription extends ObjectDescription
         return fetchSpecification;
     }
 
-    public void setFetchSpecification(String fetchSpecification)
+    public void setFetchSpecification(String fetch_specification)
     {
-        this.fetchSpecification = fetchSpecification;
+        if (ObjectUtils.equals(fetchSpecification, fetch_specification)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "fetchSpecification", fetchSpecification, fetch_specification).post();
+        fetchSpecification = fetch_specification;
     }
 
     public String getEditingContext()
@@ -45,9 +55,13 @@ public class DisplayGroupDescription extends ObjectDescription
         return editingContext;
     }
 
-    public void setEditingContext(String editingContext)
+    public void setEditingContext(String editing_context)
     {
-        this.editingContext = editingContext;
+        if (ObjectUtils.equals(editingContext, editing_context)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "editingContext", editingContext, editing_context).post();
+        editingContext = editing_context;
     }
 
     public boolean isMaster()
@@ -57,6 +71,10 @@ public class DisplayGroupDescription extends ObjectDescription
 
     public void setMaster(boolean master)
     {
+        if(isMaster == master) {
+            return;
+        }
+        new AttributeChangeEvent(this, "isMaster", isMaster, master).post();        
         isMaster = master;
     }
 

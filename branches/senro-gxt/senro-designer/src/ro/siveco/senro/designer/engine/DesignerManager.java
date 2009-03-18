@@ -740,6 +740,7 @@ public class DesignerManager
                 editor.clearUndoableEdits();
             }
         }
+        mainFrame.updateModifiedStatus();
     }
 
     private void saveProjectFiles() throws TransformerException, ParserConfigurationException, IOException
@@ -821,11 +822,18 @@ public class DesignerManager
         } catch (IOException ex) {
             logger.error("Delete temp file error", ex);
         }
-        mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent()));
+        if(getCurrentEditor() != null) {
+            mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent()));            
+        }
     }
 
     public void saveProject()
     {
+        if (project == null) {
+            JOptionPane.showMessageDialog(mainFrame, "There is no open project to save!",
+                    "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
         try {
             String inconsistences = checkConsistency();
             if (inconsistences == null) {
@@ -840,8 +848,9 @@ public class DesignerManager
                         break;
                     case MessageBox.CUSTOM_OPTION:
                         assignIdsAutomatically();
-                        mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent().getSelectedComponent()));
+                        GridComponent gc = getCurrentEditor().getFormComponent().getSelectedComponent();
                         saveProjectFiles();
+                        mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, gc));
                         break;
                     case MessageBox.CANCEL_OPTION:
                 }
@@ -992,7 +1001,7 @@ public class DesignerManager
             rootComponent = parser.render(rc);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            throw new DesignerRuntimeException("Template Parser render error", e);
         }
         if (rootComponent == null) {
             return;
@@ -1195,11 +1204,14 @@ public class DesignerManager
         PropertiesMemento ppm = new PropertiesMemento();
         ppm.setBeanClassName(TopGridView.class.getName());
         ppm.addProperty("name", grid_comp.getName());
-        ppm.addProperty("id", getSenroComponentIdFromParser(grid_comp));
         if (grid_comp.getRenderComponent().equals(ComponentAssociation.GRID)) {
+            String main_grid_id = grid_comp.getId();
+            main_grid_id = main_grid_id.substring(0, (main_grid_id.length() - 1)/2);
+            ppm.addProperty("id", main_grid_id);
             ppm.addProperty("mainGrid", "true");
             ppm.addProperty("showOnLoad", "true");
         } else {
+            ppm.addProperty("id", getSenroComponentIdFromParser(grid_comp));
             ppm.addProperty("mainGrid", "false");
             // todo showOnLoad must be obtained from grid_comp
             ppm.addProperty("showOnLoad", "true");
@@ -2185,8 +2197,11 @@ public class DesignerManager
             return "";
         }
         logger.debug(" id pentru componenta: " + comp.getRenderComponent() + " este: " + path_to_comp_id);
-        String[] sp_path_to_comp_id = StringUtils.split(path_to_comp_id, ".");
-        return sp_path_to_comp_id[sp_path_to_comp_id.length - 1];
+        SenroComponent parent = comp.getParent();
+        if (parent == null || StringUtils.isBlank(parent.getId())) {
+            return path_to_comp_id;
+        }
+        return StringUtils.difference(parent.getId() + ".",  path_to_comp_id);
     }
 
     public PropertiesMemento getDefaultPropertiesMementoForComponent(SenroComponent comp, Class comp_class) throws FormException, DesignerRuntimeException
@@ -2485,8 +2500,15 @@ public class DesignerManager
                         parameters.add(tp);
                     }
                 }
+            } else {
+                logger.error("Cannot find template with name: " + template_name + " in directory: " +
+                        project.getProjectDir().getParentFile().getAbsolutePath());
+                JOptionPane.showMessageDialog(mainFrame, "Cannot find template with name: " + template_name +
+                        " in directory: " + project.getProjectDir().getParentFile().getAbsolutePath(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                ppm.addProperty("templateName", "");
             }
-            ppm.addProperty("parameters", (Serializable) parameters);
+            ppm.addProperty("paramsHex", TemplateComponent.getParamsHex(parameters));
 
             bm.setProperties(ppm);
             return bm;
@@ -2596,6 +2618,7 @@ public class DesignerManager
             int grid_y = 0;
             StringBuffer buff = new StringBuffer();
             for (Object component : components) {
+                SenroComponent senro_component = (SenroComponent) component;
                 if (grid_y > 0) {
                     buff.append(",");
                 }
@@ -2608,8 +2631,14 @@ public class DesignerManager
                 bm.setComponentClass(StandardComponent.class.getName());
                 bm.setJETABeanClass(JETABean.class.getName());
                 bm.setBeanClass(TreeNode.class.getName());
-                PropertiesMemento b_ppm = getDefaultPropertiesMementoForComponent((SenroComponent) component, TreeNode.class);
-                b_ppm.addProperty("text", (Serializable) ((SenroComponent) component).getModel().getDataObject().getValue());
+
+                PropertiesMemento b_ppm = new PropertiesMemento();
+                b_ppm.setBeanClassName(TreeNode.class.getName());
+                b_ppm.addProperty("name", senro_component.getName() == null ? "" : senro_component.getName());
+                b_ppm.addProperty("id", senro_component.getId() == null ? "" : getSenroComponentIdFromParser(senro_component));
+                b_ppm.addProperty("rowExpr", "");
+                b_ppm.addProperty("columnExpr", "");
+                b_ppm.addProperty("text", (Serializable) senro_component.getModel().getDataObject().getValue());
                 bm.setProperties(b_ppm);
                 state.addComponent(bm);
             }

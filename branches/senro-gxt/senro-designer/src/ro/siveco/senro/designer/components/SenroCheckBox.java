@@ -4,11 +4,14 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 import javax.swing.*;
 
 import java.util.Map;
 import java.util.List;
+
+import org.apache.commons.lang.ObjectUtils;
 
 public class SenroCheckBox extends JCheckBox implements UIDesignerObject
 {
@@ -18,6 +21,16 @@ public class SenroCheckBox extends JCheckBox implements UIDesignerObject
     {
         super("CheckBox");
         udoDelegate = new UIDesignerObjectDelegate(this);
+    }
+
+    @Override
+    public void setLabel(String new_label)
+    {
+        if(ObjectUtils.equals(getLabel(), new_label)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "label", getLabel(), new_label).post();
+        super.setLabel(new_label);
     }
 
     @Override

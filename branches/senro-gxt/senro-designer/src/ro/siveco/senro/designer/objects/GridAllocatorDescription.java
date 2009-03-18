@@ -1,5 +1,8 @@
 package ro.siveco.senro.designer.objects;
 
+import org.apache.commons.lang.ObjectUtils;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
+
 public class GridAllocatorDescription extends ObjectDescription
 {
     private static final long serialVersionUID = 1;
@@ -20,9 +23,13 @@ public class GridAllocatorDescription extends ObjectDescription
         return entityName;
     }
 
-    public void setEntityName(String entityName)
+    public void setEntityName(String entity_name)
     {
-        this.entityName = entityName;
+        if (ObjectUtils.equals(entityName, entity_name)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "entityName", entityName, entity_name).post();
+        entityName = entity_name;
     }
 
     public String getDisplayGroup()
@@ -30,9 +37,13 @@ public class GridAllocatorDescription extends ObjectDescription
         return displayGroup;
     }
 
-    public void setDisplayGroup(String displayGroup)
+    public void setDisplayGroup(String display_group)
     {
-        this.displayGroup = displayGroup;
+        if (ObjectUtils.equals(displayGroup, display_group)) {
+            return;
+        }
+        new AttributeChangeEvent(this, "displayGroup", displayGroup, display_group).post();
+        displayGroup = display_group;
     }
 
     public int getColumnsCount()
@@ -40,8 +51,12 @@ public class GridAllocatorDescription extends ObjectDescription
         return columnsCount;
     }
 
-    public void setColumnsCount(int columnsCount)
+    public void setColumnsCount(int columns_count)
     {
-        this.columnsCount = columnsCount;
+        if (columnsCount == columns_count) {
+            return;
+        }
+        new AttributeChangeEvent(this, "columnsCount", columnsCount, columns_count).post();
+        columnsCount = columns_count;
     }
 }

@@ -1,6 +1,7 @@
 package ro.siveco.senro.designer.components;
 
 import com.jeta.forms.gui.form.GridView;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 
 public class TopGridView extends GridView
 {
@@ -21,9 +22,13 @@ public class TopGridView extends GridView
         return showOnLoad;
     }
 
-    public void setShowOnLoad(boolean showOnLoad)
+    public void setShowOnLoad(boolean show_on_load)
     {
-        this.showOnLoad = showOnLoad;
+        if (showOnLoad == show_on_load) {
+            return;
+        }
+        new AttributeChangeEvent(this, "showOnLoad", showOnLoad, show_on_load).post();
+        showOnLoad = show_on_load;
     }
 
     public boolean isMainGrid()
@@ -31,8 +36,12 @@ public class TopGridView extends GridView
         return isMainGrid;
     }
 
-    public void setMainGrid(boolean mainGrid)
+    public void setMainGrid(boolean main_grid)
     {
-        isMainGrid = mainGrid;
+        if (isMainGrid == main_grid) {
+            return;
+        }
+        new AttributeChangeEvent(this, "isMainGrid", isMainGrid, main_grid).post();
+        isMainGrid = main_grid;
     }
 }
