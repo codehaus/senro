@@ -2,6 +2,9 @@ package ro.siveco.senro.designer.inspectors;
 
 import ro.siveco.senro.designer.inspector.Inspector;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
+import ro.siveco.senro.designer.util.event.Observer;
+import ro.siveco.senro.designer.util.event.Event;
+import ro.siveco.senro.designer.util.event.EventCenter;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -11,37 +14,103 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.builder.PanelBuilder;
 
-public class CommonUIInspector implements Inspector, ActionListener
+public class CommonUIInspector implements Inspector, Observer
 {
     protected JPanel panel;
     protected UIDesignerObject uiDesignerObject;
     protected String title;
-    protected JTextField nameTF = new JTextField();
-    protected JTextField idTF = new JTextField();
-    protected JTextField rowTF = new JTextField();
-    protected JTextField colTF = new JTextField();
+    protected JTextField nameTF;
+    protected JTextField idTF;
+    protected JTextField rowTF;
+    protected JTextField colTF;
+    protected Timer timer;
 
     public CommonUIInspector()
     {
         title = "Senro Designer Object Inspector";
+        init();
+        panel = buildPanel();
+        addListeners();
+    }
+
+    protected void init()
+    {
+        uiDesignerObject = null;
+        nameTF = new JTextField();
+        idTF = new JTextField();
+        rowTF = new JTextField();
+        colTF = new JTextField();
+        ActionListener updater = new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                updateUI();
+            }
+        };
+        timer = new Timer(0, updater);
+        timer.setRepeats(false);
+    }
+
+    protected JPanel buildPanel()
+    {
         FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 120:grow, 1dlu",
                 "1dlu:grow, fill:pref,  1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu:grow");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
         builder.add(new JLabel("Name", JLabel.RIGHT), cc.xy(2, 2));
-        nameTF.addActionListener(this);
         builder.add(nameTF, cc.xy(4, 2));
         builder.add(new JLabel("Id", JLabel.RIGHT), cc.xy(2, 4));
-        idTF.addActionListener(this);
         builder.add(idTF, cc.xy(4, 4));
         builder.add(new JLabel("RowExpr", JLabel.RIGHT), cc.xy(2, 6));
-        rowTF.addActionListener(this);
         builder.add(rowTF, cc.xy(4, 6));
         builder.add(new JLabel("ColumnExpr", JLabel.RIGHT), cc.xy(2, 8));
-        colTF.addActionListener(this);
         builder.add(colTF, cc.xy(4, 8));
-        panel = builder.getPanel();
+        return builder.getPanel();
+    }
+
+    protected void addListeners()
+    {
+        nameTF.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (uiDesignerObject == null) {
+                    return;
+                }
+                uiDesignerObject.setName(nameTF.getText());
+            }
+        });
+        idTF.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (uiDesignerObject == null) {
+                    return;
+                }
+                uiDesignerObject.setId(idTF.getText());
+            }
+        });
+        rowTF.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (uiDesignerObject == null) {
+                    return;
+                }
+                uiDesignerObject.setRowExpr(rowTF.getText());
+            }
+        });
+        colTF.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (uiDesignerObject == null) {
+                    return;
+                }
+                uiDesignerObject.setColumnExpr(colTF.getText());
+            }
+        });
     }
 
     public String getTitle()
@@ -56,33 +125,31 @@ public class CommonUIInspector implements Inspector, ActionListener
 
     public void setObject(Object o)
     {
+        if (uiDesignerObject != null) {
+            EventCenter.remove(this, uiDesignerObject, Event.class);
+        }
         uiDesignerObject = (UIDesignerObject) o;
+        if (uiDesignerObject != null) {
+            EventCenter.add(this, uiDesignerObject, Event.class);
+        }
         updateUI();
     }
 
     public void updateUI()
     {
+        if (uiDesignerObject == null) {
+            return;
+        }
         nameTF.setText(uiDesignerObject.getName());
         idTF.setText(uiDesignerObject.getId());
         rowTF.setText(uiDesignerObject.getRowExpr());
         colTF.setText(uiDesignerObject.getColumnExpr());
     }
 
-    public void actionPerformed(ActionEvent e)
+    public void handleEvent(Event event)
     {
-        if(uiDesignerObject == null) {
-            return;
+        if(!timer.isRunning()) {
+            timer.start();            
         }
-        Object source = e.getSource();
-        if(source == nameTF) {
-           uiDesignerObject.setName(nameTF.getText());
-        } else if(source == idTF) {
-           uiDesignerObject.setId(idTF.getText());
-        } else if(source == rowTF) {
-           uiDesignerObject.setRowExpr(rowTF.getText());
-        } else if(source == colTF) {
-           uiDesignerObject.setColumnExpr(colTF.getText());
-        }
-        updateUI();
     }
 }

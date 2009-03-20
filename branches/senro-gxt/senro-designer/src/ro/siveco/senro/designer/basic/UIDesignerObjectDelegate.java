@@ -23,7 +23,7 @@ public class UIDesignerObjectDelegate extends SenroDesignerObjectDelegate implem
         if(ObjectUtils.equals(rowExpression, row_expr)) {
             return;
         }
-        new AttributeChangeEvent(this, "rowExpression", rowExpression, row_expr).post();
+        new AttributeChangeEvent(senroObject, "rowExpression", rowExpression, row_expr).post();
         rowExpression = row_expr == null ? "" : row_expr;
     }
 
@@ -39,7 +39,7 @@ public class UIDesignerObjectDelegate extends SenroDesignerObjectDelegate implem
         if(ObjectUtils.equals(colExpression, col_expr)) {
             return;
         }
-        new AttributeChangeEvent(this, "colExpression", colExpression, col_expr).post();
+        new AttributeChangeEvent(senroObject, "colExpression", colExpression, col_expr).post();
         colExpression = col_expr == null ? "" : col_expr;
     }
 

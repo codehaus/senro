@@ -1,8 +1,14 @@
 package ro.siveco.senro.designer.objects;
 
+import ro.siveco.senro.designer.util.event.AddCollectionItemEvent;
+import ro.siveco.senro.designer.util.event.RemoveCollectionItemEvent;
+import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
+
+import org.apache.commons.lang.ObjectUtils;
 
 public abstract class SCDescription extends ObjectDescription
 {
@@ -42,18 +48,23 @@ public abstract class SCDescription extends ObjectDescription
         while (!isValidNewParamEntryName("p_" + temp_idx)) {
             temp_idx++;
         }
-        parametersList.add(new ParamEntry("p_" + temp_idx, ""));
+        ParamEntry new_param = new ParamEntry("p_" + temp_idx, "");
+        new AddCollectionItemEvent(this, "parametersList", new_param).post();
+        parametersList.add(new_param);
     }
 
     public void addContextParameter(String key, String value)
     {
-        if(isValidNewParamEntryName(key)) {
-            parametersList.add(new ParamEntry(key,value));
+        if (isValidNewParamEntryName(key)) {
+            ParamEntry new_param = new ParamEntry(key, value);
+            new AddCollectionItemEvent(this, "parametersList", new_param).post();
+            parametersList.add(new_param);
         }
     }
 
     public void removeContextParameter(int idx)
     {
+        new RemoveCollectionItemEvent(this, "parametersList", idx).post();
         parametersList.remove(idx);
     }
 
@@ -79,9 +90,13 @@ public abstract class SCDescription extends ObjectDescription
             return key == null ? "" : key;
         }
 
-        public void setKey(String key)
+        public void setKey(String new_key)
         {
-            this.key = key;
+            if (ObjectUtils.equals(key, new_key)) {
+                return;
+            }
+            new AttributeChangeEvent(this, "key", key, new_key).post();
+            key = new_key;
         }
 
         public String getValue()
@@ -89,9 +104,13 @@ public abstract class SCDescription extends ObjectDescription
             return value == null ? "" : value;
         }
 
-        public void setValue(String value)
+        public void setValue(String new_value)
         {
-            this.value = value;
+            if (ObjectUtils.equals(value, new_value)) {
+                return;
+            }
+            new AttributeChangeEvent(this, "value", value, new_value).post();
+            value = new_value;
         }
     }
 }

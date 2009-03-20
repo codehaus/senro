@@ -13,9 +13,12 @@ import ro.siveco.senro.designer.util.event.Observer;
 import ro.siveco.senro.designer.util.event.Event;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.util.*;
 import java.util.List;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -58,12 +61,27 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     protected ObjectSetPalette objSetPalette;
     protected boolean isActive = false;
     protected boolean isClean = true;
+    protected Timer timer;
 
     public ObjectSetManager(String obj_set_name, InspectorManager inspector_manager)
     {
         objSetName = obj_set_name;
         inspectorManager = inspector_manager;
         setDefaultEmptyState();
+        ActionListener updater = new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                if(matrixView == null) {
+                    return;
+                }
+                matrixView.modelDataDidChanged(Collections.<CellCoordinates>emptyList());
+                setClean(false);
+            }
+        };
+        timer = new Timer(0, updater);
+        timer.setRepeats(false);
+
     }
 
     @SuppressWarnings({"unchecked"})
@@ -626,7 +644,6 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
 
     public void handleEvent(ro.siveco.senro.designer.util.event.Event event)
     {
-        matrixView.modelDataDidChanged(Collections.<CellCoordinates>emptyList());
-        setClean(false);
+        timer.start();        
     }
 }
