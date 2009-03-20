@@ -23,7 +23,7 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     private String senroName;
     private String senroId;
     private transient Set<AssociationInstance> associations = new HashSet<AssociationInstance>();
-    private final transient SenroDesignerObject senroObject;
+    protected final transient SenroDesignerObject senroObject;
 
     public SenroDesignerObjectDelegate(SenroDesignerObject senroObject)
     {
@@ -42,7 +42,7 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
         if (ObjectUtils.equals(senroName, obj_name)) {
             return;
         }
-        new AttributeChangeEvent(this, "name", senroName, obj_name).post();
+        new AttributeChangeEvent(senroObject, "name", senroName, obj_name).post();
         senroName = obj_name == null ? "" : obj_name;
     }
 
@@ -58,7 +58,7 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
         if (ObjectUtils.equals(senroId, obj_id)) {
             return;
         }
-        new IdChangeEvent(this, senroId, obj_id).post();
+        new IdChangeEvent(senroObject, senroId, obj_id).post();
         senroId = obj_id == null ? "" : obj_id;
     }
 
@@ -75,7 +75,7 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
             associations = new HashSet<AssociationInstance>();
         }
         if (assoc != null) {
-            new AddAssociationEvent(this, assoc).post();
+            new AddAssociationEvent(senroObject, assoc).post();
             associations.add(assoc);
         }
     }
@@ -83,7 +83,7 @@ public class SenroDesignerObjectDelegate implements SenroDesignerObject, Seriali
     @Override
     public void removeAssociation(AssociationInstance assoc)
     {
-        new RemoveAssociationEvent(this, assoc).post();
+        new RemoveAssociationEvent(senroObject, assoc).post();
         associations.remove(assoc);
     }
 

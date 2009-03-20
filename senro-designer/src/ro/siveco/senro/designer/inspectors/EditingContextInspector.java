@@ -6,7 +6,6 @@ public class EditingContextInspector extends CommonInspector
 
     public EditingContextInspector()
     {
-        super();
         title = EC_INSPECTOR_TITLE;
     }
 }

@@ -12,13 +12,14 @@ import com.jgoodies.forms.builder.PanelBuilder;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class SCInspector extends CommonInspector
 {
     public static final String SC_INSPECTOR_TITLE = "Context Inspector";
     public static final String ADD_ACTION = "Add";
     public static final String DELETE_ACTION = "Delete";
-    protected SCDescription SCDescription = null;
+    protected SCDescription SCDescription;
 
     protected JTable contextParametersTable;
     protected ContextParametersModel model;
@@ -27,13 +28,31 @@ public class SCInspector extends CommonInspector
     public SCInspector()
     {
         title = SC_INSPECTOR_TITLE;
+    }
+
+    protected void init()
+    {
+        super.init();
+        SCDescription = null;
+        model = new ContextParametersModel();
+        contextParametersTable = new JTable(model);
+        contextParametersTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        contextParametersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        addButton = new JButton(ADD_ACTION);
+        addButton.setActionCommand(ADD_ACTION);
+        deleteButton = new JButton(DELETE_ACTION);
+        deleteButton.setActionCommand(DELETE_ACTION);
+    }
+
+    protected JPanel buildPanel()
+    {
         FormLayout layout = new FormLayout("fill:pref:grow", "fill:pref, fill:pref:grow");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
         builder.add(getFieldsPanel(), cc.xy(1, 1));
         builder.add(getContextParametersPanel(), cc.xy(1, 2));
-        panel = builder.getPanel();
+        return builder.getPanel();
     }
 
     private JPanel getFieldsPanel()
@@ -44,10 +63,8 @@ public class SCInspector extends CommonInspector
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
         builder.add(new JLabel("Name", JLabel.RIGHT), cc.xy(1, 1));
-        nameTF.addActionListener(this);
         builder.add(nameTF, cc.xy(3, 1));
         builder.add(new JLabel("Id", JLabel.RIGHT), cc.xy(1, 3));
-        idTF.addActionListener(this);
         builder.add(idTF, cc.xy(3, 3));
 
         return builder.getPanel();
@@ -60,28 +77,43 @@ public class SCInspector extends CommonInspector
         builder.setBorder(null);
         CellConstraints cc = new CellConstraints();
 
-        model = new ContextParametersModel();
-        contextParametersTable = new JTable(model);
-        contextParametersTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        contextParametersTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane cp_scrollpane = new JScrollPane(contextParametersTable);
         cp_scrollpane.setBorder(BorderFactory.createTitledBorder("Context Variables"));
         cp_scrollpane.setPreferredSize(new Dimension(100, 120));
-
         builder.add(cp_scrollpane, cc.xy(1, 1));
 
         JPanel buttons_panel = new JPanel();
         buttons_panel.setLayout(new GridLayout(1, 2));
-        buttons_panel.add(addButton = new JButton(ADD_ACTION));
-        addButton.setActionCommand(ADD_ACTION);
-        addButton.addActionListener(this);
-        buttons_panel.add(deleteButton = new JButton(DELETE_ACTION));
-        deleteButton.setActionCommand(DELETE_ACTION);
-        deleteButton.addActionListener(this);
-
+        buttons_panel.add(addButton);
+        buttons_panel.add(deleteButton);
         builder.add(buttons_panel, cc.xy(1, 3));
 
         return builder.getPanel();
+    }
+
+    protected void addListeners()
+    {
+        super.addListeners();
+        addButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (SCDescription == null) {
+                    return;
+                }
+                addContextParameter();
+            }
+        });
+        deleteButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (SCDescription == null) {
+                    return;
+                }
+                deleteContextParameter();
+            }
+        });
     }
 
     public void setObject(Object o)
@@ -97,18 +129,6 @@ public class SCInspector extends CommonInspector
         }
         super.updateUI();
         contextParametersTable.tableChanged(new TableModelEvent(model));
-    }
-
-    public void actionPerformed(ActionEvent e)
-    {
-        String act_cmd = e.getActionCommand();
-        if (act_cmd.equals(ADD_ACTION)) {
-            addContextParameter();
-        } else if (act_cmd.equals(DELETE_ACTION)) {
-            deleteContextParameter();
-        }
-        super.actionPerformed(e);        
-        updateUI();
     }
 
     private void addContextParameter()

@@ -6,8 +6,12 @@ public class ContextFragmentInspector extends SCInspector
 
     public ContextFragmentInspector()
     {
-        super();
         title = CF_INSPECTOR_TITLE;
+    }
+
+    protected void init()
+    {
+        super.init();
         nameTF.setEditable(false);
         idTF.setEditable(false);
     }

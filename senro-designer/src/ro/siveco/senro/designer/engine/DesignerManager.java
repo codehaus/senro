@@ -823,7 +823,7 @@ public class DesignerManager
             logger.error("Delete temp file error", ex);
         }
         if(getCurrentEditor() != null) {
-            mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent()));            
+            mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent()));
         }
     }
 
@@ -848,9 +848,8 @@ public class DesignerManager
                         break;
                     case MessageBox.CUSTOM_OPTION:
                         assignIdsAutomatically();
-                        GridComponent gc = getCurrentEditor().getFormComponent().getSelectedComponent();
                         saveProjectFiles();
-                        mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, gc));
+                        mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent().getSelectedComponent()));
                         break;
                     case MessageBox.CANCEL_OPTION:
                 }
@@ -2293,6 +2292,12 @@ public class DesignerManager
             CellConstraints.Alignment v_align = componentAlignment.get(va);
             String ha = cell_layout.getHorizontalAlignment();
             CellConstraints.Alignment h_align = componentAlignment.get(ha);
+            if(v_align == null) {
+                v_align = CellConstraints.DEFAULT;
+            }
+            if(h_align == null) {
+                h_align = CellConstraints.DEFAULT;
+            }
             return new CellConstraints(col, row, colspan, rowspan, h_align, v_align, new Insets(0, 0, 0, 0));
         }
 

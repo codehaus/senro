@@ -6,7 +6,6 @@ public class SenroContextInspector extends SCInspector
 
     public SenroContextInspector()
     {
-        super();
         title = SC_INSPECTOR_TITLE;
     }
 

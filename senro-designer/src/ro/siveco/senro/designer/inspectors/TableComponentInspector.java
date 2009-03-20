@@ -14,8 +14,9 @@ import com.jgoodies.forms.builder.PanelBuilder;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class TableComponentInspector extends CommonUIInspector implements ListSelectionListener
+public class TableComponentInspector extends CommonUIInspector
 {
     public static final String TABLE_INSPECTOR_TITLE = "Table Component Inspector";
 
@@ -24,8 +25,8 @@ public class TableComponentInspector extends CommonUIInspector implements ListSe
     public static final String MOVE_UP = "Move Up";
     public static final String MOVE_DOWN = "Move Down";
 
-    protected JTextField columnListTF = new JTextField();
-    protected TableComponent table = null;
+    protected JTextField columnListTF;
+    protected TableComponent table;
     protected JTable columnsTable;
     protected TableColumnsModel model;
     protected JButton addButton, deleteButton, moveUpButton, moveDownButton;
@@ -33,13 +34,36 @@ public class TableComponentInspector extends CommonUIInspector implements ListSe
     public TableComponentInspector()
     {
         title = TABLE_INSPECTOR_TITLE;
+    }
+
+    protected void init()
+    {
+        super.init();
+        table = null;
+        model = new TableColumnsModel();
+        columnsTable = new JTable(model);
+        columnsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        columnsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        addButton = new JButton(ADD_ACTION);
+        addButton.setActionCommand(ADD_ACTION);
+        deleteButton = new JButton(DELETE_ACTION);
+        deleteButton.setActionCommand(DELETE_ACTION);
+        moveUpButton = new JButton(MOVE_UP);
+        moveUpButton.setActionCommand(MOVE_UP);
+        moveDownButton = new JButton(MOVE_DOWN);
+        moveDownButton.setActionCommand(MOVE_DOWN);
+        columnListTF = new JTextField();
+    }
+
+    protected JPanel buildPanel()
+    {
         FormLayout layout = new FormLayout("fill:pref:grow", "fill:pref, 1dlu, fill:pref");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
         builder.add(getFieldsPanel(), cc.xy(1, 1));
         builder.add(getTableColumnsPanel(), cc.xy(1, 3));
-        panel = builder.getPanel();
+        return builder.getPanel();
     }
 
     private JPanel getTableColumnsPanel()
@@ -49,32 +73,17 @@ public class TableComponentInspector extends CommonUIInspector implements ListSe
         builder.setBorder(null);
         CellConstraints cc = new CellConstraints();
 
-        model = new TableColumnsModel();
-        columnsTable = new JTable(model);
-        columnsTable.getSelectionModel().addListSelectionListener(this);
-        columnsTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        columnsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane table_col_scrollpane = new JScrollPane(columnsTable);
         table_col_scrollpane.setBorder(BorderFactory.createTitledBorder("Senro Table Columns"));
         table_col_scrollpane.setPreferredSize(new Dimension(100, 150));
-
         builder.add(table_col_scrollpane, cc.xy(1, 2));
 
         JPanel buttons_panel = new JPanel();
         buttons_panel.setLayout(new GridLayout(1, 4));
-        buttons_panel.add(addButton = new JButton(ADD_ACTION));
-        addButton.setActionCommand(ADD_ACTION);
-        addButton.addActionListener(this);
-        buttons_panel.add(deleteButton = new JButton(DELETE_ACTION));
-        deleteButton.setActionCommand(DELETE_ACTION);
-        deleteButton.addActionListener(this);
-        buttons_panel.add(moveUpButton = new JButton(MOVE_UP));
-        moveUpButton.setActionCommand(MOVE_UP);
-        moveUpButton.addActionListener(this);
-        buttons_panel.add(moveDownButton = new JButton(MOVE_DOWN));
-        moveDownButton.setActionCommand(MOVE_DOWN);
-        moveDownButton.addActionListener(this);
-
+        buttons_panel.add(addButton);
+        buttons_panel.add(deleteButton);
+        buttons_panel.add(moveUpButton);
+        buttons_panel.add(moveDownButton);
         builder.add(buttons_panel, cc.xy(1, 4));
 
         return builder.getPanel();
@@ -88,21 +97,87 @@ public class TableComponentInspector extends CommonUIInspector implements ListSe
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
         builder.add(new JLabel("Name", JLabel.RIGHT), cc.xy(1, 2));
-        nameTF.addActionListener(this);
         builder.add(nameTF, cc.xy(3, 2));
         builder.add(new JLabel("Id", JLabel.RIGHT), cc.xy(1, 4));
-        idTF.addActionListener(this);
         builder.add(idTF, cc.xy(3, 4));
         builder.add(new JLabel("Row", JLabel.RIGHT), cc.xy(1, 6));
-        rowTF.addActionListener(this);
         builder.add(rowTF, cc.xy(3, 6));
         builder.add(new JLabel("Column", JLabel.RIGHT), cc.xy(1, 8));
-        colTF.addActionListener(this);
         builder.add(colTF, cc.xy(3, 8));
         builder.add(new JLabel("Column List", JLabel.RIGHT), cc.xy(1, 10));
-        columnListTF.addActionListener(this);
         builder.add(columnListTF, cc.xy(3, 10));
         return builder.getPanel();
+    }
+
+    protected void addListeners()
+    {
+        super.addListeners();
+        columnsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
+            public void valueChanged(ListSelectionEvent e)
+            {
+                if (table == null) {
+                    return;
+                }
+                int sel_col = columnsTable.getSelectedRow();
+                table.setSelectedSenroColumnIdx(sel_col);
+                if (sel_col != -1) {
+                    table.setColumnSelectionInterval(sel_col, sel_col);
+                } else {
+                    table.clearSelection();
+                }
+            }
+        });
+        addButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (table == null) {
+                    return;
+                }
+                addSenroTableColumn();
+            }
+        });
+        deleteButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (table == null) {
+                    return;
+                }
+                deleteSenroTableColumn();
+            }
+        });
+        moveUpButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (table == null) {
+                    return;
+                }
+                moveUpSenroTableColumn();
+            }
+        });
+        moveDownButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (table == null) {
+                    return;
+                }
+                moveDownSenroTableColumn();
+            }
+        });
+        columnListTF.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                if (table == null) {
+                    return;
+                }
+                table.setColumnList(columnListTF.getText());
+            }
+        });
     }
 
     public void setObject(Object o)
@@ -119,27 +194,6 @@ public class TableComponentInspector extends CommonUIInspector implements ListSe
         super.updateUI();
         columnListTF.setText(table.getColumnList());
         columnsTable.tableChanged(new TableModelEvent(model));
-    }
-
-    public void actionPerformed(ActionEvent e)
-    {
-        Object source = e.getSource();
-        if (source == columnListTF) {
-            table.setColumnList(columnListTF.getText());
-        }
-
-        String act_cmd = e.getActionCommand();
-        if (act_cmd.equals(ADD_ACTION)) {
-            addSenroTableColumn();
-        } else if (act_cmd.equals(DELETE_ACTION)) {
-            deleteSenroTableColumn();
-        } else if (act_cmd.equals(MOVE_UP)) {
-            moveUpSenroTableColumn();
-        } else if (act_cmd.equals(MOVE_DOWN)) {
-            moveDownSenroTableColumn();
-        }
-        super.actionPerformed(e);        
-        updateUI();
     }
 
     private void addSenroTableColumn()
@@ -178,20 +232,6 @@ public class TableComponentInspector extends CommonUIInspector implements ListSe
         table.moveUpSenroColumn(sel_col);
         table.tableChanged(new TableModelEvent(table.getModel()));
         columnsTable.tableChanged(new TableModelEvent(model));
-    }
-
-    public void valueChanged(ListSelectionEvent e)
-    {
-        if (table == null) {
-            return;
-        }
-        int sel_col = columnsTable.getSelectedRow();
-        table.setSelectedSenroColumnIdx(sel_col);
-        if(sel_col != -1) {
-            table.setColumnSelectionInterval(sel_col, sel_col);
-        } else {
-            table.clearSelection();
-        }
     }
 
     public class TableColumnsModel extends AbstractTableModel
