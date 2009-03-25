@@ -5,20 +5,20 @@ import ro.siveco.senro.designer.association.AssociationInstance;
 import ro.siveco.senro.designer.util.event.AttributeChangeEvent;
 import ro.siveco.senro.designer.util.event.AddColumnEvent;
 import ro.siveco.senro.designer.util.event.RemoveColumnEvent;
+import ro.siveco.senro.designer.util.event.ColumnSelectionChangeEvent;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.io.*;
+import java.awt.*;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import javax.swing.table.*;
 
 public class TableComponent extends JTable implements UIDesignerObject, SenroDesignerObjectContainer
 {
@@ -34,7 +34,9 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
         super();
         setModel(new TableComponentModel());
         setColumnSelectionAllowed(true);
-        getTableHeader().setIgnoreRepaint(false);
+        JTableHeader header = getTableHeader();
+        header.setIgnoreRepaint(false);
+        header.setDefaultRenderer(new TableHeaderCellRenderer());
         udoDelegate = new UIDesignerObjectDelegate(this);
     }
 
@@ -43,9 +45,13 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
         return selectedSenroColumnIdx;
     }
 
-    public void setSelectedSenroColumnIdx(int selectedColumnIdx)
+    public void setSelectedSenroColumnIdx(int selected_column_idx)
     {
-        this.selectedSenroColumnIdx = selectedColumnIdx;
+        if (selectedSenroColumnIdx == selected_column_idx) {
+            return;
+        }
+        new ColumnSelectionChangeEvent(this, selectedSenroColumnIdx, selected_column_idx).post();
+        selectedSenroColumnIdx = selected_column_idx;
     }
 
     public String getColumnList()
@@ -102,12 +108,21 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
         setTableColumnHeaderValue(col);
     }
 
+    private void decreaseSelectedSenroColumnIdx()
+    {
+        if (selectedSenroColumnIdx <= 0) {
+            return;
+        }
+        new ColumnSelectionChangeEvent(this, selectedSenroColumnIdx, selectedSenroColumnIdx - 1).post();
+        selectedSenroColumnIdx--;
+    }
+
     public void removeSenroColumn(int idx)
     {
         new RemoveColumnEvent(this, idx).post();
         columns.remove(idx);
         while (selectedSenroColumnIdx >= columns.size()) {
-            selectedSenroColumnIdx--;
+            decreaseSelectedSenroColumnIdx();
         }
         TableColumnModel tcm = getColumnModel();
         TableColumn col_to_remove = tcm.getColumn(idx);
@@ -365,7 +380,15 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
 
         public Object getValueAt(int rowIndex, int columnIndex)
         {
-            return "";
+            String value = "";
+            Component comp = TableComponent.this.getDefaultRenderer(String.class).
+                    getTableCellRendererComponent(TableComponent.this, value, false, false, rowIndex, columnIndex);
+            if (selectedSenroColumnIdx != -1 && selectedSenroColumnIdx == columnIndex) {
+                comp.setBackground(getSelectionBackground());
+            } else {
+                comp.setBackground(getBackground());
+            }
+            return value;
         }
 
         public boolean isCellEditable(int rowIndex, int columnIndex)
@@ -378,4 +401,23 @@ public class TableComponent extends JTable implements UIDesignerObject, SenroDes
             return columns.get(columnIndex).getName();
         }
     }
+
+    public class TableHeaderCellRenderer extends DefaultTableCellRenderer
+    {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column)
+        {
+            Component header_comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            ((JLabel) header_comp).setHorizontalAlignment(JLabel.CENTER);
+            ((JLabel) header_comp).setVerticalAlignment(JLabel.CENTER);
+            JTableHeader header = getTableHeader();
+            if (selectedSenroColumnIdx == column && row == -1) {
+                header_comp.setBackground(header.getBackground().darker());
+            } else {
+                header_comp.setBackground(header.getBackground());
+            }
+            return header_comp;
+        }
+    }
+
 }

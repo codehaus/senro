@@ -50,6 +50,7 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
     private AssociationsTableModel assocTableModel;
     private JPanel bindingsPanel;
     protected Timer timer;
+    protected Timer updateTimer = null;
 
     private SenroDesignerObject selectedObject = null;
 
@@ -253,9 +254,27 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
         return btn_panel;
     }
 
+    /**
+     * Acest cimp este utilizat pentru a retine ULTIMA valoare a componentei pentru care a fost generat
+     * un eveniment de GridChanged. Asta deoarece metoda de update se apeleaza delayed o singura data si
+     * acolo doresc, bineinteles, sa am valoarea corespunzatoare ultimului eveniment. Din acest motiv nu
+     * am utilizat o variabila locala final.
+     */
+    private GridComponent updateComponent = null;
+
     public void gridChanged(GridViewEvent evt)
     {
-        update(evt.getComponent());
+        updateComponent = evt.getComponent();
+        if(updateTimer == null) {
+            updateTimer = new Timer(0, new ActionListener()
+            {
+                public void actionPerformed(ActionEvent e)
+                {
+                    update(updateComponent);
+                }
+            });
+            updateTimer.start();
+        }
     }
 
     void updateInspectorUI()
@@ -289,6 +308,10 @@ public class AssociationInspectorPanel extends JETAPanel implements GridViewList
     @Override
     public void update(GridComponent gc)
     {
+        if(updateTimer != null) {
+            updateTimer.stop();
+            updateTimer = null;
+        }
         SenroDesignerObject selected_object;
         if (gc == null) {
             logger.debug("Null grid component.");

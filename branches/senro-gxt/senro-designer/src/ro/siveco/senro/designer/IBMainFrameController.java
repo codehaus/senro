@@ -629,6 +629,7 @@ public class IBMainFrameController extends IBFormEditorController
     {
         public void actionPerformed(ActionEvent evt)
         {
+            m_frame.getDesignerManager().closeProject();
             m_frame.shutDown();
         }
     }
