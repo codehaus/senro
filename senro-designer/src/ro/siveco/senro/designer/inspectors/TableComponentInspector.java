@@ -1,6 +1,7 @@
 package ro.siveco.senro.designer.inspectors;
 
 import ro.siveco.senro.designer.components.TableComponent;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
@@ -11,6 +12,7 @@ import javax.swing.table.AbstractTableModel;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.builder.PanelBuilder;
+import com.jeta.swingbuilder.gui.editor.FormEditor;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,6 +32,7 @@ public class TableComponentInspector extends CommonUIInspector
     protected JTable columnsTable;
     protected TableColumnsModel model;
     protected JButton addButton, deleteButton, moveUpButton, moveDownButton;
+    protected boolean isUpdating;
 
     public TableComponentInspector()
     {
@@ -53,6 +56,7 @@ public class TableComponentInspector extends CommonUIInspector
         moveDownButton = new JButton(MOVE_DOWN);
         moveDownButton.setActionCommand(MOVE_DOWN);
         columnListTF = new JTextField();
+        isUpdating = false;
     }
 
     protected JPanel buildPanel()
@@ -116,7 +120,7 @@ public class TableComponentInspector extends CommonUIInspector
         {
             public void valueChanged(ListSelectionEvent e)
             {
-                if (table == null) {
+                if (isUpdating || table == null) {
                     return;
                 }
                 int sel_col = columnsTable.getSelectedRow();
@@ -126,6 +130,9 @@ public class TableComponentInspector extends CommonUIInspector
                 } else {
                     table.clearSelection();
                 }
+                FormEditor editor = DesignerManager.getSharedDesignerManager().getMainFrame().getCurrentEditor();
+                editor.revalidate();
+                editor.repaint();                
             }
         });
         addButton.addActionListener(new ActionListener()
@@ -193,7 +200,15 @@ public class TableComponentInspector extends CommonUIInspector
         }
         super.updateUI();
         columnListTF.setText(table.getColumnList());
+        isUpdating = true;
         columnsTable.tableChanged(new TableModelEvent(model));
+        int sel_col = table.getSelectedSenroColumnIdx();
+        if(sel_col == -1) {
+            columnsTable.clearSelection();
+        } else {
+            columnsTable.setRowSelectionInterval(sel_col, sel_col);
+        }
+        isUpdating = false;
     }
 
     private void addSenroTableColumn()
