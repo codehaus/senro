@@ -1,6 +1,6 @@
 package ro.siveco.senro.designer.util.event;
 
-public class RemoveColumnEvent extends ObjectChangeEvent
+public class RemoveColumnEvent extends ComponentChangeEvent
 {
     private final int index;
 

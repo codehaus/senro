@@ -1,6 +1,6 @@
 package ro.siveco.senro.designer.util.event;
 
-public class IdChangeEvent extends ObjectChangeEvent
+public class IdChangeEvent extends ComponentChangeEvent
 {
 
     private final String oldId;

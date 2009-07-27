@@ -1,6 +1,6 @@
 package ro.siveco.senro.designer;
 
-import java.util.Properties;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 public class DesignerLauncher
 {
@@ -15,6 +15,7 @@ public class DesignerLauncher
         System.setProperty("jeta1.debug", "true");
         IBForms fi = new IBForms();
         fi.launch(args);
+        DesignerManager.getSharedDesignerManager().awake();
     }
 
 }

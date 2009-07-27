@@ -108,6 +108,7 @@ public class IBMainFrameController extends IBFormEditorController
         assignAction(MainFrameNames.ID_ENV_SETTINGS, new UserPreferencesAction());
         assignAction(MainFrameNames.ID_PARAMETERS_MANAGER, new ShowParametersAction());
         assignAction(MainFrameNames.ID_SENRO_CONTEXT, new ShowSenroContextAction());
+        assignAction(MainFrameNames.ID_DIFF, new DiffAction());
 
         assignAction(MainFrameNames.ID_ABOUT, new AboutAction());
         assignAction(MainFrameNames.ID_EXIT, new ExitAction());
@@ -1012,6 +1013,14 @@ public class IBMainFrameController extends IBFormEditorController
         public void actionPerformed(ActionEvent e)
         {
             m_frame.getDesignerManager().getProject().showSenroContext();
+        }
+    }
+
+    public class DiffAction implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            m_frame.getDesignerManager().diff();
         }
     }
 

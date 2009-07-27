@@ -1,6 +1,6 @@
 package ro.siveco.senro.designer.util.event;
 
-public class AttributeChangeEvent extends ObjectChangeEvent
+public class AttributeChangeEvent extends ComponentChangeEvent
 {
     private final String attributeName;
     private final Object oldValue;

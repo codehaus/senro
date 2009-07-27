@@ -37,10 +37,8 @@ import com.jgoodies.forms.layout.FormLayout;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.List;
 import java.io.File;
 
 import ro.siveco.senro.designer.engine.DesignerManager;
@@ -165,6 +163,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
     private FrameDocker m_docker;
 
     private DesignerManager designerManager;
+    private JMenu recentProjectsMenu;
 
     public static final String ID_FRAME_BOUNDS = "main.frame.bounds";
 
@@ -194,6 +193,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
             {
                 public void windowClosing(WindowEvent e)
                 {
+                    designerManager.closeProject();
                     shutDown();
                 }
             });
@@ -263,8 +263,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
     public java.util.List<FormComponent> getForms()
     {
         java.util.List<FormComponent> forms = new ArrayList<FormComponent>();
-        for(int i = 0; i < m_forms_tab.getTabCount(); i++) {
-            FormEditor ed = (FormEditor)m_forms_tab.getComponentAt(i);
+        for (int i = 0; i < m_forms_tab.getTabCount(); i++) {
+            FormEditor ed = (FormEditor) m_forms_tab.getComponentAt(i);
             ed.saveFocusPolicy();
             forms.add(ed.getFormComponent());
         }
@@ -274,10 +274,10 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
     public java.util.List<TopGridView> getTopGrids()
     {
         java.util.List<TopGridView> grids = new ArrayList<TopGridView>();
-        for(int i = 0; i < m_forms_tab.getTabCount(); i++) {
-            FormEditor ed = (FormEditor)m_forms_tab.getComponentAt(i);
+        for (int i = 0; i < m_forms_tab.getTabCount(); i++) {
+            FormEditor ed = (FormEditor) m_forms_tab.getComponentAt(i);
             ed.saveFocusPolicy();
-            grids.add((TopGridView)ed.getFormComponent().getChildView());
+            grids.add((TopGridView) ed.getFormComponent().getChildView());
         }
         return grids;
     }
@@ -304,7 +304,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
             if (view == inspectorsPanel) {
                 inspectorsPanel.update(gc);
 
-            // Todo trebuie scrisa metoda update la propertyContainer
+                // Todo trebuie scrisa metoda update la propertyContainer
 //            if (view == propertyContainer) {
 //                propertyContainer.getAbeillePropertyPane().update(gc);
             } else if (view == m_col_spec_panel) {
@@ -313,8 +313,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
                 m_row_spec_panel.update(gc);
             } else if (view == m_cc_view) {
                 m_cc_view.update(gc);
-            } else if(view instanceof SenroUiInspector) {
-                ((AssociationInspectorPanel)view).update(gc);
+            } else if (view instanceof SenroUiInspector) {
+                ((AssociationInspectorPanel) view).update(gc);
             }
         }
     }
@@ -379,6 +379,20 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         uiInspectorManager.addInspectorForClass(new TopGridViewInspector(), TopGridView.class);
         uiInspectorManager.addInspectorForClass(new ButtonInspector(), SenroButton.class);
         uiInspectorManager.addInspectorForClass(new TreeInspector(), SenroTree.class);
+        uiInspectorManager.addInspectorForClass(new GridViewInspector(), GridView.class);
+        uiInspectorManager.addInspectorForClass(new IteratorInspector(), IteratorComponent.class);
+        uiInspectorManager.addInspectorForClass(new LabelInspector(), SenroLabel.class);
+        uiInspectorManager.addInspectorForClass(new CheckBoxInspector(), SenroCheckBox.class);
+        uiInspectorManager.addInspectorForClass(new ComboBoxInspector(), SenroComboBox.class);
+        uiInspectorManager.addInspectorForClass(new TextFieldInspector(), SenroTextField.class);
+        uiInspectorManager.addInspectorForClass(new DateFieldInspector(), SenroDateField.class);
+        uiInspectorManager.addInspectorForClass(new GridAllocatorRendererInspector(), GridAllocatorRenderer.class);
+        uiInspectorManager.addInspectorForClass(new TextAreaInspector(), SenroTextArea.class);
+        uiInspectorManager.addInspectorForClass(new SwitchInspector(), SwitchComponent.class);
+        uiInspectorManager.addInspectorForClass(new TreeNodeInspector(), TreeNode.class);
+        uiInspectorManager.addInspectorForClass(new ConditionalInspector(), ConditionalComponent.class);
+        uiInspectorManager.addInspectorForClass(new TabPageViewInspector(), TabPageView.class);
+        uiInspectorManager.addInspectorForClass(new TabbedPaneInspector(), SenroTabbedPane.class);
 
         m_buttonbar.addView(I18N.getLocalizedMessage("Selected Component"), inspectorsPanel,
                 FormDesignerUtils.loadImage(Icons.COMPONENT_16));
@@ -573,6 +587,8 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.add(i18n_createMenuItem("Save Project", MainFrameNames.ID_SAVE_PROJECT, null));
         menu.add(i18n_createMenuItem("Save Project As...", MainFrameNames.ID_SAVE_AS_PROJECT, null));
         menu.add(i18n_createMenuItem("Open Senro Project", MainFrameNames.ID_OPEN_SENRO_PROJECT, null));
+        recentProjectsMenu = new JMenu("Open Recent Project");
+        menu.add(recentProjectsMenu);
         menu.add(i18n_createMenuItem("Close Project", MainFrameNames.ID_CLOSE_PROJECT, null));
         menu.addSeparator();
 
@@ -673,8 +689,9 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.add(i18n_createMenuItem("System Properties", MainFrameNames.ID_SYSTEM_PROPERTIES, null));
         menu.add(i18n_createMenuItem("Parameters", MainFrameNames.ID_PARAMETERS_MANAGER, null));
         menu.add(i18n_createMenuItem("Senro Context", MainFrameNames.ID_SENRO_CONTEXT, null));
+        menu.add(i18n_createMenuItem("Diff", MainFrameNames.ID_DIFF, null));
 
-        if(STUDY) {
+        if (STUDY) {
             JMenuItem show_structure = new JMenuItem("Show form structure");
             menu.add(show_structure);
             show_structure.addActionListener(new ActionListener()
@@ -682,7 +699,7 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
                 public void actionPerformed(ActionEvent e)
                 {
                     FormEditor fe = DesignerManager.getSharedDesignerManager().getMainFrame().getCurrentEditor();
-                    if(fe != null) {
+                    if (fe != null) {
                         System.out.println(ComponentStructureInfo.getStructureInfo(fe.getFormComponent().getChildView()));
                     }
                 }
@@ -703,6 +720,24 @@ public class IBMainFrame extends JFrame implements ComponentSource, GridViewList
         menu.add(i18n_createMenuItem("About", MainFrameNames.ID_ABOUT, null));
         menuBar.add(menu);
 
+    }
+
+    public void updateRecentMenu()
+    {
+        recentProjectsMenu.removeAll();
+        List<String> recent_proj_paths = designerManager.getIdOptions().getRecentProjectsPaths();
+        for (final String recent_proj_path : recent_proj_paths) {
+            JMenuItem item = new JMenuItem(recent_proj_path);
+            item.addActionListener(new ActionListener()
+            {
+
+                public void actionPerformed(ActionEvent e)
+                {
+                    designerManager.openProject(recent_proj_path);
+                }
+            });
+            recentProjectsMenu.add(item);
+        }
     }
 
     /**

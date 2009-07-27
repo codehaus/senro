@@ -46,6 +46,7 @@ public class IBMainFrameUIDirector implements UIDirector
 
         m_frame.enableComponent(MainFrameNames.ID_PARAMETERS_MANAGER, has_project);
         m_frame.enableComponent(MainFrameNames.ID_SENRO_CONTEXT, has_project);
+        m_frame.enableComponent(MainFrameNames.ID_DIFF, has_project);
         m_frame.enableComponent(MainFrameNames.ID_CREATE_FORM, has_project);
         m_frame.enableComponent(MainFrameNames.ID_DELETE_FORM, has_form);
         m_frame.enableComponent(MainFrameNames.ID_PROJECT_SETTINGS, has_project);

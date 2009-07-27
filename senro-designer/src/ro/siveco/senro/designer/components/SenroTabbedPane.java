@@ -4,7 +4,6 @@ import ro.siveco.senro.designer.basic.SenroDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObject;
 import ro.siveco.senro.designer.basic.UIDesignerObjectDelegate;
 import ro.siveco.senro.designer.association.AssociationInstance;
-import ro.siveco.senro.designer.util.event.AddAssociationEvent;
 import ro.siveco.senro.designer.util.event.AddTabEvent;
 import ro.siveco.senro.designer.util.event.RemoveTabEvent;
 
@@ -36,7 +35,7 @@ public class SenroTabbedPane extends JTabbedPane implements UIDesignerObject
     @Override
     public void removeTabAt(int index)
     {
-        if(index < 0 || index >= getTabCount()) {
+        if (index < 0 || index >= getTabCount()) {
             return;
         }
         new RemoveTabEvent(this, index).post();

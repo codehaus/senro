@@ -7,16 +7,20 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import javax.swing.*;
 
 import ro.siveco.senro.designer.objects.GridAllocatorDescription;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.util.List;
 
 public class GridAllocatorInspector extends CommonInspector
 {
     public static final String GA_INSPECTOR_TITLE = "Grid Allocator Inspector";
 
     protected GridAllocatorDescription gridAllocatorDescription;
-    protected JTextField entityTF;
+    protected JComboBox entityCB;
     protected JTextField columnsTF;
     protected JTextField displayGroupTF;
 
@@ -29,7 +33,8 @@ public class GridAllocatorInspector extends CommonInspector
     {
         super.init();
         gridAllocatorDescription = null;
-        entityTF = new JTextField();
+        entityCB = new JComboBox();
+        entityCB.setEditable(true);
         displayGroupTF = new JTextField();
         columnsTF = new JTextField();
     }
@@ -46,7 +51,8 @@ public class GridAllocatorInspector extends CommonInspector
         builder.add(new JLabel("Id", JLabel.RIGHT), cc.xy(2, 4));
         builder.add(idTF, cc.xy(4, 4));
         builder.add(new JLabel("Entity Name", JLabel.RIGHT), cc.xy(2, 6));
-        builder.add(entityTF, cc.xy(4, 6));
+        builder.add(entityCB, cc.xy(4, 6));
+        populateEntitiesCombo();
         builder.add(new JLabel("Display Group", JLabel.RIGHT), cc.xy(2, 8));
         builder.add(displayGroupTF, cc.xy(4, 8));
         builder.add(new JLabel("Columns Count", JLabel.RIGHT), cc.xy(2, 10));
@@ -57,14 +63,14 @@ public class GridAllocatorInspector extends CommonInspector
     protected void addListeners()
     {
         super.addListeners();
-        entityTF.addActionListener(new ActionListener()
+        entityCB.addItemListener(new ItemListener()
         {
-            public void actionPerformed(ActionEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
-                if (gridAllocatorDescription == null) {
+                if(gridAllocatorDescription == null) {
                     return;
                 }
-                gridAllocatorDescription.setEntityName(entityTF.getText());
+                gridAllocatorDescription.setEntityName((String)entityCB.getSelectedItem());
             }
         });
         displayGroupTF.addActionListener(new ActionListener()
@@ -107,13 +113,23 @@ public class GridAllocatorInspector extends CommonInspector
         super.setObject(o);
     }
 
+    private void populateEntitiesCombo()
+    {
+        entityCB.removeAllItems();
+        DesignerManager dm = DesignerManager.getSharedDesignerManager();
+        List<String> entities_names = dm.getEntitiesNames();
+        for(String entity_name : entities_names) {
+            entityCB.addItem(entity_name);
+        }
+    }
+
     public void updateUI()
     {
         if (gridAllocatorDescription == null) {
             return;
         }
         super.updateUI();
-        entityTF.setText(gridAllocatorDescription.getEntityName());
+        entityCB.setSelectedItem(gridAllocatorDescription.getEntityName());
         displayGroupTF.setText(gridAllocatorDescription.getDisplayGroup());
         columnsTF.setText(String.valueOf(gridAllocatorDescription.getColumnsCount()));
     }

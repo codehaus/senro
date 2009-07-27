@@ -1,6 +1,6 @@
 package ro.siveco.senro.designer.util.event;
 
-public class ColumnSelectionChangeEvent extends ObjectChangeEvent
+public class ColumnSelectionChangeEvent extends ComponentChangeEvent
 {
     private final int oldSelectedSenroColumnIdx;
     private final int newSelectedSenroColumnIdx;
