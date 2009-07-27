@@ -60,7 +60,6 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     protected CardLayout card;
     protected ObjectSetPalette objSetPalette;
     protected boolean isActive = false;
-    protected boolean isClean = true;
     protected Timer timer;
 
     public ObjectSetManager(String obj_set_name, InspectorManager inspector_manager)
@@ -72,16 +71,14 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         {
             public void actionPerformed(ActionEvent evt)
             {
-                if(matrixView == null) {
+                if (matrixView == null) {
                     return;
                 }
                 matrixView.modelDataDidChanged(Collections.<CellCoordinates>emptyList());
-                setClean(false);
             }
         };
         timer = new Timer(0, updater);
         timer.setRepeats(false);
-
     }
 
     @SuppressWarnings({"unchecked"})
@@ -89,7 +86,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     {
         List<T> obj_with_T_class = new ArrayList<T>();
         for (ObjectDescription dataObject : dataObjects) {
-            if (dataObject.getClass().isAssignableFrom(obj_class)) {
+            if (dataObject != null && dataObject.getClass().isAssignableFrom(obj_class)) {
                 obj_with_T_class.add((T) dataObject);
             }
         }
@@ -217,7 +214,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         changed_data.add(dragged_cell);
         changed_data.add(end_dragg_cell);
         matrixView.modelDataDidChanged(changed_data);
-        setClean(false);
+        new SwapCellsEvent(this, dragged_cell, end_dragg_cell).post();
         return true;
     }
 
@@ -225,18 +222,23 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
     {
         int idx = getFirstNullDataIndex();
         if (idx != -1) {
-            dataObjects.set(idx, unique_obj_desc);
-            EventCenter.add(this, unique_obj_desc, Event.class);
-            if (matrixView != null) {
-                CellCoordinates unique_obj_coord = getCellCoordinatesForIndex(idx);
-                List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
-                changed_data.add(unique_obj_coord);
-                matrixView.modelDataDidChanged(changed_data);
-                setClean(false);
-            }
+            CellCoordinates unique_obj_coord = getCellCoordinatesForIndex(idx);
+            addObject(unique_obj_desc, unique_obj_coord);
         } else {
             addRow();
             addObject(unique_obj_desc);
+        }
+    }
+
+    public void addObject(ObjectDescription new_obj, CellCoordinates cell_coordinates)
+    {
+        setDataAt(new_obj, cell_coordinates.col, cell_coordinates.row);
+        EventCenter.add(this, new_obj, Event.class);
+        if (matrixView != null) {
+            List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
+            changed_data.add(cell_coordinates);
+            matrixView.modelDataDidChanged(changed_data);
+            new AddObjectDescriptionEvent(this, new_obj, cell_coordinates).post();
         }
     }
 
@@ -284,7 +286,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
                     setDataAt(null, cell.col, cell.row);
                 }
                 matrixView.modelDataDidChanged(new ArrayList<CellCoordinates>(removable_obj));
-                setClean(false);
+                new RemoveObjectDescriptionsEvent(this, objects_to_remove).post();
                 break;
             case JOptionPane.NO_OPTION:
                 break;
@@ -335,14 +337,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
             inspectObject(old_obj);
             return;
         }
-        setDataAt(new_obj, cell_coordinates.col, cell_coordinates.row);
-        EventCenter.add(this, new_obj, Event.class);
-
-        // put changed data in a list
-        List<CellCoordinates> changed_data = new ArrayList<CellCoordinates>();
-        changed_data.add(cell_coordinates);
-        matrixView.modelDataDidChanged(changed_data);
-        setClean(false);
+        addObject(new_obj, cell_coordinates);
         inspectObject(new_obj);
         objSetPalette.selectToggleButtonWithCmd(ObjectSetPalette.ARROW_BUTTON_ACTION_CMD);
     }
@@ -397,9 +392,17 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
 
     public void clear()
     {
+        releaseObservedObjects();
         setDefaultEmptyState();
         if (matrixView != null) {
             matrixView.refreshCellStructure();
+        }
+    }
+
+    public void releaseObservedObjects()
+    {
+        for (ObjectDescription dataObject : dataObjects) {
+            EventCenter.remove(this, dataObject, Event.class);
         }
     }
 
@@ -514,9 +517,8 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
                 SenroContextDescription sc_d = new SenroContextDescription();
                 sc_d.setName(comp.getName());
                 sc_d.setId(comp_id);
-                List client_context_elems = ((SenroContainerComponent) comp).getComponents();
-                for (Object context_elem : client_context_elems) {
-                    SenroComponent ctx_elem = (SenroComponent) context_elem;
+                List<SenroComponent> client_context_elems = ((SenroContainerComponent) comp).getComponents();
+                for (SenroComponent ctx_elem : client_context_elems) {
                     String key = ctx_elem.getId();
                     String value = (String) ctx_elem.get(key);
                     sc_d.addContextParameter(key, value);
@@ -524,9 +526,8 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
                 return sc_d;
             case CONTEXT_FRAGMENT:
                 ContextFragmentDescription cf_d = new ContextFragmentDescription();
-                List server_context_elems = ((SenroContainerComponent) comp).getComponents();
-                for (Object context_elem : server_context_elems) {
-                    SenroComponent ctx_elem = (SenroComponent) context_elem;
+                List<SenroComponent> server_context_elems = ((SenroContainerComponent) comp).getComponents();
+                for (SenroComponent ctx_elem : server_context_elems) {
                     String key = ctx_elem.getId();
                     String value = (String) ctx_elem.get(key);
                     cf_d.addContextParameter(key, value);
@@ -570,7 +571,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         dataObjects = new_data_obj;
         cols += 1;
         matrixView.refreshCellStructure();
-        setClean(false);
+        new MatrixViewStructureChangeEvent(this, MatrixViewStructureChangeEvent.ADD_COLUMN).post();
     }
 
     public void removeColumn()
@@ -592,7 +593,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         dataObjects = new_data_obj;
         cols -= 1;
         matrixView.refreshCellStructure();
-        setClean(false);
+        new MatrixViewStructureChangeEvent(this, MatrixViewStructureChangeEvent.REMOVE_COLUMN).post();
     }
 
     public void addRow()
@@ -607,7 +608,7 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         dataObjects = new_data_obj;
         rows += 1;
         matrixView.refreshCellStructure();
-        setClean(false);
+        new MatrixViewStructureChangeEvent(this, MatrixViewStructureChangeEvent.ADD_ROW).post();
     }
 
     public void removeRow()
@@ -629,21 +630,11 @@ public class ObjectSetManager implements MatrixModel, MatrixSelectionListener, O
         dataObjects = new_data_obj;
         rows -= 1;
         matrixView.refreshCellStructure();
-        setClean(false);
-    }
-
-    public boolean isClean()
-    {
-        return isClean;
-    }
-
-    public void setClean(boolean clean)
-    {
-        isClean = clean;
+        new MatrixViewStructureChangeEvent(this, MatrixViewStructureChangeEvent.REMOVE_ROW).post();
     }
 
     public void handleEvent(ro.siveco.senro.designer.util.event.Event event)
     {
-        timer.start();        
+        timer.start();
     }
 }

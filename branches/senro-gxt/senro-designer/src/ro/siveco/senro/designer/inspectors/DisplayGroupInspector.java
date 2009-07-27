@@ -7,16 +7,17 @@ import com.jgoodies.forms.builder.PanelBuilder;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.util.List;
 
 import ro.siveco.senro.designer.objects.DisplayGroupDescription;
-import ro.siveco.senro.designer.objects.ObjectDescription;
-import ro.siveco.senro.designer.util.event.EventCenter;
-import ro.siveco.senro.designer.util.event.Event;
+import ro.siveco.senro.designer.engine.DesignerManager;
 
 public class DisplayGroupInspector extends CommonInspector
 {
     public static final String DG_INSPECTOR_TITLE = "Display Group Inspector";
-    protected JTextField entityTF;
+    protected JComboBox entityCB;
     protected JTextField fetchSpecificationTF;
     protected JTextField editingContextTF;
     protected JCheckBox isMasterCB;
@@ -32,7 +33,8 @@ public class DisplayGroupInspector extends CommonInspector
     {
         super.init();
         displayGroupDescription = null;
-        entityTF = new JTextField();
+        entityCB = new JComboBox();
+        entityCB.setEditable(true);
         fetchSpecificationTF = new JTextField();
         editingContextTF = new JTextField();
         isMasterCB = new JCheckBox("Is Master");
@@ -50,7 +52,8 @@ public class DisplayGroupInspector extends CommonInspector
         builder.add(new JLabel("Id", JLabel.RIGHT), cc.xy(1, 4));
         builder.add(idTF, cc.xy(3, 4));
         builder.add(new JLabel("Entity Name", JLabel.RIGHT), cc.xy(1, 6));
-        builder.add(entityTF, cc.xy(3, 6));
+        builder.add(entityCB, cc.xy(3, 6));
+        populateEntitiesCombo();
         builder.add(new JLabel("Fetch Spec.", JLabel.RIGHT), cc.xy(1, 8));
         builder.add(fetchSpecificationTF, cc.xy(3, 8));
         builder.add(new JLabel("Editing Ctx.", JLabel.RIGHT), cc.xy(1, 10));
@@ -62,14 +65,14 @@ public class DisplayGroupInspector extends CommonInspector
     protected void addListeners()
     {
         super.addListeners();
-        entityTF.addActionListener(new ActionListener()
+        entityCB.addItemListener(new ItemListener()
         {
-            public void actionPerformed(ActionEvent e)
+            public void itemStateChanged(ItemEvent e)
             {
-                if (displayGroupDescription == null) {
+                if(displayGroupDescription == null) {
                     return;
                 }
-                displayGroupDescription.setEntityName(entityTF.getText());
+                displayGroupDescription.setEntityName((String)entityCB.getSelectedItem());
             }
         });
         fetchSpecificationTF.addActionListener(new ActionListener()
@@ -115,13 +118,23 @@ public class DisplayGroupInspector extends CommonInspector
         }
     }
 
+    private void populateEntitiesCombo()
+    {
+        entityCB.removeAllItems();
+        DesignerManager dm = DesignerManager.getSharedDesignerManager();
+        List<String> entities_names = dm.getEntitiesNames();
+        for(String entity_name : entities_names) {
+            entityCB.addItem(entity_name);
+        }
+    }
+
     public void updateUI()
     {
         if (displayGroupDescription == null) {
             return;
         }
         super.updateUI();
-        entityTF.setText(displayGroupDescription.getEntityName());
+        entityCB.setSelectedItem(displayGroupDescription.getEntityName());
         fetchSpecificationTF.setText(displayGroupDescription.getFetchSpecification());
         editingContextTF.setText(displayGroupDescription.getEditingContext());
         isMasterCB.setSelected(displayGroupDescription.isMaster());
@@ -131,7 +144,7 @@ public class DisplayGroupInspector extends CommonInspector
     {
         nameTF.setEnabled(false);
         idTF.setEnabled(false);
-        entityTF.setEnabled(false);
+        entityCB.setEnabled(false);
         fetchSpecificationTF.setEnabled(false);
         editingContextTF.setEnabled(false);
         isMasterCB.setEnabled(false);
@@ -141,7 +154,7 @@ public class DisplayGroupInspector extends CommonInspector
     {
         nameTF.setEnabled(true);
         idTF.setEnabled(true);
-        entityTF.setEnabled(true);
+        entityCB.setEnabled(true);
         fetchSpecificationTF.setEnabled(true);
         editingContextTF.setEnabled(true);
         isMasterCB.setEnabled(true);

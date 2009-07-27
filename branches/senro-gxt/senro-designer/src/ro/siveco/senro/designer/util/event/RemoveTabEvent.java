@@ -1,6 +1,6 @@
 package ro.siveco.senro.designer.util.event;
 
-public class RemoveTabEvent extends ObjectChangeEvent
+public class RemoveTabEvent extends ComponentChangeEvent
 {
     private final int tabIndex;
 

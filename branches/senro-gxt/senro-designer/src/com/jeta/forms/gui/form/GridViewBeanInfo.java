@@ -88,6 +88,12 @@ public class GridViewBeanInfo implements BeanInfo
                 if("column".equals(pd.getName())) {
                     props.add(pd);
                 }
+                if("rowExpr".equals(pd.getName())) {
+                    props.add(pd);
+                }
+                if("columnExpr".equals(pd.getName())) {
+                    props.add(pd);
+                }
             }
 
             m_props = props.toArray(new PropertyDescriptor[0]);

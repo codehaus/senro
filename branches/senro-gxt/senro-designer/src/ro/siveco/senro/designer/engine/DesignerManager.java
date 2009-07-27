@@ -4,10 +4,8 @@ import ro.siveco.senro.designer.objects.*;
 import ro.siveco.senro.designer.ui.MatrixView;
 import ro.siveco.senro.designer.ui.DesignerCellFactory;
 import ro.siveco.senro.designer.inspector.InspectorManager;
-import ro.siveco.senro.designer.IBMainFrame;
-import ro.siveco.senro.designer.IBMainFrameController;
-import ro.siveco.senro.designer.IBMainFormManager;
-import ro.siveco.senro.designer.DesignerRuntimeException;
+import ro.siveco.senro.designer.*;
+import ro.siveco.senro.designer.diff.infos.ContainerDiffInfo;
 import ro.siveco.senro.designer.engine.xmlgen.AssociationXmlGenerator;
 import ro.siveco.senro.designer.association.AssociationDescription;
 import ro.siveco.senro.designer.association.AssociationInstance;
@@ -30,15 +28,15 @@ import org.w3c.dom.Element;
 import org.apache.log4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.io.FileUtils;
-import org.senro.templates.ITemplateRepository;
 import org.senro.sid.SidSenroAdapter;
-import org.senro.ui.template.TemplateParser;
 import org.senro.ui.template.RenderContext;
 import org.senro.ui.template.sid.SIDComponent;
 import org.senro.gwt.model.SenroContext;
 import org.senro.gwt.model.SenroAssoc;
 import org.senro.gwt.model.ui.*;
 import org.senro.gwt.client.model.ui.binding.*;
+import org.shellos.metadata.Entity;
+import org.shellos.metadata.provider.MetadataProvider;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -64,6 +62,7 @@ import com.jeta.swingbuilder.gui.editor.DesignFormComponent;
 import com.jeta.swingbuilder.gui.utils.FormDesignerUtils;
 import com.jeta.swingbuilder.gui.components.TSErrorDialog2;
 import com.jeta.swingbuilder.gui.formmgr.FormSurrogate;
+import com.jeta.swingbuilder.gui.formmgr.FormManagerDesignUtils;
 import com.jeta.open.registry.JETARegistry;
 import com.jeta.open.i18n.I18N;
 
@@ -103,6 +102,9 @@ public class DesignerManager
     private DesignerProject project = null;
     private final AssociationManager associationManager;
     private SidSenroAdapter sid;
+    private IDOptions idOptions;
+    private ChangeTracker changeTracker;
+    private DiffManager diffManager;
 
     private static DesignerManager sharedDesignerManager = null;
 
@@ -268,7 +270,7 @@ public class DesignerManager
         client_matrix_view.addMatrixSelectionListener(clientObjSetManager);
         client_matrix_view.setCellFactory(new DesignerCellFactory());
 
-        // add Object Set Managers to others sets
+        // add Object Set Managers to other sets
         serverObjSetManager.addOtherObjSetManager(clientObjSetManager);
         clientObjSetManager.addOtherObjSetManager(serverObjSetManager);
 
@@ -278,6 +280,55 @@ public class DesignerManager
         serverObjSetManager.setEnabled(false);
         clientObjSetManager.setEnabled(false);
         inspectorManager.setEnabled(false);
+
+        // create IDOptions
+        idOptions = new IDOptions();
+        // create ChangeTracker
+        changeTracker = new ChangeTracker();
+
+        // create DiffManager
+        diffManager = new DiffManager(this);
+    }
+
+    public void awake()
+    {
+        if (idOptions.isOpenLastProjectAtStart()) {
+            String last_project_path = idOptions.getLastProjectPath();
+            if (last_project_path == null) {
+                JOptionPane.showMessageDialog(mainFrame, "No recent project registered yet, open or create a project!",
+                        "Info", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            openProject(last_project_path);
+        }
+        mainFrame.updateRecentMenu();
+    }
+
+    public List<String> getEntitiesNames()
+    {
+        List<String> entities_names = new ArrayList<String>();
+        MetadataProvider metadata_provider = getSid().getSenro().getMetadataProvider();
+        if(metadata_provider != null) {
+            List<Entity> entities = metadata_provider.getEntities();
+            for(Entity entity : entities) {
+                entities_names.add(entity.getName());
+            }
+        } else {
+            String[] test_entities_names = {"entity_1", "entity_2", "entity_3", "entity_4"};
+            entities_names.addAll(Arrays.asList(test_entities_names));
+        }
+        return entities_names;
+    }
+
+    public ContainerDiffInfo diff()
+    {
+        ContainerDiffInfo diff_info = diffManager.diff();
+        return diff_info;
+    }
+
+    public IDOptions getIdOptions()
+    {
+        return idOptions;
     }
 
     private void registerInspectors()
@@ -359,14 +410,9 @@ public class DesignerManager
         Iterator<GridComponent> comp_it = grid.gridIterator();
         while (comp_it.hasNext()) {
             GridComponent crt_comp = comp_it.next();
-            Component cmp = crt_comp.getBeanChildComponent();
-            if (cmp instanceof JScrollPane) {
-                JScrollPane scroll_pane = (JScrollPane) cmp;
-                // Special treatment for SenroList
-                cmp = scroll_pane.getViewport().getComponent(0);
-            }
-            if (cmp instanceof SenroDesignerObject) {
-                collectUIObjects((SenroDesignerObject) cmp, sd_objs);
+            SenroDesignerObject sdo = crt_comp.getEmbeddedSDO();
+            if(sdo != null) {
+                collectUIObjects(sdo, sd_objs);
             }
         }
     }
@@ -622,7 +668,7 @@ public class DesignerManager
         return sd_objs;
     }
 
-    private void saveComponentTemplate()
+    protected void saveComponentTemplate()
             throws ParserConfigurationException, TransformerException, IOException
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -720,7 +766,7 @@ public class DesignerManager
         return file;
     }
 
-    private void saveDirtyGrids()
+    protected void saveDirtyGrids()
     {
         mainFrame.getPropertyContainer().stopEditing();
         Collection<FormEditor> editors = mainFrame.getEditors();
@@ -747,6 +793,7 @@ public class DesignerManager
     {
         saveComponentTemplate();
         markAsCleanDirtyGrids();
+        changeTracker.resetChanges();
 //        saveDirtyGrids();
 //        serverObjSetManager.saveToFile(project.getServerObjectsPath());
 //        clientObjSetManager.saveToFile(project.getClientObjectsPath());
@@ -756,6 +803,7 @@ public class DesignerManager
     public void saveAsProject()
     {
         JFileChooser fc = new JFileChooser();
+        fc.setDialogTitle("Save Project As");
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fc.setSelectedFile(project.getProjectDir());
         int returnVal = fc.showOpenDialog(mainFrame);
@@ -803,10 +851,7 @@ public class DesignerManager
         }
         saveProject();
         closeProject();
-        Map<String, Object> runtimeContext = new HashMap<String, Object>();
-        runtimeContext.put("senroContext", senro_context);
-        RenderContext rc = new RenderContext(runtimeContext);
-        rc.setRenderTemplates(true);
+        RenderContext rc = getRenderContext(senro_context, true);
         openProject(rc, comp_file.getAbsolutePath());
         // put the old Component.xml (before render version) in project directory
         try {
@@ -822,7 +867,7 @@ public class DesignerManager
         } catch (IOException ex) {
             logger.error("Delete temp file error", ex);
         }
-        if(getCurrentEditor() != null) {
+        if (getCurrentEditor() != null) {
             mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent()));
         }
     }
@@ -852,6 +897,7 @@ public class DesignerManager
                         mainFrame.gridChanged(new GridViewEvent(null, GridViewEvent.CELL_CHANGED, getCurrentEditor().getFormComponent().getSelectedComponent()));
                         break;
                     case MessageBox.CANCEL_OPTION:
+                        return;
                 }
             }
         }
@@ -860,9 +906,10 @@ public class DesignerManager
             JOptionPane.showMessageDialog(mainFrame, "Cannot save project. See log for details.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+        changeTracker.resetChanges();
     }
 
-    private void assignIdsAutomatically()
+    protected void assignIdsAutomatically()
     {
         Predicate without_id = getWithoutIdPredicate();
         List<SenroDesignerObject> without_id_objs = getAllSenroObjectsThat(without_id);
@@ -910,7 +957,7 @@ public class DesignerManager
         if (project != null) {
             return;
         }
-        File proj_dir = chooseDirectory(null, "Choose project location");
+        File proj_dir = chooseDirectory(idOptions.getLastProjectParentPath(), "Choose project location");
         if (proj_dir == null) {
             return;
         }
@@ -941,19 +988,46 @@ public class DesignerManager
         if (project != null) {
             return;
         }
-        File proj_dir = chooseDirectory(null, "Open project");
+        File proj_dir = chooseDirectory(idOptions.getLastProjectParentPath(), "Open project");
         if (proj_dir == null) {
             return;
         }
         File comp_xml_file = new File(proj_dir, COMPONENT_FILE_NAME);
         String path_to_comp_xml = comp_xml_file.getAbsolutePath();
 
+        openProject(getDefaultRenderContext(), path_to_comp_xml);
+    }
+
+    public void openProject(String recent_proj_dir)
+    {
+        closeProject();
+        if (project != null) {
+            return;
+        }
+        File proj_dir = new File(recent_proj_dir);
+        File comp_xml_file = new File(proj_dir, COMPONENT_FILE_NAME);
+        String path_to_comp_xml = comp_xml_file.getAbsolutePath();
+
+        openProject(getDefaultRenderContext(), path_to_comp_xml);
+    }
+
+    private RenderContext getDefaultRenderContext()
+    {
         SenroContext ctx = new SenroContext();
         Map<String, Object> runtimeContext = new HashMap<String, Object>();
         runtimeContext.put("senroContext", ctx);
         RenderContext rc = new RenderContext(runtimeContext);
         rc.setRenderTemplates(false);
-        openProject(rc, path_to_comp_xml);
+        return rc;
+    }
+
+    public RenderContext getRenderContext(SenroContext ctx, boolean render_templates)
+    {
+        Map<String, Object> runtimeContext = new HashMap<String, Object>();
+        runtimeContext.put("senroContext", ctx);
+        RenderContext rc = new RenderContext(runtimeContext);
+        rc.setRenderTemplates(render_templates);
+        return rc;
     }
 
     public void openProject(RenderContext rc, String path_to_comp_xml)
@@ -974,11 +1048,17 @@ public class DesignerManager
             JOptionPane.showMessageDialog(mainFrame, "Cannot open project. See log for details.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+        changeTracker.resetChanges();
     }
 
     public FormEditor getCurrentEditor()
     {
         return mainFrame.getCurrentEditor();
+    }
+
+    public SidSenroAdapter getSid()
+    {
+        return sid;
     }
 
     private void loadComponents(RenderContext rc) throws XmlException, FormException
@@ -989,112 +1069,89 @@ public class DesignerManager
         FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
         fmgr.deactivateForms(mainFrame.getCurrentEditor());
 
-        ITemplateRepository templateRepo = sid.getSenro().getTemplateRepository();
-        SenroComponent rootComponent = null;
-        try {
-            InputStream is = templateRepo.getTemplate(project.getProjectDir().getName());
-            TemplateParser parser = new TemplateParser();
-            parser.setInputStream(is);
-            parser.setApplicationContext(sid.getSpringContext());
-            rc.setRoot(true);
-            rootComponent = parser.render(rc);
-        }
-        catch (Exception e) {
-            throw new DesignerRuntimeException("Template Parser render error", e);
-        }
-        if (rootComponent == null) {
+        TemplateManager tm = new TemplateManager(rc, project.getProjectDir().getName());
+        recoverTopGrids(tm.getAllGrids());
+        serverObjSetManager.loadData(tm.getServerObjects());
+        clientObjSetManager.loadData(tm.getClientObjects());
+        recoverParameters(tm.getSenroParams());
+        recoverAssociations(tm.getSenroAssocs());
+    }
+
+    public void expandTemplate(TemplateComponent template_comp)
+    {
+        if (template_comp == null) {
             return;
         }
-        List<SenroComponent> all_components = ((SenroContainerComponent) rootComponent).getComponents();
-        List<SenroContainerComponent> all_grids = new ArrayList<SenroContainerComponent>();
-        List<SenroComponent> senro_params = new ArrayList<SenroComponent>();
-        List<ObjectDescription> server_objs = new ArrayList<ObjectDescription>();
-        List<ObjectDescription> client_objs = new ArrayList<ObjectDescription>();
-        List<ObjectDescription> context_fragments = new ArrayList<ObjectDescription>();
-        all_grids.add((SenroContainerComponent) rootComponent);
-        for (SenroComponent comp : all_components) {
-            ComponentAssociation comp_assoc = comp.getRenderComponent();
-            if (comp_assoc.equals(ComponentAssociation.POPUP)) {
-                all_grids.add((SenroContainerComponent) comp);
-            } else if (comp_assoc.equals(ComponentAssociation.PARAMETER)) {
-                senro_params.add(comp);
-            }
-            sortNonUIObj(comp, server_objs, client_objs, context_fragments);
+        SenroContext sc = getProject().getSenroContextManager().getSenroContext();
+        RenderContext rc = getRenderContext(sc, false);
+        TemplateManager tm = new TemplateManager(rc, template_comp.getTemplateName());
+        // construct memento for the grid view that must replace the template component
+        SenroContainerComponent main_grid_comp = tm.getMainGrid();
+        FormMemento state = new FormMemento();
+        // transfer cell constraints from template component
+        GridComponent crt_comp = (GridComponent) template_comp.getParent().getParent();
+        int col = crt_comp.getColumn();
+        int row = crt_comp.getRow();
+        int colspan = crt_comp.getColumnSpan();
+        int rowspan = crt_comp.getRowSpan();
+        ComponentConstraints cnstr = crt_comp.getConstraints();
+        CellConstraints.Alignment h_align = cnstr.getHorizontalAlignment();
+        CellConstraints.Alignment v_align = cnstr.getVerticalAlignment();
+        state.setCellConstraints(new CellConstraints(col, row, colspan, rowspan, h_align, v_align, new Insets(0, 0, 0, 0)));
+        // continue memento construction
+        state.setComponentClass(FormComponent.class.getName());
+        state.setId(compMementoGenerators.get(ComponentAssociation.GRID).getNextEmbeddedId());
+        try {
+            PropertiesMemento ppm = getDefaultPropertiesMementoForComponent(main_grid_comp, GridView.class);
+            state.setPropertiesMemento(ppm);
+            setRowAndColumnSpecsToStateFromGrid(state, main_grid_comp);
+            addComponentsToStateFromGrid(state, main_grid_comp);
+            // create the new grid component
+            GridComponent newcomp;
+            FormComponentFactory factory = (FormComponentFactory) JETARegistry.lookup(FormComponentFactory.COMPONENT_ID);
+            newcomp = factory.createFormComponent();
+            GridView parentView = crt_comp.getParentView();
+            newcomp.setParentView(parentView);
+            newcomp.setState(state);
+            FormManager fmgr = (FormManager) JETARegistry.lookup(FormManager.COMPONENT_ID);
+            FormManagerDesignUtils.registerForms(fmgr, newcomp);
+            fmgr.installHandlers(getCurrentEditor().getComponentSource(), newcomp);
+            parentView.replaceComponent(newcomp, crt_comp);
+            // add popups from the imported template
+            List<SenroContainerComponent> popups = tm.getPopups();
+            recoverTopGrids(popups);
+        } catch (FormException e) {
+            logger.error("Cannot expand template: " + template_comp.getTemplateName(), e);
+            JOptionPane.showMessageDialog(mainFrame, "Cannot expand template: '" + template_comp.getTemplateName() + "' , see logger for details!",
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-        Set<SenroAssoc> senro_assocs = rootComponent.getAssociations();
-        for (SenroContainerComponent top_grid : all_grids) {
-            collectAssocsAndNonUIObjs(top_grid, senro_assocs, server_objs, client_objs, context_fragments);
-        }
-        server_objs.add(joinContextFragments(context_fragments));
-        recoverTopGrids(all_grids);
+        // add server objects from the imported template
+        ContextFragmentDescription importer_ctx = serverObjSetManager.getObjectsWithClass(ContextFragmentDescription.class).get(0);
+        ContextFragmentDescription imported_ctx = tm.getContextFragments().get(0);
+        List<ContextFragmentDescription> ctx_list = new ArrayList<ContextFragmentDescription>();
+        ctx_list.add(importer_ctx);
+        ctx_list.add(imported_ctx);
+        ContextFragmentDescription result_ctx = TemplateManager.joinContextFragments(ctx_list);
+        List<ObjectDescription> server_objs = serverObjSetManager.getData();
+        server_objs.addAll(tm.getServerObjects());
+        server_objs.remove(importer_ctx);
+        server_objs.remove(imported_ctx);
+        server_objs.add(0, result_ctx);
         serverObjSetManager.loadData(server_objs);
+        // add client objects from the imported template
+        List<ObjectDescription> client_objs = clientObjSetManager.getData();
+        List<ObjectDescription> new_client_objs = tm.getClientObjects();
+        Iterator it = new_client_objs.iterator();
+        while (it.hasNext()) {
+            ObjectDescription new_client_obj = (ObjectDescription) it.next();
+            if (new_client_obj instanceof DisplayGroupDescription && new_client_obj.getName().equals(DisplayGroupDescription.FEEDBACK_DG_NAME)) {
+                it.remove();
+            }
+        }
+        client_objs.addAll(new_client_objs);
         clientObjSetManager.loadData(client_objs);
-        recoverParameters(senro_params);
-        recoverAssociations(senro_assocs);
-    }
-
-    private ObjectDescription joinContextFragments(List<ObjectDescription> context_fragments)
-    {
-        if (context_fragments.size() == 0) {
-            context_fragments.add(new ContextFragmentDescription());
-        }
-        ContextFragmentDescription root_ctx = (ContextFragmentDescription) context_fragments.get(0);
-        if (context_fragments.size() == 1) {
-            return root_ctx;
-        }
-        for (int i = 1; i < context_fragments.size(); i++) {
-            ContextFragmentDescription ctx = (ContextFragmentDescription) context_fragments.get(i);
-            for (int j = 0; j < ctx.getContextParametersCount(); j++) {
-                SCDescription.ParamEntry pe = ctx.getParametersEntry(j);
-                root_ctx.addContextParameter(pe.getKey(), pe.getValue());
-            }
-        }
-        return root_ctx;
-    }
-
-    private void sortNonUIObj(SenroComponent comp, List<ObjectDescription> server_objs,
-                              List<ObjectDescription> client_objs, List<ObjectDescription> context_fragments)
-    {
-        ObjectDescription od = ObjectSetManager.getObjectDescription(comp);
-        if (od != null) {
-            boolean has_feedback = false;
-            for (ObjectDescription co : client_objs) {
-                if (co.getId().equals(DisplayGroupDescription.FEEDBACK_DG_NAME)) {
-                    has_feedback = true;
-                }
-            }
-            if (comp.getRenderComponent().equals(ComponentAssociation.CONTEXT_FRAGMENT)) {
-                context_fragments.add(od);
-            } else if (isServerObject(od)) {
-                server_objs.add(od);
-            } else
-            if (!(has_feedback && od.getId().equals(DisplayGroupDescription.FEEDBACK_DG_NAME))) {
-                client_objs.add(od);
-            }
-        }
-    }
-
-    private void collectAssocsAndNonUIObjs(SenroContainerComponent container, Set<SenroAssoc> senro_assocs,
-                                           List<ObjectDescription> server_objs, List<ObjectDescription> client_objs, List<ObjectDescription> context_fragments)
-    {
-        List<SenroComponent> comps = container.getComponents();
-        for (SenroComponent comp : comps) {
-            ComponentAssociation comp_assoc = comp.getRenderComponent();
-            if (comp_assoc.equals(ComponentAssociation.GRID)) {
-                Set<SenroAssoc> assocs = comp.getAssociations();
-                if (assocs != null) {
-                    senro_assocs.addAll(assocs);
-                }
-                List<SenroComponent> grid_comps = ((SenroContainerComponent) comp).getComponents();
-                for (SenroComponent sc : grid_comps) {
-                    sortNonUIObj(sc, server_objs, client_objs, context_fragments);
-                    if (sc instanceof SenroContainerComponent) {
-                        SenroContainerComponent scc = (SenroContainerComponent) sc;
-                        collectAssocsAndNonUIObjs(scc, senro_assocs, server_objs, client_objs, context_fragments);
-                    }
-                }
-            }
-        }
+        // add associations from the imported template
+        recoverAssociations(tm.getSenroAssocs());
     }
 
     private void recoverTopGrids(List<SenroContainerComponent> all_grids) throws FormException
@@ -1205,7 +1262,7 @@ public class DesignerManager
         ppm.addProperty("name", grid_comp.getName());
         if (grid_comp.getRenderComponent().equals(ComponentAssociation.GRID)) {
             String main_grid_id = grid_comp.getId();
-            main_grid_id = main_grid_id.substring(0, (main_grid_id.length() - 1)/2);
+            main_grid_id = main_grid_id.substring(0, (main_grid_id.length() - 1) / 2);
             ppm.addProperty("id", main_grid_id);
             ppm.addProperty("mainGrid", "true");
             ppm.addProperty("showOnLoad", "true");
@@ -1295,7 +1352,7 @@ public class DesignerManager
         if (project == null) {
             return;
         }
-        if (areGridsClean() && serverObjSetManager.isClean() && clientObjSetManager.isClean()) {
+        if (areGridsClean() && !changeTracker.hasUnsavedChanges()) {
             project = null;
         } else {
             int n = JOptionPane.showOptionDialog(mainFrame, "There are unsaved project files, save them ?", "Confirm Project Save",
@@ -2197,10 +2254,13 @@ public class DesignerManager
         }
         logger.debug(" id pentru componenta: " + comp.getRenderComponent() + " este: " + path_to_comp_id);
         SenroComponent parent = comp.getParent();
+        if(parent != null && parent.getRenderComponent().equals(ComponentAssociation.CONDITIONAL_ELSE)) {
+            parent = parent.getParent();
+        }
         if (parent == null || StringUtils.isBlank(parent.getId())) {
             return path_to_comp_id;
         }
-        return StringUtils.difference(parent.getId() + ".",  path_to_comp_id);
+        return StringUtils.difference(parent.getId() + ".", path_to_comp_id);
     }
 
     public PropertiesMemento getDefaultPropertiesMementoForComponent(SenroComponent comp, Class comp_class) throws FormException, DesignerRuntimeException
@@ -2292,10 +2352,10 @@ public class DesignerManager
             CellConstraints.Alignment v_align = componentAlignment.get(va);
             String ha = cell_layout.getHorizontalAlignment();
             CellConstraints.Alignment h_align = componentAlignment.get(ha);
-            if(v_align == null) {
+            if (v_align == null) {
                 v_align = CellConstraints.DEFAULT;
             }
-            if(h_align == null) {
+            if (h_align == null) {
                 h_align = CellConstraints.DEFAULT;
             }
             return new CellConstraints(col, row, colspan, rowspan, h_align, v_align, new Insets(0, 0, 0, 0));
@@ -2608,6 +2668,15 @@ public class DesignerManager
 
     private class TreeMementoGenerator extends ComponentMementoGenerator
     {
+        private int treeNodeId = 1;
+
+        public String getNextTreeNodeId()
+        {
+            String next_id = "TreeNode" + treeNodeId;
+            treeNodeId++;
+            return next_id;
+        }
+
         @Override
         public ComponentMemento getCompMemento(SenroComponent comp) throws FormException
         {
@@ -2640,7 +2709,7 @@ public class DesignerManager
                 PropertiesMemento b_ppm = new PropertiesMemento();
                 b_ppm.setBeanClassName(TreeNode.class.getName());
                 b_ppm.addProperty("name", senro_component.getName() == null ? "" : senro_component.getName());
-                b_ppm.addProperty("id", senro_component.getId() == null ? "" : getSenroComponentIdFromParser(senro_component));
+                b_ppm.addProperty("id", senro_component.getId() == null ? getNextTreeNodeId() : getSenroComponentIdFromParser(senro_component));
                 b_ppm.addProperty("rowExpr", "");
                 b_ppm.addProperty("columnExpr", "");
                 b_ppm.addProperty("text", (Serializable) senro_component.getModel().getDataObject().getValue());

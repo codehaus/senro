@@ -3,7 +3,7 @@ package ro.siveco.senro.designer.util.event;
 import javax.swing.*;
 import java.awt.*;
 
-public class AddTabEvent extends ObjectChangeEvent
+public class AddTabEvent extends ComponentChangeEvent
 {
     private final String title;
     private final Icon icon;

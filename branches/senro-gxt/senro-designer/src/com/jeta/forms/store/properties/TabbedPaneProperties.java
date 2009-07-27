@@ -46,7 +46,6 @@ import com.jeta.forms.gui.components.ComponentSource;
 import com.jeta.forms.gui.components.ContainedFormFactory;
 
 import com.jeta.forms.gui.form.FormComponent;
-import com.jeta.forms.gui.form.GridComponent;
 
 import com.jeta.forms.logger.FormsLogger;
 import com.jeta.forms.store.JETAObjectInput;
@@ -56,8 +55,6 @@ import com.jeta.open.support.EmptyCollection;
 
 import com.jeta.open.i18n.I18N;
 import com.jeta.open.registry.JETARegistry;
-import com.jeta.swingbuilder.gui.editor.FormEditor;
-import ro.siveco.senro.designer.engine.DesignerManager;
 
 /**
  * A <code>TabbedPaneProperties</code> object is responsible for adding tabs
@@ -155,7 +152,7 @@ public class TabbedPaneProperties extends JETAProperty {
        if (comp instanceof JTabbedPane) {
            JTabbedPane tpane = (JTabbedPane) comp;
            int selected_tab = tpane.getSelectedIndex();
-           tpane.removeAll();               
+           tpane.removeAll();
 
            if (m_items != null) {
 

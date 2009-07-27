@@ -52,6 +52,7 @@ public class DesignerProject
         loadTemplates();
         createParametersManager(getTemplate(getProjectDir().getName()));
         createSenroContextManager();
+        DesignerManager.getSharedDesignerManager().getIdOptions().updateRecentProjectsPaths(path.getAbsolutePath());
     }
 
     private void createParametersManager(Template template)
@@ -68,6 +69,7 @@ public class DesignerProject
     private void createSenroContextManager()
     {
         senroContextFrame = new JFrame("Senro Context");
+        senroContextFrame.setName("Senro Context");
         senroContextFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         senroContextManager = new SenroContextManager();
         FormLayout layout = new FormLayout("1dlu, fill:pref:grow, 1dlu", "1dlu, fill:pref:grow, 1dlu");
@@ -240,6 +242,11 @@ public class DesignerProject
     public ParametersManager getParametersManager()
     {
         return parametersManager;
+    }
+
+    public SenroContextManager getSenroContextManager()
+    {
+        return senroContextManager;
     }
 
     public File getGridPath(String grid_name)

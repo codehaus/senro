@@ -56,165 +56,145 @@ import com.jeta.forms.store.properties.effects.PaintProperty;
  */
 public class CellPainter extends JPanel
 {
-   /**
-    * The view associated with this grid painter.
-    */
-   private GridView        m_view;
+    /**
+     * The view associated with this grid painter.
+     */
+    private GridView m_view;
 
-   /**
-    * The parent form for the GridView
-    */
-   private FormComponent   m_form;
+    /**
+     * The parent form for the GridView
+     */
+    private FormComponent m_form;
 
-   /**
-    * We keep a rectangle around so we don't have to instantiate with every paint.
-    */
-   private Rectangle m_gc_rect = new Rectangle();
-
-
-   /**
-    * Creates a <code>CellPainter</code> associated with the given view.
-    * @param view the GridView associated with this cell painter. 
-    */
-   public CellPainter(GridView view)
-   {
-      m_view = view;
-      setOpaque( false );
-   }
+    /**
+     * We keep a rectangle around so we don't have to instantiate with every paint.
+     */
+    private Rectangle m_gc_rect = new Rectangle();
 
 
-
-   /** 
-    * Override paintComponent so can render the fill effects for each
-    * cell that needs it.
-    */
-   public void paintComponent(Graphics g)
-   {
-      Graphics2D g2 = (Graphics2D)g;
-      Color old_c = g2.getColor();
-      Paint old_paint = g2.getPaint();
-
-
-      /** we need to increase the height of the clip rectangle by 2 pixels because the bottom line of the
-       * grid overlay is not painted for composite child views in some cases */
-      Rectangle clip_rect = g.getClipBounds();
-      clip_rect.setBounds( clip_rect.x, clip_rect.y, clip_rect.width + 2, clip_rect.height + 2 );
-      g.setClip( clip_rect.x, clip_rect.y, clip_rect.width, clip_rect.height );
-      int clip_x1 = (int)clip_rect.x;
-      int clip_x2 = (int)clip_rect.x + clip_rect.width;
-      int clip_y1 = (int)clip_rect.y;
-      int clip_y2 = (int)clip_rect.y + clip_rect.height;
+    /**
+     * Creates a <code>CellPainter</code> associated with the given view.
+     *
+     * @param view the GridView associated with this cell painter.
+     */
+    public CellPainter(GridView view)
+    {
+        m_view = view;
+        setOpaque(false);
+    }
 
 
-      int min_row = -1;
-      int max_row = -1;
+    /**
+     * Override paintComponent so can render the fill effects for each
+     * cell that needs it.
+     */
+    public void paintComponent(Graphics g)
+    {
+        Graphics2D g2 = (Graphics2D)g;
+        Color old_c = g2.getColor();
+        Paint old_paint = g2.getPaint();
 
-      int min_col = -1;
-      int max_col = -1;
 
-      for (int row = 1; row <= m_view.getRowCount(); row++ )
-      {
-	 int row_y1 = m_view.getRowOrgY( row );
-	 int row_y2 = row_y1 + m_view.getRowHeight( row );
-	 if ( clip_y1 >= row_y1 && clip_y1 <= row_y2 )
-	 {
-	    if ( min_row < 0 )
-	       min_row = row;
-	    else
-	       max_row = row;
-	 }
-	 else if ( clip_y2 >= row_y1 && clip_y2 <= row_y2 )
-	 {
-	    if ( min_row < 0 )
-	       min_row = row;
-	    else
-	       max_row = row;
-	    
-	 }
-	 else if ( row_y1 >= clip_y1 && row_y2 <= clip_y2 )
-	 {
-	    // here, the row is contained entirely in the clip
-	    if ( min_row < 0 )
-	       min_row = row;
-	    else
-	       max_row = row;
-	 }
-      }
-      
-      for (int col = 1; col <= m_view.getColumnCount(); col++ )
-      {
-	 int col_x1 = m_view.getColumnOrgX( col );
-	 int col_x2 = col_x1 + m_view.getColumnWidth( col );
-	 if ( clip_x1 >= col_x1 && clip_x1 <= col_x2 )
-	 {
-	    if ( min_col < 0 )
-	       min_col = col;
-	    else
-	       max_col = col;
-	 }
-	 else if ( clip_x2 >= col_x1 && clip_x2 <= col_x2 )
-	 {
-	    if ( min_col < 0 )
-	       min_col = col;
-	    else
-	       max_col = col;
-	    
-	 }
-	 else if ( col_x1 >= clip_x1 && col_x2 <= clip_x2 )
-	 {
-	    // here, the col is contained entirely in the clip
-	    if ( min_col < 0 )
-	       min_col = col;
-	    else
-	       max_col = col;
-	 }
-      }
+        /** we need to increase the height of the clip rectangle by 2 pixels because the bottom line of the
+         * grid overlay is not painted for composite child views in some cases */
+        Rectangle clip_rect = g.getClipBounds();
+        clip_rect.setBounds(clip_rect.x, clip_rect.y, clip_rect.width + 2, clip_rect.height + 2);
+        g.setClip(clip_rect.x, clip_rect.y, clip_rect.width, clip_rect.height);
+        int clip_x1 = (int)clip_rect.x;
+        int clip_x2 = (int)clip_rect.x + clip_rect.width;
+        int clip_y1 = (int)clip_rect.y;
+        int clip_y2 = (int)clip_rect.y + clip_rect.height;
 
-      if ( min_row < 0 || min_col < 0 )
-	 return;
 
-      if ( max_row < 0 )
-	 max_row = min_row;
-      if ( max_col < 0 )
-	 max_col = min_col;
+        int min_row = -1;
+        int max_row = -1;
 
-      for( int row = min_row; row <= max_row; row++ )
-      {
-	 for ( int col=min_col; col <= max_col; col++ )
-	 {
-	    PaintProperty pp = m_view.getPaintProperty( col, row );
-	    if ( pp != null )
-	    {
-	       Painter painter = pp.createPainter();
-	       if ( painter != null )
-	       {
-		  GridComponent gc = m_view.getGridComponent( col, row );
-		  if ( gc == null )
-		  {
-		     m_gc_rect.setBounds( m_view.getColumnOrgX(col), 
-					  m_view.getRowOrgY(row), 
-					  m_view.getColumnWidth(col),
-					  m_view.getRowHeight(row ) );
-		  }
-		  else
-		  {
-		     m_gc_rect.setBounds( gc.getCellX(),
-					  gc.getCellY(),
-					  gc.getCellWidth(),
-					  gc.getCellHeight() );
-		  }
-		     
-		  if ( m_gc_rect.intersects( clip_rect ) )
-		  {
-		     painter.paint( this, g, m_gc_rect );
-		  }
-	       }
-	    }
-	 }
-      }
-      g2.setColor( old_c );
-      g2.setPaint( old_paint );
-   }
+        int min_col = -1;
+        int max_col = -1;
+
+        for(int row = 1; row <= m_view.getRowCount(); row++) {
+            int row_y1 = m_view.getRowOrgY(row);
+            int row_y2 = row_y1 + m_view.getRowHeight(row);
+            if(clip_y1 >= row_y1 && clip_y1 <= row_y2) {
+                if(min_row < 0)
+                    min_row = row;
+                else
+                    max_row = row;
+            } else if(clip_y2 >= row_y1 && clip_y2 <= row_y2) {
+                if(min_row < 0)
+                    min_row = row;
+                else
+                    max_row = row;
+
+            } else if(row_y1 >= clip_y1 && row_y2 <= clip_y2) {
+                // here, the row is contained entirely in the clip
+                if(min_row < 0)
+                    min_row = row;
+                else
+                    max_row = row;
+            }
+        }
+
+        for(int col = 1; col <= m_view.getColumnCount(); col++) {
+            int col_x1 = m_view.getColumnOrgX(col);
+            int col_x2 = col_x1 + m_view.getColumnWidth(col);
+            if(clip_x1 >= col_x1 && clip_x1 <= col_x2) {
+                if(min_col < 0)
+                    min_col = col;
+                else
+                    max_col = col;
+            } else if(clip_x2 >= col_x1 && clip_x2 <= col_x2) {
+                if(min_col < 0)
+                    min_col = col;
+                else
+                    max_col = col;
+
+            } else if(col_x1 >= clip_x1 && col_x2 <= clip_x2) {
+                // here, the col is contained entirely in the clip
+                if(min_col < 0)
+                    min_col = col;
+                else
+                    max_col = col;
+            }
+        }
+
+        if(min_row < 0 || min_col < 0)
+            return;
+
+        if(max_row < 0)
+            max_row = min_row;
+        if(max_col < 0)
+            max_col = min_col;
+
+        for(int row = min_row; row <= max_row; row++) {
+            for(int col = min_col; col <= max_col; col++) {
+                PaintProperty pp = m_view.getPaintProperty(col, row);
+                if(pp != null) {
+                    Painter painter = pp.createPainter();
+                    if(painter != null) {
+                        GridComponent gc = m_view.getGridComponent(col, row);
+                        if(gc == null) {
+                            m_gc_rect.setBounds(m_view.getColumnOrgX(col),
+                                                m_view.getRowOrgY(row),
+                                                m_view.getColumnWidth(col),
+                                                m_view.getRowHeight(row));
+                        } else {
+                            m_gc_rect.setBounds(gc.getCellX(),
+                                                gc.getCellY(),
+                                                gc.getCellWidth(),
+                                                gc.getCellHeight());
+                        }
+
+                        if(m_gc_rect.intersects(clip_rect)) {
+                            painter.paint(this, g, m_gc_rect);
+                        }
+                    }
+                }
+            }
+        }
+        g2.setColor(old_c);
+        g2.setPaint(old_paint);
+    }
 
 
 }

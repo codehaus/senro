@@ -113,6 +113,7 @@ public class MessageBox extends Dialog implements ActionListener
     public static int showDialogBox(JFrame frame, String title, String message, int type, String custom_action)
     {
         MessageBox dialog = new MessageBox(frame, title, message, type, custom_action);
+        dialog.setName(title);
         dialog.pack();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         dialog.setLocation((screenSize.width - dialog.getSize().width) / 2,

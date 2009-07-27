@@ -56,84 +56,83 @@ import com.jeta.forms.logger.FormsLogger;
  */
 public class BackgroundPainter extends JPanel
 {
-   /**
-    * A painter for rendering a background effect. This can be null for no effect.
-    */
-   private Painter      m_background_painter;
+    /**
+     * A painter for rendering a background effect. This can be null for no effect.
+     */
+    private Painter m_background_painter;
 
-   /**
-    * A rectangle used for specifing the paint area.  We use this object so we
-    * don't have to re-instantiate everytime a paint operation is required.
-    */
-   private Rectangle    m_painter_rect;
+    /**
+     * A rectangle used for specifing the paint area.  We use this object so we
+     * don't have to re-instantiate everytime a paint operation is required.
+     */
+    private Rectangle m_painter_rect;
 
-   /**
-    * The preferred size for this component.  Just set to 10x10 pixels so
-    * we don't have a 0x0 size.
-    */
-   private Dimension    m_pref_size = new Dimension(10,10);
+    /**
+     * The preferred size for this component.  Just set to 10x10 pixels so
+     * we don't have a 0x0 size.
+     */
+    private Dimension m_pref_size = new Dimension(10, 10);
 
 
-   /**
-    * Creates a <code>BackgroundPainter</code> instance with a null painter.
-    */
-   public BackgroundPainter()
-   {
-      setOpaque( false );
-   }
+    /**
+     * Creates a <code>BackgroundPainter</code> instance with a null painter.
+     */
+    public BackgroundPainter()
+    {
+        setOpaque(false);
+    }
 
-   /**
-    * Returns the preferred size for this component.
-    * @return the preferred size for this component.
-    */
-   public Dimension getPreferredSize()
-   {
-      return m_pref_size;
-   }
+    /**
+     * Returns the preferred size for this component.
+     *
+     * @return the preferred size for this component.
+     */
+    public Dimension getPreferredSize()
+    {
+        return m_pref_size;
+    }
 
-   /**
-    * Override paintComponent so we can paint the fill effect 
-    * @param g the graphics context.
-    */
-   public void paintComponent(Graphics g)
-   {
-      try
-      {
-	 if ( m_background_painter != null )
-	 {
-	    if ( m_painter_rect == null )
-	       m_painter_rect = new Rectangle();
-	    
-	    m_painter_rect.setBounds( 0, 0, getWidth(), getHeight() );
-	    m_background_painter.paint( this, g, m_painter_rect );
-	 }
-      }
-      catch( Exception e )
-      {
-	 FormsLogger.severe( e );
-      }
-   }
+    /**
+     * Override paintComponent so we can paint the fill effect
+     *
+     * @param g the graphics context.
+     */
+    public void paintComponent(Graphics g)
+    {
+        try {
+            if(m_background_painter != null) {
+                if(m_painter_rect == null)
+                    m_painter_rect = new Rectangle();
 
-   /**
-    * Sets an object used to render an effect on this components background
-    * @param p the painter for this background
-    */
-   public void setBackgroundPainter( Painter p )
-   {
-      m_background_painter = p;
-      m_painter_rect = null;
-      repaint();
-   }
+                m_painter_rect.setBounds(0, 0, getWidth(), getHeight());
+                m_background_painter.paint(this, g, m_painter_rect);
+            }
+        }
+        catch(Exception e) {
+            FormsLogger.severe(e);
+        }
+    }
 
-   /**
-    * Override updateUI so we can force a repaint.
-    */
-   public void updateUI()
-   {
-      super.updateUI();
-      if ( m_background_painter != null )
-      {
-	 repaint();
-      }
-   }
+    /**
+     * Sets an object used to render an effect on this components background
+     *
+     * @param p the painter for this background
+     */
+    public void setBackgroundPainter(Painter p)
+    {
+        m_background_painter = p;
+        m_painter_rect = null;
+        repaint();
+    }
+
+    /**
+     * Override updateUI so we can force a repaint.
+     */
+    public void updateUI()
+    {
+        super.updateUI();
+        if(m_background_painter != null) {
+            repaint();
+        }
+    }
 }

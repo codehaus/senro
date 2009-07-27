@@ -13,8 +13,13 @@
 
     <!-- -->
 
-    <logger name="ro.siveco.senro.designer" additivity="false">
+    <logger name="ro.siveco.senro" additivity="false">
         <level value="debug"/>
+        <appender-ref ref="console"/>
+    </logger>
+
+    <logger name="ro.siveco.senro.testutil.files.XmlFileComparator" additivity="false">
+        <level value="warn"/>
         <appender-ref ref="console"/>
     </logger>
 

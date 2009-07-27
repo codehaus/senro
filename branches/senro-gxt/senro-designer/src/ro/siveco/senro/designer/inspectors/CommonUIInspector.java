@@ -54,7 +54,7 @@ public class CommonUIInspector implements Inspector, Observer
     protected JPanel buildPanel()
     {
         FormLayout layout = new FormLayout("1dlu, fill:pref, 1dlu, 120:grow, 1dlu",
-                "1dlu:grow, fill:pref,  1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu:grow");
+                "1dlu, fill:pref,  1dlu, fill:pref, 1dlu, fill:pref, 1dlu, fill:pref, 1dlu");
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
@@ -149,7 +149,7 @@ public class CommonUIInspector implements Inspector, Observer
     public void handleEvent(Event event)
     {
         if(!timer.isRunning()) {
-            timer.start();            
+            timer.start();
         }
     }
 }

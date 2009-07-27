@@ -2,7 +2,7 @@ package ro.siveco.senro.designer.util.event;
 
 import ro.siveco.senro.designer.association.AssociationInstance;
 
-public abstract class AssociationEvent extends ObjectChangeEvent
+public abstract class AssociationEvent extends ComponentChangeEvent
 {
     private final AssociationInstance association;
 

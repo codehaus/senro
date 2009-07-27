@@ -46,6 +46,7 @@ public class MainFrameNames extends FormEditorNames
    public static final String ID_BEAN_MANAGER    = "bean.manager";
    public static final String ID_PARAMETERS_MANAGER    = "parameters.manager";
    public static final String ID_SENRO_CONTEXT    = "senro.context";
+   public static final String ID_DIFF    = "diff";
 
    public static final String ID_SHOW_FORM_MANAGER = "show.form.manager";
    public static final String ID_SHOW_UNDO_MANAGER = "show.undo.manager";

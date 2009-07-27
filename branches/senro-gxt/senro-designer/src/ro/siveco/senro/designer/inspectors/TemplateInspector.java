@@ -26,6 +26,7 @@ import org.senro.gwt.client.model.ui.binding.EcReplaceType;
 public class TemplateInspector extends CommonUIInspector
 {
     public static final String TEMPLATE_INSPECTOR_TITLE = "Template Inspector";
+    public static final String TEMPLATE_INSPECTOR_PANEL = "Template Panel";
 
     public static final String EXPAND_ACTION = "Expand";
 
@@ -66,7 +67,9 @@ public class TemplateInspector extends CommonUIInspector
         CellConstraints cc = new CellConstraints();
         builder.add(getFieldsPanel(), cc.xy(1, 1));
         builder.add(getTemplateParametersPanel(), cc.xy(1, 3));
-        return builder.getPanel();
+        JPanel panel = builder.getPanel();
+        panel.setName(TEMPLATE_INSPECTOR_PANEL);
+        return panel;
     }
 
     private JPanel getTemplateParametersPanel()
@@ -196,7 +199,7 @@ public class TemplateInspector extends CommonUIInspector
         }
         super.updateUI();
         editingContextCB.setSelectedItem(templateComponent.getEditingContext());
-        templateComponent.refreshParameters();        
+        templateComponent.refreshParameters();
         isUpdating = true;
         updateTemplatesCombo();
         parametersTable.tableChanged(new TableModelEvent(model));
@@ -205,6 +208,7 @@ public class TemplateInspector extends CommonUIInspector
 
     private void expand()
     {
+        DesignerManager.getSharedDesignerManager().expandTemplate(templateComponent);
     }
 
     public class TemplateParametersModel extends AbstractTableModel

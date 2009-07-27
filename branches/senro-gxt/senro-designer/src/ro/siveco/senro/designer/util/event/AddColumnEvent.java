@@ -2,7 +2,7 @@ package ro.siveco.senro.designer.util.event;
 
 import ro.siveco.senro.designer.components.TableComponent;
 
-public class AddColumnEvent extends ObjectChangeEvent
+public class AddColumnEvent extends ComponentChangeEvent
 {
     private final TableComponent.SenroTableColumn column;
 
